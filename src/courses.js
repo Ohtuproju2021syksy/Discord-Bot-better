@@ -9,10 +9,10 @@ const createCategoryName = (courseString) => `📚 ${courseString}`;
  * @param {Discord.GuildChannel} parent
  */
 const findOrCreateChannel = (channelObject) => {
-  const { guild } = context
+  const { guild } = context;
   const { name, options } = channelObject;
   const alreadyExists = guild.channels.cache.find(
-    (c) => c.type === options.type && c.name === name
+    (c) => c.type === options.type && c.name === name,
   );
   if (alreadyExists) return alreadyExists;
   return guild.channels.create(name, options);
@@ -29,9 +29,9 @@ const findOrCreateCategoryWithName = async (
   courseName,
   roleName,
   studentRole,
-  adminRole
+  adminRole,
 ) => {
-  const { guild } = context
+  const { guild } = context;
   const categoryName = createCategoryName(courseName, roleName);
   const permissionOverwrites = [
     {
@@ -40,7 +40,7 @@ const findOrCreateCategoryWithName = async (
     },
     {
       id: guild.me.roles.highest,
-      allow: ["VIEW_CHANNEL"]
+      allow: ["VIEW_CHANNEL"],
     },
     {
       id: adminRole.id,
@@ -69,9 +69,8 @@ const findOrCreateCategoryWithName = async (
  * @param {String} courseName
  */
 const createCourse = async (user, courseString) => {
-  const { guild } = context
-  if (user.roles.highest.name !== "admin")
-    throw new Error("You have no power here!");
+  const { guild } = context;
+  if (user.roles.highest.name !== "admin") {throw new Error("You have no power here!");}
   const roleName = getRoleFromCategory(courseString);
 
   const studentRole = await findOrCreateRoleWithName(roleName);
@@ -82,7 +81,7 @@ const createCourse = async (user, courseString) => {
     roleName,
     studentRole,
     adminRole,
-    guild
+    guild,
   );
 
   const CHANNELS = [

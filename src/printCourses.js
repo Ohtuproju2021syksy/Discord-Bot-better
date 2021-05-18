@@ -15,7 +15,7 @@ const printCourses = async (msg) => {
     })
     .sort((a, b) => a.localeCompare(b));
 
-  msg.reply('\n'+ rows.join("\n"))
+  msg.reply("\n" + rows.join("\n"));
 };
 
 module.exports = printCourses;

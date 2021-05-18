@@ -1,5 +1,5 @@
-const Discord = require('discord.js')
-const { getRoleFromCategory, context } = require('./util')
+const Discord = require("discord.js");
+const { getRoleFromCategory, context } = require("./util");
 const GUIDE_CHANNEL_NAME = "guide";
 
 /**
@@ -13,12 +13,12 @@ const updateGuideMessage = async (message) => {
       const courseFullName = ch.name.replace("📚", "").trim();
       const courseRole = getRoleFromCategory(ch.name);
       const count = message.guild.roles.cache.find(
-        (role) => role.name === courseRole
+        (role) => role.name === courseRole,
       ).members.size;
       return `  - ${courseFullName} \`!join ${courseRole}\` 👤${count}`;
     }).sort((a, b) => a.localeCompare(b));
 
-    const newContent = `
+  const newContent = `
 Käytössäsi on seuraavia komentoja:
   - \`!join\` jolla voit liittyä kurssille
   - \`!leave\` jolla voit poistua kurssilta
@@ -46,11 +46,11 @@ See more with \`!help\` and test out the commands in <#${context.commands.id}> c
  */
 const updateGuide = async () => {
   const channel = context.guild.channels.cache.find(
-    (c) => c.name === GUIDE_CHANNEL_NAME
+    (c) => c.name === GUIDE_CHANNEL_NAME,
   );
   const messages = await channel.messages.fetchPinned(true);
   const message = messages.first();
   updateGuideMessage(message);
 };
 
-module.exports = updateGuide
+module.exports = updateGuide;

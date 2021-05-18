@@ -7,7 +7,7 @@ const { possibleRolesArray } = require("./util");
  */
 const removeRole = async (user, roleString) => {
   const role = possibleRolesArray().find(
-    (role) => role.name === roleString
+    (r) => r.name === roleString,
   );
   if (!role) throw new Error("Role does not exist or is not available");
   user.roles.remove(role);
@@ -20,7 +20,7 @@ const removeRole = async (user, roleString) => {
  */
 const addRole = async (user, roleString) => {
   const role = possibleRolesArray().find(
-    (role) => role.name === roleString
+    (r) => r.name === roleString,
   );
   if (!role) throw new Error("Role does not exist or is not available");
   user.roles.add(role);
