@@ -35,10 +35,10 @@ const handleCommand = async (action, courseString, msg) => {
 
   if (action === PRINT_INSTRUCTORS_MESSAGE) return printInstructors(msg);
 
-  if (msg.channel.id !== context.commands.id && msg.channel.name !== 'test'){
+  if (msg.channel.id !== context.commands.id && msg.channel.name !== 'test') {
     msg.reply(`Please message me in <#${context.commands.id}> channel!`)
     throw new Error('Command outside of commands channel')
-  } 
+  }
 
   switch (action) {
     case JOIN_COURSE_MESSAGE:
@@ -81,4 +81,17 @@ client.on("message", async (msg) => {
   }
 });
 
-client.login(BOT_TOKEN);
+const login = async () => {
+  await client.login(BOT_TOKEN);
+}
+
+if (process.env.NODE_ENV !== 'test') {
+  login()
+}
+
+module.exports = {
+  login,
+  client
+}
+
+
