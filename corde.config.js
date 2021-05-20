@@ -9,12 +9,12 @@ if (!process.env.CI && result.error) {
 }
 
 const botPrefix = commandPrefix;
-const botTestId = process.env.BOT_TEST_ID;
+const botTestId = process.env.BOT_TEST_ID; // id of bot to test
 const channelId = process.env.CHANNEL_ID;
-const cordeBotToken = process.env.CORDE_BOT_TOKEN;
+const cordeBotToken = process.env.CORDE_BOT_TOKEN; // bot sending test commands
 const guildId = process.env.GUILD_ID;
 const testMatches = [testFilesDir];
-const botToken = process.env.BOT_TOKEN;
+const botToken = process.env.BOT_TOKEN; // bot to test
 const timeOut = testTimeOut
 
 module.exports = {
