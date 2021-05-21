@@ -85,4 +85,17 @@ client.on("message", async (msg) => {
   }
 });
 
-client.login(BOT_TOKEN);
+const login = async () => {
+  await client.login(BOT_TOKEN);
+}
+
+if (process.env.NODE_ENV !== 'test') {
+  login()
+}
+
+module.exports = {
+  login,
+  client
+}
+
+

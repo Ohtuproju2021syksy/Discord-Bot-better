@@ -1,0 +1,30 @@
+name: Deployment pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize]
+
+jobs:
+  deployment_pipeline:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1        
+      with:
+        node-version: '14'
+    - name: npm install 
+      run: npm install
+    - name: install yarn to run corde
+      run: npm install --global yarn
+    - name: run corde
+      env:
+        BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+        GUILD_ID: ${{ secrets.GUILD_ID }}
+        CORDE_BOT_TOKEN: ${{ secrets.CORDE_BOT_TOKEN}}
+        BOT_TEST_ID: ${{ secrets.BOT_TEST_ID}}
+        CHANNEL_ID: ${{ secrets.CHANNEL_ID}}
+      run: npm test

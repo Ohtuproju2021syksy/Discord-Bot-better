@@ -1,4 +1,4 @@
-const GUILD_ID = "757581218085863474";
+const GUILD_ID = process.env.GUILD_ID;
 
 const context = {
   ready: false,
