@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
-    "test": "cross-env NODE_ENV=test yarn corde",
+    "test": "cross-env NODE_ENV=test corde",
     "lint": "eslint ."
   },
   "repository": {
