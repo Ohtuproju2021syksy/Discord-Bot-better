@@ -41,32 +41,32 @@ const handleCommand = async (action, courseString, msg) => {
   }
 
   switch (action) {
-  case JOIN_COURSE_MESSAGE: {
-    const roleAdded = await addRole(who, courseString);
-    updateGuide();
-    return roleAdded;
-  }
-  case LEAVE_COURSE_MESSAGE: {
-    const roleRemoved = await removeRole(who, courseString);
-    updateGuide();
-    return roleRemoved;
-  }
-  case PRINT_INSTRUCTORS_MESSAGE:
-    return printInstructors(msg);
-  case HELP_MESSAGE:
-    return printHelp(msg);
-  case COURSES_MESSAGE:
-    return printCourses(msg);
-  case INITIALIZE_COURSE_MESSAGE: {
-    const courseCreated = await createCourse(who, courseString);
-    updateGuide();
-    return courseCreated;
-  }
-  case UPDATE_GUIDE_MANUALLY:
-    updateFaculty();
-    return updateGuide();
-  default:
-    return;
+    case JOIN_COURSE_MESSAGE: {
+      const roleAdded = await addRole(who, courseString);
+      updateGuide();
+      return roleAdded;
+    }
+    case LEAVE_COURSE_MESSAGE: {
+      const roleRemoved = await removeRole(who, courseString);
+      updateGuide();
+      return roleRemoved;
+    }
+    case PRINT_INSTRUCTORS_MESSAGE:
+      return printInstructors(msg);
+    case HELP_MESSAGE:
+      return printHelp(msg);
+    case COURSES_MESSAGE:
+      return printCourses(msg);
+    case INITIALIZE_COURSE_MESSAGE: {
+      const courseCreated = await createCourse(who, courseString);
+      updateGuide();
+      return courseCreated;
+    }
+    case UPDATE_GUIDE_MANUALLY:
+      updateFaculty();
+      return updateGuide();
+    default:
+      return;
   }
 };
 
