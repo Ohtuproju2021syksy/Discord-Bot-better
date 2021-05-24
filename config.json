@@ -1,4 +1,5 @@
 {
+    "commandsChannel": "commands",
     "commandPrefix": "!",
     "testFilesDir": "./src/test/",
     "testTimeOut": "1000"

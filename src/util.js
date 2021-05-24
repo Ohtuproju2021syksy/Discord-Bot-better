@@ -1,3 +1,4 @@
+const { commandsChannel } = require("../config.json");
 const GUILD_ID = process.env.GUILD_ID;
 
 const context = {
@@ -30,10 +31,20 @@ const findOrCreateRoleWithName = async (name) => {
   );
 };
 
+const initializeChannels = async () => {
+  const category = context.guild.channels.cache.find(c => c.name == "Text Channels" && c.type == "category");
+  const channel = await context.guild.channels.create(commandsChannel);
+  await channel.setParent(category.id);
+  context.commands = channel;
+  process.env["CHANNEL_ID"] = channel.id;
+};
+
 const initializeApplicationContext = async (client) => {
   context.guild = await client.guilds.fetch(GUILD_ID);
-  context.commands = context.guild.channels.cache.find(c => c.type === "text" && c.name === "commands");
-
+  context.commands = context.guild.channels.cache.find(c => c.type === "text" && c.name === commandsChannel);
+  if (!context.commands) {
+    await initializeChannels();
+  }
   context.ready = true;
   console.log("Initialized");
 };
