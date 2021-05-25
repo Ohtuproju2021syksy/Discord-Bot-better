@@ -24,9 +24,9 @@
     "dotenv": "^8.2.0"
   },
   "devDependencies": {
-    "eslint": "^7.26.0",
-    "corde": "^4.0.1",
+    "corde": "^4.0.4",
     "cross-env": "^7.0.3",
+    "eslint": "^7.26.0",
     "nodemon": "^2.0.4"
   }
 }
