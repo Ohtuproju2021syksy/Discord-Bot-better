@@ -1,4 +1,4 @@
-const { commandsChannel } = require("../config.json");
+const { commandsChannel, commandsCategory } = require("../config.json");
 const GUILD_ID = process.env.GUILD_ID;
 
 const context = {
@@ -32,7 +32,17 @@ const findOrCreateRoleWithName = async (name) => {
 };
 
 const initializeChannels = async () => {
-  const category = context.guild.channels.cache.find(c => c.name == "Text Channels" && c.type == "category");
+  const category = await context.guild.channels.create(
+    commandsCategory,
+    {
+      type: "category",
+      permissionOverwrites: [
+        {
+          id: context.guild.me.roles.highest,
+          allow: ["VIEW_CHANNEL"],
+        },
+      ],
+    });
   const channel = await context.guild.channels.create(commandsChannel);
   await channel.setParent(category.id);
   context.commands = channel;

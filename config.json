@@ -1,6 +1,7 @@
 {
     "commandsChannel": "commands",
+    "commandsCategory": "Bot Channels",
     "commandPrefix": "!",
-    "testFilesDir": "./src/test/",
+    "testFilesDir": "./test/**",
     "testTimeOut": "1000"
 }
