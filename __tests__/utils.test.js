@@ -2,7 +2,7 @@ const { client, login } = require("../src/index.js");
 const { createChannelInCategory } = require("../src/util");
 
 beforeAll(async () => {
-  return await login();
+  await login();
 });
 
 describe("channels", () => {
@@ -27,5 +27,5 @@ describe("channels", () => {
 afterAll(async () => {
   client.destroy();
   // avoid jest open handle error
-  await new Promise(resolve => setTimeout(() => resolve(), 500));
+  await new Promise(resolve => setTimeout(() => resolve(), 3000));
 });
