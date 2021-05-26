@@ -11,7 +11,7 @@ describe("channels", () => {
     const categoryName = "testikategoria";
 
     const guild = await client.guilds.fetch(process.env.GUILD_ID);
-    const channel = await createChannelInCategory(guild, channelName, "testikategoria");
+    const channel = await createChannelInCategory(guild, channelName, categoryName);
     const category = guild.channels.cache.find(c => c.type === "category" && c.name === categoryName);
     const createdChannelName = channel.name;
     const createCategoryName = category.name;
