@@ -19,8 +19,13 @@ jobs:
         node-version: '14'
     - name: npm install 
       run: npm install
-    - name: lint
+    - name: run lint
       run: npm run lint
+    - name: run jest
+      env:
+        BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+        GUILD_ID: ${{ secrets.GUILD_ID }}
+      run: npm test
     - name: run corde
       env:
         BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
@@ -28,4 +33,6 @@ jobs:
         CORDE_BOT_TOKEN: ${{ secrets.CORDE_BOT_TOKEN}}
         BOT_TEST_ID: ${{ secrets.BOT_TEST_ID}}
         CHANNEL_ID: ${{ secrets.CHANNEL_ID}}
-      run: npm test
+      run: npm test:corde
+      # if: ${{ github.event_name == 'push' }} 
+      # containerize and push to dockerhub for continuous deployment when a pull request is made to main branch
