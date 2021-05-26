@@ -1,4 +1,3 @@
-const Discord = require("discord.js");
 const { getRoleFromCategory } = require("./util");
 /**
  *

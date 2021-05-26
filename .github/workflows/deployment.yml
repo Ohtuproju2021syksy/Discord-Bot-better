@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - init-channels
+      - dev
   pull_request:
     branches: [main]
     types: [opened, synchronize]
@@ -19,6 +19,8 @@ jobs:
         node-version: '14'
     - name: npm install 
       run: npm install
+    - name: lint
+      run: npm run lint
     - name: run corde
       env:
         BOT_TOKEN: ${{ secrets.BOT_TOKEN }}

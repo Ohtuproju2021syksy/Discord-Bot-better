@@ -1,4 +1,3 @@
-const Discord = require("discord.js");
 const { getRoleFromCategory, findOrCreateRoleWithName, context } = require("./util");
 
 const createCategoryName = (courseString) => `📚 ${courseString}`;
@@ -70,7 +69,7 @@ const findOrCreateCategoryWithName = async (
  */
 const createCourse = async (user, courseString) => {
   const { guild } = context;
-  if (user.roles.highest.name !== "admin") {throw new Error("You have no power here!");}
+  if (user.roles.highest.name !== "admin") { throw new Error("You have no power here!"); }
   const roleName = getRoleFromCategory(courseString);
 
   const studentRole = await findOrCreateRoleWithName(roleName);

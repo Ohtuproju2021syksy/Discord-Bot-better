@@ -1,4 +1,3 @@
-const Discord = require("discord.js");
 /**
  * @param {Discord.Message} msg
  */
