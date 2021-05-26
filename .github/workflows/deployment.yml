@@ -33,6 +33,6 @@ jobs:
         CORDE_BOT_TOKEN: ${{ secrets.CORDE_BOT_TOKEN}}
         BOT_TEST_ID: ${{ secrets.BOT_TEST_ID}}
         CHANNEL_ID: ${{ secrets.CHANNEL_ID}}
-      run: npm test:corde
+      run: npm run test:corde
       # if: ${{ github.event_name == 'push' }} 
       # containerize and push to dockerhub for continuous deployment when a pull request is made to main branch
