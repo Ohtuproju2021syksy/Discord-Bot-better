@@ -32,13 +32,14 @@ const findOrCreateRoleWithName = async (name) => {
 };
 
 const createChannelInCategory = async (guild, channelName, categoryName) => {
+  console.log(guild);
   const category = await guild.channels.create(
     categoryName,
     {
       type: "category",
       permissionOverwrites: [
         {
-          id: guild.me.roles.highest,
+          id: guild.roles.highest,
           allow: ["VIEW_CHANNEL"],
         },
       ],
