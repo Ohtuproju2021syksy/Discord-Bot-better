@@ -4,6 +4,7 @@ const GUILD_ID = process.env.GUILD_ID;
 const context = {
   ready: false,
 };
+
 /**
  * Expects role to be between parenthesis e.g. (role)
  * @param {String} string

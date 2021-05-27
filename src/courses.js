@@ -129,6 +129,7 @@ const createCourse = async (user, courseString) => {
 
     return findOrCreateChannel(channel);
   }, Promise.resolve());
+
 };
 
 module.exports = {

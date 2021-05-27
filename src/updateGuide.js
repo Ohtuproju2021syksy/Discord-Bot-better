@@ -44,7 +44,7 @@ See more with \`!help\` and test out the commands in <#${context.commands.id}> c
  * @param {Discord.Guild} guild
  */
 const updateGuide = async () => {
-  const channel = context.guild.channels.cache.find(
+  const channel = await context.guild.channels.cache.find(
     (c) => c.name === GUIDE_CHANNEL_NAME,
   );
   const messages = await channel.messages.fetchPinned(true);

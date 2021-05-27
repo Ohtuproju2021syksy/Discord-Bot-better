@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
+    "dev-new": "nodemon src/new.js",
     "test": "cross-env NODE_ENV=test corde",
     "lint": "eslint ."
   },
