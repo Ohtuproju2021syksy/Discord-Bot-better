@@ -3,7 +3,7 @@ const execute = (client) => {
 };
 
 module.exports = {
-	name: 'ready',
-	once: true,
-	execute,
+  name: "ready",
+  once: true,
+  execute,
 };

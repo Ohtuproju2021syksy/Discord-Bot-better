@@ -32,29 +32,23 @@ const findOrCreateRoleWithName = async (name) => {
   );
 };
 
-const initializeChannels = async () => {
-  const category = await context.guild.channels.create(
-    commandsCategory,
+const createChannelInCategory = async (guild, channelName, categoryName) => {
+  const category = await guild.channels.create(
+    categoryName,
     {
       type: "category",
-      permissionOverwrites: [
-        {
-          id: context.guild.me.roles.highest,
-          allow: ["VIEW_CHANNEL"],
-        },
-      ],
     });
-  const channel = await context.guild.channels.create(commandsChannel);
+  const channel = await guild.channels.create(channelName);
   await channel.setParent(category.id);
-  context.commands = channel;
   process.env["CHANNEL_ID"] = channel.id;
+  return channel;
 };
 
 const initializeApplicationContext = async (client) => {
   context.guild = await client.guilds.fetch(GUILD_ID);
   context.commands = context.guild.channels.cache.find(c => c.type === "text" && c.name === commandsChannel);
   if (!context.commands) {
-    await initializeChannels();
+    context.commands = await createChannelInCategory(context.guild, commandsChannel, commandsCategory);
   }
   context.ready = true;
   console.log("Initialized");
@@ -91,4 +85,5 @@ module.exports = {
   findOrCreateRoleWithName,
   possibleRolesArray,
   context,
+  createChannelInCategory,
 };

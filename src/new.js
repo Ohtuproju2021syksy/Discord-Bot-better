@@ -1,27 +1,28 @@
-const dotenv = require("dotenv").config();
+require("dotenv").config();
 
-const [ token, prefix ] = [ process.env.BOT_TOKEN, process.env.PREFIX ];
+const token = process.env.BOT_TOKEN;
 
-const Discord = require('discord.js');
-const fs = require('fs');
+const Discord = require("discord.js");
+const fs = require("fs");
 
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
 
-const commandFiles = fs.readdirSync('./src/commands').filter(file => file.endsWith('.js'));
+const commandFiles = fs.readdirSync("./src/commands").filter(file => file.endsWith(".js"));
 for (const file of commandFiles) {
-	const command = require(`./commands/${file}`);
-	client.commands.set(command.name, command);
+  const command = require(`./commands/${file}`);
+  client.commands.set(command.name, command);
 }
 
-const eventFiles = fs.readdirSync('./src/events').filter(file => file.endsWith('.js'));
+const eventFiles = fs.readdirSync("./src/events").filter(file => file.endsWith(".js"));
 for (const file of eventFiles) {
-	const event = require(`./events/${file}`);
-	if (event.once) {
-		client.once(event.name, (...args) => event.execute(...args, client));
-	} else {
-		client.on(event.name, (...args) => event.execute(...args, client));
-	}
+  const event = require(`./events/${file}`);
+  if (event.once) {
+    client.once(event.name, (...args) => event.execute(...args, client));
+  }
+  else {
+    client.on(event.name, (...args) => event.execute(...args, client));
+  }
 }
 
 client.login(token);

@@ -1,10 +1,10 @@
 const execute = (message, args) => {
-  message.channel.send('join');
+  message.channel.send(`join \nargs: ${args.join(", ")}`);
 };
 
 module.exports = {
-  name: 'join',
+  name: "join",
   args: true,
-  description: 'Join to the course. NOT IMPLEMENTED YET!',
+  description: "Join to the course. NOT IMPLEMENTED YET!",
   execute,
 };

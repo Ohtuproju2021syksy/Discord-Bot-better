@@ -47,5 +47,5 @@ CHANNEL_ID can be found by right clicking the channel after enabling developer m
 
 Once you have [invited](https://discordjs.guide/preparations/adding-your-bot-to-servers.html#bot-invite-links) both of your bots to the server, run following command to run the corde tests:
 ```
-npm test
+npm run test:corde
 ```
