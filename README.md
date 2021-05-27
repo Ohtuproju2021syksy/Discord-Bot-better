@@ -12,6 +12,7 @@ Add following contents to `.env` file:
 ```
 BOT_TOKEN=your-own-token
 GUILD_ID=your-discord-server-id
+PREFIX=!
 ```
 
 To find the server id, follow instructions [here](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-) to enable developer mode and right click the server.
@@ -28,6 +29,7 @@ npm install
 Run one of following commands to start bot:
 ```
 npm run dev
+npm run dev-new
 npm start
 ```
 
