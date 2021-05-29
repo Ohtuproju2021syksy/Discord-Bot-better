@@ -51,11 +51,12 @@ const createChannelInCategory = async (guild, channelName, categoryName) => {
 
 const initializeApplicationContext = async (client) => {
   context.guild = await client.guilds.fetch(GUILD_ID);
-  for (channel in initialChannels) {
+  for (const channel in initialChannels) {
     const channelExists = context.guild.channels.cache.find(c => c.type === "text" && c.name === channel);
     if (!channelExists) {
       context[`${channel}`] = await createChannelInCategory(context.guild, channel, commandsCategory);
-    } else {
+    }
+    else {
       context[`${channel}`] = channelExists;
     }
   }
