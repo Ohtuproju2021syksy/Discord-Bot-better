@@ -3,8 +3,6 @@
         "commands": "commandsChannel",
         "guide": "guideChannel"
     },
-    "commandsChannel": "commands",
-    "guideChannel": "guide",
     "commandsCategory": "Bot Channels",
     "commandPrefix": "!",
     "testFilesDir": "./__tests__/corde/**",
