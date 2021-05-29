@@ -43,15 +43,20 @@ const createChannelInCategory = async (guild, channelName, categoryName) => {
   }
   const createdChannel = await guild.channels.create(channelName);
   await createdChannel.setParent(category.id);
-  process.env["CHANNEL_ID"] = createdChannel.id;
+  if (createdChannel.name === "commands") {
+    process.env["CHANNEL_ID"] = createdChannel.id;
+  }
   return createdChannel;
 };
 
 const initializeApplicationContext = async (client) => {
   context.guild = await client.guilds.fetch(GUILD_ID);
-  for (const channel in initialChannels) {
-    if (!context.guild.channels.cache.find(c => c.type === "text" && c.name === channel)) {
+  for (channel in initialChannels) {
+    const channelExists = context.guild.channels.cache.find(c => c.type === "text" && c.name === channel);
+    if (!channelExists) {
       context[`${channel}`] = await createChannelInCategory(context.guild, channel, commandsCategory);
+    } else {
+      context[`${channel}`] = channelExists;
     }
   }
   context.ready = true;
