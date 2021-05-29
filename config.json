@@ -6,5 +6,5 @@
     "commandsCategory": "Bot Channels",
     "commandPrefix": "!",
     "testFilesDir": "./__tests__/corde/**",
-    "testTimeOut": "1000"
+    "testTimeOut": "1250"
 }
