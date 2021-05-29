@@ -34,7 +34,7 @@ jobs:
         BOT_TEST_ID: ${{ secrets.BOT_TEST_ID}}
         CHANNEL_ID: ${{ secrets.CHANNEL_ID}}
       run: npm run test:corde
-    -name: Test coverage to codecov
-      run: bash <(curl -s https://codecov.io/bash) -t ${{ secrets.CODECOV_TOKEN }}
+    -name: Upload coverage to Codecov
+      run: bash <(curl -s https://codecov.io/bash)
       # if: ${{ github.event_name == 'push' }} 
       # containerize and push to dockerhub for continuous deployment when a pull request is made to main branch
