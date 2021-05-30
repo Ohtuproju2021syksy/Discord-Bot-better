@@ -33,14 +33,12 @@ const findOrCreateRoleWithName = async (name) => {
 };
 
 const createChannelInCategory = async (guild, channelName, categoryName) => {
-  let category = await context.guild.channels.cache.find(c => c.type === "category" && c.name === categoryName);
-  if(!category) {
-    category = await guild.channels.create(
-      categoryName,
-      {
-        type: "category",
-      });
-  }
+  const category = await guild.channels.cache.find(c => c.type === "category" && c.name === categoryName) ||
+   await guild.channels.create(
+     categoryName,
+     {
+       type: "category",
+     });
   const createdChannel = await guild.channels.create(channelName);
   await createdChannel.setParent(category.id);
   if (createdChannel.name === "commands") {
@@ -63,7 +61,6 @@ const initializeApplicationContext = async (client) => {
   context.ready = true;
   console.log("Initialized");
 };
-
 
 const possibleRolesArray = () => {
   const { guild } = context;
