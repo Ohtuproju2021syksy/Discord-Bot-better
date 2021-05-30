@@ -1,8 +1,9 @@
-const { client, login } = require("../src/index.js");
+const { client } = require("../src/index.js");
 const { createChannelInCategory } = require("../src/util");
+const BOT_TOKEN = process.env.BOT_TOKEN;
 
 beforeAll(async () => {
-  await login();
+  await client.login(BOT_TOKEN);
 });
 
 describe("channels", () => {
