@@ -18,6 +18,6 @@ const execute = async (message) => {
 module.exports = {
   name: "courses",
   args: false,
-  description: "Prints out the courses to use with \`!join\` and \`!leave\`. NOT IMPLEMENTED YET!",
+  description: "Prints out the courses to use with `!join` and `!leave`. NOT IMPLEMENTED YET!",
   execute,
 };
