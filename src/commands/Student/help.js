@@ -1,18 +1,31 @@
 const prefix = process.env.PREFIX;
 
 const execute = (message, args) => {
+  const user = message.member;
   const data = [];
   const commands = message.client.commands;
+  let commandsReadyToPrint = {};
+
+  const isNotFacultyCommand = (command) => {
+    return command.role !== "admin";
+  };
+
+  if (user.roles.highest.name !== "admin") {
+    commandsReadyToPrint = commands.filter(command => isNotFacultyCommand(command));
+  }
+  else {
+    commandsReadyToPrint = commands;
+  }
 
   if (!args.length) {
     data.push("Here's a list of all my commands:");
-    data.push(commands.map(command => command.name).join(", "));
+    data.push(commandsReadyToPrint.map(command => command.name).join(", "));
     data.push(`\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`);
     return message.channel.send(data.join(" "), { split: true });
   }
 
   const name = args[0].toLowerCase();
-  const command = commands.get(name);
+  const command = commandsReadyToPrint.get(name);
 
   if (!command) {
     return message.reply("that's not a valid command!");
