@@ -143,5 +143,6 @@ module.exports = {
   description: "Create new course.",
   args: true,
   usage: "[course name]",
+  role: "admin",
   execute,
 };
