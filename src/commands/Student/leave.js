@@ -1,26 +1,26 @@
 const { possibleRolesArray } = require("../../util.js");
 const updateGuide = require("../../updateGuide");
 
-const addRole = async (user, roleString) => {
+const removeRole = async (user, roleString) => {
   const role = possibleRolesArray().find(
     (r) => r.name === roleString,
   );
   if (!role) throw new Error("Role does not exist or is not available");
-  user.roles.add(role);
+  user.roles.remove(role);
 };
 
 const execute = async (message, args) => {
   const courseString = args.join(" ");
   const who = message.member;
 
-  const roleAdded = await addRole(who, courseString);
+  const roleRemoved = await removeRole(who, courseString);
   updateGuide();
-  return roleAdded;
+  return roleRemoved;
 };
 
 module.exports = {
-  name: "join",
+  name: "leave",
   args: true,
-  description: "Join to the course. NOT IMPLEMENTED YET!",
+  description: "Remove you from the course, e.g. `!leave ohpe`",
   execute,
 };
