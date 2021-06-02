@@ -1,4 +1,4 @@
-name: Deployment pipeline
+name: Testing pipeline
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
     types: [opened, synchronize]
 
 jobs:
-  deployment_pipeline:
+  testing_pipeline:
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
