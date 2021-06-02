@@ -1,47 +1,6 @@
-const { client } = require("../src/index.js");
-const { createChannelInCategory } = require("../src/util.js");
-const { createCourse } = require("../src/courses.js");
-// const { createCourse } = require("../src/commands/Faculty/init.js");
 let mockUser = require("discord.js");
-const token = process.env.BOT_TOKEN;
-
-beforeAll(async () => {
-  await client.login(token);
-});
-
-describe("channels", () => {
-  test("channel is created in category", async () => {
-    const channelName = "testikanava";
-    const categoryName = "testikategoria";
-    const guild = await client.guilds.fetch(process.env.GUILD_ID);
-    const channel = await createChannelInCategory(guild, channelName, categoryName);
-    const category = guild.channels.cache.find(c => c.type === "category" && c.name === categoryName);
-    const createdChannelName = channel.name;
-    const createCategoryName = category.name;
-
-    expect(createdChannelName).toBe(channelName);
-    expect(createCategoryName).toBe(categoryName);
-
-    await channel.delete();
-    await category.delete();
-  });
-});
-
-describe("Initialize", () => {
-  test("found command channel", async () => {
-    const channelName = "commands";
-    const guild = await client.guilds.fetch(process.env.GUILD_ID);
-    const foundChannel = guild.channels.cache.find(c => c.type === "text" && c.name === channelName);
-    expect(foundChannel.name).toBe(channelName);
-  });
-
-  test("found guide channel", async () => {
-    const channelName = "guide";
-    const guild = await client.guilds.fetch(process.env.GUILD_ID);
-    const foundChannel = guild.channels.cache.find(c => c.type === "text" && c.name === channelName);
-    expect(foundChannel.name).toBe(channelName);
-  });
-});
+const { createCourse } = require("../src/courses.js");
+const { client } = require("../src/index.js");
 
 describe("Courses", () => {
   test("New cource can be created with correct channels", async () => {
@@ -101,14 +60,8 @@ describe("Courses", () => {
     try {
       await createCourse(mockUser, testCourseName);
     }
-    catch(err) {
+    catch (err) {
       expect(err.message).toMatch("You have no power here!");
     }
   });
-});
-
-afterAll(async () => {
-  client.destroy();
-  // avoid jest open handle error
-  await new Promise(resolve => setTimeout(() => resolve(), 3000));
 });

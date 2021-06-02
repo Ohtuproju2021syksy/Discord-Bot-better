@@ -34,16 +34,13 @@ const findOrCreateRoleWithName = async (name) => {
 
 const createChannelInCategory = async (guild, channelName, categoryName) => {
   const category = await guild.channels.cache.find(c => c.type === "category" && c.name === categoryName) ||
-   await guild.channels.create(
-     categoryName,
-     {
-       type: "category",
-     });
+    await guild.channels.create(
+      categoryName,
+      {
+        type: "category",
+      });
   const createdChannel = await guild.channels.create(channelName);
   await createdChannel.setParent(category.id);
-  if (createdChannel.name === "commands") {
-    process.env["CHANNEL_ID"] = createdChannel.id;
-  }
   return createdChannel;
 };
 

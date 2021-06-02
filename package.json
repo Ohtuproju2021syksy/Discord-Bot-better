@@ -7,14 +7,15 @@
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "dev-new": "nodemon src/new.js",
-    "test": "jest --coverage",
+    "test": "jest --coverage --forceExit --detectOpenHandles",
     "test:corde": "cross-env NODE_ENV=test corde",
     "lint": "eslint ."
   },
   "jest": {
     "modulePathIgnorePatterns": [
       "corde"
-    ]
+    ],
+    "testRegex": "./__tests__/jest_setup/setup.js"
   },
   "repository": {
     "type": "git",
