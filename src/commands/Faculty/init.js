@@ -67,9 +67,11 @@ const findOrCreateCategoryWithName = async (
  * @param {Discord.GuildMember} user
  * @param {String} courseName
  */
-const createCourse = async (user, courseString) => {
+const createCourse = async (user, args) => {
   const { guild } = context;
   if (user.roles.highest.name !== "admin") { throw new Error("You have no power here!"); }
+
+  const courseString = args.join(" ");
   const roleName = getRoleFromCategory(courseString);
 
   const studentRole = await findOrCreateRoleWithName(roleName);
@@ -135,7 +137,7 @@ const createCourse = async (user, courseString) => {
 
 const execute = (message, args) => {
   const who = message.member;
-  createCourse(who, args[0]);
+  createCourse(who, args);
 };
 
 module.exports = {
@@ -145,4 +147,5 @@ module.exports = {
   usage: "[course name]",
   role: "admin",
   execute,
+  createCourse,
 };
