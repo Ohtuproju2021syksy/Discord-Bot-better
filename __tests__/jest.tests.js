@@ -56,13 +56,13 @@ describe("Courses", () => {
     };
 
     const guild = await client.guilds.fetch(process.env.GUILD_ID);
-    const channelsAtStart = guild.channels.cache.map(channel => channel);
+    const channelsAtStart = 0;
     await createCourse(mockUser, testCourseName);
     const createdCourseName = `📚 ${testCourseName}`;
 
-    const channelsAtMid = guild.channels.cache.map(channel => channel);
-
     const category = guild.channels.cache.find(c => c.type === "category" && c.name === createdCourseName);
+    const channelsAtMid = guild.channels.cache.map(c => ((c.type === "text" || c.type === "voice") && c.parent === category) || c === category).reduce((sum, channel) => sum + channel, 0);
+
     const categoryAnnouncement = guild.channels.cache.find(c => c.type === "text" && c.parent === category && c.name == `${testCourseName}_announcement`);
     const categoryGeneral = guild.channels.cache.find(c => c.type === "text" && c.parent === category && c.name == `${testCourseName}_general`);
     const categoryQuestions = guild.channels.cache.find(c => c.type === "text" && c.parent === category && c.name == `${testCourseName}_questions`);
@@ -71,8 +71,8 @@ describe("Courses", () => {
     const courseRoleAdmin = guild.roles.cache.find(role => role.name === `${testCourseName} admin`);
 
     expect(category.name).toBe(createdCourseName);
-    expect(channelsAtMid.length).toBeGreaterThan(channelsAtStart.length);
-    expect(channelsAtMid.length).toBe(channelsAtStart.length + 5);
+    expect(channelsAtMid).toBeGreaterThan(channelsAtStart);
+    expect(channelsAtMid).toBe(channelsAtStart + 5);
 
     await categoryAnnouncement.delete();
     await categoryGeneral.delete();
@@ -82,8 +82,9 @@ describe("Courses", () => {
     await courseRole.delete();
     await courseRoleAdmin.delete();
 
-    const channelsAtEnd = guild.channels.cache.map(channel => channel);
-    expect(channelsAtEnd.length).toBe(channelsAtStart.length);
+    const channelsAtEnd = guild.channels.cache.map(c => ((c.type === "text" || c.type === "voice") && c.parent === category) || c === category).reduce((sum, channel) => sum + channel, 0);
+
+    expect(channelsAtEnd).toBe(channelsAtStart);
   });
 
   test("Student cannot create course", async () => {
