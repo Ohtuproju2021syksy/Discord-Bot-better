@@ -1,4 +1,4 @@
-const { getRoleFromCategory } = require("../../util.js");
+const { getRoleFromCategory } = require("../../service");
 
 
 const execute = async (message) => {
@@ -16,7 +16,7 @@ const execute = async (message) => {
 
 module.exports = {
   name: "instructors",
-  args: false,
   description: "Prints out the instructors of the course. This command is available in most channels.",
+  args: false,
   execute,
 };

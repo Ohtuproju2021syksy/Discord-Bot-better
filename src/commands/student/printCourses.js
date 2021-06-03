@@ -1,9 +1,10 @@
-const { getRoleFromCategory, context } = require("../../util");
+const { getRoleFromCategory } = require("../../service");
 
 
 const execute = async (message) => {
-  const { guild } = context;
-  const rows = guild.channels.cache
+  const guild = message.guild;
+
+  const rows = await guild.channels.cache
     .filter((ch) => ch.type === "category" && ch.name.startsWith("📚"))
     .map((ch) => {
       const courseFullName = ch.name.replace("📚", "").trim();
@@ -17,7 +18,7 @@ const execute = async (message) => {
 
 module.exports = {
   name: "courses",
-  args: false,
   description: "Prints out the courses to use with `!join` and `!leave`.",
+  args: false,
   execute,
 };

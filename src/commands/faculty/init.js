@@ -1,4 +1,4 @@
-const { getRoleFromCategory, findOrCreateRoleWithName, context } = require("../../util");
+const { getRoleFromCategory, findOrCreateRoleWithName } = require("../../service");
 
 const createCategoryName = (courseString) => `📚 ${courseString}`;
 
@@ -7,8 +7,7 @@ const createCategoryName = (courseString) => `📚 ${courseString}`;
  * @param {Object} channelObject
  * @param {Discord.GuildChannel} parent
  */
-const findOrCreateChannel = (channelObject) => {
-  const { guild } = context;
+const findOrCreateChannel = (channelObject, guild) => {
   const { name, options } = channelObject;
   const alreadyExists = guild.channels.cache.find(
     (c) => c.type === options.type && c.name === name,
@@ -29,8 +28,8 @@ const findOrCreateCategoryWithName = async (
   roleName,
   studentRole,
   adminRole,
+  guild
 ) => {
-  const { guild } = context;
   const categoryName = createCategoryName(courseName, roleName);
   const permissionOverwrites = [
     {
@@ -59,7 +58,7 @@ const findOrCreateCategoryWithName = async (
     },
   };
 
-  return findOrCreateChannel(categoryObject);
+  return findOrCreateChannel(categoryObject, guild);
 };
 
 /**
@@ -67,15 +66,14 @@ const findOrCreateCategoryWithName = async (
  * @param {Discord.GuildMember} user
  * @param {String} courseName
  */
-const createCourse = async (user, args) => {
-  const { guild } = context;
+const createCourse = async (user, args, guild) => {
   if (user.roles.highest.name !== "admin") { throw new Error("You have no power here!"); }
 
   const courseString = args.join(" ");
   const roleName = getRoleFromCategory(courseString);
 
-  const studentRole = await findOrCreateRoleWithName(roleName);
-  const adminRole = await findOrCreateRoleWithName(`${roleName} admin`);
+  const studentRole = await findOrCreateRoleWithName(roleName, guild);
+  const adminRole = await findOrCreateRoleWithName(`${roleName} admin`, guild);
 
   const category = await findOrCreateCategoryWithName(
     courseString,
@@ -129,22 +127,22 @@ const createCourse = async (user, args) => {
   await CHANNELS.reduce(async (promise, channel) => {
     await promise;
 
-    return findOrCreateChannel(channel);
+    return findOrCreateChannel(channel, guild);
   }, Promise.resolve());
 
 };
 
 
-const execute = (message, args) => {
+const execute = async (message, args) => {
   const who = message.member;
-  createCourse(who, args);
+  await createCourse(who, args, message.guild);
 };
 
 module.exports = {
   name: "init",
   description: "Create new course.",
-  args: true,
   usage: "[course name]",
+  args: true,
   role: "admin",
   execute,
   createCourse,
