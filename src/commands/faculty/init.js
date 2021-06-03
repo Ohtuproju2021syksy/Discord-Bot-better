@@ -69,7 +69,8 @@ const findOrCreateCategoryWithName = async (
 const createCourse = async (user, args, guild) => {
   if (user.roles.highest.name !== "admin") { throw new Error("You have no power here!"); }
 
-  const courseString = args.join(" ");
+  const courseString = args.join(" ") || args;
+
   const roleName = getRoleFromCategory(courseString);
 
   const studentRole = await findOrCreateRoleWithName(roleName, guild);

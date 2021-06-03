@@ -10,6 +10,16 @@ const context = {
   ready: false,
 };
 
+const findOrCreateChannel = (channelObject) => {
+  const { guild } = context;
+  const { name, options } = channelObject;
+  const alreadyExists = guild.channels.cache.find(
+    (c) => c.type === options.type && c.name === name,
+  );
+  if (alreadyExists) return alreadyExists;
+  return guild.channels.create(name, options);
+};
+
 /**
  * Expects role to be between parenthesis e.g. (role)
  * @param {String} string
@@ -49,17 +59,60 @@ const createChannelInCategory = async (guild, channelName, categoryName) => {
   return createdChannel;
 };
 
+const initChannels = async (guild, categoryName) => {
+  const adminRole = await findOrCreateRoleWithName("admin");
+  const category = await guild.channels.cache.find(c => c.type === "category" && c.name === categoryName) ||
+  await guild.channels.create(
+    categoryName,
+    {
+      type: "category",
+    });
+
+  const channels = [
+    {
+      name: "commands",
+      options: {
+        parent: category,
+        type: "text",
+      },
+    },
+    {
+      name: "guide",
+      options: {
+        parent: category,
+        type: "text",
+        topic: " ",
+        permissionOverwrites: [{ id: guild.id, deny: ["SEND_MESSAGES"], "allow": ["VIEW_CHANNEL"] }, { id: adminRole.id, allow: ["SEND_MESSAGES", "VIEW_CHANNEL"] } ],
+      },
+    },
+  ];
+  await channels.reduce(async (promise, channel) => {
+    await promise;
+
+    context[`${channel.name}`] = await findOrCreateChannel(channel);
+  }, Promise.resolve());
+
+};
+
+const setInitialGuideMessage = async (guild, channelName) => {
+  const guideChannel = guild.channels.cache.find(c => c.type === "text" && c.name === channelName);
+  if(!guideChannel.lastPinTimestamp) {
+    const msg = await guideChannel.send("initial");
+    await msg.pin();
+  }
+};
+
+const setCommandsId = () =>{
+  const channel = context.guild.channels.cache.find(c => c.type === "text" && c.name === "commands");
+  context.commands = channel;
+  process.env["CHANNEL_ID"] = channel.id;
+};
+
 const initializeApplicationContext = async (client) => {
   context.guild = await client.guilds.fetch(GUILD_ID);
-  for (const channel in initialChannels) {
-    const channelExists = context.guild.channels.cache.find(c => c.type === "text" && c.name === channel);
-    if (!channelExists) {
-      context[`${channel}`] = await createChannelInCategory(context.guild, channel, commandsCategory);
-    }
-    else {
-      context[`${channel}`] = channelExists;
-    }
-  }
+  await initChannels(context.guild, commandsCategory);
+  setInitialGuideMessage(context.guild, "guide");
+  setCommandsId();
   context.ready = true;
   console.log("Initialized");
 };

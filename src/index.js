@@ -1,6 +1,6 @@
 require("dotenv").config();
 const Discord = require("discord.js");
-const { createCourse } = require("./courses");
+const { createCourse, deleteCourse } = require("./courses");
 const { addRole, removeRole } = require("./roles");
 const printInstructors = require("./printInstructors");
 const printCourses = require("./printCourses");
@@ -23,6 +23,7 @@ const COURSES_MESSAGE = "!courses";
 const PRINT_INSTRUCTORS_MESSAGE = "!instructors";
 const INITIALIZE_COURSE_MESSAGE = "!init";
 const UPDATE_GUIDE_MANUALLY = "!update_guide";
+const DELETE_COURSE = "!delete";
 
 /**
  *
@@ -62,8 +63,12 @@ const handleCommand = async (action, courseString, msg) => {
       updateGuide();
       return courseCreated;
     }
-    case UPDATE_GUIDE_MANUALLY:
+    case UPDATE_GUIDE_MANUALLY: {
       updateFaculty();
+      return updateGuide();
+    }
+    case DELETE_COURSE:
+      deleteCourse(who, courseString);
       return updateGuide();
     default:
       return;
