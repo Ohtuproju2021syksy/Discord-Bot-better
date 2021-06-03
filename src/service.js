@@ -1,15 +1,3 @@
-/*
- * This file is also not used after refactoring
- */
-
-
-const { initialChannels, commandsCategory } = require("../config.json");
-const GUILD_ID = process.env.GUILD_ID;
-
-const context = {
-  ready: false,
-};
-
 /**
  * Expects role to be between parenthesis e.g. (role)
  * @param {String} string
@@ -25,8 +13,7 @@ const getRoleFromCategory = (categoryName) => {
  *
  * @param {String} name
  */
-const findOrCreateRoleWithName = async (name) => {
-  const { guild } = context;
+const findOrCreateRoleWithName = async (name, guild) => {
   return (
     guild.roles.cache.find((role) => role.name === name) ||
     (await guild.roles.create({
@@ -49,24 +36,8 @@ const createChannelInCategory = async (guild, channelName, categoryName) => {
   return createdChannel;
 };
 
-const initializeApplicationContext = async (client) => {
-  context.guild = await client.guilds.fetch(GUILD_ID);
-  for (const channel in initialChannels) {
-    const channelExists = context.guild.channels.cache.find(c => c.type === "text" && c.name === channel);
-    if (!channelExists) {
-      context[`${channel}`] = await createChannelInCategory(context.guild, channel, commandsCategory);
-    }
-    else {
-      context[`${channel}`] = channelExists;
-    }
-  }
-  context.ready = true;
-  console.log("Initialized");
-};
 
-const possibleRolesArray = () => {
-  const { guild } = context;
-
+const possibleRolesArray = (guild) => {
   const rolesFromCategories = guild.channels.cache
     .filter(({ type, name }) => type === "category" && name.startsWith("📚"))
     .map(({ name }) => getRoleFromCategory(name));
@@ -88,12 +59,9 @@ const possibleRolesArray = () => {
   return acualRoles;
 };
 
-
 module.exports = {
-  initializeApplicationContext,
   getRoleFromCategory,
   findOrCreateRoleWithName,
   possibleRolesArray,
-  context,
   createChannelInCategory,
 };

@@ -1,8 +1,9 @@
-const { getRoleFromCategory, context } = require("../../util");
+const { getRoleFromCategory } = require("../../service");
 
 
 const execute = async (message) => {
-  const { guild } = context;
+  const guild = message.guild;
+
   const rows = await guild.channels.cache
     .filter((ch) => ch.type === "category" && ch.name.startsWith("📚"))
     .map((ch) => {

@@ -1,4 +1,4 @@
-const { getRoleFromCategory } = require("../../util.js");
+const { getRoleFromCategory } = require("../../service");
 
 
 const execute = async (message) => {

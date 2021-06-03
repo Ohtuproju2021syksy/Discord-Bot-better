@@ -1,8 +1,9 @@
-const { possibleRolesArray } = require("../../util.js");
+const { possibleRolesArray } = require("../../service");
+
 const updateGuide = require("../../updateGuide");
 
-const addRole = async (user, roleString) => {
-  const role = await possibleRolesArray().find(
+const addRole = async (user, roleString, guild) => {
+  const role = await possibleRolesArray(guild).find(
     (r) => r.name === roleString,
   );
   if (!role) throw new Error("Role does not exist or is not available");
@@ -12,8 +13,8 @@ const addRole = async (user, roleString) => {
 const execute = async (message, args) => {
   const who = message.member;
 
-  const roleAdded = await addRole(who, args);
-  updateGuide();
+  const roleAdded = await addRole(who, args, message.guild);
+  // updateGuide();
   return roleAdded;
 };
 
