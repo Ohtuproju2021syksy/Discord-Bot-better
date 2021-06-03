@@ -16,10 +16,11 @@ const execute = (message, client) => {
 
   try {
     command.execute(message, args);
+    message.react("✅");
   }
   catch (error) {
     console.error(error);
-    message.reply("there was an error trying to execute that command!");
+    message.react("❌");
   }
 };
 
