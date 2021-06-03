@@ -2,7 +2,7 @@ const { possibleRolesArray } = require("../../util.js");
 const updateGuide = require("../../updateGuide");
 
 const addRole = async (user, roleString) => {
-  const role = possibleRolesArray().find(
+  const role = await possibleRolesArray().find(
     (r) => r.name === roleString,
   );
   if (!role) throw new Error("Role does not exist or is not available");
@@ -10,17 +10,18 @@ const addRole = async (user, roleString) => {
 };
 
 const execute = async (message, args) => {
-  const courseString = args.join(" ");
   const who = message.member;
 
-  const roleAdded = await addRole(who, courseString);
+  const roleAdded = await addRole(who, args);
   updateGuide();
   return roleAdded;
 };
 
 module.exports = {
   name: "join",
-  args: true,
   description: "Join to the course.",
+  usage: "[course name]",
+  args: true,
+  joinArgs: true,
   execute,
 };

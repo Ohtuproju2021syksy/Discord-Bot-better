@@ -143,8 +143,8 @@ const execute = (message, args) => {
 module.exports = {
   name: "init",
   description: "Create new course.",
-  args: true,
   usage: "[course name]",
+  args: true,
   role: "admin",
   execute,
   createCourse,

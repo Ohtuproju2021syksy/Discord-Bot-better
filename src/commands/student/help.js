@@ -42,7 +42,6 @@ const execute = (message, args) => {
 module.exports = {
   name: "help",
   description: "List all of my commands or info about a specific command.",
-  args: false,
   usage: "[command name]",
   execute,
 };
