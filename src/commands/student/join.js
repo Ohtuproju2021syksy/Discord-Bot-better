@@ -21,6 +21,6 @@ const execute = async (message, args) => {
 module.exports = {
   name: "join",
   args: true,
-  description: "Join to the course. NOT IMPLEMENTED YET!",
+  description: "Join to the course.",
   execute,
 };

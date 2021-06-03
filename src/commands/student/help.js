@@ -19,9 +19,9 @@ const execute = (message, args) => {
 
   if (!args.length) {
     data.push("Here's a list of all my commands:");
-    data.push(commandsReadyToPrint.map(command => command.name).join(", "));
+    data.push(commandsReadyToPrint.map(command => `${prefix}${command.name} - ${command.description}`).join("\n"));
     data.push(`\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`);
-    return message.channel.send(data.join(" "), { split: true });
+    return message.channel.send(data, { split: true });
   }
 
   const name = args[0].toLowerCase();
