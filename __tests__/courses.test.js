@@ -10,7 +10,7 @@ describe("Courses", () => {
     mockUser = {
       roles: {
         highest: {
-          name: "admin",
+          name: "teacher",
         },
       },
     };
@@ -39,7 +39,7 @@ describe("Courses", () => {
     mockUser = {
       roles: {
         highest: {
-          name: "admin",
+          name: "teacher",
         },
       },
     };

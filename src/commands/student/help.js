@@ -7,10 +7,10 @@ const execute = (message, args) => {
   let commandsReadyToPrint = {};
 
   const isNotFacultyCommand = (command) => {
-    return command.role !== "admin";
+    return command.role !== "teacher";
   };
 
-  if (user.roles.highest.name !== "admin") {
+  if (user.roles.highest.name !== "teacher") {
     commandsReadyToPrint = commands.filter(command => isNotFacultyCommand(command));
   }
   else {

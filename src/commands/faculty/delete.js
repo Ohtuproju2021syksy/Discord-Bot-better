@@ -11,7 +11,7 @@ const findAndDeleteRole = (role) => {
 };
 
 const deleteCourse = async (user, courseName, guild) => {
-  if (user.roles.highest.name !== "admin") { throw new Error("You have no power here!"); }
+  if (user.roles.highest.name !== "teacher") { throw new Error("You have no power here!"); }
   const courseString = createCategoryName(courseName);
   const category = guild.channels.cache.find(c => c.type === "category" && c.name === courseString);
   await guild.channels.cache.map(c => c).filter(c => (c.parent === category || (c.type === "category" && c.name === courseString))).reduce(async (promise, channel) => {
@@ -40,7 +40,7 @@ module.exports = {
   usage: "[course name]",
   args: true,
   joinArgs: true,
-  role: "admin",
+  role: "teacher",
   execute,
   deleteCourse,
 };

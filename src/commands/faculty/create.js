@@ -67,7 +67,7 @@ const findOrCreateCategoryWithName = async (
  * @param {String} courseName
  */
 const createCourse = async (user, args, guild) => {
-  if (user.roles.highest.name !== "admin") { throw new Error("You have no power here!"); }
+  if (user.roles.highest.name !== "teacher") { throw new Error("You have no power here!"); }
 
   const roleName = getRoleFromCategory(args);
 
@@ -144,7 +144,7 @@ module.exports = {
   usage: "[course name]",
   args: true,
   joinArgs: true,
-  role: "admin",
+  role: "teacher",
   execute,
   createCourse,
 };
