@@ -3,7 +3,7 @@
  */
 
 
-const { initialChannels, commandsCategory } = require("../config.json");
+const { commandsCategory } = require("../config.json");
 const GUILD_ID = process.env.GUILD_ID;
 
 const context = {
