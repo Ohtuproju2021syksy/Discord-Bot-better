@@ -1,6 +1,4 @@
-const { possibleRolesArray } = require("../../service");
-
-const updateGuide = require("../../updateGuide");
+const { possibleRolesArray, updateGuide } = require("../../service");
 
 const removeRole = async (user, roleString, guild) => {
   const role = await possibleRolesArray(guild).find(
@@ -14,7 +12,7 @@ const execute = async (message, args) => {
   const who = message.member;
 
   const roleRemoved = await removeRole(who, args, message.guild);
-  // updateGuide();
+  updateGuide(message.guild);
   return roleRemoved;
 };
 

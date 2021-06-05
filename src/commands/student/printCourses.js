@@ -20,5 +20,6 @@ module.exports = {
   name: "courses",
   description: "Prints out the courses to use with `!join` and `!leave`.",
   args: false,
+  joinArgs: false,
   execute,
 };

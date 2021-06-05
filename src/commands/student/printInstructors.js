@@ -18,5 +18,6 @@ module.exports = {
   name: "instructors",
   description: "Prints out the instructors of the course. This command is available in most channels.",
   args: false,
+  joinArgs: false,
   execute,
 };
