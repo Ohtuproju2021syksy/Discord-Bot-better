@@ -12,7 +12,6 @@ const findOrCreateChannel = (guild, channelObject) => {
 };
 
 const initChannels = async (guild, categoryName) => {
-  const adminRole = await findOrCreateRoleWithName("admin", guild);
   const category = await guild.channels.cache.find(c => c.type === "category" && c.name === categoryName) ||
   await guild.channels.create(
     categoryName,
@@ -34,7 +33,7 @@ const initChannels = async (guild, categoryName) => {
         parent: category,
         type: "text",
         topic: " ",
-        permissionOverwrites: [{ id: guild.id, deny: ["SEND_MESSAGES"], "allow": ["VIEW_CHANNEL"] }, { id: adminRole.id, allow: ["SEND_MESSAGES", "VIEW_CHANNEL"] } ],
+        permissionOverwrites: [{ id: guild.id, deny: ["SEND_MESSAGES"], "allow": ["VIEW_CHANNEL"] }, { id: process.env.BOT_TEST_ID, allow: ["SEND_MESSAGES", "VIEW_CHANNEL"] } ],
       },
     },
   ];
