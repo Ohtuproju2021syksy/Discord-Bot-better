@@ -1,6 +1,6 @@
 # cs-discord-bot
 
-![deployment pipeline](https://github.com/CS-DISCORD-BOT/cs-discord-bot/actions/workflows/deployment.yml/badge.svg)[![codecov](https://codecov.io/gh/CS-DISCORD-BOT/cs-discord-bot/branch/dev/graph/badge.svg?token=qsZwyE4keT)](https://codecov.io/gh/CS-DISCORD-BOT/cs-discord-bot)[![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+![deployment pipeline](https://github.com/CS-DISCORD-BOT/cs-discord-bot/actions/workflows/deployment.yml/badge.svg?branch=dev)[![codecov](https://codecov.io/gh/CS-DISCORD-BOT/cs-discord-bot/branch/dev/graph/badge.svg?token=qsZwyE4keT)](https://codecov.io/gh/CS-DISCORD-BOT/cs-discord-bot)[![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 ## Instructions
 Clone repository to your computer.
