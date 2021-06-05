@@ -16,7 +16,7 @@ group("main commands", () => {
     expect("leave test").toAddReaction(["❌"]);
   });
   test("init command should react with a checkmark", () => {
-    expect("init test").toAddReaction(["✅"]);
+    expect("create test").toAddReaction(["✅"]);
   });
   test("join command should react with a checkmark", () => {
     expect("join test").toAddReaction(["✅"]);
