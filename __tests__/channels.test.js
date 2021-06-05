@@ -1,5 +1,5 @@
 const { client } = require("../src/index.js");
-const { createChannelInCategory } = require("../src/util.js");
+const { createChannelInCategory } = require("../src/service.js");
 
 describe("channels", () => {
   test("channel is created in category", async () => {
