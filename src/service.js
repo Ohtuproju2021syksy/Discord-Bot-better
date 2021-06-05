@@ -1,11 +1,5 @@
-const findOrCreateChannel = (guild, channelObject) => {
-  const { name, options } = channelObject;
-  const alreadyExists = guild.channels.cache.find(
-    (c) => c.type === options.type && c.name === name,
-  );
-  if (alreadyExists) return alreadyExists;
-  return guild.channels.create(name, options);
-};
+const GUIDE_CHANNEL_NAME = "guide";
+const COMMAND_CHANNEL_NAME = "commands";
 
 /**
  * Expects role to be between parenthesis e.g. (role)
@@ -22,7 +16,7 @@ const getRoleFromCategory = (categoryName) => {
  *
  * @param {String} name
  */
-const findOrCreateRoleWithName = async (guild, name) => {
+const findOrCreateRoleWithName = async (name, guild) => {
   return (
     guild.roles.cache.find((role) => role.name === name) ||
     (await guild.roles.create({
@@ -68,57 +62,58 @@ const possibleRolesArray = (guild) => {
   return acualRoles;
 };
 
-const initChannels = async (guild, categoryName) => {
-  const adminRole = await findOrCreateRoleWithName(guild, "admin");
-  const category = await guild.channels.cache.find(c => c.type === "category" && c.name === categoryName) ||
-  await guild.channels.create(
-    categoryName,
-    {
-      type: "category",
-    });
+/**
+ *
+ * @param {Discord.Message} message
+ */
+const updateGuideMessage = async (message, commands, guild) => {
+  const rows = await message.guild.channels.cache
+    .filter((ch) => ch.type === "category" && ch.name.startsWith("📚"))
+    .map((ch) => {
+      const courseFullName = ch.name.replace("📚", "").trim();
+      const courseRole = getRoleFromCategory(ch.name);
+      const count = guild.roles.cache.find(
+        (role) => role.name === courseRole,
+      ).members.size;
+      return `  - ${courseFullName} \`!join ${courseRole}\` 👤${count}`;
+    }).sort((a, b) => a.localeCompare(b));
 
-  const channels = [
-    {
-      name: "commands",
-      options: {
-        parent: category,
-        type: "text",
-      },
-    },
-    {
-      name: "guide",
-      options: {
-        parent: category,
-        type: "text",
-        topic: " ",
-        permissionOverwrites: [{ id: guild.id, deny: ["SEND_MESSAGES"], "allow": ["VIEW_CHANNEL"] }, { id: adminRole.id, allow: ["SEND_MESSAGES", "VIEW_CHANNEL"] } ],
-      },
-    },
-  ];
-  await channels.reduce(async (promise, channel) => {
-    await promise;
-    await findOrCreateChannel(guild, channel);
-  }, Promise.resolve());
+  const newContent = `
+Käytössäsi on seuraavia komentoja:
+  - \`!join\` jolla voit liittyä kurssille
+  - \`!leave\` jolla voit poistua kurssilta
+Esim: \`!join ohpe\`
+  
+You have the following commands available:
+  - \`!join\` which you can use to join a course
+  - \`!leave\` which you can use to leave a course
+For example: \`!join ohpe\`
 
+Kurssit / Courses:
+${rows.join("\n")}
+
+In course specific channels you can also list instructors \`!instructors\`
+
+See more with \`!help\` and test out the commands in <#${commands.id}> channel!
+`;
+
+  message.edit(newContent);
 };
 
-const setInitialGuideMessage = async (guild, channelName) => {
-  const guideChannel = guild.channels.cache.find(c => c.type === "text" && c.name === channelName);
-  if(!guideChannel.lastPinTimestamp) {
-    const msg = await guideChannel.send("initial");
-    await msg.pin();
-  }
-};
-
-const setCommandsChannel = (context) =>{
-  const channel = context.guild.channels.cache.find(c => c.type === "text" && c.name === "commands");
-  process.env["CHANNEL_ID"] = channel.id;
-  context.commands = channel;
-};
-
-const initializeApplicationContext = async (guild, commandsCategory) => {
-  await initChannels(guild, commandsCategory);
-  await setInitialGuideMessage(guild, "guide");
+/**
+ *
+ * @param {Discord.Guild} guild
+ */
+const updateGuide = async (guild) => {
+  const channel = await guild.channels.cache.find(
+    (c) => c.name === GUIDE_CHANNEL_NAME,
+  );
+  const command = await guild.channels.cache.find(
+    (c) => c.name === COMMAND_CHANNEL_NAME,
+  );
+  const messages = await channel.messages.fetchPinned(true);
+  const message = messages.first();
+  await updateGuideMessage(message, command, guild);
 };
 
 module.exports = {
@@ -126,6 +121,5 @@ module.exports = {
   findOrCreateRoleWithName,
   possibleRolesArray,
   createChannelInCategory,
-  initializeApplicationContext,
-  setCommandsChannel,
+  updateGuide,
 };

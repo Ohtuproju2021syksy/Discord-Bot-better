@@ -1,32 +1,104 @@
 require("dotenv").config();
-
-const token = process.env.BOT_TOKEN;
-
 const Discord = require("discord.js");
-const fs = require("fs");
-
+const { createCourse, deleteCourse } = require("./courses");
+const { addRole, removeRole } = require("./roles");
+const printInstructors = require("./printInstructors");
+const printCourses = require("./printCourses");
+const printHelp = require("./printHelp");
+const updateGuide = require("./updateGuide");
+const updateFaculty = require("./updateFaculty");
+const { context, initializeApplicationContext } = require("./util");
 const client = new Discord.Client();
-client.commands = new Discord.Collection();
+const BOT_TOKEN = process.env.BOT_TOKEN;
 
-const commandFolders = fs.readdirSync("./src/commands");
+client.on("ready", () => {
+  console.log(`Logged in as ${client.user.tag}!`);
+  initializeApplicationContext(client);
+});
 
-for (const folder of commandFolders) {
-  const commandFiles = fs.readdirSync(`./src/commands/${folder}`).filter(file => file.endsWith(".js"));
-  for (const file of commandFiles) {
-    const command = require(`./commands/${folder}/${file}`);
-    client.commands.set(command.name, command);
+const JOIN_COURSE_MESSAGE = "!join";
+const LEAVE_COURSE_MESSAGE = "!leave";
+const HELP_MESSAGE = "!help";
+const COURSES_MESSAGE = "!courses";
+const PRINT_INSTRUCTORS_MESSAGE = "!instructors";
+const INITIALIZE_COURSE_MESSAGE = "!init";
+const UPDATE_GUIDE_MANUALLY = "!update_guide";
+const DELETE_COURSE = "!delete";
+
+/**
+ *
+ * @param {String} action
+ * @param {String} courseString
+ * @param {Discord.Message} msg
+ */
+const handleCommand = async (action, courseString, msg) => {
+  const who = msg.member;
+
+  if (action === PRINT_INSTRUCTORS_MESSAGE) return printInstructors(msg);
+
+  if (msg.channel.id !== context.commands.id && msg.channel.name !== "test") {
+    msg.reply(`Please message me in <#${context.commands.id}> channel!`);
+    throw new Error("Command outside of commands channel");
   }
+
+  switch (action) {
+    case JOIN_COURSE_MESSAGE: {
+      const roleAdded = await addRole(who, courseString);
+      updateGuide();
+      return roleAdded;
+    }
+    case LEAVE_COURSE_MESSAGE: {
+      const roleRemoved = await removeRole(who, courseString);
+      updateGuide();
+      return roleRemoved;
+    }
+    case PRINT_INSTRUCTORS_MESSAGE:
+      return printInstructors(msg);
+    case HELP_MESSAGE:
+      return printHelp(msg);
+    case COURSES_MESSAGE:
+      return printCourses(msg);
+    case INITIALIZE_COURSE_MESSAGE: {
+      const courseCreated = await createCourse(who, courseString);
+      updateGuide();
+      return courseCreated;
+    }
+    case UPDATE_GUIDE_MANUALLY: {
+      updateFaculty();
+      return updateGuide();
+    }
+    case DELETE_COURSE:
+      deleteCourse(who, courseString);
+      return updateGuide();
+    default:
+      return;
+  }
+};
+
+client.on("message", async (msg) => {
+  if (msg.content.startsWith("!") && context.ready) {
+    const [action, ...args] = msg.content.split(" ");
+    const courseString = args.join(" ");
+    try {
+      await handleCommand(action, courseString, msg);
+      await msg.react("✅");
+    }
+    catch (err) {
+      console.log(err);
+      await msg.react("❌");
+    }
+  }
+});
+
+const login = async () => {
+  await client.login(BOT_TOKEN);
+};
+
+if (process.env.NODE_ENV !== "test") {
+  login();
 }
 
-const eventFiles = fs.readdirSync("./src/events").filter(file => file.endsWith(".js"));
-for (const file of eventFiles) {
-  const event = require(`./events/${file}`);
-  if (event.once) {
-    client.once(event.name, (...args) => event.execute(...args, client));
-  }
-  else {
-    client.on(event.name, (...args) => event.execute(...args, client));
-  }
-}
-
-client.login(token);
+module.exports = {
+  login,
+  client,
+};
