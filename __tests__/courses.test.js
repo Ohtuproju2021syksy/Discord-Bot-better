@@ -1,5 +1,5 @@
 let mockUser = require("discord.js");
-const { createCourse } = require("../src/courses.js");
+const { createCourse } = require("../src/commands/Faculty/create");
 const { client } = require("../src/index.js");
 
 describe("Courses", () => {
@@ -16,9 +16,8 @@ describe("Courses", () => {
 
     const guild = await client.guilds.fetch(process.env.GUILD_ID);
     const channelsAtStart = 0;
-    await createCourse(mockUser, testCourseName);
+    await createCourse(mockUser, testCourseName, guild);
     const createdCourseName = `📚 ${testCourseName}`;
-
     const category = guild.channels.cache.find(c => c.type === "category" && c.name === createdCourseName);
     const channelsAtMid = guild.channels.cache.map(c => ((c.type === "text" || c.type === "voice") && c.parent === category) || c === category).reduce((sum, channel) => sum + channel, 0);
 
@@ -40,7 +39,6 @@ describe("Courses", () => {
     await category.delete();
     await courseRole.delete();
     await courseRoleAdmin.delete();
-
     const channelsAtEnd = guild.channels.cache.map(c => ((c.type === "text" || c.type === "voice") && c.parent === category) || c === category).reduce((sum, channel) => sum + channel, 0);
 
     expect(channelsAtEnd).toBe(channelsAtStart);
@@ -60,7 +58,7 @@ describe("Courses", () => {
 
     const guild = await client.guilds.fetch(process.env.GUILD_ID);
     const channelsAtStart = 0;
-    await createCourse(mockUser, testCourseName);
+    await createCourse(mockUser, testCourseName, guild);
     const createdCourseName = `📚 ${testCourseName}`;
 
     const category = guild.channels.cache.find(c => c.type === "category" && c.name === createdCourseName);
