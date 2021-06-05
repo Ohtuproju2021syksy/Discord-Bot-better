@@ -1,9 +1,9 @@
-const prefix = process.env.PREFIX;
+const { commandPrefix } = require("../../config.json");
 
 const execute = async (message, client) => {
-  if (!message.content.startsWith(prefix)) return;
+  if (!message.content.startsWith(commandPrefix)) return;
 
-  let args = message.content.slice(prefix.length).trim().split(/ +/);
+  let args = message.content.slice(commandPrefix.length).trim().split(/ +/);
   const commandName = args.shift().toLowerCase();
 
   if (!client.commands.has(commandName)) return;
