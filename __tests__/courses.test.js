@@ -1,5 +1,5 @@
 let mockUser = require("discord.js");
-const { createCourse } = require("../src/commands/Faculty/create.js");
+const { createCourse } = require("../src/commands/faculty/create.js");
 const { client } = require("../src/index.js");
 
 describe("Courses", () => {
