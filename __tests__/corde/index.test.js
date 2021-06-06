@@ -24,8 +24,8 @@ group("main commands", () => {
   test("leave command should react with a checkmark", () => {
     expect("leave test").toAddReaction(["✅"]);
   });
-  test("delete command should react with a checkmark", () => {
-    expect("delete test").not.toAddReaction(["❌"]);
+  test("remove command should react with a checkmark", () => {
+    expect("remove test").not.toAddReaction(["❌"]);
   });
 });
 
