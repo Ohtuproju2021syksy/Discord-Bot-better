@@ -1,11 +1,11 @@
 const { getRoleFromCategory } = require("../../service");
 
 
-const execute = async (message) => {
+const execute = (message) => {
   const category = message.channel.parent;
   const roleString = getRoleFromCategory(category.name);
 
-  const courseAdminRole = await message.guild.roles.cache.find(role => role.name === `${roleString} admin`);
+  const courseAdminRole = message.guild.roles.cache.find(role => role.name === `${roleString} admin`);
   if (!courseAdminRole) throw new Error(`Could not get admin role for ${roleString}`);
 
   const adminsString = courseAdminRole.members.map(user => user.nickname).join(", ");

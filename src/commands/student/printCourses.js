@@ -1,10 +1,10 @@
 const { getRoleFromCategory } = require("../../service");
 
 
-const execute = async (message) => {
+const execute = (message) => {
   const guild = message.guild;
 
-  const rows = await guild.channels.cache
+  const rows = guild.channels.cache
     .filter((ch) => ch.type === "category" && ch.name.startsWith("📚"))
     .map((ch) => {
       const courseFullName = ch.name.replace("📚", "").trim();

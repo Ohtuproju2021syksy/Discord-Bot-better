@@ -11,7 +11,7 @@ const updateGuideMessage = async (message) => {
     .map((ch) => {
       const courseFullName = ch.name.replace("📚", "").trim();
       const courseRole = getRoleFromCategory(ch.name);
-      const count = message.guild.roles.cache.find(
+      const count = guild.roles.cache.find(
         (role) => role.name === courseRole,
       ).members.size;
       return `  - ${courseFullName} \`!join ${courseRole}\` 👤${count}`;
