@@ -5,7 +5,6 @@ const GUIDE_CHANNEL_NAME = "guide";
 const FACULTY_ROLE = "faculty";
 
 const execute = async (message, client) => {
-  console.log("???");
   if (!message.content.startsWith(prefix)) return;
 
   let args = message.content.slice(prefix.length).trim().split(/ +/);
