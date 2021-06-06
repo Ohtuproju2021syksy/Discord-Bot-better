@@ -86,7 +86,7 @@ describe("Courses", () => {
     mockUser = {
       roles: {
         cache: {
-          find: () => null
+          find: () => (false),
         },
       },
     };
