@@ -21,18 +21,13 @@ jobs:
       run: npm install
     - name: run lint
       run: npm run lint
-    - name: run jest
-      env:
-        BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
-        GUILD_ID: ${{ secrets.GUILD_ID }}
-      run: npm test
-    - name: run corde
+    - name: run jest and corde test with nyc
       env:
         BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
         GUILD_ID: ${{ secrets.GUILD_ID }}
         CORDE_BOT_TOKEN: ${{ secrets.CORDE_BOT_TOKEN}}
         BOT_TEST_ID: ${{ secrets.BOT_TEST_ID}}
         CHANNEL_ID: ${{ secrets.CHANNEL_ID}}
-      run: npm run test:corde
+      run: npm test
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
