@@ -5,6 +5,10 @@ const GUIDE_CHANNEL_NAME = "guide";
 const FACULTY_ROLE = "faculty";
 
 const execute = async (message, client) => {
+  if (message.content === "&ping") {
+    return message.channel.send("pong!");
+  }
+
   if (!message.content.startsWith(prefix)) return;
 
   let args = message.content.slice(prefix.length).trim().split(/ +/);
