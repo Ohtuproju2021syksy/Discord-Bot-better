@@ -1,8 +1,4 @@
 {
-    "initialChannels": {
-        "commands": "commandsChannel",
-        "guide": "guideChannel"
-    },
     "commandsCategory": "Bot Channels",
     "commandPrefix": "!",
     "testFilesDir": "./__tests__/corde/**",

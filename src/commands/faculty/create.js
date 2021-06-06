@@ -1,4 +1,4 @@
-const { getRoleFromCategory, findOrCreateRoleWithName } = require("../../service");
+const { getRoleFromCategory, findOrCreateRoleWithName, updateGuide } = require("../../service");
 
 const createCategoryName = (courseString) => `📚 ${courseString}`;
 
@@ -28,7 +28,7 @@ const findOrCreateCategoryWithName = async (
   roleName,
   studentRole,
   adminRole,
-  guild
+  guild,
 ) => {
   const categoryName = createCategoryName(courseName, roleName);
   const permissionOverwrites = [
@@ -67,16 +67,15 @@ const findOrCreateCategoryWithName = async (
  * @param {String} courseName
  */
 const createCourse = async (user, args, guild) => {
-  if (user.roles.highest.name !== "admin") { throw new Error("You have no power here!"); }
+  if (user.roles.highest.name !== "teacher") { throw new Error("You have no power here!"); }
 
-  const courseString = args.join(" ");
-  const roleName = getRoleFromCategory(courseString);
+  const roleName = getRoleFromCategory(args);
 
   const studentRole = await findOrCreateRoleWithName(roleName, guild);
   const adminRole = await findOrCreateRoleWithName(`${roleName} admin`, guild);
 
   const category = await findOrCreateCategoryWithName(
-    courseString,
+    args,
     roleName,
     studentRole,
     adminRole,
@@ -136,14 +135,16 @@ const createCourse = async (user, args, guild) => {
 const execute = async (message, args) => {
   const who = message.member;
   await createCourse(who, args, message.guild);
+  await updateGuide(message.guild);
 };
 
 module.exports = {
-  name: "init",
+  name: "create",
   description: "Create new course.",
   usage: "[course name]",
   args: true,
-  role: "admin",
+  joinArgs: true,
+  role: "teacher",
   execute,
   createCourse,
 };

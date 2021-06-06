@@ -1,6 +1,5 @@
 const { possibleRolesArray } = require("../../service");
 
-
 const execute = async (message, args) => {
   const roleString = args;
   const member = message.member;

@@ -1,15 +1,8 @@
-const { initialChannels, commandsCategory } = require("../../config.json");
+const { initializeApplicationContext } = require("../init");
 
 const execute = async (client) => {
-  context = {};
-  context.guild = await client.guilds.fetch(process.env.GUILD_ID);
-  for (const channelName in initialChannels) {
-    let channel = context.guild.channels.cache.find(c => c.type === "text" && c.name === channelName);
-    if (!channel) {
-      channel = await createChannelInCategory(context.guild, channel, commandsCategory);
-    }
-    context[`${channel}`] = channel;
-  }
+  client.guild = await client.guilds.fetch(process.env.GUILD_ID);
+  initializeApplicationContext(client);
   console.log(`Logged in as ${client.user.tag}!`);
 };
 

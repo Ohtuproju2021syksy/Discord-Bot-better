@@ -5,7 +5,7 @@ const updateFaculty = async () => {
   const { guild } = context;
   const facultyRole = await findOrCreateRoleWithName(FACULTY_ROLE);
   const usersWhoShouldBeFaculty = guild.roles.cache
-    .filter((role) => role.name.includes("admin"))
+    .filter((role) => role.name.includes("teacher"))
     .reduce((acc, role) => [...acc, ...role.members.array()], []);
 
   await usersWhoShouldBeFaculty.reduce(async (promise, user) => {
