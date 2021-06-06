@@ -7,9 +7,13 @@
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "dev-new": "nodemon src/new.js",
-    "test": "jest --coverage",
+    "test:jest": "jest",
     "test:corde": "cross-env NODE_ENV=test corde",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test": "npm run cover:jest && npm run cover:corde && npm run cover:report",
+    "cover:jest": "nyc --silent npm run test:jest",
+    "cover:corde": "nyc --silent --no-clean --exclude=corde.config.js npm run test:corde",
+    "cover:report": "nyc report --reporter=lcov --reporter=text"
   },
   "jest": {
     "modulePathIgnorePatterns": [
@@ -36,11 +40,12 @@
     "dotenv": "^8.2.0"
   },
   "devDependencies": {
-    "corde": "^4.1.0",
+    "corde": "^4.0.4",
     "cross-env": "^7.0.3",
     "eslint": "^7.26.0",
     "eslint-plugin-jest": "^24.3.6",
     "jest": "^27.0.1",
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "nyc": "^15.1.0"
   }
 }
