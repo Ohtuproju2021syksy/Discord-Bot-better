@@ -6,7 +6,7 @@ const FACULTY_ROLE = "faculty";
 
 const execute = async (message, client) => {
   if (message.content === "&ping") {
-    return message.channel.send(`pong! prefix: ${prefix}`);
+    return message.channel.send(`pong!!! prefix: ${prefix}`);
   }
 
   if (!message.content.startsWith(prefix)) return;
