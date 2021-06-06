@@ -1,4 +1,4 @@
-const { group, test, beforeStart, afterAll, expect, default: corde } = require("corde");
+const { group, test, beforeStart, afterAll, expect } = require("corde");
 const { client, login } = require("../../src/index.js");
 
 const getCordebot = async () => {
@@ -17,8 +17,8 @@ group("main commands", () => {
   });
   test("help command should show all commands to a teacher", async () => {
     const cordeBot = await getCordebot();
-    cordeBot.
-    expect("help").toMessageContentContains("!create - Create new course");
+    cordeBot
+      .expect("help").toMessageContentContains("!create - Create new course");
   });
   // test("join command with unknown course should react with x", () => {
   //   expect("join test").toAddReaction(["❌"]);

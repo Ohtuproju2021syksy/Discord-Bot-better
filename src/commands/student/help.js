@@ -10,7 +10,7 @@ const execute = (message, args) => {
     return command.role !== "teacher";
   };
 
-  if (user.roles.highest.name !== "teacher") {
+  if (!user.roles.cache.find(role => role.name === "teacher")) {
     commandsReadyToPrint = commands.filter(command => isNotFacultyCommand(command));
   }
   else {

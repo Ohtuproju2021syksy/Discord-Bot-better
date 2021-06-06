@@ -28,7 +28,7 @@ const findOrCreateRoleWithName = async (name, guild) => {
 };
 
 const createChannelInCategory = async (guild, channelName, categoryName) => {
-  const category = await guild.channels.cache.find(c => c.type === "category" && c.name === categoryName) ||
+  const category = guild.channels.cache.find(c => c.type === "category" && c.name === categoryName) ||
     await guild.channels.create(
       categoryName,
       {
@@ -45,21 +45,19 @@ const possibleRolesArray = (guild) => {
     .filter(({ type, name }) => type === "category" && name.startsWith("📚"))
     .map(({ name }) => getRoleFromCategory(name));
 
-  const existingRoles = guild.roles.cache;
-
-  const acualRoles = existingRoles.filter((role) =>
+  const actualRoles = guild.roles.cache.filter((role) =>
     rolesFromCategories.includes(role.name),
   );
-  if (rolesFromCategories.length !== acualRoles.size) {
+  if (rolesFromCategories.length !== actualRoles.size) {
     console.log(
-      "Something is wrong, rolesFromCategories did not match the size of acualRoles",
+      "Something is wrong, rolesFromCategories did not match the size of actualRoles",
       rolesFromCategories,
       rolesFromCategories.length,
-      acualRoles.map(({ name }) => name),
-      acualRoles.size,
+      actualRoles.map(({ name }) => name),
+      actualRoles.size,
     );
   }
-  return acualRoles;
+  return actualRoles;
 };
 
 /**
