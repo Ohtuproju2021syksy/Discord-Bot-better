@@ -3,18 +3,18 @@ const create = require("../src/commands/faculty/create.js");
 const remove = require("../src/commands/faculty/remove.js");
 const { client } = require("../src/index.js");
 
-const mockCreate = async (mockUser, testCourseName, guild) => {
+const mockCreate = async (user, testCourseName, guild) => {
   const message = {
     guild,
-    member: mockUser,
+    member: user,
   };
   await create.execute(message, testCourseName);
 };
 
-const mockRemove = async (mockUser, testCourseName, guild) => {
+const mockRemove = async (user, testCourseName, guild) => {
   const message = {
     guild,
-    member: mockUser,
+    member: user,
   };
   await remove.execute(message, testCourseName);
 };
@@ -26,8 +26,8 @@ describe("Courses", () => {
     mockUser = {
       roles: {
         cache: {
-          find: (role) => "teacher",
-        }
+          find: () => "teacher",
+        },
       },
     };
 
@@ -55,8 +55,8 @@ describe("Courses", () => {
     mockUser = {
       roles: {
         cache: {
-          find: (role) => "teacher",
-        }
+          find: () => "teacher",
+        },
       },
     };
 
@@ -86,8 +86,8 @@ describe("Courses", () => {
     mockUser = {
       roles: {
         cache: {
-          find: (role) => "student",
-        }
+          find: () => "student",
+        },
       },
     };
 
