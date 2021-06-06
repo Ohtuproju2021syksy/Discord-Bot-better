@@ -15,7 +15,10 @@
     "modulePathIgnorePatterns": [
       "corde"
     ],
-    "coveragePathIgnorePatterns": ["/node_modules/", "__tests__"],
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "__tests__"
+    ],
     "testRegex": "./__tests__/jest_setup/setup.js"
   },
   "repository": {
@@ -33,7 +36,7 @@
     "dotenv": "^8.2.0"
   },
   "devDependencies": {
-    "corde": "^4.0.4",
+    "corde": "^4.1.0",
     "cross-env": "^7.0.3",
     "eslint": "^7.26.0",
     "eslint-plugin-jest": "^24.3.6",
