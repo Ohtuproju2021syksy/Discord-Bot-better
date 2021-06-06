@@ -14,7 +14,7 @@ const execute = async (message, client) => {
   const command = client.commands.get(commandName);
 
   if (command.role && !message.member.roles.cache.find(r => r.name === command.role)) {
-    return message.channel.send(`You have no power here!`);
+    return message.channel.send("You have no power here!");
   }
   if (command.args && !args.length) {
     return message.channel.send(`You didn't provide any arguments, ${message.author}!`);
@@ -42,7 +42,7 @@ const updateFaculty = async (guild) => {
     .filter((role) => role.name.includes("admin"))
     .reduce((acc, role) => [...acc, ...role.members.array()], []);
 
-  for (let member of usersWhoShouldBeFaculty) {
+  for (const member of usersWhoShouldBeFaculty) {
     if (!member.roles.cache.find((role) => role.id === facultyRole.id)) {
       await member.roles.add(facultyRole);
       await member.fetch(true);
@@ -66,7 +66,7 @@ const updateGuideMessage = async (message) => {
     }).sort((a, b) => a.localeCompare(b));
 
   const commands = guild.channels.cache.find(
-    (channel) => channel.name === 'commands'
+    (channel) => channel.name === "commands",
   );
 
   const newContent = `

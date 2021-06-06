@@ -10,7 +10,7 @@ const createCategoryName = (courseString) => `📚 ${courseString}`;
 const findOrCreateChannel = async (channelObject, guild) => {
   const { name, parent, options } = channelObject;
   return guild.channels.cache.find(
-    (c) => c.type === options.type && c.name === name && c.parent === parent
+    (c) => c.type === options.type && c.name === name && c.parent === parent,
   ) || await guild.channels.create(name, options);
 };
 
@@ -84,7 +84,6 @@ const getCategoryObject = (categoryName, permissionOverwrites) => ({
 
 const execute = async (message, args) => {
   const courseName = args;
-  const member = message.member;
   const roleName = getRoleFromCategory(courseName);
   const guild = message.guild;
 
@@ -100,7 +99,7 @@ const execute = async (message, args) => {
   // Channels
   const channelObjects = getChannelObjects(guild, admin, student, roleName, category);
   await Promise.all(channelObjects.map(
-    async channelObject => await findOrCreateChannel(channelObject, guild)
+    async channelObject => await findOrCreateChannel(channelObject, guild),
   ));
 };
 
