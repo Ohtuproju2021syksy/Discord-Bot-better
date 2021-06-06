@@ -83,6 +83,11 @@ const getCategoryObject = (categoryName, permissionOverwrites) => ({
 });
 
 const execute = async (message, args) => {
+  const role = message.member.roles.cache.find(r => r.name === "teacher");
+  if (!role) {
+    throw new Error("You have no power here!");
+  }
+
   const courseName = args;
   const roleName = getRoleFromCategory(courseName);
   const guild = message.guild;
