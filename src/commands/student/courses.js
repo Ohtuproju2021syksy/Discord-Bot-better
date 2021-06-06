@@ -1,6 +1,5 @@
 const { getRoleFromCategory } = require("../../service");
 
-
 const execute = (message) => {
   const guild = message.guild;
 
