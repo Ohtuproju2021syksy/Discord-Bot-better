@@ -13,6 +13,9 @@ const execute = async (message, client) => {
   if (!client.commands.has(commandName)) return;
   const command = client.commands.get(commandName);
 
+  if (command.role && !message.member.roles.cache.find(r => r.name === command.role)) {
+    return message.channel.send(`You have no power here!`);
+  }
   if (command.args && !args.length) {
     return message.channel.send(`You didn't provide any arguments, ${message.author}!`);
   }

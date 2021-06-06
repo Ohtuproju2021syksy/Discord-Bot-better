@@ -1,4 +1,4 @@
-const { getRoleFromCategory, findOrCreateRoleWithName, updateGuide } = require("../../service");
+const { getRoleFromCategory, findOrCreateRoleWithName } = require("../../service");
 
 const createCategoryName = (courseString) => `📚 ${courseString}`;
 
@@ -135,7 +135,6 @@ const createCourse = async (user, args, guild) => {
 const execute = async (message, args) => {
   const who = message.member;
   await createCourse(who, args, message.guild);
-  await updateGuide(message.guild);
 };
 
 module.exports = {
@@ -144,7 +143,7 @@ module.exports = {
   usage: "[course name]",
   args: true,
   joinArgs: true,
+  guide: true,
   role: "teacher",
   execute,
-  createCourse,
 };
