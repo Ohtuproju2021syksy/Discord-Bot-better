@@ -1,10 +1,8 @@
-const { getRoleFromCategory, context } = require("./util");
-/**
- *
- * @param {Discord.Message} msg
- */
-const printCourses = async (msg) => {
-  const { guild } = context;
+const { getRoleFromCategory } = require("../../service");
+
+const execute = (message) => {
+  const guild = message.guild;
+
   const rows = guild.channels.cache
     .filter((ch) => ch.type === "category" && ch.name.startsWith("📚"))
     .map((ch) => {
@@ -14,7 +12,13 @@ const printCourses = async (msg) => {
     })
     .sort((a, b) => a.localeCompare(b));
 
-  msg.reply("\n" + rows.join("\n"));
+  message.reply("\n" + rows.join("\n"));
 };
 
-module.exports = printCourses;
+module.exports = {
+  name: "courses",
+  description: "Prints out the courses to use with `!join` and `!leave`.",
+  args: false,
+  joinArgs: false,
+  execute,
+};

@@ -1,4 +1,4 @@
-name: Deployment pipeline
+name: Testing pipeline
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
     types: [opened, synchronize]
 
 jobs:
-  deployment_pipeline:
+  testing_pipeline:
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
@@ -19,13 +19,16 @@ jobs:
         node-version: '14'
     - name: npm install 
       run: npm install
-    - name: lint
+    - name: run lint
       run: npm run lint
-    - name: run corde
+    - name: run jest and corde test with nyc
       env:
         BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
         GUILD_ID: ${{ secrets.GUILD_ID }}
-        CORDE_BOT_TOKEN: ${{ secrets.CORDE_BOT_TOKEN}}
-        BOT_TEST_ID: ${{ secrets.BOT_TEST_ID}}
-        CHANNEL_ID: ${{ secrets.CHANNEL_ID}}
+        CORDE_BOT_TOKEN: ${{ secrets.CORDE_BOT_TOKEN }}
+        BOT_TEST_ID: ${{ secrets.BOT_TEST_ID }}
+        CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
+        PREFIX: ${{ secrets.PREFIX }}
       run: npm test
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v1

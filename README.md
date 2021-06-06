@@ -1,5 +1,7 @@
 # cs-discord-bot
 
+![Testing pipeline](https://github.com/CS-DISCORD-BOT/cs-discord-bot/actions/workflows/test.yml/badge.svg?branch=dev)[![codecov](https://codecov.io/gh/CS-DISCORD-BOT/cs-discord-bot/branch/dev/graph/badge.svg?token=qsZwyE4keT)](https://codecov.io/gh/CS-DISCORD-BOT/cs-discord-bot)[![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 ## Instructions
 Clone repository to your computer.
 
@@ -28,6 +30,7 @@ npm install
 Run one of following commands to start bot:
 ```
 npm run dev
+npm run dev-new
 npm start
 ```
 
@@ -47,5 +50,5 @@ CHANNEL_ID can be found by right clicking the channel after enabling developer m
 
 Once you have [invited](https://discordjs.guide/preparations/adding-your-bot-to-servers.html#bot-invite-links) both of your bots to the server, run following command to run the corde tests:
 ```
-npm test
+npm run test:corde
 ```
