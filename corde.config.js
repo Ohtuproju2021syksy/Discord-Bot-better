@@ -1,5 +1,5 @@
 const env = require("dotenv");
-const { commandPrefix, testFilesDir, testTimeOut } = require("./config.json");
+const { testFilesDir, testTimeOut } = require("./config.json");
 
 const result = env.config();
 
@@ -8,7 +8,7 @@ if (!process.env.CI && result.error) {
   throw result.error;
 }
 
-const botPrefix = commandPrefix;
+const botPrefix = process.env.PREFIX;
 const botTestId = process.env.BOT_TEST_ID;
 const channelId = process.env.CHANNEL_ID;
 const cordeBotToken = process.env.CORDE_BOT_TOKEN;

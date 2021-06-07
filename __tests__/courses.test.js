@@ -1,7 +1,23 @@
 let mockUser = require("discord.js");
-const { createCourse } = require("../src/commands/faculty/create.js");
-const { deleteCourse } = require("../src/commands/faculty/delete.js");
+const create = require("../src/commands/faculty/create.js");
+const remove = require("../src/commands/faculty/remove.js");
 const { client } = require("../src/index.js");
+
+const mockCreate = async (user, testCourseName, guild) => {
+  const message = {
+    guild,
+    member: user,
+  };
+  await create.execute(message, testCourseName);
+};
+
+const mockRemove = async (user, testCourseName, guild) => {
+  const message = {
+    guild,
+    member: user,
+  };
+  await remove.execute(message, testCourseName);
+};
 
 describe("Courses", () => {
   test("New cource can be created with correct channels", async () => {
@@ -9,15 +25,15 @@ describe("Courses", () => {
 
     mockUser = {
       roles: {
-        highest: {
-          name: "teacher",
+        cache: {
+          find: () => "teacher",
         },
       },
     };
 
     const guild = await client.guilds.fetch(process.env.GUILD_ID);
     const channelsAtStart = 0;
-    await createCourse(mockUser, testCourseName, guild);
+    await mockCreate(mockUser, testCourseName, guild);
     const createdCourseName = `📚 ${testCourseName}`;
     const category = guild.channels.cache.find(c => c.type === "category" && c.name === createdCourseName);
     const channelsAtMid = guild.channels.cache.map(c => ((c.type === "text" || c.type === "voice") && c.parent === category) || c === category).reduce((sum, channel) => sum + channel, 0);
@@ -26,7 +42,7 @@ describe("Courses", () => {
     expect(channelsAtMid).toBeGreaterThan(channelsAtStart);
     expect(channelsAtMid).toBe(channelsAtStart + 5);
 
-    await deleteCourse(mockUser, testCourseName, guild);
+    await mockRemove(mockUser, testCourseName, guild);
 
     const channelsAtEnd = guild.channels.cache.map(c => ((c.type === "text" || c.type === "voice") && c.parent === category) || c === category).reduce((sum, channel) => sum + channel, 0);
 
@@ -38,15 +54,15 @@ describe("Courses", () => {
 
     mockUser = {
       roles: {
-        highest: {
-          name: "teacher",
+        cache: {
+          find: () => "teacher",
         },
       },
     };
 
     const guild = await client.guilds.fetch(process.env.GUILD_ID);
     const channelsAtStart = 0;
-    await createCourse(mockUser, testCourseName, guild);
+    await mockCreate(mockUser, testCourseName, guild);
     const createdCourseName = `📚 ${testCourseName}`;
 
     const category = guild.channels.cache.find(c => c.type === "category" && c.name === createdCourseName);
@@ -56,7 +72,7 @@ describe("Courses", () => {
     expect(channelsAtMid).toBeGreaterThan(channelsAtStart);
     expect(channelsAtMid).toBe(channelsAtStart + 5);
 
-    await deleteCourse(mockUser, testCourseName, guild);
+    await mockRemove(mockUser, testCourseName, guild);
 
     const channelsAtEnd = guild.channels.cache.map(c => ((c.type === "text" || c.type === "voice") && c.parent === category) || c === category).reduce((sum, channel) => sum + channel, 0);
 
@@ -65,17 +81,18 @@ describe("Courses", () => {
 
   test("Student cannot create course", async () => {
     const testCourseName = "testcourse";
+    const guild = await client.guilds.fetch(process.env.GUILD_ID);
 
     mockUser = {
       roles: {
-        highest: {
-          name: "student",
+        cache: {
+          find: () => (false),
         },
       },
     };
 
     try {
-      await createCourse(mockUser, testCourseName);
+      await mockCreate(mockUser, testCourseName, guild);
     }
     catch (err) {
       expect(err.message).toMatch("You have no power here!");
