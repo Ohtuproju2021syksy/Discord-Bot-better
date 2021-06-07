@@ -1,5 +1,6 @@
 const GUIDE_CHANNEL_NAME = "guide";
 const COMMAND_CHANNEL_NAME = "commands";
+const FACULTY_ROLE = "faculty";
 
 /**
  * Expects role to be between parenthesis e.g. (role)
@@ -64,8 +65,25 @@ const possibleRolesArray = (guild) => {
  *
  * @param {Discord.Message} message
  */
-const updateGuideMessage = async (message, commands, guild) => {
-  const rows = await message.guild.channels.cache
+const updateFaculty = async (guild) => {
+  const facultyRole = await findOrCreateRoleWithName(FACULTY_ROLE, guild);
+  const usersWhoShouldBeFaculty = guild.roles.cache
+    .filter((role) => role.name.includes("admin"))
+    .reduce((acc, role) => [...acc, ...role.members.array()], []);
+
+  for (const member of usersWhoShouldBeFaculty) {
+    if (!member.roles.cache.find((role) => role.id === facultyRole.id)) {
+      await member.roles.add(facultyRole);
+      await member.fetch(true);
+      console.log("Gave faculty to", member.nickname || member.user.username);
+    }
+  }
+};
+
+const updateGuideMessage = async (message) => {
+  const guild = message.guild;
+
+  const rows = guild.channels.cache
     .filter((ch) => ch.type === "category" && ch.name.startsWith("📚"))
     .map((ch) => {
       const courseFullName = ch.name.replace("📚", "").trim();
@@ -75,6 +93,10 @@ const updateGuideMessage = async (message, commands, guild) => {
       ).members.size;
       return `  - ${courseFullName} \`!join ${courseRole}\` 👤${count}`;
     }).sort((a, b) => a.localeCompare(b));
+
+  const commands = guild.channels.cache.find(
+    (channel) => channel.name === COMMAND_CHANNEL_NAME,
+  );
 
   const newContent = `
 Käytössäsi on seuraavia komentoja:
@@ -95,23 +117,17 @@ In course specific channels you can also list instructors \`!instructors\`
 See more with \`!help\` and test out the commands in <#${commands.id}> channel!
 `;
 
-  message.edit(newContent);
+  await message.edit(newContent);
 };
 
-/**
- *
- * @param {Discord.Guild} guild
- */
 const updateGuide = async (guild) => {
-  const channel = await guild.channels.cache.find(
+  await updateFaculty(guild);
+  const channel = guild.channels.cache.find(
     (c) => c.name === GUIDE_CHANNEL_NAME,
-  );
-  const command = await guild.channels.cache.find(
-    (c) => c.name === COMMAND_CHANNEL_NAME,
   );
   const messages = await channel.messages.fetchPinned(true);
   const message = messages.first();
-  await updateGuideMessage(message, command, guild);
+  await updateGuideMessage(message);
 };
 
 module.exports = {
