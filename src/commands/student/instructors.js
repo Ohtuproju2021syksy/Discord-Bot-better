@@ -7,7 +7,6 @@ const execute = (message) => {
   const courseAdminRole = message.guild.roles.cache.find(role => role.name === `${roleString} admin`);
   if (!courseAdminRole) throw new Error(`Could not get admin role for ${roleString}`);
 
-  console.log(courseAdminRole.members);
   const adminsString = courseAdminRole.members
     .map(member => member.nickname || member.user.username)
     .join(", ");
