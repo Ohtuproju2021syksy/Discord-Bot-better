@@ -2,6 +2,8 @@ const GUIDE_CHANNEL_NAME = "guide";
 const COMMAND_CHANNEL_NAME = "commands";
 const FACULTY_ROLE = "faculty";
 
+const createCategoryName = (courseString) => `📚 ${courseString}`;
+
 /**
  * Expects role to be between parenthesis e.g. (role)
  * @param {String} string
@@ -130,10 +132,30 @@ const updateGuide = async (guild) => {
   await updateGuideMessage(message);
 };
 
+const createInvitation = async (guild, args) => {
+  const name = createCategoryName(args);
+  const category = guild.channels.cache.find(
+    c => c.type === "category" && c.name === name,
+  );
+  const course = guild.channels.cache.find(
+    (c => c.parent === category),
+  );
+
+  const invitationlink = await course.createInvite({
+    maxAge: 0,
+  })
+    .then(invite => `Invitation link for the course https://discord.gg/${invite.code}`)
+    .catch(console.error);
+
+  const message = await course.send(invitationlink);
+  await message.pin();
+};
+
 module.exports = {
   getRoleFromCategory,
   findOrCreateRoleWithName,
   possibleRolesArray,
   createChannelInCategory,
   updateGuide,
+  createInvitation,
 };

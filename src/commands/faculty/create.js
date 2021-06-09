@@ -1,4 +1,4 @@
-const { getRoleFromCategory, findOrCreateRoleWithName } = require("../../service");
+const { getRoleFromCategory, findOrCreateRoleWithName, createInvitation } = require("../../service");
 
 const createCategoryName = (courseString) => `📚 ${courseString}`;
 
@@ -106,6 +106,7 @@ const execute = async (message, args) => {
   await Promise.all(channelObjects.map(
     async channelObject => await findOrCreateChannel(channelObject, guild),
   ));
+  await createInvitation(message.guild, args);
 };
 
 module.exports = {
