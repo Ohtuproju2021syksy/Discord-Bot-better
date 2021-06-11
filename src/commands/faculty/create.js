@@ -83,7 +83,6 @@ const getCategoryObject = (categoryName, permissionOverwrites) => ({
 const execute = async (message, args) => {
   const role = message.member.roles.cache.find(r => r.name === "teacher");
   if (!role) {
-    console.log("errrrrooor")
     throw new Error("You have no power here!");
   }
 
