@@ -141,11 +141,8 @@ const createInvitation = async (guild, args) => {
     (c => c.parent === category),
   );
 
-  const invitationlink = await course.createInvite({
-    maxAge: 0,
-  })
-    .then(invite => `Invitation link for the course https://discord.gg/${invite.code}`)
-    .catch(console.error);
+  const invite = await course.createInvite({ maxAge: 0 });
+  const invitationlink = `https://discord.gg/${invite.code}`;
 
   guild.inv = await guild.fetchInvites();
 
