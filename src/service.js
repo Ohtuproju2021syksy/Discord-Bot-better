@@ -147,6 +147,8 @@ const createInvitation = async (guild, args) => {
     .then(invite => `Invitation link for the course https://discord.gg/${invite.code}`)
     .catch(console.error);
 
+  guild.inv = await guild.fetchInvites();
+
   const message = await course.send(invitationlink);
   await message.pin();
 };
@@ -158,4 +160,5 @@ module.exports = {
   createChannelInCategory,
   updateGuide,
   createInvitation,
+  createCategoryName,
 };

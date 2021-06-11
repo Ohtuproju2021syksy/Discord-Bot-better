@@ -1,6 +1,4 @@
-const { getRoleFromCategory, findOrCreateRoleWithName, createInvitation } = require("../../service");
-
-const createCategoryName = (courseString) => `📚 ${courseString}`;
+const { findOrCreateRoleWithName, createInvitation, createCategoryName } = require("../../service");
 
 /**
  *
@@ -10,8 +8,8 @@ const createCategoryName = (courseString) => `📚 ${courseString}`;
 const findOrCreateChannel = async (channelObject, guild) => {
   const { name, parent, options } = channelObject;
   return guild.channels.cache.find(
-    (c) => c.type === options.type && c.name === name && c.parent === parent,
-  ) || await guild.channels.create(name, options);
+    (c => (c.type === options.type && c.name === name && c.parent === parent)))
+    || await guild.channels.create(name, options);
 };
 
 const getPermissionOverwrites = (guild, admin, student) => ([
@@ -85,24 +83,24 @@ const getCategoryObject = (categoryName, permissionOverwrites) => ({
 const execute = async (message, args) => {
   const role = message.member.roles.cache.find(r => r.name === "teacher");
   if (!role) {
+    console.log("errrrrooor")
     throw new Error("You have no power here!");
   }
 
   const courseName = args;
-  const roleName = getRoleFromCategory(courseName);
   const guild = message.guild;
 
   // Roles
-  const student = await findOrCreateRoleWithName(roleName, guild);
-  const admin = await findOrCreateRoleWithName(`${roleName} admin`, guild);
+  const student = await findOrCreateRoleWithName(courseName, guild);
+  const admin = await findOrCreateRoleWithName(`${courseName} admin`, guild);
 
   // Category
-  const categoryName = createCategoryName(courseName, roleName);
+  const categoryName = createCategoryName(courseName);
   const categoryObject = getCategoryObject(categoryName, getPermissionOverwrites(guild, admin, student));
   const category = await findOrCreateChannel(categoryObject, guild);
 
   // Channels
-  const channelObjects = getChannelObjects(guild, admin, student, roleName, category);
+  const channelObjects = getChannelObjects(guild, admin, student, courseName, category);
   await Promise.all(channelObjects.map(
     async channelObject => await findOrCreateChannel(channelObject, guild),
   ));
