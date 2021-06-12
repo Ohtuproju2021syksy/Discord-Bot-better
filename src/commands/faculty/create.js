@@ -31,46 +31,53 @@ const getPermissionOverwrites = (guild, admin, student) => ([
   },
 ]);
 
-const getChannelObjects = (guild, admin, student, roleName, category) => [
-  {
-    name: `${roleName}_announcement`,
-    options: {
-      type: "text",
-      description: "Messages from course admins",
-      parent: category,
-      permissionOverwrites: [
-        {
-          id: guild.id,
-          deny: ["VIEW_CHANNEL"],
-        },
-        {
-          id: student,
-          deny: ["SEND_MESSAGES"],
-          allow: ["VIEW_CHANNEL"],
-        },
-        {
-          id: admin,
-          allow: ["VIEW_CHANNEL", "SEND_MESSAGES"],
-        },
-      ],
+const getChannelObjects = (guild, admin, student, roleName, category) => {
+  const studentRole = guild.roles.cache.find((role) => role.name === "student");
+  return [
+    {
+      name: `${roleName}_announcement`,
+      options: {
+        type: "text",
+        description: "Messages from course admins",
+        parent: category,
+        permissionOverwrites: [
+          {
+            id: studentRole.id,
+            deny: ["VIEW_CHANNEL"],
+          },
+          {
+            id: guild.id,
+            allow: ["VIEW_CHANNEL"],
+          },
+          {
+            id: student,
+            deny: ["SEND_MESSAGES"],
+            allow: ["VIEW_CHANNEL"],
+          },
+          {
+            id: admin,
+            allow: ["VIEW_CHANNEL", "SEND_MESSAGES"],
+          },
+        ],
+      },
     },
-  },
-  {
-    name: `${roleName}_general`,
-    parent: category,
-    options: { type: "text", parent: category, permissionOverwrites: [] },
-  },
-  {
-    name: `${roleName}_questions`,
-    parent: category,
-    options: { type: "text", parent: category, permissionOverwrites: [] },
-  },
-  {
-    name: `${roleName}_voice`,
-    parent: category,
-    options: { type: "voice", parent: category, permissionOverwrites: [] },
-  },
-];
+    {
+      name: `${roleName}_general`,
+      parent: category,
+      options: { type: "text", parent: category, permissionOverwrites: [] },
+    },
+    {
+      name: `${roleName}_questions`,
+      parent: category,
+      options: { type: "text", parent: category, permissionOverwrites: [] },
+    },
+    {
+      name: `${roleName}_voice`,
+      parent: category,
+      options: { type: "voice", parent: category, permissionOverwrites: [] },
+    },
+  ];
+};
 
 const getCategoryObject = (categoryName, permissionOverwrites) => ({
   name: categoryName,

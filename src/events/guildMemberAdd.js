@@ -14,8 +14,8 @@ const execute = async (member, client) => {
     await updateGuide(client.guild);
   }
   client.guild.inv = guildInvites;
-  const role = await client.guild.roles.cache.find((r) => r.name === "student");
-  await member.roles.add(role);
+  const studentRole = await client.guild.roles.cache.find((r) => r.name === "student");
+  await member.roles.add(studentRole);
   await member.fetch(true);
 };
 
