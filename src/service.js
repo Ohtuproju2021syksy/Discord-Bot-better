@@ -85,6 +85,9 @@ const updateFaculty = async (guild) => {
 const updateGuideMessage = async (message) => {
   const guild = message.guild;
 
+  const invs = message.guild.inv;
+  const guideinvite = invs.find(invite => invite.channel.name === "guide");
+
   const rows = guild.channels.cache
     .filter((ch) => ch.type === "category" && ch.name.startsWith("📚"))
     .map((ch) => {
@@ -117,6 +120,8 @@ ${rows.join("\n")}
 In course specific channels you can also list instructors \`!instructors\`
 
 See more with \`!help\` and test out the commands in <#${commands.id}> channel!
+
+Invitation link for the server https://discord.gg/${guideinvite.code}
 `;
 
   await message.edit(newContent);
@@ -141,8 +146,9 @@ const createInvitation = async (guild, args) => {
     (c => c.parent === category),
   );
 
+
   const invite = await course.createInvite({ maxAge: 0 });
-  const invitationlink = `https://discord.gg/${invite.code}`;
+  const invitationlink = `Invitation link for the course https://discord.gg/${invite.code}`;
 
   guild.inv = await guild.fetchInvites();
 

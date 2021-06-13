@@ -1,6 +1,6 @@
 const { commandsCategory } = require("../config.json");
 
-const { findOrCreateRoleWithName } = require("./service");
+const { findOrCreateRoleWithName, updateGuide } = require("./service");
 
 const findOrCreateChannel = (guild, channelObject) => {
   const { name, options } = channelObject;
@@ -53,6 +53,14 @@ const setInitialGuideMessage = async (guild, channelName) => {
   if(!guideChannel.lastPinTimestamp) {
     const msg = await guideChannel.send("initial");
     await msg.pin();
+
+    const invs = await guild.fetchInvites();
+    const guideinvite = invs.find(invite => invite.channel.name === "guide");
+    if (!guideinvite) {
+      await guideChannel.createInvite({ maxAge: 0 });
+    }
+    guild.inv = await guild.fetchInvites();
+    await updateGuide(guild);
   }
 };
 
