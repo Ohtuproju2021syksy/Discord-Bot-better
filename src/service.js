@@ -1,6 +1,7 @@
 const GUIDE_CHANNEL_NAME = "guide";
 const COMMAND_CHANNEL_NAME = "commands";
 const FACULTY_ROLE = "faculty";
+const { Invites } = require("./dbInit");
 
 const createCategoryName = (courseString) => `📚 ${courseString}`;
 
@@ -85,9 +86,7 @@ const updateFaculty = async (guild) => {
 const updateGuideMessage = async (message) => {
   const guild = message.guild;
 
-  const invs = message.guild.inv;
-  const guideinvite = invs.find(invite => invite.channel.name === "guide");
-
+  const guideinvite = message.guild.invites.find(invite => invite.course === "guide");
   const rows = guild.channels.cache
     .filter((ch) => ch.type === "category" && ch.name.startsWith("📚"))
     .map((ch) => {
@@ -137,7 +136,23 @@ const updateGuide = async (guild) => {
   await updateGuideMessage(message);
 };
 
+const findOrCreateInviteToDatabase = async (guild, invite, args) => {
+  const inviteFound = guild.invites.get(invite.code);
+  if (inviteFound) {
+    inviteFound.code = invite.code;
+    inviteFound.course = args;
+    inviteFound.save();
+  }
+  else {
+    const newInvite = await Invites.create({ code: invite.code, course: args });
+    guild.invites.set(invite.id, newInvite);
+  }
+};
+
 const createInvitation = async (guild, args) => {
+  const guide = guild.channels.cache.find(
+    c => c.type === "text" && c.name === "guide",
+  );
   const name = createCategoryName(args);
   const category = guild.channels.cache.find(
     c => c.type === "category" && c.name === name,
@@ -146,14 +161,27 @@ const createInvitation = async (guild, args) => {
     (c => c.parent === category),
   );
 
-
-  const invite = await course.createInvite({ maxAge: 0 });
+  const invite = await guide.createInvite({ maxAge: 0, unique: true, reason: args });
   const invitationlink = `Invitation link for the course https://discord.gg/${invite.code}`;
+  await findOrCreateInviteToDatabase(guild, invite, args);
 
   guild.inv = await guild.fetchInvites();
 
   const message = await course.send(invitationlink);
   await message.pin();
+};
+
+const findInviteFromDBwithCourse = async (name) => {
+  return await Invites.findOne({ where: { course: name } });
+};
+
+const findInvite = async (guild, code) => {
+  return guild.invites.get(code);
+};
+
+const deleteInvite = async (guild, course) => {
+  const invite = await Invites.destroy({ where: { course: course } });
+  guild.invites.delete(invite.code);
 };
 
 module.exports = {
@@ -164,4 +192,8 @@ module.exports = {
   updateGuide,
   createInvitation,
   createCategoryName,
+  findInvite,
+  deleteInvite,
+  findOrCreateInviteToDatabase,
+  findInviteFromDBwithCourse,
 };
