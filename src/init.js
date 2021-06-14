@@ -1,6 +1,7 @@
 const { commandsCategory } = require("../config.json");
+const { Invites } = require("./dbInit");
 
-const { findOrCreateRoleWithName, updateGuide } = require("./service");
+const { findOrCreateRoleWithName, updateGuide, findOrCreateInviteToDatabase } = require("./service");
 
 const findOrCreateChannel = (guild, channelObject) => {
   const { name, options } = channelObject;
@@ -57,7 +58,9 @@ const setInitialGuideMessage = async (guild, channelName) => {
     const invs = await guild.fetchInvites();
     const guideinvite = invs.find(invite => invite.channel.name === "guide");
     if (!guideinvite) {
-      await guideChannel.createInvite({ maxAge: 0 });
+      const invite = await guideChannel.createInvite({ maxAge: 0 });
+      await findOrCreateInviteToDatabase(guild, invite, "guide");
+
     }
     guild.inv = await guild.fetchInvites();
     await updateGuide(guild);
@@ -68,6 +71,8 @@ const initializeApplicationContext = async (client) => {
   await initChannels(client.guild, commandsCategory);
   await setInitialGuideMessage(client.guild, "guide");
   await initRoles(client.guild);
+  const storedInvites = await Invites.findAll();
+  storedInvites.forEach(i => client.guild.invites.set(i.code, i));
 };
 
 module.exports = {
