@@ -20,8 +20,7 @@ Clone repository to your computer.
 
 Install all dependencies `npm install`. 
 
-Make your own discord bot. Instructions for example [here](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot).  
-Alternative guide for creating and inviting your bots can be found [here](https://www.freecodecamp.org/news/create-a-discord-bot-with-javascript-nodejs/).
+Make your own discord bot. Instructions [here](./documentation/setupmainbot.md).
 
 Add `.env` file to root of the repository (same directory with `package.json`).
 

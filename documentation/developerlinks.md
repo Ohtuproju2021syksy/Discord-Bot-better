@@ -1,12 +1,12 @@
 # Developer links
 
 ## Setup your own Bot
-[Setup for the Bot](./documentation//setupmainbot.md)
+[Setup for the Bot](./setupmainbot.md)
 
-[Setup for testing Bot](./documentation/setuptestbot.md)
+[Setup for testing Bot](./setuptestbot.md)
 
 ## Workflow
-[Workflow practices](./documentation//workflow.md)
+[Workflow practices](./workflow.md)
 
 ## Course info
 
