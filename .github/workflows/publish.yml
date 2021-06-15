@@ -25,6 +25,8 @@ jobs:
           tags: ${{ secrets.DOCKER_URL }}
   Notify:
     if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    runs-on: ubuntu-latest
+    steps:
       - name: Notify about failed tests
         run: |
-          echo "Tests have failed, publishing Docker image has been cancelled."
+          echo "Tests have failed, publishing Docker image cancelled."
