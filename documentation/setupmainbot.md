@@ -1,4 +1,4 @@
-# Instructions for the main Bot
+# Instructions for the Bot
 
 Add `.env` file to root of the repository (same directory with `package.json`).
 
