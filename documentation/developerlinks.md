@@ -2,6 +2,7 @@
 
 ## Setup your own Bot
 [Setup for main bot](/setupmainbot.md)
+
 [Setup for testing bot](/setuptestbot.md)
 
 ## Workflow

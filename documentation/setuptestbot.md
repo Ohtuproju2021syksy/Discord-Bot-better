@@ -1,2 +1,2 @@
-# Instructions for the main Bot
+# Instructions for the testing Bot
 
