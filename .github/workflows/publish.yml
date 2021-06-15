@@ -8,6 +8,7 @@ jobs:
   Push_to_registry:
     name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest
+    if: github.event.pull_request.merged
     steps:
       - name: checkout
         if: github.event.pull_request.merged
@@ -22,6 +23,5 @@ jobs:
         with:
           push: true
           tags: ${{ secrets.DOCKER_URL }}
-if: github.event.pull_request.merged
 with:
   ref: main
