@@ -4,18 +4,18 @@ on:
     types: [closed]
     branches:
       - main
-jobs:
-  push_to_registry:
-    runs-on: ubuntu-latest
 
-  if: github.event.pull_request.merged
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+if: github.event.pull_request.merged
+
     steps:
       - name: checkout
         if: github.event.pull_request.merged
-        uses: actions/checkout@v2
-
-  with:
-    ref: main
+        uses: actions/checkout@v1
+with:
+ref: main
 
   - name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest
