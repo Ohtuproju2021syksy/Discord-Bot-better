@@ -29,7 +29,7 @@ group("main commands", () => {
     expect("courses").toAddReaction(["✅"]);
   });
   test("courses command should reply with message containing course name", () => {
-    expect("courses").toMessageContentContains("qwqewq");
+    expect("courses").toMessageContentContains(`${courseName}`);
   });
   test("courses command should reply with message containing join command", () => {
     expect("courses").toMessageContentContains(`!join ${courseName}`);
