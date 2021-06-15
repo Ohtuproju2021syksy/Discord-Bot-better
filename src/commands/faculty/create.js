@@ -1,6 +1,4 @@
-const { getRoleFromCategory, findOrCreateRoleWithName } = require("../../service");
-
-const createCategoryName = (courseString) => `📚 ${courseString}`;
+const { findOrCreateRoleWithName, createInvitation, createCategoryName } = require("../../service");
 
 /**
  *
@@ -10,8 +8,8 @@ const createCategoryName = (courseString) => `📚 ${courseString}`;
 const findOrCreateChannel = async (channelObject, guild) => {
   const { name, parent, options } = channelObject;
   return guild.channels.cache.find(
-    (c) => c.type === options.type && c.name === name && c.parent === parent,
-  ) || await guild.channels.create(name, options);
+    (c => (c.type === options.type && c.name === name && c.parent === parent)))
+    || await guild.channels.create(name, options);
 };
 
 const getPermissionOverwrites = (guild, admin, student) => ([
@@ -33,46 +31,53 @@ const getPermissionOverwrites = (guild, admin, student) => ([
   },
 ]);
 
-const getChannelObjects = (guild, admin, student, roleName, category) => [
-  {
-    name: `${roleName}_announcement`,
-    options: {
-      type: "text",
-      description: "Messages from course admins",
-      parent: category,
-      permissionOverwrites: [
-        {
-          id: guild.id,
-          deny: ["VIEW_CHANNEL"],
-        },
-        {
-          id: student,
-          deny: ["SEND_MESSAGES"],
-          allow: ["VIEW_CHANNEL"],
-        },
-        {
-          id: admin,
-          allow: ["VIEW_CHANNEL", "SEND_MESSAGES"],
-        },
-      ],
+const getChannelObjects = (guild, admin, student, roleName, category) => {
+  const studentRole = guild.roles.cache.find((role) => role.name === "student");
+  return [
+    {
+      name: `${roleName}_announcement`,
+      options: {
+        type: "text",
+        description: "Messages from course admins",
+        parent: category,
+        permissionOverwrites: [
+          {
+            id: studentRole.id,
+            deny: ["VIEW_CHANNEL"],
+          },
+          {
+            id: guild.id,
+            allow: ["VIEW_CHANNEL"],
+          },
+          {
+            id: student,
+            deny: ["SEND_MESSAGES"],
+            allow: ["VIEW_CHANNEL"],
+          },
+          {
+            id: admin,
+            allow: ["VIEW_CHANNEL", "SEND_MESSAGES"],
+          },
+        ],
+      },
     },
-  },
-  {
-    name: `${roleName}_general`,
-    parent: category,
-    options: { type: "text", parent: category, permissionOverwrites: [] },
-  },
-  {
-    name: `${roleName}_questions`,
-    parent: category,
-    options: { type: "text", parent: category, permissionOverwrites: [] },
-  },
-  {
-    name: `${roleName}_voice`,
-    parent: category,
-    options: { type: "voice", parent: category, permissionOverwrites: [] },
-  },
-];
+    {
+      name: `${roleName}_general`,
+      parent: category,
+      options: { type: "text", parent: category, permissionOverwrites: [] },
+    },
+    {
+      name: `${roleName}_questions`,
+      parent: category,
+      options: { type: "text", parent: category, permissionOverwrites: [] },
+    },
+    {
+      name: `${roleName}_voice`,
+      parent: category,
+      options: { type: "voice", parent: category, permissionOverwrites: [] },
+    },
+  ];
+};
 
 const getCategoryObject = (categoryName, permissionOverwrites) => ({
   name: categoryName,
@@ -89,23 +94,23 @@ const execute = async (message, args) => {
   }
 
   const courseName = args;
-  const roleName = getRoleFromCategory(courseName);
   const guild = message.guild;
 
   // Roles
-  const student = await findOrCreateRoleWithName(roleName, guild);
-  const admin = await findOrCreateRoleWithName(`${roleName} admin`, guild);
+  const student = await findOrCreateRoleWithName(courseName, guild);
+  const admin = await findOrCreateRoleWithName(`${courseName} admin`, guild);
 
   // Category
-  const categoryName = createCategoryName(courseName, roleName);
+  const categoryName = createCategoryName(courseName);
   const categoryObject = getCategoryObject(categoryName, getPermissionOverwrites(guild, admin, student));
   const category = await findOrCreateChannel(categoryObject, guild);
 
   // Channels
-  const channelObjects = getChannelObjects(guild, admin, student, roleName, category);
+  const channelObjects = getChannelObjects(guild, admin, student, courseName, category);
   await Promise.all(channelObjects.map(
     async channelObject => await findOrCreateChannel(channelObject, guild),
   ));
+  await createInvitation(message.guild, args);
 };
 
 module.exports = {

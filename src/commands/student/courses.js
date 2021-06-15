@@ -12,7 +12,8 @@ const execute = (message) => {
     })
     .sort((a, b) => a.localeCompare(b));
 
-  message.reply("\n" + rows.join("\n"));
+  if(rows.length === 0) message.reply("No courses available");
+  else message.reply("\n" + rows.join("\n"));
 };
 
 module.exports = {

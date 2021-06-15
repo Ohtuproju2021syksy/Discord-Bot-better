@@ -7,9 +7,11 @@ const execute = async (message, args) => {
   const courseString = createCategoryName(courseName);
   const category = guild.channels.cache.find(c => c.type === "category" && c.name === courseString);
   await Promise.all(guild.channels.cache
-    .filter(c => c.parent === category || c === category)
+    .filter(c => c.parent === category)
     .map(async channel => await channel.delete()),
   );
+
+  await category.delete();
 
   await Promise.all(guild.roles.cache
     .filter(r => (r.name === `${courseName} admin` || r.name === courseName))

@@ -1,6 +1,6 @@
 const { commandsCategory } = require("../config.json");
 
-const { findOrCreateRoleWithName } = require("./service");
+const { findOrCreateRoleWithName, updateGuide } = require("./service");
 
 const findOrCreateChannel = (guild, channelObject) => {
   const { name, options } = channelObject;
@@ -11,13 +11,13 @@ const findOrCreateChannel = (guild, channelObject) => {
   return guild.channels.create(name, options);
 };
 
-const initChannels = async (guild, categoryName) => {
+const initChannels = async (guild, categoryName, client) => {
   const category = await guild.channels.cache.find(c => c.type === "category" && c.name === categoryName) ||
-  await guild.channels.create(
-    categoryName,
-    {
-      type: "category",
-    });
+    await guild.channels.create(
+      categoryName,
+      {
+        type: "category",
+      });
 
   const channels = [
     {
@@ -33,7 +33,7 @@ const initChannels = async (guild, categoryName) => {
         parent: category,
         type: "text",
         topic: " ",
-        permissionOverwrites: [{ id: guild.id, deny: ["SEND_MESSAGES"], "allow": ["VIEW_CHANNEL"] }, { id: process.env.BOT_TEST_ID, allow: ["SEND_MESSAGES", "VIEW_CHANNEL"] } ],
+        permissionOverwrites: [{ id: guild.id, deny: ["SEND_MESSAGES"], "allow": ["VIEW_CHANNEL"] }, { id: client.user.id, allow: ["SEND_MESSAGES", "VIEW_CHANNEL"] }],
       },
     },
   ];
@@ -50,14 +50,22 @@ const initRoles = async (guild) => {
 
 const setInitialGuideMessage = async (guild, channelName) => {
   const guideChannel = guild.channels.cache.find(c => c.type === "text" && c.name === channelName);
-  if(!guideChannel.lastPinTimestamp) {
+  if (!guideChannel.lastPinTimestamp) {
     const msg = await guideChannel.send("initial");
     await msg.pin();
+
+    const invs = await guild.fetchInvites();
+    const guideinvite = invs.find(invite => invite.channel.name === "guide");
+    if (!guideinvite) {
+      await guideChannel.createInvite({ maxAge: 0 });
+    }
+    guild.inv = await guild.fetchInvites();
+    await updateGuide(guild);
   }
 };
 
 const initializeApplicationContext = async (client) => {
-  await initChannels(client.guild, commandsCategory);
+  await initChannels(client.guild, commandsCategory, client);
   await setInitialGuideMessage(client.guild, "guide");
   await initRoles(client.guild);
 };
