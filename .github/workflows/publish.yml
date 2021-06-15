@@ -1,15 +1,15 @@
 name: Publish Docker image
 on:
-  pull_request:
-    types: [closed]
-    branches:
-      - main
+  workflow_run:
+    workflows: ["Testing pipeline"]
+    branches: [main]
+    types: 
+      - completed
 jobs:
   Push_to_registry:
-    needs: test
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged
     steps:
       - name: checkout
         uses: actions/checkout@v2
