@@ -8,9 +8,11 @@ This project implements a discord bot. Bot´s function is to aid students to fin
 
 ## Documentation
 
-[User manual (end user)](.documentation/usermanual.md)
-[Project progress](.documentation/projectprogress.md)
-[Developer links](.documentation/developerlinks.md)
+[User manual (end user)](./documentation/usermanual.md)
+
+[Project progress](./documentation/projectprogress.md)
+
+[Developer links](./documentation/developerlinks.md)
 
 
 ## Instructions
