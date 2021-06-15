@@ -1,9 +1,22 @@
-# cs-discord-bot
+# CS DISCORD BOT
 
 ![Testing pipeline](https://github.com/CS-DISCORD-BOT/cs-discord-bot/actions/workflows/test.yml/badge.svg?branch=dev)[![codecov](https://codecov.io/gh/CS-DISCORD-BOT/cs-discord-bot/branch/dev/graph/badge.svg?token=qsZwyE4keT)](https://codecov.io/gh/CS-DISCORD-BOT/cs-discord-bot)[![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
+Helsinki University software production project, summer 2021
+
+This project implements a discord bot. Bot´s function is to aid students to find the right course channels in discord, where they can ask for help and communicate with other students.
+
+## Documentation
+
+[User manual (end user)](.documentation/usermanual.md)
+[Project progress](.documentation/projectprogress.md)
+[Developer links](.documentation/developerlinks.md)
+
+
 ## Instructions
 Clone repository to your computer.
+
+Install all dependencies `npm install`. 
 
 Make your own discord bot. Instructions for example [here](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot).  
 Alternative guide for creating and inviting your bots can be found [here](https://www.freecodecamp.org/news/create-a-discord-bot-with-javascript-nodejs/).
@@ -23,16 +36,10 @@ You have to have node installed
 
 
 ### Running bot in command line
-You have to run following command once:
-```
-npm install
-```
-
 Run one of following commands to start bot:
 ```
-npm run dev
-npm run dev-new
-npm start
+npm run dev (for development vesion)
+npm start (for staging version)
 ```
 
 
