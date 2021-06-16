@@ -180,8 +180,10 @@ const findInvite = async (guild, code) => {
 };
 
 const deleteInvite = async (guild, course) => {
-  const invite = await Invites.destroy({ where: { course: course } });
-  guild.invites.delete(invite.code);
+  const invite = await Invites.findOne({ where: { course: course } });
+  await Invites.destroy({ where: { course: course } });
+  const inviteToDelete = guild.inv.get(invite.code);
+  await inviteToDelete.delete();
 };
 
 module.exports = {
