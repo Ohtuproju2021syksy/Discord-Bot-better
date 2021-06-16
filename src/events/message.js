@@ -29,7 +29,7 @@ const execute = async (message, client) => {
     await message.react("✅");
   }
   catch (error) {
-    console.error(error);
+    // console.error(error);
     await message.react("❌");
   }
 };
