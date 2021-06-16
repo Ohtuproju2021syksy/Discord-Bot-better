@@ -32,6 +32,7 @@ client.commands
   });
 
 const teacher = {
+  nickname: "teacher",
   roles: {
     cache: {
       find: () => true,
@@ -40,6 +41,7 @@ const teacher = {
 };
 
 const student = {
+  nickname: "student",
   roles: {
     cache: {
       find: () => false,
@@ -47,7 +49,7 @@ const student = {
   },
 };
 
-const teacherMessage = {
+const teacherMessageHelp = {
   client: client,
   channel: {
     send: jest.fn(),
@@ -61,7 +63,7 @@ const teacherMessage = {
   reply: jest.fn(),
 };
 
-const studentMessage = {
+const studentMessageHelp = {
   client: client,
   channel: {
     send: jest.fn(),
@@ -98,6 +100,114 @@ const studentMessageHelpIns = {
   author: {
     bot: false,
   },
+  member: student,
+  react: jest.fn(),
+  reply: jest.fn(),
+};
+
+const instructorsMessageOutsideCourseChannels = {
+  client: client,
+  guild: {
+    roles: {
+      cache: {
+        find: jest.fn(() => false),
+      },
+    },
+  },
+  channel: {
+    parent: {
+      name: "test",
+    },
+    send: jest.fn(),
+  },
+  content: "!instructors",
+  author: {
+    bot: false,
+  },
+  member: student,
+  react: jest.fn(),
+  reply: jest.fn(),
+};
+
+const instructorsMessageOutsideCourseChannelsWithoutRoles = {
+  client: client,
+  guild: {
+    roles: {
+      cache: {
+        find: jest.fn(() => { return { name: "test admin", members: [] }; }),
+      },
+    },
+  },
+  channel: {
+    parent: {
+      name: "test",
+    },
+    send: jest.fn(),
+  },
+  content: "!instructors",
+  author: {
+    bot: false,
+  },
+  member: student,
+  react: jest.fn(),
+  reply: jest.fn(),
+};
+
+const instructorsMessageOutsideCourseChannelsWithRoles = {
+  client: client,
+  guild: {
+    roles: {
+      cache: {
+        find: jest.fn(() => { return { name: "test admin", members: [teacher] }; }),
+      },
+    },
+  },
+  channel: {
+    parent: {
+      name: "test",
+    },
+    send: jest.fn(),
+  },
+  content: "!instructors",
+  author: {
+    bot: false,
+  },
+  member: student,
+  react: jest.fn(),
+  reply: jest.fn(),
+};
+
+const studentMessageCreate = {
+  client: client,
+  channel: {
+    send: jest.fn(),
+  },
+  content: "!create test",
+  author: student,
+  member: student,
+  react: jest.fn(),
+  reply: jest.fn(),
+};
+
+const teacherMessageCreateWithoutArgs = {
+  client: client,
+  channel: {
+    send: jest.fn(),
+  },
+  content: "!create",
+  author: teacher,
+  member: teacher,
+  react: jest.fn(),
+  reply: jest.fn(),
+};
+
+const teacherMessageCreateWithArgs = {
+  client: client,
+  channel: {
+    send: jest.fn(),
+  },
+  content: "!create test",
+  author: teacher,
   member: teacher,
   react: jest.fn(),
   reply: jest.fn(),
@@ -108,8 +218,14 @@ module.exports = {
   studentData,
   teacherJoinData,
   studentInsData,
-  teacherMessage,
-  studentMessage,
+  teacherMessageHelp,
+  studentMessageHelp,
   teacherMessageHelpJoin,
   studentMessageHelpIns,
+  instructorsMessageOutsideCourseChannels,
+  instructorsMessageOutsideCourseChannelsWithoutRoles,
+  instructorsMessageOutsideCourseChannelsWithRoles,
+  studentMessageCreate,
+  teacherMessageCreateWithoutArgs,
+  teacherMessageCreateWithArgs,
 };
