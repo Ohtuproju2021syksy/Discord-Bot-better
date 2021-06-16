@@ -14,6 +14,8 @@ This project implements a discord bot. Bot´s function is to aid students to fin
 
 [Developer links](./documentation/developerlinks.md)
 
+[CI/CD Pipeline](./documentation/ci-cd-pipeline.md)
+
 
 ## Instructions
 Clone repository to your computer.
