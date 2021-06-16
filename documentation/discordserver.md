@@ -18,5 +18,6 @@ From the bottom left, next to your user icon you can find `User Settings`. From 
 
 Finally obtain the server ID from your server. Right click on top of your server icon (on left hand column.)  From there choose copy ID.
 
+```
 Add this ID to `.env` file : GUILD_ID=your-discord-server-id.
-
+```

@@ -29,9 +29,9 @@ GUILD_ID=your-discord-server-id
 PREFIX=!
 ```
 
-Make your own discord server. You can find instructions [here](./documentation/discordserver.md).
+Make your own Discord Server. You can find instructions [here](./documentation/discordserver.md).
 
-Make your own discord bot. You can find instructions [here](./documentation/setupmainbot.md).
+Make your own Discord Bot. You can find instructions [here](./documentation/setupmainbot.md).
 
 
 ### Running bot in command line
@@ -43,7 +43,6 @@ npm start (for staging version)
 
 
 ### Running corde tests on command line
-You will need another bot that sends the test commands. Follow the same instructions as [above](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot) to create another bot.
 
 Add following contents to `.env` file:
 ```
@@ -52,10 +51,11 @@ BOT_TEST_ID=id-of-your-bot-being-tested
 CHANNEL_ID=channel-for-the-tests
 ```
 
-BOT_TEST_ID can be found as Application ID under General Information of your bot in [Discord Developer Portal](https://discord.com/developers/applications).  
-CHANNEL_ID can be found by right clicking the channel after enabling developer mode.
+Make your own Discord test Bot. You can find instructions [here](./documentation/setuptestbot.md).
 
-Once you have [invited](https://discordjs.guide/preparations/adding-your-bot-to-servers.html#bot-invite-links) both of your bots to the server, run following command to run the corde tests:
+Once you have setup both of your Bots to your server, run following command to run the tests:
+
 ```
-npm run test:corde
+npm run test (run all the tests)
+npm run test:corde (run only the corde tests)
 ```

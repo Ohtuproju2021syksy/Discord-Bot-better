@@ -2,9 +2,7 @@
 
 ## Create your bot
 
-Before you can create a Discord bot, you need to creat yourself Discord account. You can do this on [Discord Website](https://discord.com/). If you already have the the account, just login.
-
-At this point it also good to have your Discord server created. You can do this on Discord pressing the plus icon on left bar. You also need to set from your account setting "Manage Server" permissions on.
+Before you can create a Discord bot, you need to creat yourself Discord account and server. If you don´t have it yet, see instructions over [here](./discordserver.md). If you already have the the account and server, login to your account.
 
 Next go to the [developers application page](https://discord.com/developers/applications) and follow these instructions.
 
@@ -18,22 +16,24 @@ Go to the "Bot" tab and click "Add Bot" button on the right. Confirm the pop-up 
 
 ![Add bot](./images/addbot.png)
 
-Your bot has been created.
+Your Bot has been created.
 
 Under Privileged Gateway Intents put `PRESENCE INTENT` and `SERVER MEMBERS INTENT` on and save your changes.
 
 ![Bot settings](./images/botsettings.png)
 
-Get your bot token by clicking the "Copy" button. 
+Get your Bot token by clicking the "Copy" button. 
 
 ![Bot token](./images/token.png)
 
+```
 Add this token to `.env` file : BOT_TOKEN=your-own-token.
+```
 
 ## Connect your bot to your Discord server
 
 To connect your Bot to your Discord server, you need to create an invite URL. Go to "OAuth2" tab. 
 
-![Bot token](./images/link.png)
+![Bot link](./images/link.png)
 
-Under the `SCOPES` select the bot and under the `BOT PERMISSIONS` select the Administrator. Next copy the link and paste it to your browser. Choose the server you want to invite your Bot to.
+Under the `SCOPES` select the **bot** and under the `BOT PERMISSIONS` select the **Administrator**. Next copy the link and paste it to your browser. Choose the server you want to invite your Bot to.
