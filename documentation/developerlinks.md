@@ -1,6 +1,8 @@
 # Developer links
 
-## Setup your own Bot
+## Setup for Server and Bot
+[Setup for the Server](./discordserver.md)
+
 [Setup for the Bot](./setupmainbot.md)
 
 [Setup for testing Bot](./setuptestbot.md)

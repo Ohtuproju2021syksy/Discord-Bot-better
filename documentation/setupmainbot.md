@@ -1,15 +1,7 @@
 # Instructions for the Bot
 
-Add `.env` file to root of the repository (same directory with `package.json`).
-
-Add following contents to `.env` file:
-```
-BOT_TOKEN=your-own-token
-GUILD_ID=your-discord-server-id
-PREFIX=!
-```
-
 ## Create your bot
+
 Before you can create a Discord bot, you need to creat yourself Discord account. You can do this on [Discord Website](https://discord.com/). If you already have the the account, just login.
 
 At this point it also good to have your Discord server created. You can do this on Discord pressing the plus icon on left bar. You also need to set from your account setting "Manage Server" permissions on.

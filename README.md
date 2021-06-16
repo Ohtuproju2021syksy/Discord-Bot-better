@@ -18,9 +18,7 @@ This project implements a discord bot. Bot´s function is to aid students to fin
 ## Instructions
 Clone repository to your computer.
 
-Install all dependencies `npm install`. 
-
-Make your own discord bot. Instructions [here](./documentation/setupmainbot.md).
+Install all dependencies `npm install`.
 
 Add `.env` file to root of the repository (same directory with `package.json`).
 
@@ -31,9 +29,9 @@ GUILD_ID=your-discord-server-id
 PREFIX=!
 ```
 
-To find the server id, follow instructions [here](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-) to enable developer mode and right click the server.
+Make your own discord server. You can find instructions [here](./documentation/discordserver.md).
 
-You have to have node installed
+Make your own discord bot. You can find instructions [here](./documentation/setupmainbot.md).
 
 
 ### Running bot in command line
