@@ -8,7 +8,12 @@ const mockCreate = async (user, testCourseName, guild) => {
     guild,
     member: user,
   };
-  await create.execute(message, testCourseName);
+  try {
+    await create.execute(message, testCourseName);
+  }
+  catch(err) {
+    expect(err).toBeDefined();
+  }
 };
 
 const mockRemove = async (user, testCourseName, guild) => {
@@ -16,7 +21,12 @@ const mockRemove = async (user, testCourseName, guild) => {
     guild,
     member: user,
   };
-  await remove.execute(message, testCourseName);
+  try {
+    await remove.execute(message, testCourseName);
+  }
+  catch(err) {
+    expect(err).toBeDefined();
+  }
 };
 
 describe("Courses", () => {
@@ -65,6 +75,36 @@ describe("Courses", () => {
     await mockCreate(mockUser, testCourseName, guild);
     const createdCourseName = `📚 ${testCourseName}`;
 
+    const category = guild.channels.cache.find(c => c.type === "category" && c.name === createdCourseName);
+    const channelsAtMid = guild.channels.cache.map(c => ((c.type === "text" || c.type === "voice") && c.parent === category) || c === category).reduce((sum, channel) => sum + channel, 0);
+
+    expect(category.name).toBe(createdCourseName);
+    expect(channelsAtMid).toBeGreaterThan(channelsAtStart);
+    expect(channelsAtMid).toBe(channelsAtStart + 5);
+
+    await mockRemove(mockUser, testCourseName, guild);
+
+    const channelsAtEnd = guild.channels.cache.map(c => ((c.type === "text" || c.type === "voice") && c.parent === category) || c === category).reduce((sum, channel) => sum + channel, 0);
+
+    expect(channelsAtEnd).toBe(channelsAtStart);
+  });
+
+  test.only("Cannot create multiple courses with same name", async () => {
+    const testCourseName = "testcourse";
+
+    mockUser = {
+      roles: {
+        cache: {
+          find: () => "teacher",
+        },
+      },
+    };
+
+    const guild = await client.guilds.fetch(process.env.GUILD_ID);
+    const channelsAtStart = 0;
+    await mockCreate(mockUser, testCourseName, guild);
+    await mockCreate(mockUser, testCourseName, guild);
+    const createdCourseName = `📚 ${testCourseName}`;
     const category = guild.channels.cache.find(c => c.type === "category" && c.name === createdCourseName);
     const channelsAtMid = guild.channels.cache.map(c => ((c.type === "text" || c.type === "voice") && c.parent === category) || c === category).reduce((sum, channel) => sum + channel, 0);
 
