@@ -1,5 +1,10 @@
 const fs = require("fs");
 const { client } = require("../../src/index.js");
+const BOT_TOKEN = process.env.BOT_TOKEN;
+
+beforeAll(async () => {
+  await client.login(BOT_TOKEN);
+});
 
 // Find all test files in __tests__ root
 const testFolder = fs.readdirSync("./__tests__/");
