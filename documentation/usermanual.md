@@ -16,7 +16,7 @@ Once you’re at the login page, type in either _your email address_ or _phone n
 Note: You will need to verify your phone number to your Discord account before using phone number login! [Click here](https://support.discord.com/hc/en-us/articles/360033931551) to learn how to verify your phone number to your Discord account.
 
 
-### Joining to the course Discord channel
+### Joining to the Discord course channel
 
 Go to _Moodle page_ of the course. From there you can find link to Dircord channel of the course.
 
