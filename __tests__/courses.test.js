@@ -1,7 +1,7 @@
 let mockUser = require("discord.js");
-const create = require("../../src/commands/faculty/create.js");
-const remove = require("../../src/commands/faculty/remove.js");
-const { client } = require("../../src/index.js");
+const create = require("../src/commands/faculty/create.js");
+const remove = require("../src/commands/faculty/remove.js");
+const { client } = require("../src/index.js");
 
 const mockCreate = async (user, testCourseName, guild) => {
   const message = {
