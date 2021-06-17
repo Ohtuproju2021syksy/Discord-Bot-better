@@ -8,12 +8,7 @@ const mockCreate = async (user, testCourseName, guild) => {
     guild,
     member: user,
   };
-  try {
-    await create.execute(message, testCourseName);
-  }
-  catch(err) {
-    expect(err).toBeDefined();
-  }
+  await create.execute(message, testCourseName);
 };
 
 const mockRemove = async (user, testCourseName, guild) => {
@@ -21,12 +16,7 @@ const mockRemove = async (user, testCourseName, guild) => {
     guild,
     member: user,
   };
-  try {
-    await remove.execute(message, testCourseName);
-  }
-  catch(err) {
-    expect(err).toBeDefined();
-  }
+  await remove.execute(message, testCourseName);
 };
 
 describe("Courses", () => {
@@ -89,7 +79,7 @@ describe("Courses", () => {
     expect(channelsAtEnd).toBe(channelsAtStart);
   });
 
-  test.only("Cannot create multiple courses with same name", async () => {
+  test("Cannot create multiple courses with same name", async () => {
     const testCourseName = "testcourse";
 
     mockUser = {

@@ -6,10 +6,11 @@ const { findOrCreateRoleWithName, createInvitation, createCategoryName } = requi
  * @param {Discord.GuildChannel} parent
  */
 const findOrCreateChannel = async (channelObject, guild) => {
-  const { name, parent, options } = channelObject;
-  return guild.channels.cache.find(
-    (c => (c.type === options.type && c.name === name && c.parent === parent)))
-    || await guild.channels.create(name, options);
+  const { name, options } = channelObject;
+  const alreadyExists = guild.channels.cache.find(
+    (c) => c.type === options.type && c.name === name);
+  if (alreadyExists) return alreadyExists;
+  return await guild.channels.create(name, options);
 };
 
 const getPermissionOverwrites = (guild, admin, student) => ([
