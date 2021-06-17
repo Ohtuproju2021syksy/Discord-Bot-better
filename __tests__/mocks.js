@@ -37,6 +37,8 @@ const teacher = {
     cache: {
       find: () => true,
     },
+    add: jest.fn(),
+    fetch: jest.fn(),
   },
 };
 
@@ -46,6 +48,8 @@ const student = {
     cache: {
       find: () => false,
     },
+    add: jest.fn(),
+    fetch: jest.fn(),
   },
 };
 
@@ -201,12 +205,45 @@ const teacherMessageCreateWithoutArgs = {
   reply: jest.fn(),
 };
 
-const teacherMessageCreateWithArgs = {
+const joinMessage = {
   client: client,
+  guild: {
+    roles: {
+      cache: {
+        find: jest.fn(),
+      },
+      create: jest.fn(),
+    },
+  },
   channel: {
     send: jest.fn(),
   },
-  content: "!create test",
+  content: "!join test",
+  author: teacher,
+  member: teacher,
+  react: jest.fn(),
+  reply: jest.fn(),
+};
+
+const joinMessageWithArgsAndRoles = {
+  client: client,
+  guild: {
+    roles: {
+      cache: {
+        find: jest.fn(),
+      },
+      create: jest.fn(),
+    },
+    channels: {
+      cache: {
+      },
+      create: jest.fn(),
+    },
+  },
+  channel: {
+    send: jest.fn(),
+  },
+  content: "!join test",
   author: teacher,
   member: teacher,
   react: jest.fn(),
@@ -227,5 +264,6 @@ module.exports = {
   instructorsMessageOutsideCourseChannelsWithRoles,
   studentMessageCreate,
   teacherMessageCreateWithoutArgs,
-  teacherMessageCreateWithArgs,
+  joinMessage,
+  joinMessageWithArgsAndRoles,
 };
