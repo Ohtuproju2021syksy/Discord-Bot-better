@@ -16,5 +16,5 @@ for (const file of testFolder) {
 afterAll(async () => {
   client.destroy();
   // avoid jest open handle error
-  await new Promise(resolve => setTimeout(() => resolve(), 3000));
+  await new Promise(resolve => setTimeout(() => resolve(), 4500));
 });
