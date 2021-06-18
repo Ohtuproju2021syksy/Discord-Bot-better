@@ -17,6 +17,10 @@ const execute = (message, args) => {
     commandsReadyToPrint = commands;
   }
 
+  if(!user.bot) {
+    commandsReadyToPrint = commandsReadyToPrint.filter(command => command.test !== true);
+  }
+
   if (!args.length) {
     data.push("Here's a list of all my commands:");
     data.push(commandsReadyToPrint.map(command => `${prefix}${command.name} - ${command.description}`).join("\n"));
