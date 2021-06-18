@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
+    "jest": "jest --coverage",
     "test:jest": "jest",
     "test:corde": "cross-env NODE_ENV=test corde",
     "lint": "eslint .",
@@ -35,8 +36,10 @@
   },
   "homepage": "https://github.com/CS-DISCORD-BOT/cs-discord-bot#readme",
   "dependencies": {
-    "discord.js": "^12.3.1",
-    "dotenv": "^8.2.0"
+    "discord.js": "^12.5.3",
+    "dotenv": "^8.2.0",
+    "sequelize": "^6.6.2",
+    "sqlite3": "^5.0.2"
   },
   "devDependencies": {
     "corde": "^4.1.0",

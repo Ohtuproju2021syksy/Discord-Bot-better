@@ -6,10 +6,11 @@ const { findOrCreateRoleWithName, createInvitation, createCategoryName } = requi
  * @param {Discord.GuildChannel} parent
  */
 const findOrCreateChannel = async (channelObject, guild) => {
-  const { name, parent, options } = channelObject;
-  return guild.channels.cache.find(
-    (c => (c.type === options.type && c.name === name && c.parent === parent)))
-    || await guild.channels.create(name, options);
+  const { name, options } = channelObject;
+  const alreadyExists = guild.channels.cache.find(
+    (c) => c.type === options.type && c.name === name);
+  if (alreadyExists) return alreadyExists;
+  return await guild.channels.create(name, options);
 };
 
 const getPermissionOverwrites = (guild, admin, student) => ([
@@ -32,7 +33,6 @@ const getPermissionOverwrites = (guild, admin, student) => ([
 ]);
 
 const getChannelObjects = (guild, admin, student, roleName, category) => {
-  const studentRole = guild.roles.cache.find((role) => role.name === "student");
   return [
     {
       name: `${roleName}_announcement`,
@@ -42,12 +42,8 @@ const getChannelObjects = (guild, admin, student, roleName, category) => {
         parent: category,
         permissionOverwrites: [
           {
-            id: studentRole.id,
-            deny: ["VIEW_CHANNEL"],
-          },
-          {
             id: guild.id,
-            allow: ["VIEW_CHANNEL"],
+            deny: ["VIEW_CHANNEL"],
           },
           {
             id: student,

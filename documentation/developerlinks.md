@@ -1,11 +1,14 @@
 # Developer links
 
-## Setup your own Bot
-[Setup for main bot](/setupmainbot.md)
-[Setup for testing bot](/setuptestbot.md)
+## Setup for Server and Bot
+[Setup for the Server](./discordserver.md)
+
+[Setup for the Bot](./setupmainbot.md)
+
+[Setup for testing Bot](./setuptestbot.md)
 
 ## Workflow
-[Workflow practices](/workflow.md)
+[Workflow practices](./workflow.md)
 
 ## Course info
 

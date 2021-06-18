@@ -79,6 +79,64 @@ describe("Courses", () => {
     expect(channelsAtEnd).toBe(channelsAtStart);
   });
 
+  test("Cannot create multiple courses with same name", async () => {
+    const testCourseName = "testcourse";
+
+    mockUser = {
+      roles: {
+        cache: {
+          find: () => "teacher",
+        },
+      },
+    };
+
+    const guild = await client.guilds.fetch(process.env.GUILD_ID);
+    const channelsAtStart = 0;
+    await mockCreate(mockUser, testCourseName, guild);
+    await mockCreate(mockUser, testCourseName, guild);
+    const createdCourseName = `📚 ${testCourseName}`;
+    const category = guild.channels.cache.find(c => c.type === "category" && c.name === createdCourseName);
+    const channelsAtMid = guild.channels.cache.map(c => ((c.type === "text" || c.type === "voice") && c.parent === category) || c === category).reduce((sum, channel) => sum + channel, 0);
+
+    expect(category.name).toBe(createdCourseName);
+    expect(channelsAtMid).toBeGreaterThan(channelsAtStart);
+    expect(channelsAtMid).toBe(channelsAtStart + 5);
+
+    await mockRemove(mockUser, testCourseName, guild);
+
+    const channelsAtEnd = guild.channels.cache.map(c => ((c.type === "text" || c.type === "voice") && c.parent === category) || c === category).reduce((sum, channel) => sum + channel, 0);
+
+    expect(channelsAtEnd).toBe(channelsAtStart);
+  });
+
+  test("Creating multiple courses with same name does not create new invite", async () => {
+    const testCourseName = "testcourse";
+
+    mockUser = {
+      roles: {
+        cache: {
+          find: () => "teacher",
+        },
+      },
+    };
+
+    const guild = await client.guilds.fetch(process.env.GUILD_ID);
+    const invitesAtStart = await guild.fetchInvites();
+
+    await mockCreate(mockUser, testCourseName, guild);
+    const invitesAfterCreate = await guild.fetchInvites();
+    await mockCreate(mockUser, testCourseName, guild);
+    const invitesAfterSecondCreate = await guild.fetchInvites();
+
+    expect(invitesAfterCreate.size).toBe(invitesAfterSecondCreate.size);
+
+    await mockRemove(mockUser, testCourseName, guild);
+    const invitesAtEnd = await guild.fetchInvites();
+
+    expect(invitesAtStart.size).toBe(invitesAtEnd.size);
+
+  });
+
   test("Student cannot create course", async () => {
     const testCourseName = "testcourse";
     const guild = await client.guilds.fetch(process.env.GUILD_ID);
