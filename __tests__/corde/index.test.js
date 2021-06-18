@@ -7,12 +7,12 @@ beforeStart(async () => {
 });
 
 group("main commands", () => {
-  test("joinserver guildmemberadd", async () => {
-    expect("joinserver").toAddReaction(["✅"]);
-  });
-  test("leaverserver guildmemberremove", async () => {
-    expect("leaveserver").toAddReaction(["✅"]);
-  });
+  // test("joinserver guildmemberadd", async () => {
+  //  expect("joinserver").toAddReaction(["✅"]);
+  // });
+  // test("leaverserver guildmemberremove", async () => {
+  //  expect("leaveserver").toAddReaction(["✅"]);
+  // });
   test("help command should react with a checkmark", () => {
     expect("help").toAddReaction(["✅"]);
   });
