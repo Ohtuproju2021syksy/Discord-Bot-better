@@ -109,6 +109,34 @@ describe("Courses", () => {
     expect(channelsAtEnd).toBe(channelsAtStart);
   });
 
+  test("Creating multiple courses with same name does not create new invite", async () => {
+    const testCourseName = "testcourse";
+
+    mockUser = {
+      roles: {
+        cache: {
+          find: () => "teacher",
+        },
+      },
+    };
+
+    const guild = await client.guilds.fetch(process.env.GUILD_ID);
+    const invitesAtStart = await guild.fetchInvites();
+
+    await mockCreate(mockUser, testCourseName, guild);
+    const invitesAfterCreate = await guild.fetchInvites();
+    await mockCreate(mockUser, testCourseName, guild);
+    const invitesAfterSecondCreate = await guild.fetchInvites();
+
+    expect(invitesAfterCreate.size).toBe(invitesAfterSecondCreate.size);
+
+    await mockRemove(mockUser, testCourseName, guild);
+    const invitesAtEnd = await guild.fetchInvites();
+
+    expect(invitesAtStart.size).toBe(invitesAtEnd.size);
+
+  });
+
   test("Student cannot create course", async () => {
     const testCourseName = "testcourse";
     const guild = await client.guilds.fetch(process.env.GUILD_ID);
