@@ -29,6 +29,24 @@ for (const file of eventFiles) {
   }
 }
 
+client.ws.on("INTERACTION_CREATE", async interaction => {
+  const command = interaction.data.name.toLowerCase();
+  // const args = interaction.data.options;
+
+  if (command === "hello") {
+    client.api.interactions(interaction.id, interaction.token).callback.post({
+      data: {
+        type: 4,
+        data: {
+          content: "hello world!!!",
+          // make the response ephemeral
+          flags: 64,
+        },
+      },
+    });
+  }
+});
+
 const login = async () => {
   await client.login(token);
 };
