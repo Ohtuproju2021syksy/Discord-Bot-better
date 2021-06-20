@@ -145,7 +145,7 @@ const findOrCreateInviteToDatabase = async (guild, invite, args) => {
   }
   else {
     const newInvite = await Invites.create({ code: invite.code, course: args });
-    guild.invites.set(invite.id, newInvite);
+    guild.invites.set(invite.code, newInvite);
   }
 };
 
@@ -178,7 +178,7 @@ const findInviteFromDBwithCourse = async (name) => {
 };
 
 const findInvite = async (guild, code) => {
-  return guild.invites.get(code);
+  return await guild.invites.get(code);
 };
 
 const deleteInvite = async (guild, course) => {
