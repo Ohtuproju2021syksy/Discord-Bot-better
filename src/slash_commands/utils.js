@@ -15,6 +15,9 @@ const sendEphemeral = (client, interaction, content) => {
 };
 
 const initSlashCommands = (client) => {
+
+  // const teacher = client.roles.cache.find(r => r.name === "teacher");
+  // console.log(teacher);
   const slashCommandFolders = fs.readdirSync("./src/slash_commands/", { withFileTypes: true })
     .filter(dirent => dirent.isDirectory())
     .map(dirent => dirent.name);
@@ -28,6 +31,13 @@ const initSlashCommands = (client) => {
         data: {
           name: slashCommand.name,
           description: slashCommand.description,
+          permissions: [
+            {
+              id: 1323123,
+              type: 1,
+              permission: true,
+            },
+          ],
           // possible options here e.g. options: [{...}]
         },
       });
