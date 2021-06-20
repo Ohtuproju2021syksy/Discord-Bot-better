@@ -1,5 +1,11 @@
 const fs = require("fs");
+const { Client } = require("discord-slash-commands-client");
 const slashCommands = {};
+
+const slashClient = new Client(
+  process.env.BOT_TOKEN,
+  process.env.BOT_TEST_ID,
+);
 
 const sendEphemeral = (client, interaction, content) => {
   client.api.interactions(interaction.id, interaction.token).callback.post({
@@ -14,10 +20,24 @@ const sendEphemeral = (client, interaction, content) => {
   });
 };
 
-const initSlashCommands = (client) => {
+const createCommandRolePermissions = (client, roles) => {
+  const permissions = [];
 
-  // const teacher = client.roles.cache.find(r => r.name === "teacher");
-  // console.log(teacher);
+  roles.forEach(role => {
+    const roleID = client.guild.roles.cache.find(r => r.name === role).id;
+    permissions.push(
+      {
+        id: roleID,
+        type: 1,
+        permission: true,
+      },
+    );
+  });
+
+  return permissions;
+};
+
+const initSlashCommands = (client) => {
   const slashCommandFolders = fs.readdirSync("./src/slash_commands/", { withFileTypes: true })
     .filter(dirent => dirent.isDirectory())
     .map(dirent => dirent.name);
@@ -27,20 +47,22 @@ const initSlashCommands = (client) => {
     for (const file of slashCommandFiles) {
       const slashCommand = require(`./${folder}/${file}`);
       slashCommands[`${slashCommand.name}`] = slashCommand;
-      client.api.applications(client.user.id).guilds(process.env.GUILD_ID).commands.post({
-        data: {
+      slashClient
+        .createCommand({
           name: slashCommand.name,
           description: slashCommand.description,
-          permissions: [
-            {
-              id: 1323123,
-              type: 1,
-              permission: true,
-            },
-          ],
-          // possible options here e.g. options: [{...}]
-        },
-      });
+          guildId: process.env.GUILD_ID,
+          // disable the command for everyone if there's a role defined
+          default_permission: !slashCommand.role,
+        }, process.env.GUILD_ID,
+        )
+        .then(command => {
+          if (slashCommand.role) {
+            const permissions = createCommandRolePermissions(client, slashCommand.role);
+            slashClient.editCommandPermissions(permissions, client.guild.id, command.id);
+          }
+        })
+        .catch(console.error);
     }
   }
 };
