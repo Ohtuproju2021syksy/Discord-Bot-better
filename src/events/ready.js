@@ -1,15 +1,6 @@
 const Discord = require("discord.js");
 const { initializeApplicationContext } = require("../init");
-
-const initSlashCommands = (client) => {
-  client.api.applications(client.user.id).guilds(process.env.GUILD_ID).commands.post({
-    data: {
-      name: "hello",
-      description: "hello world command",
-      // possible options here e.g. options: [{...}]
-    },
-  });
-};
+const { initSlashCommands } = require("../slash_commands/utils");
 
 const execute = async (client) => {
   client.guild = await client.guilds.fetch(process.env.GUILD_ID);
