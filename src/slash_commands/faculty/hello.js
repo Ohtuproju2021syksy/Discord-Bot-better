@@ -6,7 +6,8 @@ const execute = async (client, interaction) => {
 
 module.exports = {
   name: "hello",
-  description: "hello world command?!",
+  description: "hello world command for teachers",
+  role: ["admin", "teacher"],
   // possible options here e.g. options: [{...}]
   execute,
 };
