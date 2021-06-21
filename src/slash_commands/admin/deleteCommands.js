@@ -12,7 +12,7 @@ const execute = async (client, interaction) => {
 module.exports = {
   name: "deletecommands",
   description: "deletecommands for admins, mostly for development purposes",
-  role: ["admin"],
+  role: "admin",
   // possible options here e.g. options: [{...}]
   execute,
 };

@@ -20,10 +20,11 @@ const sendEphemeral = (client, interaction, content) => {
   });
 };
 
-const createCommandRolePermissions = (client, roles) => {
+const createCommandRolePermissions = (client, highestRole) => {
+  const allRoles = highestRole === "teacher" ? ["admin", "teacher"] : ["admin"];
   const permissions = [];
 
-  roles.forEach(role => {
+  allRoles.forEach(role => {
     const roleID = client.guild.roles.cache.find(r => r.name === role).id;
     permissions.push(
       {
@@ -37,7 +38,11 @@ const createCommandRolePermissions = (client, roles) => {
   return permissions;
 };
 
-const initSlashCommands = (client) => {
+const initSlashCommands = async (client) => {
+  // slashClient.getCommands(
+  //   { guildID: process.env.GUILD_ID },
+  // ).then(console.log).catch(console.error);
+
   const slashCommandFolders = fs.readdirSync("./src/slash_commands/", { withFileTypes: true })
     .filter(dirent => dirent.isDirectory())
     .map(dirent => dirent.name);
