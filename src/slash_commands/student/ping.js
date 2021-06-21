@@ -6,6 +6,6 @@ const execute = async (client, interaction) => {
 
 module.exports = {
   name: "ping",
-  description: "ping command for everyone",
+  description: "ping command for everyone????",
   execute,
 };

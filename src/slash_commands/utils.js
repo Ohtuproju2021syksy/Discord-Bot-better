@@ -1,5 +1,6 @@
 const fs = require("fs");
 const { Client } = require("discord-slash-commands-client");
+
 const slashCommands = {};
 
 const slashClient = new Client(
@@ -39,9 +40,9 @@ const createCommandRolePermissions = (client, highestRole) => {
 };
 
 const initSlashCommands = async (client) => {
-  // slashClient.getCommands(
-  //   { guildID: process.env.GUILD_ID },
-  // ).then(console.log).catch(console.error);
+  // const commands = await slashClient.getCommands({ guildID: process.env.GUILD_ID });
+  // console.log(commands);
+  const commandUnderDev = "join";
 
   const slashCommandFolders = fs.readdirSync("./src/slash_commands/", { withFileTypes: true })
     .filter(dirent => dirent.isDirectory())
@@ -52,22 +53,29 @@ const initSlashCommands = async (client) => {
     for (const file of slashCommandFiles) {
       const slashCommand = require(`./${folder}/${file}`);
       slashCommands[`${slashCommand.name}`] = slashCommand;
-      slashClient
-        .createCommand({
-          name: slashCommand.name,
-          description: slashCommand.description,
-          guildId: process.env.GUILD_ID,
-          // disable the command for everyone if there's a role defined
-          default_permission: !slashCommand.role,
-        }, process.env.GUILD_ID,
-        )
-        .then(command => {
-          if (slashCommand.role) {
-            const permissions = createCommandRolePermissions(client, slashCommand.role);
-            slashClient.editCommandPermissions(permissions, client.guild.id, command.id);
-          }
-        })
-        .catch(console.error);
+
+      if (slashCommand.name !== commandUnderDev) continue;
+
+      try {
+        const createdCommand = await slashClient
+          .createCommand({
+            name: slashCommand.name,
+            description: slashCommand.description,
+            guildId: process.env.GUILD_ID,
+            // disable the command for everyone if there's a role defined
+            default_permission: !slashCommand.role,
+            options: slashCommand.options,
+          }, process.env.GUILD_ID,
+          );
+        if (slashCommand.role) {
+          const permissions = createCommandRolePermissions(client, slashCommand.role);
+          slashClient.editCommandPermissions(permissions, client.guild.id, createdCommand.id);
+        }
+      }
+      catch (error) {
+        console.log(error);
+      }
+
     }
   }
 };
