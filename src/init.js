@@ -46,7 +46,6 @@ const initChannels = async (guild, categoryName, client) => {
 
 const initRoles = async (guild) => {
   await findOrCreateRoleWithName("teacher", guild);
-  await findOrCreateRoleWithName("student", guild);
 };
 
 const setInitialGuideMessage = async (guild, channelName) => {
