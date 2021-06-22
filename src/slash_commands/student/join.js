@@ -22,11 +22,17 @@ const execute = async (client, interaction) => {
   const role = roles.find(
     (r) => r.name === roleString,
   );
-  if (!role) throw new Error("Role does not exist or is not available");
-  await member.roles.add(role);
-  await member.fetch(true);
 
-  sendEphemeral(client, interaction, `Joined ${roleString}`);
+  if (!role) throw new Error("Role does not exist or is not available");
+
+  if (member.roles.cache.has(role.id)) {
+    sendEphemeral(client, interaction, `You already belong to ${roleString} channel.`);
+  }
+  else {
+    await member.roles.add(role);
+    await member.fetch(true);
+    sendEphemeral(client, interaction, `Joined ${roleString} channel. Enjoy your studies!`);
+  }
 };
 
 module.exports = {

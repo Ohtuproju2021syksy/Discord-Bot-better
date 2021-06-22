@@ -42,7 +42,8 @@ const createCommandRolePermissions = (client, highestRole) => {
 const initSlashCommands = async (client) => {
   // const commands = await slashClient.getCommands({ guildID: process.env.GUILD_ID });
   // console.log(commands);
-  const commandUnderDev = "join";
+
+  // const commandUnderDev = "join";
 
   const slashCommandFolders = fs.readdirSync("./src/slash_commands/", { withFileTypes: true })
     .filter(dirent => dirent.isDirectory())
@@ -54,7 +55,7 @@ const initSlashCommands = async (client) => {
       const slashCommand = require(`./${folder}/${file}`);
       slashCommands[`${slashCommand.name}`] = slashCommand;
 
-      if (slashCommand.name !== commandUnderDev) continue;
+      // if (slashCommand.name !== commandUnderDev) continue;
 
       try {
         const createdCommand = await slashClient
