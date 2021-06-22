@@ -48,6 +48,7 @@ module.exports = {
       description: "Course to join.",
       type: 3,
       choices: getChoices(),
+      required: true,
     },
   ],
   execute,
