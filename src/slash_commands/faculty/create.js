@@ -95,6 +95,8 @@ const execute = async (client, interaction) => {
     throw new Error("You have no power here!");
   }
 
+  sendEphemeral(client, interaction, `Created course ${courseName}.`);
+
   // Roles
   const student = await findOrCreateRoleWithName(courseName, guild);
   const admin = await findOrCreateRoleWithName(`${courseName} admin`, guild);
@@ -110,7 +112,6 @@ const execute = async (client, interaction) => {
     async channelObject => await findOrCreateChannel(channelObject, guild),
   ));
   await createInvitation(guild, courseName);
-  sendEphemeral(client, interaction, `Created course ${courseName}.`);
 };
 
 module.exports = {
