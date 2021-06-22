@@ -39,6 +39,8 @@
     "discord-slash-commands-client": "^1.2.1",
     "discord.js": "^12.5.3",
     "dotenv": "^8.2.0",
+    "pg": "^8.6.0",
+    "pg-hstore": "^2.3.4",
     "sequelize": "^6.6.2",
     "sqlite3": "^5.0.2"
   },
