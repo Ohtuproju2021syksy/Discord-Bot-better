@@ -31,6 +31,7 @@ const findOrCreateRoleWithName = async (name, guild) => {
   );
 };
 
+// Turha?
 const createChannelInCategory = async (guild, channelName, categoryName) => {
   const category = guild.channels.cache.find(c => c.type === "category" && c.name === categoryName) ||
     await guild.channels.create(
@@ -43,7 +44,7 @@ const createChannelInCategory = async (guild, channelName, categoryName) => {
   return createdChannel;
 };
 
-
+// Turha?
 const possibleRolesArray = (guild) => {
   const rolesFromCategories = guild.channels.cache
     .filter(({ type, name }) => type === "category" && name.startsWith("📚"))

@@ -1,12 +1,8 @@
-const { possibleRolesArray } = require("../../service");
-
 const execute = async (message, args) => {
   const roleString = args;
   const member = message.member;
-  const guild = message.guild;
 
-  const roles = possibleRolesArray(guild);
-  const role = roles.find(
+  const role = message.guild.roles.cache.find(
     (r) => r.name === roleString,
   );
   if (!role) throw new Error("Role does not exist or is not available");
