@@ -7,7 +7,7 @@ const execute = async (message, client) => {
 
   let args = message.content.slice(prefix.length).trim().split(/ +/);
   const commandName = args.shift().toLowerCase();
-
+  args = args.map(arg => arg.toLowerCase().trim());
   if (!client.commands.has(commandName)) return;
   const command = client.commands.get(commandName);
 
