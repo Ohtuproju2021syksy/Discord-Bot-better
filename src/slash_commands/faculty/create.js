@@ -88,12 +88,6 @@ const execute = async (client, interaction) => {
   const courseName = interaction.data.options[0].value;
 
   const guild = client.guild;
-  const member = guild.members.cache.get(interaction.member.user.id);
-
-  const role = member.roles.cache.find(r => r.name === "teacher");
-  if (!role) {
-    throw new Error("You have no power here!");
-  }
 
   sendEphemeral(client, interaction, `Created course ${courseName}.`);
 
