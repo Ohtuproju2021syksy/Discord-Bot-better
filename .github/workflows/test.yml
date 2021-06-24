@@ -20,7 +20,7 @@ jobs:
         image: postgres
         # Provide the password for postgres
         env:
-          POSTGRES_PASSWORD: ${{ secrets.PGPASSWORD }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
         # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
@@ -47,7 +47,7 @@ jobs:
         BOT_TEST_ID: ${{ secrets.BOT_TEST_ID }}
         CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
         PREFIX: ${{ secrets.PREFIX }}
-        PGPASSWORD: ${{ secrets.PGPASSWORD }}
+        PGPASSWORD: ${{ secrets.secrets.POSTGRES_PASSWORD }}
       run: npm test
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
