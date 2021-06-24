@@ -1,5 +1,5 @@
 const Sequelize = require("sequelize");
-const password = process.env.PGPASSWORD;
+const password = process.env.POSTGRES_PASSWORD;
 
 const sequelize = new Sequelize("postgres", "postgres", password, {
   dialect: "postgres",
