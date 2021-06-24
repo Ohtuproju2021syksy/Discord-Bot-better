@@ -1,15 +1,14 @@
 require("dotenv").config();
-
-const token = process.env.BOT_TOKEN;
-
 const Discord = require("discord.js");
 const fs = require("fs");
+
+const token = process.env.BOT_TOKEN;
+const { slashCommands } = require("./slash_commands/utils");
 
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
 
 const commandFolders = fs.readdirSync("./src/commands");
-
 for (const folder of commandFolders) {
   const commandFiles = fs.readdirSync(`./src/commands/${folder}`).filter(file => file.endsWith(".js"));
   for (const file of commandFiles) {
@@ -28,6 +27,11 @@ for (const file of eventFiles) {
     client.on(event.name, (...args) => event.execute(...args, client));
   }
 }
+
+client.ws.on("INTERACTION_CREATE", async interaction => {
+  const command = interaction.data.name.toLowerCase();
+  slashCommands[`${command}`].execute(client, interaction);
+});
 
 const login = async () => {
   await client.login(token);

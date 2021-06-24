@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - dev
+      - postgresql
   pull_request:
     branches: [main]
     types: [opened, synchronize]
@@ -12,6 +13,23 @@ on:
 jobs:
   testing_pipeline:
     runs-on: ubuntu-20.04
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres
+        # Provide the password for postgres
+        env:
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v1        
@@ -29,6 +47,7 @@ jobs:
         BOT_TEST_ID: ${{ secrets.BOT_TEST_ID }}
         CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
         PREFIX: ${{ secrets.PREFIX }}
+        PGPASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       run: npm test
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
