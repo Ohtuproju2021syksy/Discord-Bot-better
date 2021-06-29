@@ -34,6 +34,6 @@ Add this token to `.env` file : BOT_TOKEN=your-own-token.
 
 To connect your Bot to your Discord server, you need to create an invite URL. Go to "OAuth2" tab. 
 
-![Bot link](./images/link.png)
+![Bot link](./images/link2.png)
 
-Under the `SCOPES` select the **bot** and under the `BOT PERMISSIONS` select the **Administrator**. Next copy the link and paste it to your browser. Choose the server you want to invite your Bot to.
+Under the `SCOPES` select the **bot** and **applications.commands** under the `BOT PERMISSIONS` select the **Administrator**. Next copy the link and paste it to your browser. Choose the server you want to invite your Bot to.
