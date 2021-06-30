@@ -18,7 +18,7 @@ Note: You will need to verify your phone number to your Discord account before u
 
 ### Joining to the Discord course channel
 
-Go to _Moodle page_ of the course. From there you can find link to Discord channel of the course.
+Go to your _Course page_ (MOOC, Moodle, etc.). From there you can find link to Discord channel of the course.
 
 ![Moodle link](./images/moodlelink.png)
 
