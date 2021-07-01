@@ -29,12 +29,17 @@ Add following contents to `.env` file:
 BOT_TOKEN=your-own-token
 GUILD_ID=your-discord-server-id
 PREFIX=!
+POSTGRES_PASSWORD=your-postgres-password
+DB_HOST= (only if you are not using PostgreSQL locally)
 ```
 
 Make your own Discord Server. You can find instructions [here](./documentation/discordserver.md).
 
 Make your own Discord Bot. You can find instructions [here](./documentation/setupmainbot.md).
 
+Download and install PostgreSQL [here](https://www.postgresql.org/download/)
+
+More help for PostgreSQL (in Finnish) [here](https://hy-tsoha.github.io/materiaali/content/osa-2/index.html#tietokannan-k%C3%A4ytt%C3%A4minen)
 
 ### Running bot in command line
 Run one of following commands to start bot:

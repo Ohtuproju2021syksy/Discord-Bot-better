@@ -3,7 +3,7 @@ const Discord = require("discord.js");
 const fs = require("fs");
 
 const token = process.env.BOT_TOKEN;
-const { slashCommands } = require("./slash_commands/utils");
+const { slashCommands, createSlashCommands } = require("./slash_commands/utils");
 
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
@@ -30,7 +30,11 @@ for (const file of eventFiles) {
 
 client.ws.on("INTERACTION_CREATE", async interaction => {
   const command = interaction.data.name.toLowerCase();
-  slashCommands[`${command}`].execute(client, interaction);
+  slashCommands.find(c => c.name === command).execute(interaction);
+});
+
+client.on("COURSES_CHANGED", async () => {
+  await createSlashCommands(client, ["join"]);
 });
 
 const login = async () => {

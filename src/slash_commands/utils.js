@@ -1,7 +1,8 @@
 const fs = require("fs");
 const { Client } = require("discord-slash-commands-client");
+const { Collection } = require("discord.js");
 
-const slashCommands = {};
+const slashCommands = new Collection();
 
 const slashClient = new Client(
   process.env.BOT_TOKEN,
@@ -39,11 +40,9 @@ const createCommandRolePermissions = (client, highestRole) => {
   return permissions;
 };
 
-const initSlashCommands = async (client) => {
+const createSlashCommands = async (client, commands = []) => {
   // const commands = await slashClient.getCommands({ guildID: process.env.GUILD_ID });
   // console.log(commands);
-
-  // const commandUnderDev = "join";
 
   const slashCommandFolders = fs.readdirSync("./src/slash_commands/", { withFileTypes: true })
     .filter(dirent => dirent.isDirectory())
@@ -52,37 +51,38 @@ const initSlashCommands = async (client) => {
   for (const folder of slashCommandFolders) {
     const slashCommandFiles = fs.readdirSync(`./src/slash_commands/${folder}`).filter(file => file.endsWith(".js"));
     for (const file of slashCommandFiles) {
-      const slashCommand = require(`./${folder}/${file}`);
-      slashCommands[`${slashCommand.name}`] = slashCommand;
+      let slashCommand = require(`./${folder}/${file}`);
+      if (!commands.length || commands.includes(slashCommand.name)) {
+        delete require.cache[require.resolve(`./${folder}/${file}`)];
+        slashCommand = require(`./${folder}/${file}`);
+        slashCommands.set(slashCommand.name, slashCommand);
 
-      // if (slashCommand.name !== commandUnderDev) continue;
-
-      try {
-        const createdCommand = await slashClient
-          .createCommand({
-            name: slashCommand.name,
-            description: slashCommand.description,
-            guildId: process.env.GUILD_ID,
-            // disable the command for everyone if there's a role defined
-            default_permission: !slashCommand.role,
-            options: slashCommand.options,
-          }, process.env.GUILD_ID,
-          );
-        if (slashCommand.role) {
-          const permissions = createCommandRolePermissions(client, slashCommand.role);
-          slashClient.editCommandPermissions(permissions, client.guild.id, createdCommand.id);
+        try {
+          const createdCommand = await slashClient
+            .createCommand({
+              name: slashCommand.name,
+              description: slashCommand.description,
+              guildId: process.env.GUILD_ID,
+              // disable the command for everyone if there's a role defined
+              default_permission: !slashCommand.role,
+              options: slashCommand.options,
+            }, process.env.GUILD_ID,
+            );
+          if (slashCommand.role) {
+            const permissions = createCommandRolePermissions(client, slashCommand.role);
+            slashClient.editCommandPermissions(permissions, client.guild.id, createdCommand.id);
+          }
+        }
+        catch (error) {
+          console.log(error);
         }
       }
-      catch (error) {
-        console.log(error);
-      }
-
     }
   }
 };
 
 module.exports = {
   sendEphemeral,
-  initSlashCommands,
+  createSlashCommands,
   slashCommands,
 };

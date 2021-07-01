@@ -1,18 +1,19 @@
 const { possibleRolesArray, getRoleFromCategory } = require("../../service");
 const { sendEphemeral } = require("../utils");
-const { client: Clientti } = require("../../index");
+const { client } = require("../../index");
 
 const getChoices = () => {
-  const guild = Clientti.guilds.cache.get(process.env.GUILD_ID);
+  const guild = client.guilds.cache.get(process.env.GUILD_ID);
   const courseNames = guild.channels.cache
     .filter(({ type, name }) => type === "category" && name.startsWith("📚"))
     .map(({ name }) => getRoleFromCategory(name));
 
   const choices = courseNames.map(courseName => ({ name: courseName, value: courseName }));
+  // console.log(choices);
   return choices;
 };
 
-const execute = async (client, interaction) => {
+const execute = async (interaction) => {
   const roleString = interaction.data.options[0].value;
 
   const guild = client.guild;
@@ -52,4 +53,5 @@ module.exports = {
     },
   ],
   execute,
+  getChoices,
 };

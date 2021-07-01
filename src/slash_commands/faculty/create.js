@@ -1,5 +1,6 @@
 const { findOrCreateRoleWithName, createInvitation, createCategoryName } = require("../../service");
 const { sendEphemeral } = require("../utils");
+const { client } = require("../../index");
 
 /**
  *
@@ -84,8 +85,8 @@ const getCategoryObject = (categoryName, permissionOverwrites) => ({
   },
 });
 
-const execute = async (client, interaction) => {
-  const courseName = interaction.data.options[0].value;
+const execute = async (interaction) => {
+  const courseName = interaction.data.options[0].value.toLowerCase().trim();
 
   const guild = client.guild;
 
@@ -106,6 +107,7 @@ const execute = async (client, interaction) => {
     async channelObject => await findOrCreateChannel(channelObject, guild),
   ));
   await createInvitation(guild, courseName);
+  client.emit("COURSES_CHANGED");
 };
 
 module.exports = {
