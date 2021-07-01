@@ -34,7 +34,7 @@ client.ws.on("INTERACTION_CREATE", async interaction => {
 });
 
 client.on("COURSES_CHANGED", async () => {
-  await createSlashCommands(client, ["join"]);
+  await createSlashCommands(client, ["join", "leave"]);
 });
 
 const login = async () => {
