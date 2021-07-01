@@ -26,6 +26,7 @@ const execute = async (interaction) => {
     .filter(r => (r.name === `${courseName} admin` || r.name === courseName))
     .map(async role => await role.delete()),
   );
+  client.emit("COURSES_CHANGED");
 };
 
 module.exports = {
