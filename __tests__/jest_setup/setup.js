@@ -4,6 +4,7 @@ const { sequelize } = require("../../src/dbInit");
 const BOT_TOKEN = process.env.BOT_TOKEN;
 
 beforeAll(async () => {
+  jest.setTimeout(10000);
   await client.login(BOT_TOKEN);
 });
 

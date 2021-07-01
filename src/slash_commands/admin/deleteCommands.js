@@ -1,6 +1,7 @@
 const { sendEphemeral } = require("../utils");
+const { client } = require("../../index");
 
-const execute = async (client, interaction) => {
+const execute = async (interaction) => {
   sendEphemeral(client, interaction, "Deleting all the commands!");
   client.api.applications(client.user.id).guilds(process.env.GUILD_ID).commands.get().then(commands => {
     commands.forEach(command => {

@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 const { initializeApplicationContext } = require("../init");
-const { initSlashCommands } = require("../slash_commands/utils");
+const { createSlashCommands } = require("../slash_commands/utils");
 const { sequelize } = require("../dbInit");
 
 const execute = async (client) => {
@@ -8,7 +8,7 @@ const execute = async (client) => {
   client.guild.invites = new Discord.Collection();
   client.guild.inv = await client.guild.fetchInvites();
   initializeApplicationContext(client);
-  initSlashCommands(client);
+  createSlashCommands(client);
   console.log(`Logged in as ${client.user.tag}!`);
   try {
     await sequelize.authenticate();
