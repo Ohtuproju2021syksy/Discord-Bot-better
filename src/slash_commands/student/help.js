@@ -1,11 +1,11 @@
 const prefix = "/";
-const { sendEphemeral } = require("../utils");
+const { sendEphemeral, slashCommands } = require("../utils");
 const { client } = require("../../index");
 
 const execute = async (interaction) => {
   const user = await client.guilds.fetch(process.env.GUILD_ID).then(g => g.members.cache.find(m => m.id === interaction.member.user.id));
   const data = [];
-  const commands = client.commands;
+  const commands = slashCommands;
   let commandsReadyToPrint = {};
 
   const isNotFacultyCommand = (command) => {
