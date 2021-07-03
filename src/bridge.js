@@ -15,13 +15,13 @@ discordClient.login(process.env.DISCORD_BOT_TOKEN);
 const telegramBot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN);
 telegramBot.command("quit", (ctx) => {
   console.log("quit");
-  ctx.telegram.leaveChat(ctx.message.chat.id)
-})
-telegramBot.launch()
+  ctx.telegram.leaveChat(ctx.message.chat.id);
+});
+telegramBot.launch();
 
 // Enable graceful stop
-process.once("SIGINT", () => telegramBot.stop("SIGINT"))
-process.once("SIGTERM", () => telegramBot.stop("SIGTERM"))
+process.once("SIGINT", () => telegramBot.stop("SIGINT"));
+process.once("SIGTERM", () => telegramBot.stop("SIGTERM"));
 
 
 // Send message methods
@@ -36,7 +36,7 @@ const sendMessageToDiscord = async (content) => {
 
 const sendMessageToTelegram = async (content) => {
   telegramBot.telegram.sendMessage(process.env.TELEGRAM_CHAT_ID, content);
-}
+};
 
 
 // Event handlers
@@ -61,4 +61,4 @@ telegramBot.on("text", async (ctx) => {
   const user = ctx.message.from;
   const sender = user.first_name || user.username;
   sendMessageToDiscord(`<${sender}>: ${ctx.message.text}`);
-})
+});

@@ -12,7 +12,7 @@ const execute = (message) => {
     })
     .sort((a, b) => a.localeCompare(b));
 
-  if(rows.length === 0) message.reply("No courses available");
+  if (rows.length === 0) message.reply("No courses available");
   else message.reply("\n" + rows.join("\n"));
 };
 

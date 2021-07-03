@@ -17,7 +17,7 @@ const execute = (message, args) => {
     commandsReadyToPrint = commands;
   }
 
-  if(!user.bot) {
+  if (!user.bot) {
     commandsReadyToPrint = commandsReadyToPrint.filter(command => command.test !== true);
   }
 

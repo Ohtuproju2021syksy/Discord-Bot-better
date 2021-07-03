@@ -2,7 +2,7 @@ require("dotenv").config();
 const Discord = require("discord.js");
 const fs = require("fs");
 
-require("./bridge.js")
+require("./bridge.js");
 
 const token = process.env.BOT_TOKEN;
 const { slashCommands, createSlashCommands } = require("./slash_commands/utils");

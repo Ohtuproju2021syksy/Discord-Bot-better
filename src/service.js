@@ -152,7 +152,7 @@ const findOrCreateInviteToDatabase = async (guild, invite, args) => {
 
 const createInvitation = async (guild, args) => {
   const dbInvite = await findInviteFromDBwithCourse(args);
-  if(dbInvite) return;
+  if (dbInvite) return;
   const guide = guild.channels.cache.find(
     c => c.type === "text" && c.name === "guide",
   );
