@@ -74,7 +74,7 @@ const createSlashCommands = async (client, commands = []) => {
           }
         }
         catch (error) {
-          console.log(error);
+          // console.log(error);
         }
       }
     }
