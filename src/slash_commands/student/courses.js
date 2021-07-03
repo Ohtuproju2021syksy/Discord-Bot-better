@@ -14,7 +14,7 @@ const execute = async (interaction) => {
     })
     .sort((a, b) => a.localeCompare(b));
 
-  if(data.length === 0) sendEphemeral(client, interaction, "No courses available");
+  if (data.length === 0) sendEphemeral(client, interaction, "No courses available");
   else sendEphemeral(client, interaction, data.join(" \n"));
 };
 
@@ -25,10 +25,5 @@ module.exports = {
   args: false,
   joinArgs: false,
   guide: false,
-  options: [
-    {
-      required: false,
-    },
-  ],
   execute,
 };
