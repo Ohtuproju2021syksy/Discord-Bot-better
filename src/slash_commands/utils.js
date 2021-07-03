@@ -51,8 +51,7 @@ const createSlashCommands = async (client, commands = []) => {
       let slashCommand = require(`./${folder}/${file}`);
       slashCommands.set(slashCommand.name, slashCommand);
 
-      if (slashCommand.devOnly && process.env.NODE_ENV !== "development") continue;
-      if (!commands.length || commands.includes(slashCommand.name)) {
+      if (!commands.length || commands.includes(slashCommand.name) || (slashCommand.devOnly && process.env.NODE_ENV !== "development")) {
         delete require.cache[require.resolve(`./${folder}/${file}`)];
         slashCommand = require(`./${folder}/${file}`);
 
