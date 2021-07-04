@@ -9,10 +9,9 @@ const execute = async (interaction) => {
 
   const guild = client.guild;
 
-  sendEphemeral(client, interaction, `Deleted course ${courseName}.`);
-
   const courseString = createCategoryName(courseName);
   const category = guild.channels.cache.find(c => c.type === "category" && c.name === courseString);
+  if (!category) return sendEphemeral(client, interaction, `Invalid course name: ${courseName}.`);
   await Promise.all(guild.channels.cache
     .filter(c => c.parent === category)
     .map(async channel => await channel.delete()),
@@ -26,6 +25,7 @@ const execute = async (interaction) => {
     .filter(r => (r.name === `${courseName} admin` || r.name === courseName))
     .map(async role => await role.delete()),
   );
+  sendEphemeral(client, interaction, `Deleted course ${courseName}.`);
   client.emit("COURSES_CHANGED");
 };
 
