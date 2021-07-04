@@ -31,40 +31,6 @@ const findOrCreateRoleWithName = async (name, guild) => {
   );
 };
 
-// Turha?
-const createChannelInCategory = async (guild, channelName, categoryName) => {
-  const category = guild.channels.cache.find(c => c.type === "category" && c.name === categoryName) ||
-    await guild.channels.create(
-      categoryName,
-      {
-        type: "category",
-      });
-  const createdChannel = await guild.channels.create(channelName);
-  await createdChannel.setParent(category.id);
-  return createdChannel;
-};
-
-// Turha?
-const possibleRolesArray = (guild) => {
-  const rolesFromCategories = guild.channels.cache
-    .filter(({ type, name }) => type === "category" && name.startsWith("📚"))
-    .map(({ name }) => getRoleFromCategory(name));
-
-  const actualRoles = guild.roles.cache.filter((role) =>
-    rolesFromCategories.includes(role.name),
-  );
-  if (rolesFromCategories.length !== actualRoles.size) {
-    console.log(
-      "Something is wrong, rolesFromCategories did not match the size of actualRoles",
-      rolesFromCategories,
-      rolesFromCategories.length,
-      actualRoles.map(({ name }) => name),
-      actualRoles.size,
-    );
-  }
-  return actualRoles;
-};
-
 /**
  *
  * @param {Discord.Message} message
@@ -192,8 +158,6 @@ const deleteInvite = async (guild, course) => {
 module.exports = {
   getRoleFromCategory,
   findOrCreateRoleWithName,
-  possibleRolesArray,
-  createChannelInCategory,
   updateGuide,
   createInvitation,
   createCategoryName,
