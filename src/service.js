@@ -96,7 +96,7 @@ const updateGuideMessage = async (message) => {
       const count = guild.roles.cache.find(
         (role) => role.name === courseRole,
       ).members.size;
-      return `  - ${courseFullName} \`!join ${courseRole}\` 👤${count}`;
+      return `  - ${courseFullName} \`/join ${courseRole}\` 👤${count}`;
     }).sort((a, b) => a.localeCompare(b));
 
   const commands = guild.channels.cache.find(
@@ -105,21 +105,21 @@ const updateGuideMessage = async (message) => {
 
   const newContent = `
 Käytössäsi on seuraavia komentoja:
-  - \`!join\` jolla voit liittyä kurssille
-  - \`!leave\` jolla voit poistua kurssilta
-Esim: \`!join ohpe\`
+  - \`/join\` jolla voit liittyä kurssille
+  - \`/leave\` jolla voit poistua kurssilta
+Esim: \`/join ohpe\`
   
 You have the following commands available:
-  - \`!join\` which you can use to join a course
-  - \`!leave\` which you can use to leave a course
-For example: \`!join ohpe\`
+  - \`/join\` which you can use to join a course
+  - \`/leave\` which you can use to leave a course
+For example: \`/join ohpe\`
 
 Kurssit / Courses:
 ${rows.join("\n")}
 
-In course specific channels you can also list instructors \`!instructors\`
+In course specific channels you can also list instructors \`/instructors\`
 
-See more with \`!help\` and test out the commands in <#${commands.id}> channel!
+See more with \`/help\` and test out the commands in <#${commands.id}> channel!
 
 Invitation link for the server https://discord.gg/${guideinvite.code}
 `;
