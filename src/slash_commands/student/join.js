@@ -7,7 +7,7 @@ const getChoices = () => {
     .filter(({ type, name }) => type === "category" && name.startsWith("📚"))
     .map(({ name }) => getRoleFromCategory(name))
     .map(courseName => ({ name: courseName, value: courseName }));
-  // console.log(choices);
+  // console.log("join", choices);
   return choices;
 };
 
