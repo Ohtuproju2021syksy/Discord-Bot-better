@@ -70,13 +70,19 @@ const loadCommands = (client) => {
     for (const file of slashCommandFiles) {
       const slashCommand = require(`./${folder}/${file}`);
       if (slashCommand.devOnly && process.env.NODE_ENV !== "development") continue;
-      slashCommands.set(
-        slashCommand.name,
-        {
-          command: slashCommand,
-          file: `./${folder}/${file}`,
-        },
-      );
+      if (slashCommand.prefix) {
+        client.commands.set(slashCommand.name, slashCommand);
+      }
+      else {
+        slashCommands.set(
+          slashCommand.name,
+          {
+            command: slashCommand,
+            file: `./${folder}/${file}`,
+          },
+        );
+      }
+
     }
   }
   client.slashCommands = slashCommands;
@@ -99,7 +105,7 @@ const reloadCommands = async (client, commandNames) => {
   });
 };
 
-const createSlashCommands = async (client) => {
+const initCommands = async (client) => {
   const slashCommands = loadCommands(client);
   slashCommands.forEach((slashCommand) => {
     createSlashCommand(client, slashCommand.command);
@@ -108,6 +114,6 @@ const createSlashCommands = async (client) => {
 
 module.exports = {
   sendEphemeral,
-  createSlashCommands,
+  initCommands,
   reloadCommands,
 };
