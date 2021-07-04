@@ -41,6 +41,7 @@ const createCommandRolePermissions = (client, highestRole) => {
 };
 
 const createSlashCommands = async (client, commands = []) => {
+  if (process.env.NODE_ENV === "test") return;
   const slashCommandFolders = fs.readdirSync("./src/slash_commands/", { withFileTypes: true })
     .filter(dirent => dirent.isDirectory())
     .map(dirent => dirent.name);
@@ -71,7 +72,7 @@ const createSlashCommands = async (client, commands = []) => {
             const permissions = createCommandRolePermissions(client, slashCommand.role);
             slashClient.editCommandPermissions(permissions, client.guild.id, createdCommand.id);
           }
-          console.log(slashCommand.name);
+          // console.log(slashCommand.name);
         }
         catch (error) {
           // console.log(error);
