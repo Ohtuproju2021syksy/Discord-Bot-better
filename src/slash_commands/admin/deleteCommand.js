@@ -15,7 +15,7 @@ const execute = async (interaction) => {
 
 module.exports = {
   name: "deletecommand",
-  description: "Delete all slash commands, mostly for development purposes",
+  description: "Delete a slash command, mostly for development purposes",
   role: "admin",
   devOnly: true,
   options: [

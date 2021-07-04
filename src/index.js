@@ -5,7 +5,7 @@ const fs = require("fs");
 process.env.TG_BRIDGE_ENABLED && require("./bridge.js");
 
 const token = process.env.BOT_TOKEN;
-const { slashCommands, createSlashCommands } = require("./slash_commands/utils");
+const { reloadCommands } = require("./slash_commands/utils");
 
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
@@ -31,12 +31,12 @@ for (const file of eventFiles) {
 }
 
 client.ws.on("INTERACTION_CREATE", async interaction => {
-  const command = interaction.data.name.toLowerCase();
-  slashCommands.find(c => c.name === command).execute(interaction);
+  const commandName = interaction.data.name.toLowerCase();
+  client.slashCommands.get(commandName).command.execute(interaction);
 });
 
 client.on("COURSES_CHANGED", async () => {
-  await createSlashCommands(client, ["join", "leave"]);
+  await reloadCommands(client, ["join", "leave"]);
 });
 
 const login = async () => {
