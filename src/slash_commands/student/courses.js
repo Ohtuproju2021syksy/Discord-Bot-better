@@ -25,10 +25,5 @@ module.exports = {
   args: false,
   joinArgs: false,
   guide: false,
-  options: [
-    {
-      required: false,
-    },
-  ],
   execute,
 };

@@ -41,9 +41,6 @@ const createCommandRolePermissions = (client, highestRole) => {
 };
 
 const createSlashCommands = async (client, commands = []) => {
-  // const commands = await slashClient.getCommands({ guildID: process.env.GUILD_ID });
-  // console.log(commands);
-
   const slashCommandFolders = fs.readdirSync("./src/slash_commands/", { withFileTypes: true })
     .filter(dirent => dirent.isDirectory())
     .map(dirent => dirent.name);
@@ -52,10 +49,11 @@ const createSlashCommands = async (client, commands = []) => {
     const slashCommandFiles = fs.readdirSync(`./src/slash_commands/${folder}`).filter(file => file.endsWith(".js"));
     for (const file of slashCommandFiles) {
       let slashCommand = require(`./${folder}/${file}`);
-      if (!commands.length || commands.includes(slashCommand.name)) {
+      slashCommands.set(slashCommand.name, slashCommand);
+
+      if (!commands.length || commands.includes(slashCommand.name) || (slashCommand.devOnly && process.env.NODE_ENV !== "development")) {
         delete require.cache[require.resolve(`./${folder}/${file}`)];
         slashCommand = require(`./${folder}/${file}`);
-        slashCommands.set(slashCommand.name, slashCommand);
 
         try {
           const createdCommand = await slashClient

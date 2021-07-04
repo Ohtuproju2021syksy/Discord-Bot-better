@@ -13,7 +13,7 @@ const getChoices = () => {
 
 const execute = async (interaction) => {
   const roleString = interaction.data.options[0].value;
-  const member = client.guild.members.cache.get(interaction.member.user.id);
+  const member = await client.guild.members.fetch(interaction.member.user.id);
 
   const courseRoles = client.guild.roles.cache
     .filter(role => (role.name === `${roleString} admin` || role.name === `${roleString}`))
