@@ -50,11 +50,12 @@ const createSlashCommands = async (client, commands = []) => {
     for (const file of slashCommandFiles) {
       let slashCommand = require(`./${folder}/${file}`);
       slashCommands.set(slashCommand.name, slashCommand);
-
-      if (!commands.length || commands.includes(slashCommand.name) || (slashCommand.devOnly && process.env.NODE_ENV !== "development")) {
+      if (slashCommand.devOnly && process.env.NODE_ENV !== "development") continue;
+      if (!commands.length || commands.includes(slashCommand.name)) {
         delete require.cache[require.resolve(`./${folder}/${file}`)];
         slashCommand = require(`./${folder}/${file}`);
 
+        await new Promise(resolve => setTimeout(resolve, 4000));
         try {
           const createdCommand = await slashClient
             .createCommand({
@@ -70,6 +71,7 @@ const createSlashCommands = async (client, commands = []) => {
             const permissions = createCommandRolePermissions(client, slashCommand.role);
             slashClient.editCommandPermissions(permissions, client.guild.id, createdCommand.id);
           }
+          console.log(slashCommand.name);
         }
         catch (error) {
           // console.log(error);

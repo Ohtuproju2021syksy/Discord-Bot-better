@@ -4,10 +4,20 @@ const { client } = require("../../index");
 
 const execute = async (interaction) => {
   const guild = await client.guilds.fetch(process.env.GUILD_ID);
-  const roleString = interaction.data.options ?
-    interaction.data.options[0].value :
-    guild.channels.cache.filter(c => c.id === interaction.channel_id)
-      .map(c => getRoleFromCategory(c.parent.name));
+
+  let roleString;
+  if (interaction.data.options) {
+    roleString = interaction.data.options[0].value;
+  }
+  else {
+    const category = guild.channels.cache.get(interaction.channel_id).parent;
+    if (!category) {
+      return sendEphemeral(client, interaction, "Provide course name as argument or use the command in course channel.");
+    }
+    else {
+      roleString = getRoleFromCategory(category.name);
+    }
+  }
 
   const courseAdminRole = guild.roles.cache.find(r => r.name === `${roleString} admin`);
   if (!courseAdminRole) return sendEphemeral(client, interaction, `No instructors for ${roleString}`);

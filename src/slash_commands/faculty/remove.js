@@ -1,4 +1,4 @@
-const { deleteInvite } = require("../../service");
+const { deleteInvite, updateGuide } = require("../../service");
 const { sendEphemeral } = require("../utils");
 const { client } = require("../../index");
 
@@ -27,6 +27,7 @@ const execute = async (interaction) => {
   );
   sendEphemeral(client, interaction, `Deleted course ${courseName}.`);
   client.emit("COURSES_CHANGED");
+  updateGuide(client.guild);
 };
 
 module.exports = {

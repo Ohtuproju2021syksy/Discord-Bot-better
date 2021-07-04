@@ -1,4 +1,4 @@
-const { getRoleFromCategory } = require("../../service");
+const { getRoleFromCategory, updateGuide } = require("../../service");
 const { sendEphemeral } = require("../utils");
 const { client } = require("../../index");
 
@@ -28,6 +28,7 @@ const execute = async (interaction) => {
   await member.fetch(true);
 
   sendEphemeral(client, interaction, `You have been removed from the ${roleString} course.`);
+  updateGuide(client.guild);
 };
 
 module.exports = {
