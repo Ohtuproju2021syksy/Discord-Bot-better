@@ -3,21 +3,14 @@ const { sendEphemeral, slashCommands } = require("../utils");
 const { client } = require("../../index");
 
 const execute = async (interaction) => {
-  const user = await client.guilds.fetch(process.env.GUILD_ID).then(g => g.members.cache.find(m => m.id === interaction.member.user.id));
+  const guild = await client.guilds.fetch(process.env.GUILD_ID);
+  const user = guild.members.cache.get(interaction.member.user.id);
   const data = [];
-  const commands = slashCommands;
-  let commandsReadyToPrint = {};
-
-  const isNotFacultyCommand = (command) => {
-    return command.role !== "teacher";
-  };
-
-  if (!user.roles.cache.find(role => role.name === "teacher")) {
-    commandsReadyToPrint = commands.filter(command => isNotFacultyCommand(command) && !command.description.includes("Test"));
-  }
-  else {
-    commandsReadyToPrint = commands.filter(command => !command.description.includes("Test"));
-  }
+  const commandsReadyToPrint = slashCommands
+    .filter(command => {
+      if (!command.role) return true;
+      return user.roles.cache.find(role => role.name === command.role);
+    });
 
   if (!interaction.data.options) {
     data.push("Here's a list of all my commands:");
