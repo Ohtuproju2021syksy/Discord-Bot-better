@@ -58,6 +58,7 @@ const createSlashCommand = async (client, slashCommand) => {
   catch (error) {
     // slashCommand.options && console.log(error);
   }
+  console.log(slashCommand.name);
 };
 
 const loadCommands = (client) => {
@@ -106,8 +107,10 @@ const reloadCommands = async (client, commandNames) => {
 };
 
 const initCommands = async (client) => {
+  if (process.env.NODE_ENV === "test") return;
   const slashCommands = loadCommands(client);
-  slashCommands.forEach((slashCommand) => {
+  slashCommands.forEach(async (slashCommand) => {
+    // await new Promise(resolve => setTimeout(resolve, 4000));
     createSlashCommand(client, slashCommand.command);
   });
 };
