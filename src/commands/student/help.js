@@ -3,23 +3,11 @@ const prefix = process.env.PREFIX;
 const execute = (message, args) => {
   const user = message.member;
   const data = [];
-  const commands = message.client.commands;
-  let commandsReadyToPrint = {};
-
-  const isNotFacultyCommand = (command) => {
-    return command.role !== "teacher";
-  };
-
-  if (!user.roles.cache.find(role => role.name === "teacher")) {
-    commandsReadyToPrint = commands.filter(command => isNotFacultyCommand(command));
-  }
-  else {
-    commandsReadyToPrint = commands;
-  }
-
-  if(!user.bot) {
-    commandsReadyToPrint = commandsReadyToPrint.filter(command => command.test !== true);
-  }
+  const commandsReadyToPrint = message.client.commands
+    .filter(command => {
+      if (!command.role) return true;
+      return user.roles.cache.find(role => role.name === command.role);
+    });
 
   if (!args.length) {
     data.push("Here's a list of all my commands:");

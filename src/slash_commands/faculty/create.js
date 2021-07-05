@@ -1,4 +1,4 @@
-const { findOrCreateRoleWithName, createInvitation, createCategoryName } = require("../../service");
+const { findOrCreateRoleWithName, createInvitation, createCategoryName, updateGuide } = require("../../service");
 const { sendEphemeral } = require("../utils");
 const { client } = require("../../index");
 
@@ -108,6 +108,7 @@ const execute = async (interaction) => {
   ));
   await createInvitation(guild, courseName);
   client.emit("COURSES_CHANGED");
+  updateGuide(client.guild);
 };
 
 module.exports = {

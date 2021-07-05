@@ -2,6 +2,8 @@ require("dotenv").config();
 const Discord = require("discord.js");
 const fs = require("fs");
 
+process.env.TG_BRIDGE_ENABLED && require("./bridge.js");
+
 const token = process.env.BOT_TOKEN;
 const { slashCommands, createSlashCommands } = require("./slash_commands/utils");
 
@@ -34,7 +36,7 @@ client.ws.on("INTERACTION_CREATE", async interaction => {
 });
 
 client.on("COURSES_CHANGED", async () => {
-  await createSlashCommands(client, ["join"]);
+  await createSlashCommands(client, ["join", "leave"]);
 });
 
 const login = async () => {

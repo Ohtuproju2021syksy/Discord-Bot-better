@@ -109,6 +109,7 @@
     "space-unary-ops": "error",
     "spaced-comment": "error",
     "no-unused-vars": "warn",
-    "yoda": "error"
+    "yoda": "error",
+    "keyword-spacing": "error"
   }
 }

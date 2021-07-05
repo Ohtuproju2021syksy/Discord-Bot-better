@@ -31,40 +31,6 @@ const findOrCreateRoleWithName = async (name, guild) => {
   );
 };
 
-// Turha?
-const createChannelInCategory = async (guild, channelName, categoryName) => {
-  const category = guild.channels.cache.find(c => c.type === "category" && c.name === categoryName) ||
-    await guild.channels.create(
-      categoryName,
-      {
-        type: "category",
-      });
-  const createdChannel = await guild.channels.create(channelName);
-  await createdChannel.setParent(category.id);
-  return createdChannel;
-};
-
-// Turha?
-const possibleRolesArray = (guild) => {
-  const rolesFromCategories = guild.channels.cache
-    .filter(({ type, name }) => type === "category" && name.startsWith("📚"))
-    .map(({ name }) => getRoleFromCategory(name));
-
-  const actualRoles = guild.roles.cache.filter((role) =>
-    rolesFromCategories.includes(role.name),
-  );
-  if (rolesFromCategories.length !== actualRoles.size) {
-    console.log(
-      "Something is wrong, rolesFromCategories did not match the size of actualRoles",
-      rolesFromCategories,
-      rolesFromCategories.length,
-      actualRoles.map(({ name }) => name),
-      actualRoles.size,
-    );
-  }
-  return actualRoles;
-};
-
 /**
  *
  * @param {Discord.Message} message
@@ -96,7 +62,7 @@ const updateGuideMessage = async (message) => {
       const count = guild.roles.cache.find(
         (role) => role.name === courseRole,
       ).members.size;
-      return `  - ${courseFullName} \`!join ${courseRole}\` 👤${count}`;
+      return `  - ${courseFullName} \`/join ${courseRole}\` 👤${count}`;
     }).sort((a, b) => a.localeCompare(b));
 
   const commands = guild.channels.cache.find(
@@ -105,21 +71,21 @@ const updateGuideMessage = async (message) => {
 
   const newContent = `
 Käytössäsi on seuraavia komentoja:
-  - \`!join\` jolla voit liittyä kurssille
-  - \`!leave\` jolla voit poistua kurssilta
-Esim: \`!join ohpe\`
+  - \`/join\` jolla voit liittyä kurssille
+  - \`/leave\` jolla voit poistua kurssilta
+Esim: \`/join ohpe\`
   
 You have the following commands available:
-  - \`!join\` which you can use to join a course
-  - \`!leave\` which you can use to leave a course
-For example: \`!join ohpe\`
+  - \`/join\` which you can use to join a course
+  - \`/leave\` which you can use to leave a course
+For example: \`/join ohpe\`
 
 Kurssit / Courses:
 ${rows.join("\n")}
 
-In course specific channels you can also list instructors \`!instructors\`
+In course specific channels you can also list instructors \`/instructors\`
 
-See more with \`!help\` and test out the commands in <#${commands.id}> channel!
+See more with \`/help\` and test out the commands in <#${commands.id}> channel!
 
 Invitation link for the server https://discord.gg/${guideinvite.code}
 `;
@@ -152,7 +118,7 @@ const findOrCreateInviteToDatabase = async (guild, invite, args) => {
 
 const createInvitation = async (guild, args) => {
   const dbInvite = await findInviteFromDBwithCourse(args);
-  if(dbInvite) return;
+  if (dbInvite) return;
   const guide = guild.channels.cache.find(
     c => c.type === "text" && c.name === "guide",
   );
@@ -192,8 +158,6 @@ const deleteInvite = async (guild, course) => {
 module.exports = {
   getRoleFromCategory,
   findOrCreateRoleWithName,
-  possibleRolesArray,
-  createChannelInCategory,
   updateGuide,
   createInvitation,
   createCategoryName,

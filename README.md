@@ -31,6 +31,12 @@ GUILD_ID=your-discord-server-id
 PREFIX=!
 POSTGRES_PASSWORD=your-postgres-password
 DB_HOST= (only if you are not using PostgreSQL locally)
+
+# Bridge
+DISCORD_BOT_TOKEN=discord-bridge-bot-token
+TELEGRAM_BOT_TOKEN=telegram-bridge-bot-token
+TELEGRAM_CHAT_ID=id-of-telegram-group-or-chat
+COURSE_NAME=course-name
 ```
 
 Make your own Discord Server. You can find instructions [here](./documentation/discordserver.md).
