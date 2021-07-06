@@ -58,7 +58,7 @@ const createSlashCommand = async (client, slashCommand) => {
   catch (error) {
     // slashCommand.options && console.log(error);
   }
-  console.log(slashCommand.name);
+  console.log(`Created command ${slashCommand.name}`);
 };
 
 const loadCommands = (client) => {
@@ -108,11 +108,14 @@ const reloadCommands = async (client, commandNames) => {
 
 const initCommands = async (client) => {
   if (process.env.NODE_ENV === "test") return;
+
   const slashCommands = loadCommands(client);
-  slashCommands.forEach(async (slashCommand) => {
-    // await new Promise(resolve => setTimeout(resolve, 4000));
+
+  for (const slashCommand of slashCommands.values()) {
     createSlashCommand(client, slashCommand.command);
-  });
+    // reduce spam to discord api
+    await new Promise(resolve => setTimeout(resolve, 4000));
+  }
 };
 
 module.exports = {
