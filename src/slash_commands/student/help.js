@@ -1,12 +1,12 @@
 const prefix = "/";
-const { sendEphemeral, slashCommands } = require("../utils");
+const { sendEphemeral } = require("../utils");
 const { client } = require("../../index");
 
 const execute = async (interaction) => {
   const guild = await client.guilds.fetch(process.env.GUILD_ID);
   const user = guild.members.cache.get(interaction.member.user.id);
   const data = [];
-  const commandsReadyToPrint = slashCommands
+  const commandsReadyToPrint = client.slashCommands
     .filter(command => {
       if (!command.role) return true;
       return user.roles.cache.find(role => role.name === command.role);
