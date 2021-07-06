@@ -6,7 +6,7 @@ const execute = async (interaction) => {
   const guild = await client.guilds.fetch(process.env.GUILD_ID);
   const user = guild.members.cache.get(interaction.member.user.id);
   const data = [];
-  const commandsReadyToPrint = client.slashCommands
+  const commandsReadyToPrint = client.slashCommands.map(c => c.command)
     .filter(command => {
       if (!command.role) return true;
       return user.roles.cache.find(role => role.name === command.role);
