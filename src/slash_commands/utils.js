@@ -92,17 +92,22 @@ const loadCommands = (client) => {
 
 const reloadCommands = async (client, commandNames) => {
   commandNames.forEach((commandName) => {
-    const { file } = client.slashCommands.get(commandName);
-    delete require.cache[require.resolve(file)];
-    const reloadedCommand = require(file);
-    client.slashCommands.set(
-      commandName,
-      {
-        command: reloadedCommand,
-        file,
-      },
-    );
-    createSlashCommand(client, reloadedCommand);
+    try {
+      const { file } = client.slashCommands.get(commandName);
+      delete require.cache[require.resolve(file)];
+      const reloadedCommand = require(file);
+      client.slashCommands.set(
+        commandName,
+        {
+          command: reloadedCommand,
+          file,
+        },
+      );
+      createSlashCommand(client, reloadedCommand);
+    }
+    catch (error) {
+      console.log(`Unknown slash command${commandName}`);
+    }
   });
 };
 
