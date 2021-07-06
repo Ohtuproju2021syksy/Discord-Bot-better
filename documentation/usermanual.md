@@ -36,7 +36,6 @@ Commands can be used by typing to the bottom area `/` and after that the command
 
 ![commands](./images/commands.png)
 
-
 You can see all the available courses with command `/courses`.
 
 ![courses](./images/courses.png)
@@ -47,7 +46,7 @@ By typing the command `/join`, you can see all the courses available on the list
 
 If you want to leave a course, use command `/leave`. You see from the list all the courses you have joined earlier. Choose a course you want to leave from and press enter.
 
-After you have joined a course, you can see different course channels on the left bar. At this stage there are four types of channels; announcement, general, questions and voice (these might change during the development).
+After you have joined a course, you can see different course channels on the left bar. At this stage there are four types of channels; announcement, general and voice (these might change during the development).
 
 ![channels](./images/channels.png)
 
@@ -55,9 +54,11 @@ Announcement - this is the course announcements and only teachers can make entri
 
 General - main discussion area.
 
-Questions - you can leave questions here for teachers of the course.
-
 Voice - you can hang out over voice and video.
+
+If you want to see who are the teachers on your course, you can use command `/instructors`.
+
+![instructors](./images/instructors.png)
 
 ### List of commands
 
