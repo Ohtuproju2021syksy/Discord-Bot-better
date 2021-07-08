@@ -1,3 +1,5 @@
+require("dotenv").config();
+const Discord = require("discord.js");
 const express = require("express");
 const fetch = require("node-fetch");
 const PORT = process.env.PORT;
@@ -29,24 +31,32 @@ app.get("/", async (request, response) => {
 
       const oauthData = await oauthResult.json();
       // console.log(oauthData);
+      const accessToken = oauthData.access_token;
       const userResult = await fetch("https://discord.com/api/users/@me", {
         headers: {
-          authorization: `${oauthData.token_type} ${oauthData.access_token}`,
+          authorization: `${oauthData.token_type} ${accessToken}`,
         },
       });
       const authedUser = await userResult.json();
-      const { client } = require("../index");
-      const courseRole = await client.guild.roles.cache.find(r => r.name === state);
-      const member = await client.guild.members.fetch(authedUser.id);
+      // console.log(authedUser);
+      const client = new Discord.Client();
+      await client.login(process.env.BOT_TOKEN);
+      const guild = await client.guilds.fetch(process.env.GUILD_ID);
+      const roles = await guild.roles.fetch();
+      const courseRole = await roles.cache.find(r => r.name === state);
+      if (!courseRole) response.redirect(process.env.SERVER_URL);
+      const member = guild.members.cache.get(authedUser.id);
       if (member) {
         await member.roles.add(courseRole);
+        response.json({ courseRole, member });
       }
       else {
-        client.guild.addMember(authedUser, { access_token: oauthData.access_token, roles: courseRole });
+        client.users.fetch(authedUser.id)
+          .then((user) => guild.addMember(user, { accessToken, roles: [courseRole.id] }));
+        response.redirect(process.env.SERVER_URL);
       }
 
-
-      response.json({ courseRole, member });
+      // response.json({ courseRole, member });
       // TODO: Get inv link from pinned message from course announcements and redirect
       //       or inform user about course not existing in case it doesn't
     }
@@ -56,6 +66,7 @@ app.get("/", async (request, response) => {
       console.error(error);
     }
   }
+  // response.json({ status: "authentication failed" });
 });
 
 app.get("/:course", async ({ params }, response) => {
