@@ -6,6 +6,7 @@
   "scripts": {
     "start": "cross-env NODE_ENV=production node src/index.js",
     "dev": "cross-env NODE_ENV=development nodemon src/index.js",
+    "dev:server": "nodemon src/backend/index.js",
     "jest": "jest --coverage",
     "test:jest": "jest",
     "test:corde": "cross-env NODE_ENV=test corde",
