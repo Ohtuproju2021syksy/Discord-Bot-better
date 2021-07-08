@@ -46,12 +46,12 @@ app.get("/", async (request, response) => {
       const member = guild.members.cache.get(authedUser.id);
       if (member) {
         await member.roles.add(courseRole);
-        response.redirect(process.env.SERVER_URL);
+        response.redirect(process.env.DISCORD_SERVER_INVITE);
       }
       else {
         client.users.fetch(authedUser.id)
           .then((user) => guild.addMember(user, { accessToken, roles: [courseRole.id] }));
-        response.redirect(process.env.SERVER_URL);
+        response.redirect(process.env.DISCORD_SERVER_INVITE);
       }
 
       // response.json({ courseRole, member });
@@ -68,7 +68,7 @@ app.get("/", async (request, response) => {
 app.get("/:course", async ({ params }, response) => {
   const { course } = params;
   const redirect_uri =
-    `${process.env.REDIRECT_URL}&state=${course}`;
+    `${process.env.DISCORD_REDIRECT_URL}&state=${course}`;
   response.redirect(redirect_uri);
 });
 

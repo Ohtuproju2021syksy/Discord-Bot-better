@@ -30,6 +30,9 @@ BOT_TOKEN=your-own-token
 GUILD_ID=your-discord-server-id
 PREFIX=!
 POSTGRES_PASSWORD=your-postgres-password
+CLIENT_SECRET=your-client-secret
+DISCORD_REDIRECT_URL=your-client-oauth2-redirect-url-with-identyfy-guilds.join
+DISCORD_SERVER_INVITE=your-discord-server-invite
 DB_HOST= (only if you are not using PostgreSQL locally)
 
 # Bridge
