@@ -72,4 +72,4 @@ app.get("/:course", async ({ params }, response) => {
   response.redirect(redirect_uri);
 });
 
-app.listen(PORT, () => console.log(`App listening at http://localhost:${PORT}`));
+if (process.env.NODE_ENV !== "test") app.listen(PORT, () => console.log(`App listening at http://localhost:${PORT}`));
