@@ -1,4 +1,5 @@
 require("dotenv").config();
+require("./backend/index");
 const Discord = require("discord.js");
 const fs = require("fs");
 
