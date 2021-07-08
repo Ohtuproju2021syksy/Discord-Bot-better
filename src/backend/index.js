@@ -61,7 +61,7 @@ app.get("/", async (request, response) => {
 app.get("/:course", async ({ params }, response) => {
   const { course } = params;
   const redirect_uri =
-    `https://discord.com/api/oauth2/authorize?client_id=843811409216274493&redirect_uri=http%3A%2F%2Flocalhost%3A53134&response_type=code&scope=identify&state=${course}`;
+    `${process.env.REDIRECT_URL}&state=${course}`;
   response.redirect(redirect_uri);
 });
 
