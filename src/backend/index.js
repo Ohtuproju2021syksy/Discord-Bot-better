@@ -1,5 +1,4 @@
 require("dotenv").config();
-const Discord = require("discord.js");
 const express = require("express");
 const fetch = require("node-fetch");
 const PORT = process.env.PORT;
@@ -11,7 +10,7 @@ const app = express();
 
 app.get("/", async (request, response) => {
   const { code, state } = request.query;
-  console.log(state);
+  // console.log(state);
   if (code) {
     try {
       const oauthResult = await fetch("https://discord.com/api/oauth2/token", {
@@ -39,16 +38,15 @@ app.get("/", async (request, response) => {
       });
       const authedUser = await userResult.json();
       // console.log(authedUser);
-      const client = new Discord.Client();
-      await client.login(process.env.BOT_TOKEN);
+
+      const { client } = require("../index");
       const guild = await client.guilds.fetch(process.env.GUILD_ID);
-      const roles = await guild.roles.fetch();
-      const courseRole = await roles.cache.find(r => r.name === state);
-      if (!courseRole) response.redirect(process.env.SERVER_URL);
+      const courseRole = guild.roles.cache.find(r => r.name === state);
+      if (!courseRole) response.json({ status: "invalid invite url" });
       const member = guild.members.cache.get(authedUser.id);
       if (member) {
         await member.roles.add(courseRole);
-        response.json({ courseRole, member });
+        response.redirect(process.env.SERVER_URL);
       }
       else {
         client.users.fetch(authedUser.id)
@@ -57,8 +55,6 @@ app.get("/", async (request, response) => {
       }
 
       // response.json({ courseRole, member });
-      // TODO: Get inv link from pinned message from course announcements and redirect
-      //       or inform user about course not existing in case it doesn't
     }
     catch (error) {
       // NOTE: An unauthorized token will not throw an error;
