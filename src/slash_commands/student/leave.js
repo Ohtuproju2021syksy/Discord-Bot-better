@@ -4,7 +4,7 @@ const { client } = require("../../index");
 
 const getChoices = () => {
   const choices = client.guild.channels.cache
-    .filter(({ type, name }) => type === "category" && name.startsWith("📚"))
+    .filter(({ type, name }) => type === "category" && name.startsWith("📚") || name.startsWith("🔒"))
     .map(({ name }) => getRoleFromCategory(name))
     .map(courseName => ({ name: courseName, value: courseName }));
   // console.log(choices);
@@ -14,10 +14,11 @@ const getChoices = () => {
 const execute = async (interaction) => {
   const roleString = interaction.data.options[0].value;
   const member = await client.guild.members.fetch(interaction.member.user.id);
-
+  console.log(roleString);
   const courseRoles = client.guild.roles.cache
     .filter(role => (role.name === `${roleString} admin` || role.name === `${roleString}`))
     .map(role => role.name);
+
 
   if (!courseRoles.length) return sendEphemeral(client, interaction, `Invalid course name: ${roleString}`);
   if (!member.roles.cache.some((r) => courseRoles.includes(r.name))) return sendEphemeral(client, interaction, `You are not on a ${roleString} course.`);
