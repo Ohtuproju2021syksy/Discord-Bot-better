@@ -6,19 +6,9 @@
   "scripts": {
     "start": "cross-env NODE_ENV=production node src/index.js",
     "dev": "cross-env NODE_ENV=development nodemon src/index.js",
-<<<<<<< HEAD
     "dev:server": "cross-env NODE_ENV=test nodemon server/index.js",
     "jest": "jest --coverage --verbose --runInBand",
     "test:jest": "jest --coverage --verbose --runInBand",
-=======
-<<<<<<< HEAD
-    "dev:server": "nodemon src/backend/index.js",
-=======
-    "dev:server": "cross-env NODE_ENV=test nodemon server/index.js",
->>>>>>> b2d4b82 (initial backend)
-    "jest": "jest --coverage",
-    "test:jest": "jest",
->>>>>>> bf23c59 (initial backend)
     "test:corde": "cross-env NODE_ENV=test corde",
     "lint": "eslint .",
     "test": "npm run cover:jest && npm run cover:corde && npm run cover:report",
@@ -51,19 +41,9 @@
     "discord.js": "^12.5.3",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-<<<<<<< HEAD
     "express-session": "^1.17.2",
     "passport": "^0.4.1",
     "passport-discord": "^0.1.4",
-=======
-<<<<<<< HEAD
-    "node-fetch": "^2.6.1",
-=======
-    "express-session": "^1.17.2",
-    "passport": "^0.4.1",
-    "passport-discord": "^0.1.4",
->>>>>>> b2d4b82 (initial backend)
->>>>>>> bf23c59 (initial backend)
     "pg": "^8.6.0",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.6.2",
