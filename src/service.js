@@ -5,12 +5,21 @@ const { Invites } = require("./dbInit");
 
 const createCategoryName = (courseString) => `📚 ${courseString}`;
 
+const createPrivateCategoryName = (courseString) => `🔒 ${courseString}`;
+
 /**
  * Expects role to be between parenthesis e.g. (role)
  * @param {String} string
  */
 const getRoleFromCategory = (categoryName) => {
-  const cleaned = categoryName.replace("📚", "").trim();
+  let cleaned = null;
+  if (categoryName.includes("📚")) {
+    cleaned = categoryName.replace("📚", "").trim();
+  }
+  else {
+    cleaned = categoryName.replace("🔒", "").trim();
+  }
+  // const cleaned = categoryName.replace("📚", "").trim();
   const regExp = /\(([^)]+)\)/;
   const matches = regExp.exec(cleaned);
   return matches?.[1] || cleaned;
@@ -155,14 +164,34 @@ const deleteInvite = async (guild, course) => {
   await inviteToDelete.delete();
 };
 
+const findCategoryName = (courseString, guild) => {
+  const categorypublic = createCategoryName(courseString);
+  const categoryprivate = createPrivateCategoryName(courseString);
+  try {
+    const publicCourse = guild.channels.cache.find(c => c.type === "category" && c.name === categorypublic);
+    const privateCourse = guild.channels.cache.find(c => c.type === "category" && c.name === categoryprivate);
+    if (!publicCourse && privateCourse) {
+      return categoryprivate;
+    }
+    else {
+      return categorypublic;
+    }
+  }
+  catch (error) {
+    // console.log(error);
+  }
+};
+
 module.exports = {
   getRoleFromCategory,
   findOrCreateRoleWithName,
   updateGuide,
   createInvitation,
   createCategoryName,
+  createPrivateCategoryName,
   findInvite,
   deleteInvite,
   findOrCreateInviteToDatabase,
   findInviteFromDBwithCourse,
+  findCategoryName,
 };
