@@ -1,7 +1,7 @@
 const fs = require("fs");
 const { client } = require("../../src/index.js");
 const { sequelize } = require("../../src/dbInit");
-const server = require("../../src/backend");
+const server = require("../../src/server/index");
 const BOT_TOKEN = process.env.BOT_TOKEN;
 
 beforeAll(async () => {
@@ -26,7 +26,7 @@ afterAll(async () => {
   }
   try {
     await sequelize.close();
-    console.log("Database connection closed successfully.");
+    console.log("DB connection closed successfully.");
   }
   catch (error) {
     console.error("Unable to connect to the database:", error);
