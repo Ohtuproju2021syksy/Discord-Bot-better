@@ -1,15 +1,14 @@
-const { deleteInvite, updateGuide } = require("../../service");
+const { deleteInvite, updateGuide, findCategoryName } = require("../../service");
 const { sendEphemeral } = require("../utils");
 const { client } = require("../../index");
 
-const createCategoryName = (courseString) => `📚 ${courseString}`;
 
 const execute = async (interaction) => {
   const courseName = interaction.data.options[0].value.toLowerCase().trim();
 
   const guild = client.guild;
 
-  const courseString = createCategoryName(courseName);
+  const courseString = findCategoryName(courseName, guild);
   const category = guild.channels.cache.find(c => c.type === "category" && c.name === courseString);
   if (!category) return sendEphemeral(client, interaction, `Invalid course name: ${courseName}.`);
   await Promise.all(guild.channels.cache
