@@ -1,7 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const fetch = require("node-fetch");
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3001;
 
 const clientID = process.env.BOT_TEST_ID;
 const clientSecret = process.env.CLIENT_SECRET;
@@ -23,7 +23,7 @@ app.get("/discordAuth", async (request, response) => {
           client_secret: clientSecret,
           code,
           grant_type: "authorization_code",
-          redirect_uri: `http://localhost:${PORT}`,
+          redirect_uri: `http://localhost:${PORT}/discordAuth`,
           scope: "identify",
         }),
         headers: {
@@ -76,8 +76,10 @@ app.get("/invite/:course", async ({ params }, response) => {
   }
 });
 
-app.all("*", function(request, response) {
+app.all("*", (request, response) => {
   response.redirect("/");
 });
 
-if (process.env.NODE_ENV !== "test") app.listen(PORT, () => console.log(`App listening at http://localhost:${PORT}`));
+const server = app.listen(PORT, () => console.log(`App listening at http://localhost:${PORT}`));
+
+module.exports = server;
