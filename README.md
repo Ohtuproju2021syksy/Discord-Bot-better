@@ -34,6 +34,7 @@ CLIENT_SECRET=your-client-secret
 DISCORD_REDIRECT_URL=your-client-oauth2-redirect-url-with-identyfy-guilds.join
 DISCORD_SERVER_INVITE=your-discord-server-invite
 DB_HOST= (only if you are not using PostgreSQL locally)
+PORT=your-custom-backend-port
 
 # Bridge
 DISCORD_BOT_TOKEN=discord-bridge-bot-token
