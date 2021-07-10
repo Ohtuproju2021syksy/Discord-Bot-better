@@ -2,7 +2,7 @@ const router = require("express").Router();
 const passport = require("passport");
 
 router.get("/", passport.authenticate("discord", {
-  failureRedirect: "/forbidden",
+  failureRedirect: "/discordAuth/unauthorized",
 }), async (req, res) => {
   const { client } = require("../../index");
   const guild = await client.guilds.fetch(process.env.GUILD_ID);
@@ -16,6 +16,10 @@ router.get("/", passport.authenticate("discord", {
       .then((user) => guild.addMember(user, { accessToken: req.user.accessToken, roles: [courseRole.id] }));
   }
   res.redirect(process.env.DISCORD_SERVER_INVITE);
+});
+
+router.get("/unauthorized", (req, res) => {
+  res.sendStatus(401);
 });
 
 module.exports = router;
