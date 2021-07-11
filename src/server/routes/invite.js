@@ -14,4 +14,5 @@ module.exports = (client) => {
       state: { courseRoleID: courseRole.id },
     })(req, res, next);
   });
+  return router;
 };
