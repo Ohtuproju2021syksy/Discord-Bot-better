@@ -1,7 +1,6 @@
 const GUIDE_CHANNEL_NAME = "guide";
 const COMMAND_CHANNEL_NAME = "commands";
 const FACULTY_ROLE = "faculty";
-const { Invites } = require("./dbInit");
 
 const createCategoryName = (courseString) => `📚 ${courseString}`;
 
@@ -52,8 +51,8 @@ const updateFaculty = async (guild) => {
 
 const updateGuideMessage = async (message) => {
   const guild = message.guild;
-
-  const guideinvite = message.guild.invites.find(invite => invite.course === "guide");
+  const invites = await guild.fetchInvites();
+  const guideInvite = invites.find(invite => invite.channel.name === "guide");
   const rows = guild.channels.cache
     .filter((ch) => ch.type === "category" && ch.name.startsWith("📚"))
     .map((ch) => {
@@ -87,7 +86,7 @@ In course specific channels you can also list instructors \`/instructors\`
 
 See more with \`/help\` and test out the commands in <#${commands.id}> channel!
 
-Invitation link for the server https://discord.gg/${guideinvite.code}
+Invitation link for the server https://discord.gg/${guideInvite.code}
 `;
 
   await message.edit(newContent);
@@ -103,22 +102,7 @@ const updateGuide = async (guild) => {
   await updateGuideMessage(message);
 };
 
-const findOrCreateInviteToDatabase = async (guild, invite, args) => {
-  const inviteFound = guild.invites.get(invite.code);
-  if (inviteFound) {
-    inviteFound.code = invite.code;
-    inviteFound.course = args;
-    inviteFound.save();
-  }
-  else {
-    const newInvite = await Invites.create({ code: invite.code, course: args });
-    guild.invites.set(invite.code, newInvite);
-  }
-};
-
 const createInvitation = async (guild, args) => {
-  const dbInvite = await findInviteFromDBwithCourse(args);
-  if (dbInvite) return;
   const guide = guild.channels.cache.find(
     c => c.type === "text" && c.name === "guide",
   );
@@ -132,27 +116,9 @@ const createInvitation = async (guild, args) => {
 
   const invite = await guide.createInvite({ maxAge: 0, unique: true, reason: args });
   const invitationlink = `Invitation link for the course https://discord.gg/${invite.code}`;
-  await findOrCreateInviteToDatabase(guild, invite, args);
-
-  guild.inv = await guild.fetchInvites();
 
   const message = await course.send(invitationlink);
   await message.pin();
-};
-
-const findInviteFromDBwithCourse = async (name) => {
-  return await Invites.findOne({ where: { course: name } });
-};
-
-const findInvite = async (guild, code) => {
-  return await guild.invites.get(code);
-};
-
-const deleteInvite = async (guild, course) => {
-  const invite = await Invites.findOne({ where: { course: course } });
-  await Invites.destroy({ where: { course: course } });
-  const inviteToDelete = guild.inv.get(invite.code);
-  await inviteToDelete.delete();
 };
 
 module.exports = {
@@ -161,8 +127,4 @@ module.exports = {
   updateGuide,
   createInvitation,
   createCategoryName,
-  findInvite,
-  deleteInvite,
-  findOrCreateInviteToDatabase,
-  findInviteFromDBwithCourse,
 };
