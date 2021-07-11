@@ -1,4 +1,4 @@
-const { findOrCreateRoleWithName, createInvitation, createCategoryName } = require("../../service");
+const { findOrCreateRoleWithName, createInvitation, createCategoryName } = require("../../services/service");
 
 /**
  *

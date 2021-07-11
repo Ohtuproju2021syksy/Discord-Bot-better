@@ -1,4 +1,4 @@
-const { initializeApplicationContext } = require("../init");
+const { initializeApplicationContext } = require("../services/init");
 const { initCommands } = require("../slash_commands/utils");
 
 const execute = async (client) => {
