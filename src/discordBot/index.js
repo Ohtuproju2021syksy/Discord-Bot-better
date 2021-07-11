@@ -1,8 +1,4 @@
 require("dotenv").config();
-<<<<<<< HEAD
-=======
-const startServer = require("../server/server");
->>>>>>> 62405ef (Refactor project applications into your own directories)
 const Discord = require("discord.js");
 const fs = require("fs");
 
@@ -40,10 +36,15 @@ for (const file of eventFiles) {
 
 const login = async () => {
 <<<<<<< HEAD
+<<<<<<< HEAD
   await client.login(token);
 =======
   startServer(await client.login(token));
 >>>>>>> 62405ef (Refactor project applications into your own directories)
+=======
+  await client.login(token);
+  startServer(client);
+>>>>>>> b6b2444 (Fix server start)
 };
 
 if (process.env.NODE_ENV !== "test") {
