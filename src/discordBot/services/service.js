@@ -131,6 +131,7 @@ const createInvitation = async (guild, args) => {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 const findInviteFromDBwithCourse = async (name) => {
   return await Invites.findOne({ where: { course: name } });
 };
@@ -166,6 +167,8 @@ const findCategoryName = (courseString, guild) => {
 
 =======
 >>>>>>> 2521df0 (Update init and service)
+=======
+>>>>>>> 62405efe00a632def5887a522933ab37a173517c
 module.exports = {
   getRoleFromCategory,
   findOrCreateRoleWithName,
@@ -173,12 +176,21 @@ module.exports = {
   createInvitation,
   createCategoryName,
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+<<<<<<<< HEAD:src/discordBot/services/service.js
+========
+>>>>>>> 62405efe00a632def5887a522933ab37a173517c
   createPrivateCategoryName,
   findInvite,
   deleteInvite,
   findOrCreateInviteToDatabase,
   findInviteFromDBwithCourse,
   findCategoryName,
+<<<<<<< HEAD
 =======
 >>>>>>> 2521df0 (Update init and service)
+=======
+>>>>>>>> 62405efe00a632def5887a522933ab37a173517c:src/service.js
+>>>>>>> 62405efe00a632def5887a522933ab37a173517c
 };
