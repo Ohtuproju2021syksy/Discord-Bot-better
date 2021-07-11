@@ -1,4 +1,4 @@
-const { getRoleFromCategory } = require("../../service");
+const { getRoleFromCategory } = require("../../services/service");
 
 const execute = (message) => {
   const guild = message.guild;

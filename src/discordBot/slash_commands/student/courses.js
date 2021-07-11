@@ -1,4 +1,4 @@
-const { getRoleFromCategory } = require("../../service");
+const { getRoleFromCategory } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
 const { client } = require("../../index");
 
