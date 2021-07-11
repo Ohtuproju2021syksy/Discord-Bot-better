@@ -1,5 +1,3 @@
-const { deleteInvite } = require("../../services/service");
-
 const createCategoryName = (courseString) => `📚 ${courseString}`;
 
 const execute = async (message, args) => {
@@ -12,8 +10,6 @@ const execute = async (message, args) => {
     .filter(c => c.parent === category)
     .map(async channel => await channel.delete()),
   );
-
-  await deleteInvite(guild, args);
 
   await category.delete();
 

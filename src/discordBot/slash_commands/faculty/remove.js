@@ -1,4 +1,4 @@
-const { deleteInvite, updateGuide, findCategoryName } = require("../../services/service");
+const { updateGuide, findCategoryName } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
 const { client } = require("../../index");
 
@@ -15,8 +15,6 @@ const execute = async (interaction) => {
     .filter(c => c.parent === category)
     .map(async channel => await channel.delete()),
   );
-
-  await deleteInvite(guild, courseName);
 
   await category.delete();
 
