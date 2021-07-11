@@ -149,11 +149,13 @@ const findCategoryName = (courseString, guild) => {
 };
 
 module.exports = {
-  getRoleFromCategory,
-  findOrCreateRoleWithName,
-  updateGuide,
-  createInvitation,
   createCategoryName,
   createPrivateCategoryName,
+  getRoleFromCategory,
+  findOrCreateRoleWithName,
+  updateFaculty,
+  updateGuideMessage,
+  updateGuide,
+  createInvitation,
   findCategoryName,
 };
