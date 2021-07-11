@@ -1,4 +1,4 @@
-const { deleteInvite, updateGuide, findCategoryName } = require("../../service");
+const { deleteInvite, updateGuide } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
 const { client } = require("../../index");
 
