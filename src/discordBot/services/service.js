@@ -122,9 +122,15 @@ const createInvitation = async (guild, args) => {
   const course = guild.channels.cache.find(
     (c => c.parent === category),
   );
+  let invitationlink;
+  if (args === GUIDE_CHANNEL_NAME) {
+    const invite = await guide.createInvite({ maxAge: 0, unique: true, reason: args });
+    invitationlink = `Invitation link for the course https://discord.gg/${invite.code}`;
+  }
+  else {
+    invitationlink = `Invitation link for the course ${process.env.SERVER_URL}:${process.env.PORT}/invite/${args}`;
+  }
 
-  const invite = await guide.createInvite({ maxAge: 0, unique: true, reason: args });
-  const invitationlink = `Invitation link for the course https://discord.gg/${invite.code}`;
 
   const message = await course.send(invitationlink);
   await message.pin();
