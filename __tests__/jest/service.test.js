@@ -70,7 +70,6 @@ describe("Service", () => {
     expect(msg.edit).toHaveBeenCalledTimes(1);
     client.guild.channels.cache = [];
   });
-<<<<<<< HEAD
   test("creating guide invitation call createInvite", async () => {
     const msg = { pin: jest.fn() };
     const invite = { code: 1 };
@@ -81,20 +80,24 @@ describe("Service", () => {
     expect(msg.pin).toHaveBeenCalledTimes(1);
     client.guild.channels.cache = [];
   });
-  test("creating invitation not guide", async () => {
-=======
-  test("create invitation", async () => {
->>>>>>> d517f23 (Add and update jest tests)
+  test("creating guide invitation call createInvite", async () => {
     const msg = { pin: jest.fn() };
     const invite = { code: 1 };
     const guide = { name: "guide", type: "text", createInvite: jest.fn(() =>invite), send: jest.fn(() => msg) };
     client.guild.channels.cache = [guide];
     await createInvitation(client.guild, "test");
-<<<<<<< HEAD
     expect(guide.createInvite).toHaveBeenCalledTimes(0);
-=======
     expect(guide.createInvite).toHaveBeenCalledTimes(1);
->>>>>>> d517f23 (Add and update jest tests)
+    expect(msg.pin).toHaveBeenCalledTimes(1);
+    client.guild.channels.cache = [];
+  });
+  test("creating invitation not guide", async () => {
+    const msg = { pin: jest.fn() };
+    const invite = { code: 1 };
+    const guide = { name: "guide", type: "text", createInvite: jest.fn(() =>invite), send: jest.fn(() => msg) };
+    client.guild.channels.cache = [guide];
+    await createInvitation(client.guild, "test");
+    expect(guide.createInvite).toHaveBeenCalledTimes(0);
     expect(msg.pin).toHaveBeenCalledTimes(1);
     client.guild.channels.cache = [];
   });
