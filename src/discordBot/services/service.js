@@ -163,7 +163,5 @@ module.exports = {
   updateGuideMessage,
   updateGuide,
   createInvitation,
-  createCategoryName,
-  createPrivateCategoryName,
   findCategoryName,
 };
