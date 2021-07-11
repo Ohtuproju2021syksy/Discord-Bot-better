@@ -2,13 +2,10 @@ require("dotenv").config();
 const GUIDE_CHANNEL_NAME = "guide";
 const COMMAND_CHANNEL_NAME = "commands";
 const FACULTY_ROLE = "faculty";
-<<<<<<< HEAD:src/discordBot/services/service.js
 
 let invite_url = "";
 
 process.env.NODE_ENV === "production" ? invite_url = `${process.env.BACKEND_SERVER_URL}` : invite_url = `${process.env.BACKEND_SERVER_URL}:${process.env.PORT}`;
-=======
->>>>>>> da1d22d (Update init and service):src/service.js
 
 const createCategoryName = (courseString) => `📚 ${courseString}`;
 
@@ -171,6 +168,5 @@ module.exports = {
   updateGuideMessage,
   updateGuide,
   createInvitation,
-  createCategoryName,
   findCategoryName,
 };

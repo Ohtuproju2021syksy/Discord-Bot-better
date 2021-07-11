@@ -36,7 +36,7 @@ for (const file of eventFiles) {
 
 const login = async () => {
   await client.login(token);
-}
+};
 
 if (process.env.NODE_ENV !== "test") {
   login();
