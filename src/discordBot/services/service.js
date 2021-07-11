@@ -148,31 +148,14 @@ const findCategoryName = (courseString, guild) => {
   }
 };
 
-=======
->>>>>>> 62405ef (Refactor project applications into your own directories)
-=======
->>>>>>> d450997 (Fix service import iin hide and clean service module)
 module.exports = {
+  createCategoryName,
+  createPrivateCategoryName,
   getRoleFromCategory,
   findOrCreateRoleWithName,
+  updateFaculty,
+  updateGuideMessage,
   updateGuide,
   createInvitation,
-  createCategoryName,
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 62405ef (Refactor project applications into your own directories)
-=======
->>>>>>> d450997 (Fix service import iin hide and clean service module)
-  createPrivateCategoryName,
   findCategoryName,
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 2521df0 (Update init and service)
-=======
->>>>>>> 62405ef (Refactor project applications into your own directories)
-=======
->>>>>>> d450997 (Fix service import iin hide and clean service module)
 };
