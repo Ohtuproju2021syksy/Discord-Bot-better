@@ -1,6 +1,4 @@
-const { Invites } = require("./dbInit");
-
-const { findOrCreateRoleWithName, updateGuide, findOrCreateInviteToDatabase } = require("./service");
+const { findOrCreateRoleWithName, updateGuide } = require("./service");
 
 const findOrCreateChannel = (guild, channelObject) => {
   const { name, options } = channelObject;
@@ -45,27 +43,21 @@ const setInitialGuideMessage = async (guild, channelName) => {
   if (!guideChannel.lastPinTimestamp) {
     const msg = await guideChannel.send("initial");
     await msg.pin();
-
-    const invs = await guild.fetchInvites();
-    const guideinvite = invs.find(invite => invite.channel.name === "guide");
-    if (!guideinvite) {
-      const invite = await guideChannel.createInvite({ maxAge: 0 });
-      await findOrCreateInviteToDatabase(guild, invite, "guide");
-
-    }
-    guild.inv = await guild.fetchInvites();
-    await updateGuide(guild);
   }
+  const invs = await guild.fetchInvites();
+  const guideinvite = invs.find(invite => invite.channel.name === "guide");
+  if (!guideinvite) await guideChannel.createInvite({ maxAge: 0 });
+  await updateGuide(guild);
 };
 
 const initializeApplicationContext = async (client) => {
   await initChannels(client.guild, client);
   await setInitialGuideMessage(client.guild, "guide");
   await initRoles(client.guild);
-  const storedInvites = await Invites.findAll();
-  storedInvites.forEach(i => client.guild.invites.set(i.code, i));
 };
 
 module.exports = {
   initializeApplicationContext,
+  initChannels,
+  setInitialGuideMessage,
 };
