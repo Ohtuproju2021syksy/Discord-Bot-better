@@ -1,6 +1,6 @@
-const { initializeApplicationContext } = require("../../src/init");
+const { initializeApplicationContext } = require("../../src/discordBot/services/init");
 
-jest.mock("../../src/service");
+jest.mock("../../src/discordBot/services/service");
 
 const client = {
   user: {

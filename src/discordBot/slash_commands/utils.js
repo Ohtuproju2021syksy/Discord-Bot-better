@@ -63,11 +63,11 @@ const createSlashCommand = async (client, slashCommand) => {
 
 const loadCommands = (client) => {
   const slashCommands = new Collection();
-  const slashCommandFolders = fs.readdirSync("./src/slash_commands/", { withFileTypes: true })
+  const slashCommandFolders = fs.readdirSync("./src/discordBot/slash_commands/", { withFileTypes: true })
     .filter(dirent => dirent.isDirectory())
     .map(dirent => dirent.name);
   for (const folder of slashCommandFolders) {
-    const slashCommandFiles = fs.readdirSync(`./src/slash_commands/${folder}`).filter(file => file.endsWith(".js"));
+    const slashCommandFiles = fs.readdirSync(`./src/discordBot/slash_commands/${folder}`).filter(file => file.endsWith(".js"));
     for (const file of slashCommandFiles) {
       const slashCommand = require(`./${folder}/${file}`);
       if (slashCommand.devOnly && process.env.NODE_ENV !== "development") continue;

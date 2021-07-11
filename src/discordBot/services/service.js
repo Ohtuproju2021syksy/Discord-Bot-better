@@ -130,16 +130,55 @@ const createInvitation = async (guild, args) => {
   await message.pin();
 };
 
+<<<<<<< HEAD
+const findInviteFromDBwithCourse = async (name) => {
+  return await Invites.findOne({ where: { course: name } });
+};
+
+const findInvite = async (guild, code) => {
+  return await guild.invites.get(code);
+};
+
+const deleteInvite = async (guild, course) => {
+  const invite = await Invites.findOne({ where: { course: course } });
+  await Invites.destroy({ where: { course: course } });
+  const inviteToDelete = guild.inv.get(invite.code);
+  await inviteToDelete.delete();
+};
+
+const findCategoryName = (courseString, guild) => {
+  const categorypublic = createCategoryName(courseString);
+  const categoryprivate = createPrivateCategoryName(courseString);
+  try {
+    const publicCourse = guild.channels.cache.find(c => c.type === "category" && c.name === categorypublic);
+    const privateCourse = guild.channels.cache.find(c => c.type === "category" && c.name === categoryprivate);
+    if (!publicCourse && privateCourse) {
+      return categoryprivate;
+    }
+    else {
+      return categorypublic;
+    }
+  }
+  catch (error) {
+    // console.log(error);
+  }
+};
+
+=======
+>>>>>>> 2521df0 (Update init and service)
 module.exports = {
   getRoleFromCategory,
   findOrCreateRoleWithName,
   updateGuide,
   createInvitation,
   createCategoryName,
+<<<<<<< HEAD
   createPrivateCategoryName,
   findInvite,
   deleteInvite,
   findOrCreateInviteToDatabase,
   findInviteFromDBwithCourse,
   findCategoryName,
+=======
+>>>>>>> 2521df0 (Update init and service)
 };
