@@ -24,7 +24,7 @@
       "/node_modules/",
       "__tests__"
     ],
-    "testRegex": "./__tests__/jest_setup/setup.js"
+    "testRegex": "./__tests__/jest"
   },
   "repository": {
     "type": "git",
