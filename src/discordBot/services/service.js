@@ -130,23 +130,6 @@ const createInvitation = async (guild, args) => {
   await message.pin();
 };
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-const findInviteFromDBwithCourse = async (name) => {
-  return await Invites.findOne({ where: { course: name } });
-};
-
-const findInvite = async (guild, code) => {
-  return await guild.invites.get(code);
-};
-
-const deleteInvite = async (guild, course) => {
-  const invite = await Invites.findOne({ where: { course: course } });
-  await Invites.destroy({ where: { course: course } });
-  const inviteToDelete = guild.inv.get(invite.code);
-  await inviteToDelete.delete();
-};
-
 const findCategoryName = (courseString, guild) => {
   const categorypublic = createCategoryName(courseString);
   const categoryprivate = createPrivateCategoryName(courseString);
@@ -165,32 +148,12 @@ const findCategoryName = (courseString, guild) => {
   }
 };
 
-=======
->>>>>>> 2521df0 (Update init and service)
-=======
->>>>>>> 62405efe00a632def5887a522933ab37a173517c
 module.exports = {
   getRoleFromCategory,
   findOrCreateRoleWithName,
   updateGuide,
   createInvitation,
   createCategoryName,
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-<<<<<<<< HEAD:src/discordBot/services/service.js
-========
->>>>>>> 62405efe00a632def5887a522933ab37a173517c
   createPrivateCategoryName,
-  findInvite,
-  deleteInvite,
-  findOrCreateInviteToDatabase,
-  findInviteFromDBwithCourse,
   findCategoryName,
-<<<<<<< HEAD
-=======
->>>>>>> 2521df0 (Update init and service)
-=======
->>>>>>>> 62405efe00a632def5887a522933ab37a173517c:src/service.js
->>>>>>> 62405efe00a632def5887a522933ab37a173517c
 };
