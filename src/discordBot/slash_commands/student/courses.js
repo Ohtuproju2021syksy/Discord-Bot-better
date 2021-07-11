@@ -4,40 +4,18 @@ const { client } = require("../../index");
 
 const execute = async (interaction) => {
   const guild = await client.guilds.fetch(process.env.GUILD_ID);
-  const teacher = guild.roles.cache.find(r => r.name === "teacher");
-  const admin = guild.roles.cache.find(r => r.name === "admin");
 
-  if (interaction.member.roles.includes(teacher.id || admin.id)) {
-    const data = guild.channels.cache
-      .filter((ch) => ch.type === "category" && ch.name.startsWith("📚") || ch.name.startsWith("🔒"))
-      .map((ch) => {
-        let courseFullName;
-        if (ch.name.startsWith("🔒")) {
-          courseFullName = ch.name.replace("🔒", "").trim();
-        }
-        else {
-          courseFullName = ch.name.replace("📚", "").trim();
-        }
-        const courseRole = getRoleFromCategory(ch.name);
-        return `${courseFullName} - \`/join ${courseRole}\``;
-      })
-      .sort((a, b) => a.localeCompare(b));
-    if (data.length === 0) sendEphemeral(client, interaction, "No courses available");
-    else sendEphemeral(client, interaction, data.join(" \n"));
-  }
-  else {
-    const data = guild.channels.cache
-      .filter((ch) => ch.type === "category" && ch.name.startsWith("📚"))
-      .map((ch) => {
-        const courseFullName = ch.name.replace("📚", "").trim();
-        const courseRole = getRoleFromCategory(ch.name);
-        return `${courseFullName} - \`/join ${courseRole}\``;
-      })
-      .sort((a, b) => a.localeCompare(b));
+  const data = guild.channels.cache
+    .filter((ch) => ch.type === "category" && ch.name.startsWith("📚"))
+    .map((ch) => {
+      const courseFullName = ch.name.replace("📚", "").trim();
+      const courseRole = getRoleFromCategory(ch.name);
+      return `${courseFullName} - \`/join ${courseRole}\``;
+    })
+    .sort((a, b) => a.localeCompare(b));
 
-    if (data.length === 0) sendEphemeral(client, interaction, "No courses available");
-    else sendEphemeral(client, interaction, data.join(" \n"));
-  }
+  if (data.length === 0) sendEphemeral(client, interaction, "No courses available");
+  else sendEphemeral(client, interaction, data.join(" \n"));
 };
 
 module.exports = {

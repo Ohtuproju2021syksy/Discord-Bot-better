@@ -131,6 +131,7 @@ const createInvitation = async (guild, args) => {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 const findInviteFromDBwithCourse = async (name) => {
   return await Invites.findOne({ where: { course: name } });
 };
@@ -166,6 +167,8 @@ const findCategoryName = (courseString, guild) => {
 
 =======
 >>>>>>> 2521df0 (Update init and service)
+=======
+>>>>>>> 62405ef (Refactor project applications into your own directories)
 module.exports = {
   getRoleFromCategory,
   findOrCreateRoleWithName,
@@ -173,12 +176,18 @@ module.exports = {
   createInvitation,
   createCategoryName,
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 62405ef (Refactor project applications into your own directories)
   createPrivateCategoryName,
   findInvite,
   deleteInvite,
   findOrCreateInviteToDatabase,
   findInviteFromDBwithCourse,
   findCategoryName,
+<<<<<<< HEAD
 =======
 >>>>>>> 2521df0 (Update init and service)
+=======
+>>>>>>> 62405ef (Refactor project applications into your own directories)
 };
