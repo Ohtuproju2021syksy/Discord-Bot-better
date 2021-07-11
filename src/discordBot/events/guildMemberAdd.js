@@ -1,10 +1,10 @@
-const { updateGuide } = require("../service");
+const { updateGuide } = require("../services/service");
 
 const execute = async (member, client) => {
   await updateGuide(client.guild);
 };
 
 module.exports = {
-  name: "guildMemberRemove",
+  name: "guildMemberAdd",
   execute,
 };

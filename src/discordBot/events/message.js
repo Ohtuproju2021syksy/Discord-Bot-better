@@ -1,4 +1,4 @@
-const { updateGuide } = require("../service");
+const { updateGuide } = require("../services/service");
 
 const prefix = process.env.PREFIX;
 
