@@ -130,23 +130,6 @@ const createInvitation = async (guild, args) => {
   await message.pin();
 };
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-const findInviteFromDBwithCourse = async (name) => {
-  return await Invites.findOne({ where: { course: name } });
-};
-
-const findInvite = async (guild, code) => {
-  return await guild.invites.get(code);
-};
-
-const deleteInvite = async (guild, course) => {
-  const invite = await Invites.findOne({ where: { course: course } });
-  await Invites.destroy({ where: { course: course } });
-  const inviteToDelete = guild.inv.get(invite.code);
-  await inviteToDelete.delete();
-};
-
 const findCategoryName = (courseString, guild) => {
   const categorypublic = createCategoryName(courseString);
   const categoryprivate = createPrivateCategoryName(courseString);
@@ -166,9 +149,9 @@ const findCategoryName = (courseString, guild) => {
 };
 
 =======
->>>>>>> 2521df0 (Update init and service)
-=======
 >>>>>>> 62405ef (Refactor project applications into your own directories)
+=======
+>>>>>>> d450997 (Fix service import iin hide and clean service module)
 module.exports = {
   getRoleFromCategory,
   findOrCreateRoleWithName,
@@ -177,17 +160,19 @@ module.exports = {
   createCategoryName,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 62405ef (Refactor project applications into your own directories)
+=======
+>>>>>>> d450997 (Fix service import iin hide and clean service module)
   createPrivateCategoryName,
-  findInvite,
-  deleteInvite,
-  findOrCreateInviteToDatabase,
-  findInviteFromDBwithCourse,
   findCategoryName,
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 >>>>>>> 2521df0 (Update init and service)
 =======
 >>>>>>> 62405ef (Refactor project applications into your own directories)
+=======
+>>>>>>> d450997 (Fix service import iin hide and clean service module)
 };

@@ -1,4 +1,4 @@
-const { updateGuide, createCategoryName } = require("../../service");
+const { updateGuide, createCategoryName } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
 const { client } = require("../../../index");
 
