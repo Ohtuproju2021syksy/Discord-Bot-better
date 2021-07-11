@@ -1,4 +1,4 @@
-const { deleteInvite } = require("../../service");
+const { deleteInvite } = require("../../services/service");
 
 const createCategoryName = (courseString) => `📚 ${courseString}`;
 
