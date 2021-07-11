@@ -8,6 +8,10 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
+afterEach(() => {
+  jest.clearAllMocks();
+});
+
 describe("Initialize", () => {
   test("After initialization guide and commands channels found", async () => {
     await initializeApplicationContext(client);
