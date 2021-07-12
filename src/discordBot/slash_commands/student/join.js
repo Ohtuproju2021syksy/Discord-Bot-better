@@ -1,17 +1,7 @@
-const { getRoleFromCategory, updateGuide } = require("../../services/service");
+const { updateGuide } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
-const { client } = require("../../index");
 
-const getChoices = () => {
-  const choices = client.guild.channels.cache
-    .filter(({ type, name }) => type === "category" && name.startsWith("📚"))
-    .map(({ name }) => getRoleFromCategory(name))
-    .map(courseName => ({ name: courseName, value: courseName }));
-    // console.log("join", choices);
-  return choices;
-};
-
-const execute = async (interaction) => {
+const execute = async (interaction, client) => {
   const roleString = interaction.data.options[0].value;
   const member = await client.guild.members.fetch(interaction.member.user.id);
   const courseRole = client.guild.roles.cache.find(r => r.name === roleString);
@@ -44,7 +34,7 @@ module.exports = {
       name: "course",
       description: "Course to join.",
       type: 3,
-      choices: getChoices(),
+      choices: [],
       required: true,
     },
   ],

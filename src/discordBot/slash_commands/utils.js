@@ -1,6 +1,7 @@
 const fs = require("fs");
 const { Client } = require("discord-slash-commands-client");
 const { Collection } = require("discord.js");
+const { getRoleFromCategory } = require("../services/service");
 
 const slashClient = new Client(
   process.env.BOT_TOKEN,
@@ -111,12 +112,22 @@ const reloadCommands = async (client, commandNames) => {
   });
 };
 
+const getChoices = (client) => {
+  const choices = client.guild.channels.cache
+    .filter(({ type, name }) => type === "category" && name.startsWith("📚"))
+    .map(({ name }) => getRoleFromCategory(name))
+    .map(courseName => ({ name: courseName, value: courseName }));
+    // console.log("join", choices);
+  return choices;
+};
+
 const initCommands = async (client) => {
   if (process.env.NODE_ENV === "test") return;
 
   const slashCommands = loadCommands(client);
 
   for (const slashCommand of slashCommands.values()) {
+    if (slashCommand.command.name === "join" || slashCommand.command.name === "leave") slashCommand.command.options[0].choices = getChoices(client);
     createSlashCommand(client, slashCommand.command);
     // reduce spam to discord api
     await new Promise(resolve => setTimeout(resolve, 4000));
