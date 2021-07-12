@@ -1,5 +1,5 @@
 const { group, test, beforeStart, afterAll, expect } = require("corde");
-const { client, login } = require("../../src/index.js");
+const { client, login } = require("../../src/discordBot/index");
 const courseName = "test course";
 
 beforeStart(async () => {
