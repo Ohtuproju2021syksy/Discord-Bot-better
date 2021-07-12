@@ -8,40 +8,7 @@ const {
   createInvitation,
   findCategoryName } = require("../../src/discordBot/services/service");
 
-const client = {
-  user: {
-    id: 1,
-  },
-  guild: {
-    invites: {
-      cache: [],
-    },
-    channels: {
-      cache: [],
-      create: jest.fn((name) => client.guild.channels.cache.push({
-        name: name, type: "text",
-        send: jest.fn((content) => { return { content: content, pin: jest.fn() }; }),
-        lastPinTimestamp: null,
-        createInvite: jest.fn(() => client.guild.invites.cache.push({
-          name: name,
-          code: 1,
-        })),
-      })),
-      messages: {
-        cache: [],
-        fetchPinned: jest.fn(() => []),
-        send: jest.fn(),
-      },
-    },
-    roles: {
-      cache: [],
-      create: jest.fn((data) => client.guild.roles.cache.push({
-        name: data.data.name,
-      })),
-    },
-    fetchInvites: jest.fn(() => client.guild.invites.cache),
-  },
-};
+const { client } = require("../temp/mockClient");
 
 afterEach(() => {
   jest.clearAllMocks();
