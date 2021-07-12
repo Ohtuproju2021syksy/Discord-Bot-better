@@ -1,5 +1,3 @@
-jest.mock("../../src/discordBot/services/service");
-
 const { execute } = require("../../src/discordBot/commands/student/help");
 
 const { teacherMessageHelp, teacherData, studentMessageHelp, studentData,
