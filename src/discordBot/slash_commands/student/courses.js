@@ -1,8 +1,7 @@
 const { getRoleFromCategory } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
-const { client } = require("../../index");
 
-const execute = async (interaction) => {
+const execute = async (interaction, client) => {
   const guild = await client.guilds.fetch(process.env.GUILD_ID);
 
   const data = guild.channels.cache
