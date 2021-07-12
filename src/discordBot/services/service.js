@@ -128,7 +128,7 @@ const createInvitation = async (guild, args) => {
     invitationlink = `Invitation link for the course https://discord.gg/${invite.code}`;
   }
   else {
-    invitationlink = `Invitation link for the course ${process.env.SERVER_URL}:${process.env.PORT}/invite/${args}`;
+    invitationlink = `Invitation link for the course ${process.env.BACKEND_SERVER_URL}:${process.env.PORT}/invite/${args}`;
   }
 
 
