@@ -3,7 +3,7 @@ jest.mock("../../src/discordBot/services/service");
 const { execute } = require("../../src/discordBot/commands/student/help");
 
 const { teacherMessageHelp, teacherData, studentMessageHelp, studentData,
-  teacherJoinData, studentInsData } = require("../temp/mocks.js");
+  teacherJoinData, studentInsData } = require("../temp/mockMessages.js");
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -38,5 +38,5 @@ describe("help command", () => {
     await execute(studentMessageHelp, ["instructors"]);
     expect(studentMessageHelp.channel.send).toHaveBeenCalledTimes(1);
     expect(studentMessageHelp.channel.send).toHaveBeenCalledWith(studentInsData, { "split": true });
-  })
+  });
 });
