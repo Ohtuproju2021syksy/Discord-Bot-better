@@ -1,8 +1,7 @@
 const prefix = "/";
 const { sendEphemeral } = require("../utils");
-const { client } = require("../../index");
 
-const execute = async (interaction) => {
+const execute = async (interaction, client) => {
   const guild = await client.guilds.fetch(process.env.GUILD_ID);
   const user = guild.members.cache.get(interaction.member.user.id);
   const data = [];

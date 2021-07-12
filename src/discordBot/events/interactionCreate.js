@@ -1,6 +1,6 @@
 const execute = async (interaction, client) => {
   const commandName = interaction.data.name.toLowerCase();
-  await client.slashCommands.get(commandName).command.execute(interaction);
+  await client.slashCommands.get(commandName).command.execute(interaction, client);
 };
 
 module.exports = {
