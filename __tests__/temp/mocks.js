@@ -1,4 +1,4 @@
-const { client } = require("../src/index.js");
+const { client } = require("./mockClient");
 const prefix = process.env.PREFIX;
 
 const teacherData = [];
@@ -80,7 +80,7 @@ const studentMessageHelp = {
   react: jest.fn(),
   reply: jest.fn(),
 };
-
+// extra
 const teacherMessageHelpJoin = {
   client: client,
   channel: {
@@ -94,7 +94,7 @@ const teacherMessageHelpJoin = {
   react: jest.fn(),
   reply: jest.fn(),
 };
-
+// extra
 const studentMessageHelpIns = {
   client: client,
   channel: {
