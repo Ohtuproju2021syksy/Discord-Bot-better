@@ -210,7 +210,13 @@ const joinMessage = {
   client: client,
   guild: {
     roles: {
+<<<<<<< HEAD
       cache: [],
+=======
+      cache: {
+        find: jest.fn(),
+      },
+>>>>>>> 6a7f3ba (Rename tests and mocks to identify group)
       create: jest.fn(),
     },
   },
