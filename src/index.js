@@ -1,5 +1,5 @@
 const startDiscordBot = require("./discordBot/index");
+const startServer = require("./server/server");
+const { client } = startDiscordBot;
 
-module.exports = {
-  startDiscordBot,
-};
+startServer(client);
