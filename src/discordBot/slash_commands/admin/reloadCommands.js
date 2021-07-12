@@ -1,9 +1,8 @@
-const { client } = require("../../index");
 const { reloadCommands } = require("../utils");
 
 const execute = async (message, args) => {
   if (message.member.hasPermission("ADMINISTRATOR")) {
-    reloadCommands(client, args);
+    reloadCommands(message.client, args);
   }
 };
 
