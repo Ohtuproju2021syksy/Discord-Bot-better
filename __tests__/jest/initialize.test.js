@@ -2,27 +2,7 @@ const { initializeApplicationContext } = require("../../src/discordBot/services/
 
 jest.mock("../../src/discordBot/services/service");
 
-const client = {
-  user: {
-    id: 1,
-  },
-  guild: {
-    channels: {
-      cache: [],
-      create: jest.fn((name) => client.guild.channels.cache.push({
-        name: name, type: "text",
-        send: jest.fn((content) => { return { content: content, pin: jest.fn() }; }),
-        lastPinTimestamp: null,
-        createInvite: jest.fn(),
-      })),
-    },
-    roles: {
-      cache: [],
-      create: jest.fn(),
-    },
-    fetchInvites: jest.fn(() => []),
-  },
-};
+const { client } = require("../temp/mockClient");
 
 afterEach(() => {
   jest.clearAllMocks();
