@@ -40,7 +40,6 @@ const client = {
   },
 };
 
-
 const commandFolders = fs.readdirSync(commandsPath);
 for (const folder of commandFolders) {
   const commandFiles = fs.readdirSync(`${commandsPath}/${folder}`).filter(file => file.endsWith(".js"));
