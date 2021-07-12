@@ -1,5 +1,4 @@
 require("dotenv").config();
-const startServer = require("../server/server");
 const Discord = require("discord.js");
 const fs = require("fs");
 
@@ -37,7 +36,6 @@ for (const file of eventFiles) {
 
 const login = async () => {
   await client.login(token);
-  startServer(client);
 };
 
 if (process.env.NODE_ENV !== "test") {
