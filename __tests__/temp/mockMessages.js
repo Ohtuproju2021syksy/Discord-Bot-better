@@ -40,6 +40,7 @@ const teacher = {
     add: jest.fn(),
     fetch: jest.fn(),
   },
+  fetch: jest.fn(),
 };
 
 const student = {
@@ -209,9 +210,7 @@ const joinMessage = {
   client: client,
   guild: {
     roles: {
-      cache: {
-        find: jest.fn(),
-      },
+      cache: [],
       create: jest.fn(),
     },
   },
