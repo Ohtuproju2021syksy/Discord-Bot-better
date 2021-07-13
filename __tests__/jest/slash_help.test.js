@@ -12,8 +12,8 @@ const {
 const { sendEphemeral } = require("../../src/discordBot/slash_commands/utils");
 
 jest.mock("../../src/discordBot/slash_commands/utils");
-jest.mock("discord-slash-commands-client");
 jest.mock("../../src/discordBot/services/service");
+jest.mock("discord-slash-commands-client");
 
 
 afterEach(() => {
