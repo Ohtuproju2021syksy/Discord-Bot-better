@@ -54,16 +54,12 @@ client.guild.members.cache.set(2, student);
 
 const teacherInteractionHelp = {
   client: client,
-  channel: {
-    send: jest.fn(),
-  },
+  channel: 1,
   member: {
     user: {
       id: 1,
     },
   },
-  react: jest.fn(),
-  reply: jest.fn(),
   data: {
     options: false,
   },
@@ -71,16 +67,12 @@ const teacherInteractionHelp = {
 
 const studentInteractionHelp = {
   client: client,
-  channel: {
-    send: jest.fn(),
-  },
+  channel: 1,
   member: {
     user: {
       id: 2,
     },
   },
-  react: jest.fn(),
-  reply: jest.fn(),
   data: {
     options: false,
   },
@@ -88,34 +80,27 @@ const studentInteractionHelp = {
 
 const invalidInteractionHelp = {
   client: client,
-  channel: {
-    send: jest.fn(),
-  },
+  channel: 1,
   member: {
     user: {
       id: 2,
     },
   },
-  react: jest.fn(),
-  reply: jest.fn(),
   data: {
     options: [{
       value: "invalid",
     }],
   },
 };
+
 const interactionHelpJoin = {
   client: client,
-  channel: {
-    send: jest.fn(),
-  },
+  channel: 1,
   member: {
     user: {
       id: 1,
     },
   },
-  react: jest.fn(),
-  reply: jest.fn(),
   data: {
     options: [{
       value: "join",
@@ -123,6 +108,24 @@ const interactionHelpJoin = {
         name: "join",
         description: "Join a course, e.g. `/join ohpe`",
         usage: "[course name]",
+      },
+    }],
+  },
+};
+
+const interactionJoin = {
+  client: client,
+  channel: 1,
+  member: {
+    user: {
+      id: 1,
+    },
+  },
+  data: {
+    options: [{
+      value: "test",
+      command: {
+        name: "join",
       },
     }],
   },
@@ -138,4 +141,5 @@ module.exports = {
   studentInteractionHelp,
   invalidInteractionHelp,
   interactionHelpJoin,
+  interactionJoin,
 };
