@@ -14,7 +14,7 @@ const execute = async (interaction, client) => {
     .filter(r => (r.name === `${roleString} admin` || r.name === `${roleString}`))
     .map(r => r.name);
 
-  if (!courseRoles.length) return sendEphemeral(client, interaction, `Invalid course name: ${roleString}`);
+  // if (!courseRoles.length) return sendEphemeral(client, interaction, `Invalid course name: ${roleString}`);
   if (member.roles.cache.some(r => courseRoles.includes(r.name))) return sendEphemeral(client, interaction, `You are already on a ${roleString} course.`);
 
   const teacher = member.roles.cache.find(r => r.name === "teacher");
