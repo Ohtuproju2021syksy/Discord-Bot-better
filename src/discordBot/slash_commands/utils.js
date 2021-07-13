@@ -112,7 +112,16 @@ const reloadCommands = async (client, commandNames) => {
   });
 };
 
-const getChoices = (client) => {
+const leaveGetChoices = (client) => {
+  const choices = client.guild.channels.cache
+    .filter(({ type, name }) => type === "category" && name.startsWith("📚") || name.startsWith("🔒"))
+    .map(({ name }) => getRoleFromCategory(name))
+    .map(courseName => ({ name: courseName, value: courseName }));
+  // console.log(choices);
+  return choices;
+};
+
+const joinGetChoices = (client) => {
   const choices = client.guild.channels.cache
     .filter(({ type, name }) => type === "category" && name.startsWith("📚"))
     .map(({ name }) => getRoleFromCategory(name))
@@ -127,7 +136,8 @@ const initCommands = async (client) => {
   const slashCommands = loadCommands(client);
 
   for (const slashCommand of slashCommands.values()) {
-    if (slashCommand.command.name === "join" || slashCommand.command.name === "leave") slashCommand.command.options[0].choices = getChoices(client);
+    if (slashCommand.command.name === "join") slashCommand.command.options[0].choices = joinGetChoices(client);
+    if (slashCommand.command.name === "leave") slashCommand.command.options[0].choices = leaveGetChoices(client);
     createSlashCommand(client, slashCommand.command);
     // reduce spam to discord api
     await new Promise(resolve => setTimeout(resolve, 4000));
