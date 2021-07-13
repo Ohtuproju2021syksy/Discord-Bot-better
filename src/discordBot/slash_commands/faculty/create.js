@@ -1,4 +1,4 @@
-const { findOrCreateRoleWithName, createInvitation, createCategoryName, updateGuide } = require("../../services/service");
+const { findOrCreateRoleWithName, createInvitation, findCategoryName, updateGuide } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
 
 /**
