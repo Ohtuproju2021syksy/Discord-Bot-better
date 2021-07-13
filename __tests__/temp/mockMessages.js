@@ -40,10 +40,7 @@ const teacher = {
     add: jest.fn(),
     fetch: jest.fn(),
   },
-<<<<<<< HEAD
   fetch: jest.fn(),
-=======
->>>>>>> 4335925 (Rename tests and mocks to identify group)
 };
 
 const student = {
@@ -213,19 +210,7 @@ const joinMessage = {
   client: client,
   guild: {
     roles: {
-<<<<<<< HEAD
-<<<<<<< HEAD
       cache: [],
-=======
-      cache: {
-        find: jest.fn(),
-      },
->>>>>>> 6a7f3ba (Rename tests and mocks to identify group)
-=======
-      cache: {
-        find: jest.fn(),
-      },
->>>>>>> 4335925 (Rename tests and mocks to identify group)
       create: jest.fn(),
     },
   },
