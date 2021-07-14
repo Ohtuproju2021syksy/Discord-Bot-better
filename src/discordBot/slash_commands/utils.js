@@ -94,7 +94,7 @@ const loadCommands = (client) => {
 };
 
 const reloadCommands = async (client, commandNames) => {
-  commandNames.forEach(async (commandName) => {
+  commandNames.map(async (commandName) => {
     try {
       const { file } = client.slashCommands.get(commandName);
       delete require.cache[require.resolve(file)];
