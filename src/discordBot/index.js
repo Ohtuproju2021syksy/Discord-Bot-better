@@ -1,6 +1,7 @@
 require("dotenv").config();
 const Discord = require("discord.js");
 const fs = require("fs");
+const { Groups } = require("../db/dbInit");
 
 process.env.TG_BRIDGE_ENABLED && require("./bridge.js");
 
@@ -30,7 +31,7 @@ for (const file of eventFiles) {
     client.once(event.name, (...args) => event.execute(...args, client));
   }
   else {
-    client.on(event.name, (...args) => event.execute(...args, client));
+    client.on(event.name, (...args) => event.execute(...args, client, Groups));
   }
 }
 
