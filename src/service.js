@@ -5,12 +5,21 @@ const { Invites } = require("./dbInit");
 
 const createCategoryName = (courseString) => `📚 ${courseString}`;
 
+const createPrivateCategoryName = (courseString) => `🔒 ${courseString}`;
+
 /**
  * Expects role to be between parenthesis e.g. (role)
  * @param {String} string
  */
 const getRoleFromCategory = (categoryName) => {
-  const cleaned = categoryName.replace("📚", "").trim();
+  let cleaned = null;
+  if (categoryName.includes("📚")) {
+    cleaned = categoryName.replace("📚", "").trim();
+  }
+  else {
+    cleaned = categoryName.replace("🔒", "").trim();
+  }
+  // const cleaned = categoryName.replace("📚", "").trim();
   const regExp = /\(([^)]+)\)/;
   const matches = regExp.exec(cleaned);
   return matches?.[1] || cleaned;
@@ -29,40 +38,6 @@ const findOrCreateRoleWithName = async (name, guild) => {
       },
     }))
   );
-};
-
-// Turha?
-const createChannelInCategory = async (guild, channelName, categoryName) => {
-  const category = guild.channels.cache.find(c => c.type === "category" && c.name === categoryName) ||
-    await guild.channels.create(
-      categoryName,
-      {
-        type: "category",
-      });
-  const createdChannel = await guild.channels.create(channelName);
-  await createdChannel.setParent(category.id);
-  return createdChannel;
-};
-
-// Turha?
-const possibleRolesArray = (guild) => {
-  const rolesFromCategories = guild.channels.cache
-    .filter(({ type, name }) => type === "category" && name.startsWith("📚"))
-    .map(({ name }) => getRoleFromCategory(name));
-
-  const actualRoles = guild.roles.cache.filter((role) =>
-    rolesFromCategories.includes(role.name),
-  );
-  if (rolesFromCategories.length !== actualRoles.size) {
-    console.log(
-      "Something is wrong, rolesFromCategories did not match the size of actualRoles",
-      rolesFromCategories,
-      rolesFromCategories.length,
-      actualRoles.map(({ name }) => name),
-      actualRoles.size,
-    );
-  }
-  return actualRoles;
 };
 
 /**
@@ -96,7 +71,7 @@ const updateGuideMessage = async (message) => {
       const count = guild.roles.cache.find(
         (role) => role.name === courseRole,
       ).members.size;
-      return `  - ${courseFullName} \`!join ${courseRole}\` 👤${count}`;
+      return `  - ${courseFullName} \`/join ${courseRole}\` 👤${count}`;
     }).sort((a, b) => a.localeCompare(b));
 
   const commands = guild.channels.cache.find(
@@ -105,21 +80,21 @@ const updateGuideMessage = async (message) => {
 
   const newContent = `
 Käytössäsi on seuraavia komentoja:
-  - \`!join\` jolla voit liittyä kurssille
-  - \`!leave\` jolla voit poistua kurssilta
-Esim: \`!join ohpe\`
+  - \`/join\` jolla voit liittyä kurssille
+  - \`/leave\` jolla voit poistua kurssilta
+Esim: \`/join ohpe\`
   
 You have the following commands available:
-  - \`!join\` which you can use to join a course
-  - \`!leave\` which you can use to leave a course
-For example: \`!join ohpe\`
+  - \`/join\` which you can use to join a course
+  - \`/leave\` which you can use to leave a course
+For example: \`/join ohpe\`
 
 Kurssit / Courses:
 ${rows.join("\n")}
 
-In course specific channels you can also list instructors \`!instructors\`
+In course specific channels you can also list instructors \`/instructors\`
 
-See more with \`!help\` and test out the commands in <#${commands.id}> channel!
+See more with \`/help\` and test out the commands in <#${commands.id}> channel!
 
 Invitation link for the server https://discord.gg/${guideinvite.code}
 `;
@@ -189,16 +164,34 @@ const deleteInvite = async (guild, course) => {
   await inviteToDelete.delete();
 };
 
+const findCategoryName = (courseString, guild) => {
+  const categorypublic = createCategoryName(courseString);
+  const categoryprivate = createPrivateCategoryName(courseString);
+  try {
+    const publicCourse = guild.channels.cache.find(c => c.type === "category" && c.name === categorypublic);
+    const privateCourse = guild.channels.cache.find(c => c.type === "category" && c.name === categoryprivate);
+    if (!publicCourse && privateCourse) {
+      return categoryprivate;
+    }
+    else {
+      return categorypublic;
+    }
+  }
+  catch (error) {
+    // console.log(error);
+  }
+};
+
 module.exports = {
   getRoleFromCategory,
   findOrCreateRoleWithName,
-  possibleRolesArray,
-  createChannelInCategory,
   updateGuide,
   createInvitation,
   createCategoryName,
+  createPrivateCategoryName,
   findInvite,
   deleteInvite,
   findOrCreateInviteToDatabase,
   findInviteFromDBwithCourse,
+  findCategoryName,
 };

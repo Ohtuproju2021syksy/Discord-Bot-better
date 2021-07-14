@@ -1,5 +1,4 @@
 {
-    "commandsCategory": "Bot Channels",
     "testFilesDir": "./__tests__/corde/**",
     "testTimeOut": "10000"
 }

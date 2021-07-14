@@ -1,4 +1,3 @@
-const { commandsCategory } = require("../config.json");
 const { Invites } = require("./dbInit");
 
 const { findOrCreateRoleWithName, updateGuide, findOrCreateInviteToDatabase } = require("./service");
@@ -12,26 +11,18 @@ const findOrCreateChannel = (guild, channelObject) => {
   return guild.channels.create(name, options);
 };
 
-const initChannels = async (guild, categoryName, client) => {
-  const category = await guild.channels.cache.find(c => c.type === "category" && c.name === categoryName) ||
-    await guild.channels.create(
-      categoryName,
-      {
-        type: "category",
-      });
+const initChannels = async (guild, client) => {
 
   const channels = [
     {
       name: "commands",
       options: {
-        parent: category,
         type: "text",
       },
     },
     {
       name: "guide",
       options: {
-        parent: category,
         type: "text",
         topic: " ",
         permissionOverwrites: [{ id: guild.id, deny: ["SEND_MESSAGES"], "allow": ["VIEW_CHANNEL"] }, { id: client.user.id, allow: ["SEND_MESSAGES", "VIEW_CHANNEL"] }],
@@ -68,7 +59,7 @@ const setInitialGuideMessage = async (guild, channelName) => {
 };
 
 const initializeApplicationContext = async (client) => {
-  await initChannels(client.guild, commandsCategory, client);
+  await initChannels(client.guild, client);
   await setInitialGuideMessage(client.guild, "guide");
   await initRoles(client.guild);
   const storedInvites = await Invites.findAll();

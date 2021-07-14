@@ -1,4 +1,4 @@
-const { getRoleFromCategory } = require("../../service");
+const { getRoleFromCategory, updateGuide } = require("../../service");
 const { sendEphemeral } = require("../utils");
 const { client } = require("../../index");
 
@@ -7,7 +7,7 @@ const getChoices = () => {
     .filter(({ type, name }) => type === "category" && name.startsWith("📚"))
     .map(({ name }) => getRoleFromCategory(name))
     .map(courseName => ({ name: courseName, value: courseName }));
-  // console.log(choices);
+    // console.log("join", choices);
   return choices;
 };
 
@@ -29,6 +29,7 @@ const execute = async (interaction) => {
     .map(async r => member.roles.add(r)) : await member.roles.add(courseRole);
 
   sendEphemeral(client, interaction, `You have been added to a ${roleString} course.`);
+  updateGuide(client.guild);
 };
 
 module.exports = {

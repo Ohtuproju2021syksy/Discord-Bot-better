@@ -7,6 +7,8 @@
 
 [Setup for testing Bot](./setuptestbot.md)
 
+[Setup for the backend](./OAuth2.md)
+
 ## Workflow
 [Workflow practices](./workflow.md)
 

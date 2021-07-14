@@ -1,11 +1,11 @@
 require("dotenv").config();
+require("./backend/index");
 const Discord = require("discord.js");
 const fs = require("fs");
 
 process.env.TG_BRIDGE_ENABLED && require("./bridge.js");
 
 const token = process.env.BOT_TOKEN;
-const { slashCommands, createSlashCommands } = require("./slash_commands/utils");
 
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
@@ -22,22 +22,18 @@ for (const folder of commandFolders) {
 const eventFiles = fs.readdirSync("./src/events").filter(file => file.endsWith(".js"));
 for (const file of eventFiles) {
   const event = require(`./events/${file}`);
-  if (event.once) {
+  if (event.ws) {
+    client.ws.on(event.name, async (interaction) => {
+      event.execute(interaction, client);
+    });
+  }
+  else if (event.once) {
     client.once(event.name, (...args) => event.execute(...args, client));
   }
   else {
     client.on(event.name, (...args) => event.execute(...args, client));
   }
 }
-
-client.ws.on("INTERACTION_CREATE", async interaction => {
-  const command = interaction.data.name.toLowerCase();
-  slashCommands.find(c => c.name === command).execute(interaction);
-});
-
-client.on("COURSES_CHANGED", async () => {
-  await createSlashCommands(client, ["join", "leave"]);
-});
 
 const login = async () => {
   await client.login(token);
