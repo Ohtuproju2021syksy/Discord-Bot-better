@@ -2,7 +2,7 @@ const { getRoleFromCategory } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
 
 const execute = async (interaction, client) => {
-  const guild = await client.guilds.fetch(process.env.GUILD_ID);
+  const guild = client.guild;
 
   const data = guild.channels.cache
     .filter((ch) => ch.type === "category" && ch.name.startsWith("📚"))
