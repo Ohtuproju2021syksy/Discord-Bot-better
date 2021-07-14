@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 const { Telegraf } = require("telegraf");
-const { Groups } = require("./dbInit");
+const { Groups } = require("../db/dbInit");
 
 
 // Initialize bot clients
@@ -34,8 +34,8 @@ const sendMessageToDiscord = async (courseName, content) => {
   );
 
   if (!channel) {
-    console.log("not channel")
-    return
+    console.log("not channel");
+    return;
   }
   channel.send(content);
 };
@@ -77,7 +77,7 @@ telegramBot.on("text", async (ctx) => {
   const group = await Groups.findOne({ where: { group: ctx.message.chat.id } });
   // console.log(group);
   if (!group) {
-    return
+    return;
   }
   const courseName = group.course;
 
@@ -86,6 +86,6 @@ telegramBot.on("text", async (ctx) => {
     const user = ctx.message.from;
     const sender = user.first_name || user.username;
     sendMessageToDiscord(courseName, `<${sender}>: ${ctx.message.text}`);
-    return
+    return;
   }
 });
