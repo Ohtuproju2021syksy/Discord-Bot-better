@@ -1,3 +1,4 @@
+require("dotenv").config();
 const Sequelize = require("sequelize");
 const password = process.env.POSTGRES_PASSWORD;
 
