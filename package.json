@@ -8,7 +8,7 @@
     "dev": "cross-env NODE_ENV=development nodemon src/index.js",
     "dev:server": "cross-env NODE_ENV=test nodemon server/index.js",
     "jest": "jest --coverage --verbose --runInBand",
-    "test:jest": "jest --verbose --runInBand",
+    "test:jest": "jest --coverage --verbose --runInBand",
     "test:corde": "cross-env NODE_ENV=test corde",
     "lint": "eslint .",
     "test": "npm run cover:jest && npm run cover:corde && npm run cover:report",
