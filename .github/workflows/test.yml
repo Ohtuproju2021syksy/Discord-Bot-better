@@ -48,6 +48,12 @@ jobs:
         CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
         PREFIX: ${{ secrets.PREFIX }}
         POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        PORT: ${{ secrets.PORT }}
+        CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+        DISCORD_REDIRECT_URL: ${{ secrets.DISCORD_REDIRECT_URL }}
+        DISCORD_SERVER_INVITE: ${{ secrets.DISCORD_SERVER_INVITE }}
+        SESSION_SECRET: ${{ secrets.SESSION_SECRET}}
+        BACKEND_SERVER_URL: ${{ secrets.BACKEND_SERVER_URL }}
       run: npm test
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
