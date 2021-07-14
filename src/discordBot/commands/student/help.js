@@ -1,3 +1,4 @@
+require("dotenv").config();
 const prefix = process.env.PREFIX;
 
 const execute = (message, args) => {
