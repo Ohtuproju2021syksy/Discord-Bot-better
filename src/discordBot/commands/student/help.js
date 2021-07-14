@@ -1,12 +1,12 @@
 const prefix = process.env.PREFIX;
 
 const execute = (message, args) => {
-  const user = message.member;
+  const member = message.member;
   const data = [];
   const commandsReadyToPrint = message.client.commands
     .filter(command => {
       if (!command.role) return true;
-      return user.roles.cache.find(role => role.name === command.role);
+      return member.roles.cache.find(role => role.name === command.role);
     });
 
   if (!args.length) {

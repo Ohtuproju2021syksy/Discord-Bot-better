@@ -2,7 +2,8 @@ const prefix = "/";
 const { sendEphemeral } = require("../utils");
 
 const execute = async (interaction, client) => {
-  const guild = await client.guilds.fetch(process.env.GUILD_ID);
+  const guild = client.guild;
+
   const member = guild.members.cache.get(interaction.member.user.id);
   const data = [];
   const commandsReadyToPrint = client.slashCommands.map(c => c.command)
@@ -18,7 +19,7 @@ const execute = async (interaction, client) => {
     return sendEphemeral(client, interaction, data.join("\n"));
   }
 
-  const name = interaction.data.options[0].value;
+  const name = interaction.data.options[0].value.toLowerCase().trim();
   const command = commandsReadyToPrint.find(c => c.name.includes(name));
 
   if (!command) {

@@ -89,8 +89,6 @@ const execute = async (interaction, client) => {
 
   const guild = client.guild;
 
-  sendEphemeral(client, interaction, `Created course ${courseName}.`);
-
   // Roles
   const student = await findOrCreateRoleWithName(courseName, guild);
   const admin = await findOrCreateRoleWithName(`${courseName} admin`, guild);
@@ -106,8 +104,9 @@ const execute = async (interaction, client) => {
     async channelObject => await findOrCreateChannel(channelObject, guild),
   ));
   await createInvitation(guild, courseName);
-  client.emit("COURSES_CHANGED");
-  updateGuide(client.guild);
+  sendEphemeral(client, interaction, `Created course ${courseName}.`);
+  await client.emit("COURSES_CHANGED");
+  await updateGuide(client.guild);
 };
 
 module.exports = {

@@ -9,7 +9,8 @@ const execute = async (interaction, client) => {
   const courseString = createPrivateCategoryName(courseName);
   const category = guild.channels.cache.find(c => c.type === "category" && c.name === courseString);
   if (category) {
-    await guild.channels.cache.get(category.id).setName(`📚 ${courseName}`);
+    await category.setName(`📚 ${courseName}`)
+      .catch(console.error);
   }
   else {
     return sendEphemeral(client, interaction, `Invalid course name: ${courseName} or the course is public already.`);
@@ -17,8 +18,8 @@ const execute = async (interaction, client) => {
 
   sendEphemeral(client, interaction, `This course ${courseName} is now public.`);
 
-  client.emit("COURSES_CHANGED");
-  updateGuide(client.guild);
+  await client.emit("COURSES_CHANGED");
+  await updateGuide(client.guild);
 };
 
 module.exports = {
