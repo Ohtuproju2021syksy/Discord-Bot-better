@@ -40,6 +40,8 @@ const createCommandRolePermissions = (client, highestRole) => {
 };
 
 const createSlashCommand = async (client, slashCommand) => {
+  if (slashCommand.name === "join") slashCommand.options[0].choices = joinGetChoices(client);
+  if (slashCommand.name === "leave") slashCommand.options[0].choices = leaveGetChoices(client);
   try {
     const createdCommand = await slashClient
       .createCommand({
@@ -92,7 +94,7 @@ const loadCommands = (client) => {
 };
 
 const reloadCommands = async (client, commandNames) => {
-  commandNames.forEach((commandName) => {
+  commandNames.forEach(async (commandName) => {
     try {
       const { file } = client.slashCommands.get(commandName);
       delete require.cache[require.resolve(file)];
@@ -104,7 +106,7 @@ const reloadCommands = async (client, commandNames) => {
           file,
         },
       );
-      createSlashCommand(client, reloadedCommand);
+      await createSlashCommand(client, reloadedCommand);
     }
     catch (error) {
       console.log(`Unknown slash command${commandName}`);
@@ -136,9 +138,7 @@ const initCommands = async (client) => {
   const slashCommands = loadCommands(client);
 
   for (const slashCommand of slashCommands.values()) {
-    if (slashCommand.command.name === "join") slashCommand.command.options[0].choices = joinGetChoices(client);
-    if (slashCommand.command.name === "leave") slashCommand.command.options[0].choices = leaveGetChoices(client);
-    createSlashCommand(client, slashCommand.command);
+    await createSlashCommand(client, slashCommand.command);
     // reduce spam to discord api
     await new Promise(resolve => setTimeout(resolve, 4000));
   }
