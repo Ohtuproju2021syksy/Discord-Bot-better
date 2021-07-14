@@ -162,14 +162,12 @@ const instructorsMessageOutsideCourseChannelsWithRoles = {
   client: client,
   guild: {
     roles: {
-      cache: {
-        find: jest.fn(() => { return { name: "test admin", members: [teacher] }; }),
-      },
+      cache: [{ name: "test admin", members: [teacher] }],
     },
   },
   channel: {
     parent: {
-      name: "test",
+      name: "📚 test",
     },
     send: jest.fn(),
   },
