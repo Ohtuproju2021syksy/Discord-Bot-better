@@ -1,6 +1,11 @@
+require("dotenv").config();
 const GUIDE_CHANNEL_NAME = "guide";
 const COMMAND_CHANNEL_NAME = "commands";
 const FACULTY_ROLE = "faculty";
+
+let invite_url = "";
+
+process.env.NODE_ENV === "production" ? invite_url = `${process.env.BACKEND_SERVER_URL}` : invite_url = `${process.env.BACKEND_SERVER_URL}:${process.env.PORT}`;
 
 const createCategoryName = (courseString) => `📚 ${courseString}`;
 
@@ -128,7 +133,7 @@ const createInvitation = async (guild, args) => {
     invitationlink = `Invitation link for the course https://discord.gg/${invite.code}`;
   }
   else {
-    invitationlink = `Invitation link for the course ${process.env.BACKEND_SERVER_URL}:${process.env.PORT}/invite/${args}`;
+    invitationlink = `Invitation link for the course ${invite_url}/invite/${args}`;
   }
 
 
