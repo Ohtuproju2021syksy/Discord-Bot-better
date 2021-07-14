@@ -1,5 +1,6 @@
 const Discord = require("discord.js");
 const { Telegraf } = require("telegraf");
+const { Groups } = require("./dbInit");
 
 
 // Initialize bot clients
@@ -26,39 +27,65 @@ process.once("SIGTERM", () => telegramBot.stop("SIGTERM"));
 
 // Send message methods
 
-const sendMessageToDiscord = async (content) => {
+const sendMessageToDiscord = async (courseName, content) => {
   const guild = await discordClient.guilds.fetch(process.env.GUILD_ID);
   const channel = guild.channels.cache.find(
-    c => c.name === `${process.env.COURSE_NAME}_general`,
+    c => c.name === `${courseName}_general`,
   );
+
+  if (!channel) {
+    console.log("not channel")
+    return
+  }
   channel.send(content);
 };
 
-const sendMessageToTelegram = async (content) => {
-  telegramBot.telegram.sendMessage(process.env.TELEGRAM_CHAT_ID, content);
+const sendMessageToTelegram = async (groupId, content) => {
+  telegramBot.telegram.sendMessage(groupId, content);
 };
 
 
 // Event handlers
 
 discordClient.on("message", async message => {
+  // console.log(message)
   const name = message.channel.name;
-  if (!name.startsWith(process.env.COURSE_NAME)) return;
+  const courseName = name.split(" ")[0];
+
+  const group = await Groups.findOne({ where: { course: courseName } });
+  // console.log(group);
+
+  if (!group) return;
   if (message.author.bot) return;
+
   const sender = message.member.nickname || message.author.username;
   let channel = "";
   channel = name === `${process.env.COURSE_NAME}_announcement` ? " tiedotus" : channel;
   channel = name === `${process.env.COURSE_NAME}_questions` ? " kysymys" : channel;
-  sendMessageToTelegram(`<${sender}>${channel}: ${message.content}`);
+
+  sendMessageToTelegram(group.groupId, `<${sender}>${channel}: ${message.content}`);
 });
 
 telegramBot.on("text", async (ctx) => {
+  // console.log(ctx.message.chat);
+
   if (ctx.message.text === "/id") {
     console.log(`id: ${(await ctx.getChat()).id}`);
     return;
   }
 
-  const user = ctx.message.from;
-  const sender = user.first_name || user.username;
-  sendMessageToDiscord(`<${sender}>: ${ctx.message.text}`);
+  const group = await Groups.findOne({ where: { group: ctx.message.chat.id } });
+  // console.log(group);
+  if (!group) {
+    return
+  }
+  const courseName = group.course;
+
+
+  if (ctx.message.chat.id === group.group) {
+    const user = ctx.message.from;
+    const sender = user.first_name || user.username;
+    sendMessageToDiscord(courseName, `<${sender}>: ${ctx.message.text}`);
+    return
+  }
 });

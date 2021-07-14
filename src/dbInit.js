@@ -8,7 +8,8 @@ const sequelize = new Sequelize("postgres", "postgres", password, {
 });
 
 const Invites = require("./models/Invites")(sequelize, Sequelize.DataTypes);
+const Groups = require("./models/Groups")(sequelize, Sequelize.DataTypes);
 
-sequelize.sync();
+sequelize.sync({ force: true });
 
-module.exports = { Invites, sequelize };
+module.exports = { Invites, Groups, sequelize };
