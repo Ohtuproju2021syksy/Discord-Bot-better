@@ -159,6 +159,14 @@ const findCategoryName = (courseString, guild) => {
   }
 };
 
+const createNewGroup = async (args, Groups) => {
+  const courseName = args[0];
+  const groupId = parseInt(args[1]);
+
+  const newGroup = await Groups.create({ group: groupId, course: courseName });
+  console.log(newGroup);
+};
+
 module.exports = {
   createCategoryName,
   createPrivateCategoryName,
@@ -169,4 +177,5 @@ module.exports = {
   updateGuide,
   createInvitation,
   findCategoryName,
+  createNewGroup,
 };

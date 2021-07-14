@@ -2,7 +2,7 @@ const { updateGuide } = require("../services/service");
 
 const prefix = process.env.PREFIX;
 
-const execute = async (message, client) => {
+const execute = async (message, client, Groups) => {
   if (!message.content.startsWith(prefix)) return;
 
   let args = message.content.slice(prefix.length).trim().split(/ +/);
@@ -20,7 +20,7 @@ const execute = async (message, client) => {
   }
 
   try {
-    await command.execute(message, args);
+    await command.execute(message, args, Groups);
     if (command.guide) {
       await updateGuide(message.guild);
     }
