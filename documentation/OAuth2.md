@@ -16,7 +16,7 @@ Copy client secret from developer portal OAtuth section and set to .env `CLIENT_
 
 ### Redirects
 
-Set redirect to <server_url>/discordAuth.
+Set redirect to <backend_server_url>/discordAuth.
 
 ### Scopes
 
@@ -31,4 +31,5 @@ Something here
 
 ### Backend server url
 
-Something here
+Add default discord server invite to env DISCORD_SERVER_INVITE.
+Add session secret to env SESSION_SECRET and BACKEND_SERVER_URL to env
