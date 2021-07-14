@@ -2,8 +2,11 @@ const { updateGuide } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
 
 const execute = async (interaction, client) => {
-  const roleString = interaction.data.options[0].value;
-  const member = await client.guild.members.fetch(interaction.member.user.id);
+  const roleString = interaction.data.options[0].value.toLowerCase().trim();
+
+  const guild = client.guild;
+
+  const member = guild.members.cache.get(interaction.member.user.id);
   const courseRoles = client.guild.roles.cache
     .filter(role => (role.name === `${roleString} admin` || role.name === `${roleString}`))
     .map(role => role.name);
@@ -18,7 +21,7 @@ const execute = async (interaction, client) => {
   await member.fetch(true);
 
   sendEphemeral(client, interaction, `You have been removed from the ${roleString} course.`);
-  updateGuide(client.guild);
+  await updateGuide(client.guild);
 };
 
 module.exports = {

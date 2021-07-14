@@ -2,7 +2,7 @@ require("dotenv").config();
 const Discord = require("discord.js");
 const fs = require("fs");
 
-process.env.TG_BRIDGE_ENABLED && require("../bridge.js");
+process.env.TG_BRIDGE_ENABLED && require("./bridge.js");
 
 const token = process.env.BOT_TOKEN;
 
