@@ -59,7 +59,7 @@ const createSlashCommand = async (client, slashCommand) => {
     }
   }
   catch (error) {
-    // slashCommand.options && console.log(error);
+    // console.log(error);
   }
   console.log(`Created command ${slashCommand.name}`);
 };
@@ -128,7 +128,7 @@ const joinGetChoices = (client) => {
     .filter(({ type, name }) => type === "category" && name.startsWith("📚"))
     .map(({ name }) => getRoleFromCategory(name))
     .map(courseName => ({ name: courseName, value: courseName }));
-    // console.log("join", choices);
+  // console.log("join", choices);
   return choices;
 };
 
