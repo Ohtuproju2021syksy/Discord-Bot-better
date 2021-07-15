@@ -2,7 +2,7 @@
 
 ### Continuous Integration (CI)
 
-Generally all code changes are made to dev branch with the exception of certain alternative/experimental approaches that might have their own branches. Once changes are pushed to GitHub, [the testing workflow](../.github/workflows/test.yml) starts. It runs eslint, jest and [corde](https://github.com/cordejs/corde) tests and updates the coverage report. The tokens and IDs that corde requires are stored as GitHub secrets and the tests are run on separate test server on Discord.
+Generally all code changes are made to dev branch with the exception of certain alternative/experimental approaches that might have their own branches. Once changes are pushed to GitHub, [the testing workflow](../.github/workflows/test.yml) starts. It runs eslint, jest and [corde](https://github.com/cordejs/corde) tests and updates the coverage report. The tokens and IDs that corde requires are stored as GitHub secrets and the tests are run on separate test server on Discord. Once the tests have passed on dev branch, a new version of staging docker image is pushed to DockerHub.
 
 ### Continuous Deployment (CD)
 
