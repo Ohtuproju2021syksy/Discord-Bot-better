@@ -1,4 +1,4 @@
-name: Publish test Docker image
+name: Publish Development Docker image
 on:
   workflow_run:
     workflows: ["Testing pipeline"]
