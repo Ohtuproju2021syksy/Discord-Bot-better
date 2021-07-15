@@ -50,10 +50,11 @@ const sendMessageToTelegram = async (groupId, content) => {
 discordClient.on("message", async message => {
   // console.log(message)
   const name = message.channel.name;
-  const courseName = name.split(" ")[0];
+  const courseName = name.split("_")[0];
+  console.log(courseName);
 
   const group = await Groups.findOne({ where: { course: courseName } });
-  // console.log(group);
+  console.log(group);
 
   if (!group) return;
   if (message.author.bot) return;
@@ -63,27 +64,27 @@ discordClient.on("message", async message => {
   channel = name === `${process.env.COURSE_NAME}_announcement` ? " tiedotus" : channel;
   channel = name === `${process.env.COURSE_NAME}_questions` ? " kysymys" : channel;
 
-  sendMessageToTelegram(group.groupId, `<${sender}>${channel}: ${message.content}`);
+  sendMessageToTelegram(group.group, `<${sender}>${channel}: ${message.content}`);
 });
 
 telegramBot.on("text", async (ctx) => {
   // console.log(ctx.message.chat);
 
   if (ctx.message.text === "/id") {
-    console.log(`id: ${(await ctx.getChat()).id}`);
+    // console.log(`id: ${(await ctx.getChat()).id}`);
     return;
   }
 
-  const group = await Groups.findOne({ where: { group: ctx.message.chat.id } });
-  // console.log(group);
+  const group = await Groups.findOne({ where: { group: String(ctx.message.chat.id) } });
   if (!group) {
     return;
   }
+
   const courseName = group.course;
 
-
-  if (ctx.message.chat.id === group.group) {
+  if (String(ctx.message.chat.id) === group.group) {
     const user = ctx.message.from;
+    // console.log(user) tässä jotain ihmeellistä, tulee Group käyttäjäksi
     const sender = user.first_name || user.username;
     sendMessageToDiscord(courseName, `<${sender}>: ${ctx.message.text}`);
     return;
