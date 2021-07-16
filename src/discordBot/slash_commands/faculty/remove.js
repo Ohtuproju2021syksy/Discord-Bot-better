@@ -11,7 +11,6 @@ const execute = async (interaction, client) => {
   const category = guild.channels.cache.find(c => c.type === "category" && c.name === courseString);
 
   const channelGeneral = guild.channels.cache.find(c => c.parent === category && c.name.includes("general"));
-  const channelName = channelGeneral.name.split("_")[0];
 
   if (!category) return sendEphemeral(client, interaction, `Invalid course name: ${courseName}.`);
   await Promise.all(guild.channels.cache
@@ -30,7 +29,10 @@ const execute = async (interaction, client) => {
   await updateGuide(client.guild);
 
   // Telegram db link remove
-  removeGroup(channelName, Groups);
+  if (channelGeneral) {
+    const channelName = channelGeneral.name.split("_")[0];
+    removeGroup(channelName, Groups);
+  }
 };
 
 module.exports = {
