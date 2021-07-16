@@ -163,8 +163,15 @@ const createNewGroup = async (args, Groups) => {
   const courseName = args[0];
   const groupId = parseInt(args[1]);
 
-  const newGroup = await Groups.create({ group: groupId, course: courseName });
-  console.log(newGroup);
+  await Groups.create({ group: groupId, course: courseName });
+};
+
+const removeGroup = async (channelName, Groups) => {
+  const group = await Groups.findOne({ where: { course: channelName } });
+
+  if (group) {
+    await Groups.destroy({ where: { course: channelName } });
+  }
 };
 
 module.exports = {
@@ -178,4 +185,5 @@ module.exports = {
   createInvitation,
   findCategoryName,
   createNewGroup,
+  removeGroup,
 };

@@ -1,6 +1,6 @@
-const { updateGuide, findCategoryName } = require("../../services/service");
+const { updateGuide, findCategoryName, removeGroup } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
-
+const { Groups } = require("../../../db/dbInit");
 
 const execute = async (interaction, client) => {
   const courseName = interaction.data.options[0].value.toLowerCase().trim();
@@ -9,6 +9,10 @@ const execute = async (interaction, client) => {
 
   const courseString = findCategoryName(courseName, guild);
   const category = guild.channels.cache.find(c => c.type === "category" && c.name === courseString);
+
+  const channelGeneral = guild.channels.cache.find(c => c.parent === category && c.name.includes("general"));
+  const channelName = channelGeneral.name.split("_")[0];
+
   if (!category) return sendEphemeral(client, interaction, `Invalid course name: ${courseName}.`);
   await Promise.all(guild.channels.cache
     .filter(c => c.parent === category)
@@ -24,6 +28,9 @@ const execute = async (interaction, client) => {
   sendEphemeral(client, interaction, `Deleted course ${courseName}.`);
   await client.emit("COURSES_CHANGED");
   await updateGuide(client.guild);
+
+  // Telegram db link remove
+  removeGroup(channelName, Groups);
 };
 
 module.exports = {
