@@ -11,12 +11,16 @@ const findOrCreateChannel = (guild, channelObject) => {
 
 const initChannels = async (guild, client) => {
 
+  const admin = guild.roles.cache.find(r => r.name === "admin");
+
   const channels = [
     {
       name: "commands",
       options: {
         type: "text",
-      },
+        permissionOverwrites: [{ id: guild.id, deny: ["SEND_MESSAGES", "VIEW_CHANNEL"] },
+          { id: client.user.id, allow: ["SEND_MESSAGES", "VIEW_CHANNEL"] },
+          { id: admin.id, allow: ["SEND_MESSAGES", "VIEW_CHANNEL"] }] },
     },
     {
       name: "guide",
