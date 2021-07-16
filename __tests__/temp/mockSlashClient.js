@@ -2,6 +2,8 @@ const Discord = require("discord.js");
 const fs = require("fs");
 const path = require("path");
 
+let id = 1;
+
 const client = {
   commands: new Discord.Collection(),
   slashCommands: new Discord.Collection(),
@@ -13,15 +15,18 @@ const client = {
       cache: [],
     },
     channels: {
-      cache: [],
-      create: jest.fn((name) => client.guild.channels.cache.push({
+      cache: new Discord.Collection(),
+      create: jest.fn((name) => client.guild.channels.cache.set(id, {
         name: name, type: "text",
         send: jest.fn((content) => { return { content: content, pin: jest.fn() }; }),
         lastPinTimestamp: null,
-        createInvite: jest.fn(() => client.guild.invites.cache.push({
-          name: name,
-          code: 1,
-        })),
+        createInvite: jest.fn(() => {
+          client.guild.invites.cache.push({
+            name: name,
+            code: 1,
+          });
+          id++;
+        }),
       })),
       messages: {
         cache: [],
