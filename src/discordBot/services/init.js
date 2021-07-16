@@ -55,9 +55,9 @@ const setInitialGuideMessage = async (guild, channelName) => {
 };
 
 const initializeApplicationContext = async (client) => {
+  await initRoles(client.guild);
   await initChannels(client.guild, client);
   await setInitialGuideMessage(client.guild, "guide");
-  await initRoles(client.guild);
 };
 
 module.exports = {
