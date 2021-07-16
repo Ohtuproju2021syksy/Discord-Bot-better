@@ -34,7 +34,7 @@ client.slashCommands
 const teacher = {
   nickname: "teacher",
   roles: {
-    cache: [{ name: "teacher" }],
+    cache: [{ name: "teacher" }, { name: "test admin" }],
     add: jest.fn(),
     fetch: jest.fn(),
   },
@@ -49,12 +49,26 @@ const student = {
   },
 };
 
+const guideChannel = {
+  name: "guide",
+  type: "text",
+  parent: "",
+};
+
+const testCatecory = {
+  name: "test",
+  parent: { name: "📚 test" },
+  type: "text",
+};
+
 client.guild.members.cache.set(1, teacher);
 client.guild.members.cache.set(2, student);
+client.guild.channels.cache.set(1, guideChannel);
+client.guild.channels.cache.set(2, testCatecory);
 
 const teacherInteractionHelp = {
   client: client,
-  channel: 1,
+  channel_id: 1,
   member: {
     user: {
       id: 1,
@@ -67,7 +81,7 @@ const teacherInteractionHelp = {
 
 const studentInteractionHelp = {
   client: client,
-  channel: 1,
+  channel_id: 1,
   member: {
     user: {
       id: 2,
@@ -80,7 +94,7 @@ const studentInteractionHelp = {
 
 const invalidInteractionHelp = {
   client: client,
-  channel: 1,
+  channel_id: 1,
   member: {
     user: {
       id: 2,
@@ -95,7 +109,7 @@ const invalidInteractionHelp = {
 
 const interactionHelpJoin = {
   client: client,
-  channel: 1,
+  channel_id: 1,
   member: {
     user: {
       id: 1,
@@ -115,7 +129,7 @@ const interactionHelpJoin = {
 
 const interactionJoin = {
   client: client,
-  channel: 1,
+  channel_id: 1,
   member: {
     user: {
       id: 1,
@@ -131,6 +145,62 @@ const interactionJoin = {
   },
 };
 
+const intInsWithoutArgs = {
+  client: client,
+  channel_id: 1,
+  member: {
+    user: {
+      id: 2,
+    },
+  },
+  data: {
+    options: false,
+  },
+};
+
+const intInsWithValidArgs = {
+  client: client,
+  channel_id: 1,
+  member: {
+    user: {
+      id: 1,
+    },
+  },
+  data: {
+    options: [{
+      value: "test",
+    }],
+  },
+};
+
+const intInsWithInvalidArgs = {
+  client: client,
+  channel_id: 1,
+  member: {
+    user: {
+      id: 1,
+    },
+  },
+  data: {
+    options: [{
+      value: "tast",
+    }],
+  },
+};
+
+const intInsWithoutArgsInCourseChannelWithAdmins = {
+  client: client,
+  channel_id: 2,
+  member: {
+    user: {
+      id: 2,
+    },
+  },
+  data: {
+    options: false,
+  },
+};
+
 
 module.exports = {
   teacherData,
@@ -142,4 +212,8 @@ module.exports = {
   invalidInteractionHelp,
   interactionHelpJoin,
   interactionJoin,
+  intInsWithoutArgs,
+  intInsWithValidArgs,
+  intInsWithInvalidArgs,
+  intInsWithoutArgsInCourseChannelWithAdmins,
 };
