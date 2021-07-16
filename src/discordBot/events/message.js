@@ -3,7 +3,7 @@ const { updateGuide } = require("../services/service");
 const prefix = process.env.PREFIX;
 
 const execute = async (message, client, Groups) => {
-  if (!message.content.startsWith(prefix)) return;
+  if (!message.content.startsWith(prefix) || message.channel.name !== "commands") return;
 
   let args = message.content.slice(prefix.length).trim().split(/ +/);
   const commandName = args.shift().toLowerCase();

@@ -222,6 +222,25 @@ const joinMessage = {
   reply: jest.fn(),
 };
 
+const messageInGuideChannel = {
+  client: client,
+  guild: {
+    roles: {
+      cache: [],
+      create: jest.fn(),
+    },
+  },
+  channel: {
+    name: "guide",
+    send: jest.fn(),
+  },
+  content: "!join test",
+  author: teacher,
+  member: teacher,
+  react: jest.fn(),
+  reply: jest.fn(),
+};
+
 module.exports = {
   teacherData,
   studentData,
@@ -237,4 +256,5 @@ module.exports = {
   studentMessageCreate,
   teacherMessageCreateWithoutArgs,
   joinMessage,
+  messageInGuideChannel,
 };
