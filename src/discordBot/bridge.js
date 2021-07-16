@@ -51,18 +51,17 @@ discordClient.on("message", async message => {
   // console.log(message)
   const name = message.channel.name;
   const courseName = name.split("_")[0];
-  console.log(courseName);
 
   const group = await Groups.findOne({ where: { course: courseName } });
-  console.log(group);
+  // console.log(group);
 
   if (!group) return;
   if (message.author.bot) return;
 
   const sender = message.member.nickname || message.author.username;
   let channel = "";
-  channel = name === `${process.env.COURSE_NAME}_announcement` ? " tiedotus" : channel;
-  channel = name === `${process.env.COURSE_NAME}_questions` ? " kysymys" : channel;
+  channel = name === `${courseName}_announcement` ? " announcement" : channel;
+  channel = name === `${courseName}_general` ? " general" : channel;
 
   sendMessageToTelegram(group.group, `<${sender}>${channel}: ${message.content}`);
 });
@@ -84,7 +83,6 @@ telegramBot.on("text", async (ctx) => {
 
   if (String(ctx.message.chat.id) === group.group) {
     const user = ctx.message.from;
-    // console.log(user) tässä jotain ihmeellistä, tulee Group käyttäjäksi
     const sender = user.first_name || user.username;
     sendMessageToDiscord(courseName, `<${sender}>: ${ctx.message.text}`);
     return;
