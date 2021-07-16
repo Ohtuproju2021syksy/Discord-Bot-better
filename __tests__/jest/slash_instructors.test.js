@@ -50,7 +50,6 @@ describe("slash insctuctors command", () => {
 
   test("instructors command used with course admins in course channel without args", async () => {
     const client = intInsWithoutArgsInCourseChannelWithAdmins.client;
-    const roleString = client.guild.channels.cache.get(intInsWithoutArgsInCourseChannelWithAdmins.channel_id).parent.name;
     client.guild.roles.cache.push({ name: "test admin", members: [{ nickname: "teacher" }] });
     await execute(intInsWithoutArgsInCourseChannelWithAdmins, client);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
