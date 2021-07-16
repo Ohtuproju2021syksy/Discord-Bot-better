@@ -24,7 +24,7 @@ for (const file of eventFiles) {
   const event = require(`./events/${file}`);
   if (event.ws) {
     client.ws.on(event.name, async (interaction) => {
-      event.execute(interaction, client);
+      event.execute(interaction, client, Groups);
     });
   }
   else if (event.once) {

@@ -1,8 +1,7 @@
 const { updateGuide, findCategoryName, removeGroup } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
-const { Groups } = require("../../../db/dbInit");
 
-const execute = async (interaction, client) => {
+const execute = async (interaction, client, Groups) => {
   const courseName = interaction.data.options[0].value.toLowerCase().trim();
 
   const guild = client.guild;
