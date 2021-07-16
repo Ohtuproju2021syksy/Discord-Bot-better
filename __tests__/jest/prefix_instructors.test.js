@@ -8,7 +8,7 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
-describe("insctuctors command", () => {
+describe("prefix insctuctors command", () => {
   test("instructors command used outside course channels", async () => {
     const client = instructorsMessageOutsideCourseChannels.client;
     try {
