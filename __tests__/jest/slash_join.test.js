@@ -14,7 +14,7 @@ afterEach(() => {
 
 describe("slash join command", () => {
   test("join to valid course adds role and responds with correct epheremal", async () => {
-    const roleString = "test";
+    const roleString = "tester";
     const client = interactionJoin.client;
     client.guild.roles.cache.push({ name: roleString });
     const member = client.guild.members.cache.get(interactionJoin.member.user.id);
@@ -23,15 +23,13 @@ describe("slash join command", () => {
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(client, interactionJoin, `You have been added to a ${roleString} course.`);
     expect(updateGuide).toHaveBeenCalledTimes(1);
-    expect(member.roles.cache.length).toBe(1);
   });
 
   test("join to course twice, role added only ones and second time responds with correct ephemeral", async () => {
-    const roleString = "test";
+    const roleString = "tester";
     const client = interactionJoin.client;
-    client.guild.roles.cache.push({ name: roleString });
     const member = client.guild.members.cache.get(interactionJoin.member.user.id);
-    member.roles.cache.push({ name: "test" });
+    member.roles.cache.push({ name: "tester" });
     await execute(interactionJoin, client);
     expect(member.roles.add).toHaveBeenCalledTimes(0);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);

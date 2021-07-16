@@ -137,7 +137,7 @@ const interactionJoin = {
   },
   data: {
     options: [{
-      value: "test",
+      value: "tester",
       command: {
         name: "join",
       },

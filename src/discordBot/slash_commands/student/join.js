@@ -17,10 +17,7 @@ const execute = async (interaction, client) => {
   if (!courseRoles.length) return sendEphemeral(client, interaction, `Invalid course name: ${roleString}`);
   if (member.roles.cache.some(r => courseRoles.includes(r.name))) return sendEphemeral(client, interaction, `You are already on a ${roleString} course.`);
 
-  const teacher = member.roles.cache.find(r => r.name === "teacher");
-  teacher ? guild.roles.cache
-    .filter(r => (r.name === `${roleString} admin` || r.name === `${roleString}`))
-    .map(async r => member.roles.add(r)) : await member.roles.add(courseRole);
+  await member.roles.add(courseRole);
   sendEphemeral(client, interaction, `You have been added to a ${roleString} course.`);
   await updateGuide(guild);
 };
