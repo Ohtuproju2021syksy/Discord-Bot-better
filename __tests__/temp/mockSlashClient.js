@@ -16,10 +16,12 @@ const client = {
     },
     channels: {
       cache: new Discord.Collection(),
-      create: jest.fn((name) => client.guild.channels.cache.set(id, {
-        name: name, type: "text",
+      create: jest.fn((name, type) => client.guild.channels.cache.set(id, {
+        name: name,
+        type: type,
         send: jest.fn((content) => { return { content: content, pin: jest.fn() }; }),
         lastPinTimestamp: null,
+        setName: jest.fn(),
         createInvite: jest.fn(() => {
           client.guild.invites.cache.push({
             name: name,
@@ -48,6 +50,7 @@ const client = {
   guilds: {
     fetch: jest.fn(() => client.guild),
   },
+  emit: jest.fn(),
 };
 
 const slashCommandsPath = path.resolve("src/discordBot/slash_commands");
