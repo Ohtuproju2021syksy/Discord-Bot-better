@@ -14,22 +14,24 @@ Copy client secret from developer portal OAtuth section and set to .env `CLIENT_
 
 ![Application button](./images/backend.png)
 
-### Redirects
-
-Set redirect to <backend_server_url>/discordAuth.
-
 ### Scopes
 
 Select correct redirect url from drop down menu. From the scopes select **indentify** and **guild.join**.
-Copy scopes url and set to .env `DISCORD_REDIRECT_URL`.
 
-From Discord add your default discord server invite to .env `DISCORD_SERVER_INVITE`.
+### Redirects
 
-### Session secret
-
-Something here
+Set redirect to **<backend_server_url>/discordAuth** to `DISCORD_REDIRECT_URL`, e.g. if you are using local server use **http://localhost:3000/discordAuth**
 
 ### Backend server url
 
-Add default discord server invite to env DISCORD_SERVER_INVITE.
-Add session secret to env SESSION_SECRET and BACKEND_SERVER_URL to env
+From Discord add your default discord server invite to .env `DISCORD_SERVER_INVITE`. This can be found from the _#guide_ channel.
+
+Add your backend server url to `BACKEND_SERVER_URL`, e.g. if you are using local server use **http://localhost**.
+
+Add your local port to `PORT`, e.g. 3000.
+
+### Session secret
+
+Give `SESSION_SECRET` any value you want to use.
+
+
