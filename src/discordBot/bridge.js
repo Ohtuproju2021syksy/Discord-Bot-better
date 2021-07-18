@@ -1,6 +1,7 @@
 const Discord = require("discord.js");
 const { Telegraf } = require("telegraf");
 const { Groups } = require("../db/dbInit");
+const { createNewGroup } = require("../discordBot/services/service");
 
 
 // Initialize bot clients
@@ -24,19 +25,19 @@ telegramBot.launch();
 process.once("SIGINT", () => telegramBot.stop("SIGINT"));
 process.once("SIGTERM", () => telegramBot.stop("SIGTERM"));
 
+// validate discord channel
 
-// Send message methods
-
-const sendMessageToDiscord = async (courseName, content) => {
+const validDiscordChannel = async (courseName) => {
   const guild = await discordClient.guilds.fetch(process.env.GUILD_ID);
   const channel = guild.channels.cache.find(
     c => c.name === `${courseName}_general`,
   );
+  return channel;
+};
 
-  if (!channel) {
-    console.log("not channel");
-    return;
-  }
+// Send message methods
+
+const sendMessageToDiscord = async (channel, content) => {
   channel.send(content);
 };
 
@@ -67,10 +68,21 @@ discordClient.on("message", async message => {
 });
 
 telegramBot.on("text", async (ctx) => {
-  // console.log(ctx.message.chat);
-
-  if (ctx.message.text === "/id") {
-    // console.log(`id: ${(await ctx.getChat()).id}`);
+  if (ctx.message.text.startsWith("/id")) {
+    const discordCourseName = ctx.message.text.slice(3).toLowerCase().trim();
+    const id = (await ctx.getChat()).id;
+    const telegramCourseName = await ctx.getChat().title;
+    const channel = await validDiscordChannel(discordCourseName);
+    if (!channel) {
+      await sendMessageToTelegram(id,
+        `Bridge not created: Invalid discord channel ${discordCourseName}`);
+      return;
+    }
+    await createNewGroup([discordCourseName, id], Groups).catch((error) => console.log(error));
+    await sendMessageToDiscord(channel,
+      `Brigde created: Discord course ${discordCourseName} <--> Telegram course ${telegramCourseName}`);
+    await sendMessageToTelegram(id,
+      `Brigde created: Discord course ${discordCourseName} <--> Telegram course ${telegramCourseName}`);
     return;
   }
 

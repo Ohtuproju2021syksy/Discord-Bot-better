@@ -162,7 +162,8 @@ const findCategoryName = (courseString, guild) => {
 
 const createNewGroup = async (args, Groups) => {
   const courseName = args[0];
-  const groupId = parseInt(args[1]);
+  // const groupId = parseInt(args[1]);
+  const groupId = args[1];
 
   await Groups.create({ group: groupId, course: courseName });
 };
