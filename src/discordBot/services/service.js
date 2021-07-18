@@ -174,6 +174,26 @@ const removeGroup = async (channelName, Groups) => {
   }
 };
 
+const findChannelWithNameAndType = (name, type, guild) => {
+  return guild.channels.cache.find(c => c.type === type && c.name === name);
+};
+
+const findChannelWithId = (id, guild) => {
+  return guild.channels.cache.get(id);
+};
+
+const msToMinutesAndSeconds = (ms) => {
+  const minutes = Math.floor(ms / 60000);
+  const seconds = ((ms % 60000) / 1000).toFixed(0);
+  return `${minutes}:${(seconds < 10 ? "0" : "")}${seconds}`;
+};
+
+const handleCooldown = (map, courseName, cooldown) => {
+  setTimeout(() => {
+    map.delete(courseName);
+  }, cooldown);
+};
+
 module.exports = {
   createCategoryName,
   createPrivateCategoryName,
@@ -186,4 +206,8 @@ module.exports = {
   findCategoryName,
   createNewGroup,
   removeGroup,
+  findChannelWithNameAndType,
+  findChannelWithId,
+  msToMinutesAndSeconds,
+  handleCooldown,
 };
