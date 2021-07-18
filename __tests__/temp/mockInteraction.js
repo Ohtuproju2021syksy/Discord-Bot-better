@@ -66,6 +66,38 @@ client.guild.members.cache.set(2, student);
 client.guild.channels.cache.set(1, guideChannel);
 client.guild.channels.cache.set(2, testCatecory);
 
+const defaultTeacherInteraction = {
+  client: client,
+  channel_id: 1,
+  member: {
+    user: {
+      id: 1,
+    },
+  },
+  data: {
+    options: [{
+      value: "",
+      command: {},
+    }],
+  },
+};
+
+const defaultStudentInteraction = {
+  client: client,
+  channel_id: 1,
+  member: {
+    user: {
+      id: 2,
+    },
+  },
+  data: {
+    options: [{
+      value: "",
+      command: {},
+    }],
+  },
+};
+
 const teacherInteractionHelp = {
   client: client,
   channel_id: 1,
@@ -216,4 +248,6 @@ module.exports = {
   intInsWithValidArgs,
   intInsWithInvalidArgs,
   intInsWithoutArgsInCourseChannelWithAdmins,
+  defaultTeacherInteraction,
+  defaultStudentInteraction,
 };
