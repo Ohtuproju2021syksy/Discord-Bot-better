@@ -71,7 +71,7 @@ telegramBot.on("text", async (ctx) => {
   if (ctx.message.text.startsWith("/id")) {
     const discordCourseName = ctx.message.text.slice(3).toLowerCase().trim();
     const id = (await ctx.getChat()).id;
-    const telegramCourseName = await ctx.getChat().title;
+    const telegramCourseName = (await ctx.getChat()).title;
     const channel = await validDiscordChannel(discordCourseName);
     if (!channel) {
       await sendMessageToTelegram(id,
