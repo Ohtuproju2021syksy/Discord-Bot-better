@@ -133,6 +133,7 @@ const createInvitation = async (guild, args) => {
     invitationlink = `Invitation link for the course https://discord.gg/${invite.code}`;
   }
   else {
+    args = args.replace(" ", "%20").trim();
     invitationlink = `Invitation link for the course ${invite_url}/invite/${args}`;
   }
 
