@@ -7,6 +7,10 @@
 
 [Setup for testing Bot](./setuptestbot.md)
 
+[Setup for the backend](./OAuth2.md)
+
+[Setup for the Telegram bridge](./telegram.md)
+
 ## Workflow
 [Workflow practices](./workflow.md)
 
