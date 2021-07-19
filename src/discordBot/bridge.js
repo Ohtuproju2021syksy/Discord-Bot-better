@@ -70,7 +70,7 @@ telegramBot.on("text", async (ctx) => {
   // console.log(ctx.message.chat);
 
   if (ctx.message.text === "/id") {
-    // console.log(`id: ${(await ctx.getChat()).id}`);
+    console.log(`id: ${(await ctx.getChat()).id}`);
     return;
   }
 
