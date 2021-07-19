@@ -29,9 +29,11 @@ process.once("SIGTERM", () => telegramBot.stop("SIGTERM"));
 
 const sendMessageToDiscord = async (courseName, content) => {
   const guild = await discordClient.guilds.fetch(process.env.GUILD_ID);
+  console.log(guild);
   const channel = guild.channels.cache.find(
     c => c.name === `${courseName}_general`,
   );
+  console.log(channel);
 
   if (!channel) {
     console.log("not channel");
