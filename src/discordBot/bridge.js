@@ -58,7 +58,7 @@ discordClient.on("message", async message => {
 
   console.log(`nospace${courseName}nospace`);
 
-  const group = await Groups.findOne({ where: { course: "kurssi1" } });
+  const group = await Groups.findOne({ where: { course: String(courseName) } });
   console.log(group);
 
   if (!group) return;
