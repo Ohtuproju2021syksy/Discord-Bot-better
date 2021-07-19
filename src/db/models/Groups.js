@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
   return sequelize.define("groups", {
-    group: {
+    groupId: {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,

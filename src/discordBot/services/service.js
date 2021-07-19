@@ -165,7 +165,7 @@ const createNewGroup = async (args, Groups) => {
   // const groupId = parseInt(args[1]);
   const groupId = args[1];
 
-  await Groups.create({ group: groupId, course: courseName });
+  await Groups.create({ groupId: groupId, course: courseName });
 };
 
 const removeGroup = async (channelName, Groups) => {

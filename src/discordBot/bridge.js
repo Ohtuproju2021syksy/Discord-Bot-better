@@ -66,11 +66,11 @@ discordClient.on("message", async message => {
   channel = name === `${courseName}_announcement` ? " announcement" : channel;
   channel = name === `${courseName}_general` ? " general" : channel;
 
-  sendMessageToTelegram(group.group, `<${sender}>${channel}: ${message.content}`);
+  sendMessageToTelegram(group.groupId, `<${sender}>${channel}: ${message.content}`);
 });
 
 telegramBot.on("text", async (ctx) => {
-  const group = await Groups.findOne({ where: { group: String(ctx.message.chat.id) } });
+  const group = await Groups.findOne({ where: { groupId: String(ctx.message.chat.id) } });
   if (ctx.message.text.startsWith("/id")) {
     const discordCourseName = ctx.message.text.slice(3).toLowerCase().trim();
     const id = (await ctx.getChat()).id;
@@ -97,7 +97,7 @@ telegramBot.on("text", async (ctx) => {
 
   const courseName = group.course;
 
-  if (String(ctx.message.chat.id) === group.group) {
+  if (String(ctx.message.chat.id) === group.groupId) {
     const user = ctx.message.from;
     const sender = user.first_name || user.username;
     const channel = await validDiscordChannel(courseName);
