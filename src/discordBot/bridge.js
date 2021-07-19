@@ -50,21 +50,21 @@ const sendMessageToTelegram = async (groupId, content) => {
 // Event handlers
 
 discordClient.on("message", async message => {
-  console.log(message.channel.name);
+  // console.log(message.channel.name);
   const name = message.channel.name;
   // const courseName = name.split("_")[0];
 
   const courseName = message.channel.parent.name.replace("📚", "").trim();
 
-  console.log(`nospace${courseName}nospace`);
+  // console.log(`nospace${courseName}nospace`);
 
   const group = await Groups.findOne({ where: { course: String(courseName) } });
   console.log(group);
 
   if (!group) return;
-  console.log(message.author.bot);
+  // console.log(message.author.bot);
   if (message.author.bot) return;
-  console.log("ei botti");
+  // console.log("ei botti");
   const sender = message.member.nickname || message.author.username;
   let channel = "";
   channel = name === `${courseName}_announcement` ? " announcement" : channel;
