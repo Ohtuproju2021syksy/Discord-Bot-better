@@ -74,10 +74,10 @@ discordClient.on("message", async message => {
 });
 
 telegramBot.on("text", async (ctx) => {
-  const group = await Groups.findOne({ where: { groupId: String(ctx.message.chat.id) } });
+  const id = (await ctx.getChat()).id;
+  const group = await Groups.findOne({ where: { groupId: String(id) } });
   if (ctx.message.text.startsWith("/id")) {
     const discordCourseName = ctx.message.text.slice(3).toLowerCase().trim();
-    const id = (await ctx.getChat()).id;
     const telegramCourseName = (await ctx.getChat()).title;
     const channel = await validDiscordChannel(discordCourseName);
     if (!channel) {
