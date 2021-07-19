@@ -70,6 +70,7 @@ discordClient.on("message", async message => {
 });
 
 telegramBot.on("text", async (ctx) => {
+  console.log(Groups);
   const group = await Groups.findOne({ where: { groupId: String(ctx.message.chat.id) } });
   if (ctx.message.text.startsWith("/id")) {
     const discordCourseName = ctx.message.text.slice(3).toLowerCase().trim();
