@@ -38,18 +38,18 @@ const validDiscordChannel = async (courseName) => {
 // Send message methods
 
 const sendMessageToDiscord = async (channel, content) => {
-  channel.send(content);
+  await channel.send(content);
 };
 
 const sendMessageToTelegram = async (groupId, content) => {
-  telegramBot.telegram.sendMessage(groupId, content);
+  await telegramBot.telegram.sendMessage(groupId, content);
 };
 
 
 // Event handlers
 
 discordClient.on("message", async message => {
-  // console.log(message)
+  console.log(message.channel.name);
   const name = message.channel.name;
   const courseName = name.split("_")[0];
 
@@ -68,25 +68,27 @@ discordClient.on("message", async message => {
 });
 
 telegramBot.on("text", async (ctx) => {
+  const group = await Groups.findOne({ where: { group: String(ctx.message.chat.id) } });
   if (ctx.message.text.startsWith("/id")) {
     const discordCourseName = ctx.message.text.slice(3).toLowerCase().trim();
     const id = (await ctx.getChat()).id;
     const telegramCourseName = (await ctx.getChat()).title;
     const channel = await validDiscordChannel(discordCourseName);
     if (!channel) {
-      await sendMessageToTelegram(id,
+      return await sendMessageToTelegram(id,
         `Bridge not created: Invalid discord channel ${discordCourseName}`);
-      return;
+    }
+    if (group) {
+      return await sendMessageToTelegram(id,
+        `Bridge not created: the bridge already exists ${telegramCourseName} <--> ${group.course}`);
     }
     await createNewGroup([discordCourseName, id], Groups).catch((error) => console.log(error));
     await sendMessageToDiscord(channel,
       `Brigde created: Discord course ${discordCourseName} <--> Telegram course ${telegramCourseName}`);
     await sendMessageToTelegram(id,
       `Brigde created: Discord course ${discordCourseName} <--> Telegram course ${telegramCourseName}`);
-    return;
   }
 
-  const group = await Groups.findOne({ where: { group: String(ctx.message.chat.id) } });
   if (!group) {
     return;
   }
@@ -96,7 +98,7 @@ telegramBot.on("text", async (ctx) => {
   if (String(ctx.message.chat.id) === group.group) {
     const user = ctx.message.from;
     const sender = user.first_name || user.username;
-    sendMessageToDiscord(courseName, `<${sender}>: ${ctx.message.text}`);
-    return;
+    const channel = await validDiscordChannel(courseName);
+    return await sendMessageToDiscord(channel, `<${sender}>: ${ctx.message.text}`);
   }
 });
