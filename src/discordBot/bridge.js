@@ -52,7 +52,11 @@ const sendMessageToTelegram = async (groupId, content) => {
 discordClient.on("message", async message => {
   console.log(message.channel.name);
   const name = message.channel.name;
-  const courseName = name.split("_")[0];
+  // const courseName = name.split("_")[0];
+
+  const courseName = message.channel.parent.name.replace("📚", "").trim();
+
+  console.log(courseName);
 
   const group = await Groups.findOne({ where: { course: courseName } });
   console.log(group);
@@ -66,11 +70,10 @@ discordClient.on("message", async message => {
   channel = name === `${courseName}_announcement` ? " announcement" : channel;
   channel = name === `${courseName}_general` ? " general" : channel;
 
-  sendMessageToTelegram(group.groupId, `<${sender}>${channel}: ${message.content}`);
+  await sendMessageToTelegram(group.groupId, `<${sender}>${channel}: ${message.content}`);
 });
 
 telegramBot.on("text", async (ctx) => {
-  console.log(Groups);
   const group = await Groups.findOne({ where: { groupId: String(ctx.message.chat.id) } });
   if (ctx.message.text.startsWith("/id")) {
     const discordCourseName = ctx.message.text.slice(3).toLowerCase().trim();
