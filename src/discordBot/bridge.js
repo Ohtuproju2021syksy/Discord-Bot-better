@@ -1,6 +1,7 @@
 const Discord = require("discord.js");
 const { Telegraf } = require("telegraf");
 const { Groups } = require("../db/dbInit");
+const { createNewGroup } = require("../discordBot/services/service");
 
 
 // Initialize bot clients
@@ -24,34 +25,32 @@ telegramBot.launch();
 process.once("SIGINT", () => telegramBot.stop("SIGINT"));
 process.once("SIGTERM", () => telegramBot.stop("SIGTERM"));
 
+// validate discord channel
 
-// Send message methods
-
-const sendMessageToDiscord = async (courseName, content) => {
-  console.log(courseName);
+const validDiscordChannel = async (courseName) => {
   const guild = await discordClient.guilds.fetch(process.env.GUILD_ID);
   // console.log(guild);
   const channel = guild.channels.cache.find(
     c => c.name === `${courseName}_general`,
   );
-  // console.log(channel);
+  return channel;
+};
 
-  if (!channel) {
-    console.log("not channel");
-    return;
-  }
-  channel.send(content);
+// Send message methods
+
+const sendMessageToDiscord = async (channel, content) => {
+  await channel.send(content);
 };
 
 const sendMessageToTelegram = async (groupId, content) => {
-  telegramBot.telegram.sendMessage(groupId, content);
+  await telegramBot.telegram.sendMessage(groupId, content);
 };
 
 
 // Event handlers
 
 discordClient.on("message", async message => {
-  // console.log(message)
+  console.log(message.channel.name);
   const name = message.channel.name;
   const courseName = name.split("_")[0];
 
@@ -71,14 +70,27 @@ discordClient.on("message", async message => {
 });
 
 telegramBot.on("text", async (ctx) => {
-  // console.log(ctx.message.chat);
-
-  if (ctx.message.text === "/id") {
-    console.log(`id: ${(await ctx.getChat()).id}`);
-    return;
+  const group = await Groups.findOne({ where: { group: String(ctx.message.chat.id) } });
+  if (ctx.message.text.startsWith("/id")) {
+    const discordCourseName = ctx.message.text.slice(3).toLowerCase().trim();
+    const id = (await ctx.getChat()).id;
+    const telegramCourseName = (await ctx.getChat()).title;
+    const channel = await validDiscordChannel(discordCourseName);
+    if (!channel) {
+      return await sendMessageToTelegram(id,
+        `Bridge not created: Invalid discord channel ${discordCourseName}`);
+    }
+    if (group) {
+      return await sendMessageToTelegram(id,
+        `Bridge not created: the bridge already exists ${telegramCourseName} <--> ${group.course}`);
+    }
+    await createNewGroup([discordCourseName, id], Groups).catch((error) => console.log(error));
+    await sendMessageToDiscord(channel,
+      `Brigde created: Discord course ${discordCourseName} <--> Telegram course ${telegramCourseName}`);
+    await sendMessageToTelegram(id,
+      `Brigde created: Discord course ${discordCourseName} <--> Telegram course ${telegramCourseName}`);
   }
 
-  const group = await Groups.findOne({ where: { group: String(ctx.message.chat.id) } });
   if (!group) {
     return;
   }
@@ -88,7 +100,7 @@ telegramBot.on("text", async (ctx) => {
   if (String(ctx.message.chat.id) === group.group) {
     const user = ctx.message.from;
     const sender = user.first_name || user.username;
-    sendMessageToDiscord(courseName, `<${sender}>: ${ctx.message.text}`);
-    return;
+    const channel = await validDiscordChannel(courseName);
+    return await sendMessageToDiscord(channel, `<${sender}>: ${ctx.message.text}`);
   }
 });

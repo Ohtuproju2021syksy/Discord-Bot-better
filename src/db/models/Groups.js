@@ -3,10 +3,12 @@ module.exports = (sequelize, DataTypes) => {
     group: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: true,
     },
     course: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: true,
     },
   }, {
     timestamps: false,
