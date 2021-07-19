@@ -56,11 +56,12 @@ discordClient.on("message", async message => {
   const courseName = name.split("_")[0];
 
   const group = await Groups.findOne({ where: { course: courseName } });
-  // console.log(group);
+  console.log(group);
 
   if (!group) return;
+  console.log(message.author.bot);
   if (message.author.bot) return;
-
+  console.log("ei botti");
   const sender = message.member.nickname || message.author.username;
   let channel = "";
   channel = name === `${courseName}_announcement` ? " announcement" : channel;
