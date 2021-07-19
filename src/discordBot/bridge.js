@@ -56,9 +56,9 @@ discordClient.on("message", async message => {
 
   const courseName = message.channel.parent.name.replace("📚", "").trim();
 
-  console.log(courseName);
+  console.log(`nospace${courseName}nospace`);
 
-  const group = await Groups.findOne({ where: { course: courseName } });
+  const group = await Groups.findOne({ where: { course: "kurssi1" } });
   console.log(group);
 
   if (!group) return;
