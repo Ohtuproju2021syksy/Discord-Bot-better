@@ -116,6 +116,10 @@ const updateGuide = async (guild) => {
   await updateGuideMessage(message);
 };
 
+const createCourseInvitationLink = (courseName) => {
+  return `Invitation link for the course ${invite_url}/invite/${courseName}`;
+};
+
 const createInvitation = async (guild, args) => {
   const guide = guild.channels.cache.find(
     c => c.type === "text" && c.name === "guide",
@@ -134,7 +138,7 @@ const createInvitation = async (guild, args) => {
   }
   else {
     args = args.replace(" ", "%20").trim();
-    invitationlink = `Invitation link for the course ${invite_url}/invite/${args}`;
+    invitationlink = createCourseInvitationLink(args);
   }
 
 
@@ -212,4 +216,5 @@ module.exports = {
   findChannelWithId,
   msToMinutesAndSeconds,
   handleCooldown,
+  createCourseInvitationLink,
 };
