@@ -25,7 +25,7 @@ process.once("SIGTERM", () => telegramBot.stop("SIGTERM"));
 
 const validDiscordChannel = async (courseName) => {
   const guild = await discordClient.guilds.fetch(process.env.GUILD_ID);
-  console.log(guild);
+  // console.log(guild);
   console.log(`${courseName}_general`);
   const channel = guild.channels.cache.find(
     c => c.name === `${courseName}_general`,
@@ -106,6 +106,7 @@ telegramBot.on("text", async (ctx) => {
     const user = ctx.message.from;
     const sender = user.first_name || user.username;
     const channel = await validDiscordChannel(courseName);
+    if (!channel) return;
     return await sendMessageToDiscord(channel, `<${sender}>: ${ctx.message.text}`);
   }
 });
