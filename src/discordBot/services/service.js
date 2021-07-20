@@ -117,6 +117,7 @@ const updateGuide = async (guild) => {
 };
 
 const createCourseInvitationLink = (courseName) => {
+  courseName = courseName.replace(" ", "%20").trim();
   return `Invitation link for the course ${invite_url}/invite/${courseName}`;
 };
 
@@ -137,7 +138,6 @@ const createInvitation = async (guild, args) => {
     invitationlink = `Invitation link for the course https://discord.gg/${invite.code}`;
   }
   else {
-    args = args.replace(" ", "%20").trim();
     invitationlink = createCourseInvitationLink(args);
   }
 

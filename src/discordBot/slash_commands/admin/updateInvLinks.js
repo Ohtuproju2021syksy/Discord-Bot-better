@@ -19,7 +19,7 @@ const execute = async (message) => {
 module.exports = {
   prefix: true,
   name: "updateinvlinks",
-  description: "Update invitation links to server and courses.",
+  description: "Update invitation links to courses.",
   role: "admin",
   execute,
 };
