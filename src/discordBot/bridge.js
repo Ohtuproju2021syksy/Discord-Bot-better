@@ -101,7 +101,7 @@ telegramBot.on("text", async (ctx) => {
   const courseName = group.course;
 
   if (String(ctx.message.chat.id) === group.groupId) {
-    console.log("telegram message to discord")
+    console.log("telegram message to discord");
     console.log(courseName);
     const user = ctx.message.from;
     const sender = user.first_name || user.username;
