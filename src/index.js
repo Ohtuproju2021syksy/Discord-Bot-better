@@ -1,8 +1,10 @@
 require("./db/index");
 const startDiscordBot = require("./discordBot/index");
+const startBridge = require("./discordBot/bridge");
 const startServer = require("./server/server");
-const startBridge = process.env.TG_BRIDGE_ENABLED && require("./discordBot/bridge");
 const { client } = startDiscordBot;
 
+if (process.env.TG_BRIDGE_ENABLED) {
+  startBridge();
+}
 startServer(client);
-process.env.TG_BRIDGE_ENABLED && startBridge(client);
