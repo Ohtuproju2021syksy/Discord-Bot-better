@@ -56,7 +56,7 @@ discordClient.on("message", async message => {
 
   // console.log(`nospace${courseName}nospace`);
 
-  const group = await Groups.findOne({ raw: true, where: { course: String(courseName) } });
+  const group = await Groups.findOne({ where: { course: String(courseName) } });
 
   if (!group) {
     return;
@@ -74,7 +74,7 @@ discordClient.on("message", async message => {
 
 telegramBot.on("text", async (ctx) => {
   const id = (await ctx.getChat()).id;
-  const group = await Groups.findOne({ raw: true, where: { groupId: String(id) } });
+  const group = await Groups.findOne({ where: { groupId: String(id) } });
   if (ctx.message.text.startsWith("/id")) {
     const discordCourseName = ctx.message.text.slice(3).toLowerCase().trim();
     const telegramCourseName = (await ctx.getChat()).title;
