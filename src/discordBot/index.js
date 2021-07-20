@@ -3,8 +3,6 @@ const Discord = require("discord.js");
 const fs = require("fs");
 const { Groups } = require("../db/dbInit");
 
-process.env.TG_BRIDGE_ENABLED && require("./bridge.js");
-
 const token = process.env.BOT_TOKEN;
 
 const client = new Discord.Client();
