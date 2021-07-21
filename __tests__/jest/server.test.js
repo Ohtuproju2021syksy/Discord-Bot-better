@@ -32,12 +32,12 @@ describe("Endpoint urls", () => {
   });
   test("invalid invite returns status 400", async () => {
     await api
-      .get("/invite/invalidURL")
+      .get("/join/invalidURL")
       .expect(400);
   });
   test("valid url return status 302", async () => {
     await api
-      .get("/invite/test")
+      .get("/join/test")
       .expect(302);
   });
 });

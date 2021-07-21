@@ -3,7 +3,7 @@ const express = require("express");
 const session = require("express-session");
 const passport = require("passport");
 const discordAuth = require("./routes/discordAuth");
-const discordInvite = require("./routes/invite");
+const discordJoin = require("./routes/join");
 const defaultRouteHandler = require("./routes/defaultRouteHandler");
 const defaultRouteErrorHandler = require("./routes/defaultRouteErrorHandler");
 require("./strategies/discordstrategy");
@@ -11,12 +11,12 @@ require("./strategies/discordstrategy");
 module.exports = (client) => {
   const app = express();
   const discordAuthRoute = discordAuth(client);
-  const discordInviteRoute = discordInvite(client);
+  const discordJoinRoute = discordJoin(client);
 
-  app.use(session ({
+  app.use(session({
     secret: process.env.SESSION_SECRET,
     saveUninitialized: false,
-    resave:false,
+    resave: false,
   }));
 
   app.use(passport.initialize());
@@ -24,7 +24,7 @@ module.exports = (client) => {
 
   app.use("/", defaultRouteHandler);
   app.use("/discordAuth", discordAuthRoute);
-  app.use("/invite", discordInviteRoute);
+  app.use("/join", discordJoinRoute);
   app.use("*", defaultRouteErrorHandler);
 
   return app;
