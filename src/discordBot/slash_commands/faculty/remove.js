@@ -1,4 +1,4 @@
-const { updateGuide, findCategoryName, removeGroup } = require("../../services/service");
+const { updateGuide, findCategoryName, removeGroup, getRoleFromCategory } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
 
 const execute = async (interaction, client, Groups) => {
@@ -29,8 +29,8 @@ const execute = async (interaction, client, Groups) => {
 
   // Telegram db link remove
   if (channelGeneral) {
-    const channelName = channelGeneral.name.split("_")[0];
-    removeGroup(channelName, Groups);
+    const name = getRoleFromCategory(courseString);
+    removeGroup(name, Groups);
   }
 };
 
