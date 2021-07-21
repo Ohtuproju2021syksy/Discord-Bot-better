@@ -1,7 +1,10 @@
 require("dotenv").config();
 const supertest = require("supertest");
+const SequelizeMock = require("sequelize-mock");
+const dbMock = new SequelizeMock();
 
 const makeApp = require("../../src/server/app");
+
 const client = {
   guilds: {
     fetch: jest.fn(() => {
@@ -16,7 +19,7 @@ const client = {
   },
 };
 
-const app = makeApp(client);
+const app = makeApp(client, dbMock);
 const api = supertest(app);
 
 describe("Endpoint urls", () => {
@@ -25,7 +28,7 @@ describe("Endpoint urls", () => {
       .get("/")
       .expect(200);
   });
-  test("invalid url returns status 302 (resource found and redirected)", async () => {
+  test("invalid url returns status 302", async () => {
     await api
       .get("/invalidURL")
       .expect(302);
@@ -34,10 +37,5 @@ describe("Endpoint urls", () => {
     await api
       .get("/join/invalidURL")
       .expect(400);
-  });
-  test("valid url return status 302", async () => {
-    await api
-      .get("/join/test")
-      .expect(302);
   });
 });

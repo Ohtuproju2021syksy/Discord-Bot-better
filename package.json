@@ -7,7 +7,7 @@
     "start": "cross-env NODE_ENV=production node src/index.js",
     "dev": "cross-env NODE_ENV=development nodemon src/index.js",
     "dev:server": "cross-env NODE_ENV=test nodemon server/index.js",
-    "jest": "jest --coverage --verbose --runInBand",
+    "jest": "jest --coverage --verbose --runInBand --detectOpenHandles",
     "test:jest": "jest --coverage --verbose --runInBand",
     "test:corde": "cross-env NODE_ENV=test corde",
     "lint": "eslint .",
@@ -37,6 +37,7 @@
   },
   "homepage": "https://github.com/CS-DISCORD-BOT/cs-discord-bot#readme",
   "dependencies": {
+    "connect-session-sequelize": "^7.1.1",
     "discord-slash-commands-client": "^1.2.1",
     "discord.js": "^12.5.3",
     "dotenv": "^8.2.0",
@@ -57,6 +58,7 @@
     "jest": "^27.0.1",
     "nodemon": "^2.0.4",
     "nyc": "^15.1.0",
+    "sequelize-mock": "^0.10.2",
     "supertest": "^6.1.3"
   }
 }

@@ -3,7 +3,7 @@ const passport = require("passport");
 
 module.exports = (client) => {
   router.get("/", passport.authenticate("discord", {
-    failureRedirect: "/discordAuth/unauthorized",
+    failureRedirect: "/discord/discordAuth/unauthorized",
   }), async (req, res) => {
     const guild = await client.guilds.fetch(process.env.GUILD_ID);
     const courseRole = guild.roles.cache.get(req.authInfo.state.courseRoleID);

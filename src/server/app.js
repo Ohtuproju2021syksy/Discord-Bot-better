@@ -9,16 +9,22 @@ const defaultRouteHandler = require("./routes/defaultRouteHandler");
 const defaultRouteErrorHandler = require("./routes/defaultRouteErrorHandler");
 require("./strategies/discordstrategy");
 
-module.exports = (client) => {
+const SequelizeStore = require("connect-session-sequelize")(session.Store);
+
+module.exports = (client, sequelize) => {
   const app = express();
   const discordAuthRoute = discordAuth(client);
   const discordJoinRoute = discordJoin(client);
 
-  app.use(session({
-    secret: process.env.SESSION_SECRET,
-    saveUninitialized: false,
-    resave: false,
-  }));
+  app.use(
+    session({
+      secret: process.env.SESSION_SECRET,
+      store: new SequelizeStore({
+        db: sequelize,
+      }),
+      saveUninitialized: false,
+      resave: false,
+    }));
 
   app.use(passport.initialize());
   app.use(passport.session());
