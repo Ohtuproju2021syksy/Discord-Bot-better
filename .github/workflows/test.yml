@@ -5,7 +5,6 @@ on:
     branches:
       - main
       - dev
-      - postgresql
   pull_request:
     branches: [main]
     types: [opened, synchronize]
@@ -48,6 +47,29 @@ jobs:
         CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
         PREFIX: ${{ secrets.PREFIX }}
         POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        PORT: ${{ secrets.PORT }}
+        CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+        DISCORD_REDIRECT_URL: ${{ secrets.DISCORD_REDIRECT_URL }}
+        DISCORD_SERVER_INVITE: ${{ secrets.DISCORD_SERVER_INVITE }}
+        SESSION_SECRET: ${{ secrets.SESSION_SECRET}}
+        BACKEND_SERVER_URL: ${{ secrets.BACKEND_SERVER_URL }}
       run: npm test
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
+  Push_to_test_registry:
+    name: Push Docker image to Docker Hub
+    runs-on: ubuntu-latest
+    needs: testing_pipeline
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Push to Docker Hub
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: ${{ secrets.DOCKER_TEST_URL }}

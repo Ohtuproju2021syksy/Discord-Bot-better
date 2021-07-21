@@ -26,17 +26,23 @@ Add `.env` file to root of the repository (same directory with `package.json`).
 
 Add following contents to `.env` file:
 ```
+PREFIX=!
 BOT_TOKEN=your-own-token
 GUILD_ID=your-discord-server-id
-PREFIX=!
+BOT_ID=id-of-your-bot
+CLIENT_SECRET=your-client-secret
+DISCORD_REDIRECT_URL=your-client-oauth2-redirect-url-with-identyfy-guilds.join
+DISCORD_SERVER_INVITE=your-discord-server-invite
+PORT=your-custom-backend-port
+SESSION_SECRET=server-session-secret
+BACKEND_SERVER_URL=backend-server-url-without-port
 POSTGRES_PASSWORD=your-postgres-password
 DB_HOST= (only if you are not using PostgreSQL locally)
 
 # Bridge
 DISCORD_BOT_TOKEN=discord-bridge-bot-token
 TELEGRAM_BOT_TOKEN=telegram-bridge-bot-token
-TELEGRAM_CHAT_ID=id-of-telegram-group-or-chat
-COURSE_NAME=course-name
+TG_BRIDGE_ENABLED=true
 ```
 
 Make your own Discord Server. You can find instructions [here](./documentation/discordserver.md).
@@ -46,6 +52,8 @@ Make your own Discord Bot. You can find instructions [here](./documentation/setu
 Download and install PostgreSQL [here](https://www.postgresql.org/download/)
 
 More help for PostgreSQL (in Finnish) [here](https://hy-tsoha.github.io/materiaali/content/osa-2/index.html#tietokannan-k%C3%A4ytt%C3%A4minen)
+
+Setting up the backend [here](./documentation/OAuth2.md).
 
 ### Running bot in command line
 Run one of following commands to start bot:
