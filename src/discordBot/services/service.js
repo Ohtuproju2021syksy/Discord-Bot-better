@@ -1,6 +1,5 @@
 require("dotenv").config();
 const GUIDE_CHANNEL_NAME = "guide";
-const COMMAND_CHANNEL_NAME = "commands";
 const FACULTY_ROLE = "faculty";
 
 let invite_url = "";
@@ -78,9 +77,6 @@ const updateGuideMessage = async (message) => {
       return `  - ${courseFullName} \`/join ${courseRole}\` 👤${count}`;
     }).sort((a, b) => a.localeCompare(b));
 
-  const commands = guild.channels.cache.find(
-    (channel) => channel.name === COMMAND_CHANNEL_NAME,
-  );
 
   const newContent = `
 Käytössäsi on seuraavia komentoja:
@@ -98,7 +94,7 @@ ${rows.join("\n")}
 
 In course specific channels you can also list instructors \`/instructors\`
 
-See more with \`/help\` and test out the commands in <#${commands.id}> channel!
+See more with \`/help\` command.
 
 Invitation link for the server https://discord.gg/${guideInvite.code}
 `;
@@ -117,7 +113,7 @@ const updateGuide = async (guild) => {
 };
 
 const createCourseInvitationLink = (courseName) => {
-  courseName = courseName.replace(" ", "%20").trim();
+  courseName = courseName.replace(/ /g, "%20").trim();
   return `Invitation link for the course ${invite_url}/invite/${courseName}`;
 };
 

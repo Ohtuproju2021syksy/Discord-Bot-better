@@ -25,6 +25,7 @@ process.once("SIGTERM", () => telegramBot.stop("SIGTERM"));
 
 const validDiscordChannel = async (courseName) => {
   const guild = await discordClient.guilds.fetch(process.env.GUILD_ID);
+  courseName = courseName.replace(/ /g, "-");
   const channel = guild.channels.cache.find(
     c => c.name === `${courseName}_general`,
   );
@@ -48,8 +49,7 @@ discordClient.on("message", async message => {
   if (!message.channel.parent) return;
   const channelName = message.channel.name;
 
-  let courseName = getRoleFromCategory(message.channel.parent.name);
-  courseName = courseName.replace(" ", "-");
+  const courseName = getRoleFromCategory(message.channel.parent.name);
 
   const group = await Groups.findOne({ where: { course: String(courseName) } });
 
@@ -61,8 +61,9 @@ discordClient.on("message", async message => {
   const sender = message.member.nickname || message.author.username;
 
   let channel = "";
-  channel = channelName === `${courseName}_announcement` ? " announcement" : channel;
-  channel = channelName === `${courseName}_general` ? " general" : channel;
+  const name = courseName.replace(/ /g, "-");
+  channel = channelName === `${name}_announcement` ? " announcement" : channel;
+  channel = channelName === `${name}_general` ? " general" : channel;
 
   await sendMessageToTelegram(group.groupId, `<${sender}>${channel}: ${message.content}`);
 });
