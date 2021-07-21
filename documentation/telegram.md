@@ -16,19 +16,18 @@ Invite your bot to your Telegram channel. First go to your channel. From the rig
 
 Give your bot admin role (choose channel member and give your bot admin rights). You need to have an admin role to do this change. Under _What can this admin do?_ mark all the showing rights off.
 
-## Get your Telegram channel id
-
-For this you need to have your Discord bot running. On Telegram type _/id_. You should see on your console the channel id.
-
 ## Make the bridge
 
-On your Discord server on the command channel use the command `!bridge`
+On your telegram group that you want bridge to discord course `courseName` send command `/bridge <courseName>`.
+For example to bridge telegram group `tkt-tito` to discord course `tito` use command `/bridge tito` in telegram group.
 
+Bot answers
 ```
-!bridge text_channel_name id_from telegram
-
-e.g. !bridge ohjelmistotekniikka -1201836398051
-
+Brigde created: Discord course <courseName> <--> Telegram course <telegramGroup>
 ```
+if bridge is created successfully.
 
-Your bridge is now ready.
+If `courseName` is invalid bot answers with message
+```
+Bridge not created: Invalid discord channel <courseName>
+```
