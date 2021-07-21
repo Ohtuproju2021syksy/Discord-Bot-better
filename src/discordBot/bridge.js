@@ -25,8 +25,6 @@ process.once("SIGTERM", () => telegramBot.stop("SIGTERM"));
 
 const validDiscordChannel = async (courseName) => {
   const guild = await discordClient.guilds.fetch(process.env.GUILD_ID);
-  // console.log(guild);
-  console.log(`${courseName}_general`);
   const channel = guild.channels.cache.find(
     c => c.name === `${courseName}_general`,
   );
@@ -47,37 +45,35 @@ const sendMessageToTelegram = async (groupId, content) => {
 // Event handlers
 
 discordClient.on("message", async message => {
-  // console.log(message.channel.name);
-  const name = message.channel.name;
   if (!message.channel.parent) return;
-  // const courseName = name.split("_")[0];
+  const channelName = message.channel.name;
 
   let courseName = getRoleFromCategory(message.channel.parent.name);
   courseName = courseName.replace(" ", "-");
-
-  // console.log(`nospace${courseName}nospace`);
 
   const group = await Groups.findOne({ where: { course: String(courseName) } });
 
   if (!group) {
     return;
   }
-  // console.log(message.author.bot);
   if (message.author.bot) return;
-  // console.log("ei botti");
+
   const sender = message.member.nickname || message.author.username;
+
   let channel = "";
-  channel = name === `${courseName}_announcement` ? " announcement" : channel;
-  channel = name === `${courseName}_general` ? " general" : channel;
+  channel = channelName === `${courseName}_announcement` ? " announcement" : channel;
+  channel = channelName === `${courseName}_general` ? " general" : channel;
 
   await sendMessageToTelegram(group.groupId, `<${sender}>${channel}: ${message.content}`);
 });
 
 telegramBot.on("text", async (ctx) => {
-  const id = (await ctx.getChat()).id;
+  const id = ctx.message.chat.id;
   const group = await Groups.findOne({ where: { groupId: String(id) } });
-  if (ctx.message.text.startsWith("/id")) {
-    const discordCourseName = ctx.message.text.slice(3).toLowerCase().trim();
+
+
+  if (ctx.message.text.startsWith("/bridge")) {
+    const discordCourseName = ctx.message.text.slice(7).toLowerCase().trim();
     const telegramCourseName = (await ctx.getChat()).title;
     const channel = await validDiscordChannel(discordCourseName);
     if (!channel) {
@@ -102,8 +98,6 @@ telegramBot.on("text", async (ctx) => {
   const courseName = group.course;
 
   if (String(ctx.message.chat.id) === group.groupId) {
-    console.log("telegram message to discord");
-    console.log(courseName);
     const user = ctx.message.from;
     const sender = user.first_name || user.username;
     const channel = await validDiscordChannel(courseName);
