@@ -87,9 +87,9 @@ telegramBot.on("text", async (ctx) => {
     }
     await createNewGroup([discordCourseName, id], Groups).catch((error) => console.log(error));
     await sendMessageToDiscord(channel,
-      `Brigde created: Discord course ${discordCourseName} <--> Telegram course ${telegramCourseName}`);
+      `Bridge created: Discord course ${discordCourseName} <--> Telegram course ${telegramCourseName}`);
     await sendMessageToTelegram(id,
-      `Brigde created: Discord course ${discordCourseName} <--> Telegram course ${telegramCourseName}`);
+      `Bridge created: Discord course ${discordCourseName} <--> Telegram course ${telegramCourseName}`);
   }
 
   if (!group) {
