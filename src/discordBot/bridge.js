@@ -52,7 +52,8 @@ discordClient.on("message", async message => {
   if (!message.channel.parent) return;
   // const courseName = name.split("_")[0];
 
-  const courseName = getRoleFromCategory(message.channel.parent.name);
+  let courseName = getRoleFromCategory(message.channel.parent.name);
+  courseName = courseName.replace(" ", "-");
 
   // console.log(`nospace${courseName}nospace`);
 
