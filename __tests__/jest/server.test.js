@@ -41,9 +41,16 @@ describe("Endpoint urls", () => {
       .expect(400);
   });
 
-  test("authenticate url returns status 200", async () => {
+  test("authenticate fail return 401", async () => {
     await api
       .get("/authenticate_faculty")
-      .expect(200);
+      .expect(401);
+  });
+
+  test("authenticate without teacher role return status 400", async () => {
+    await api
+      .get("/authenticate_faculty")
+      .set({ employeenumber: 1 })
+      .expect(400);
   });
 });

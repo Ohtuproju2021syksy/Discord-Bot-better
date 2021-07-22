@@ -3,7 +3,7 @@ const passport = require("passport");
 
 module.exports = (client) => {
   router.get("/", async (req, res, next) => {
-    if (!req.headers.employeenumber) res.sendStatus(401);
+    if (!req.headers.employeenumber) return res.sendStatus(401);
     const guild = await client.guilds.fetch(process.env.GUILD_ID);
     const teacherRole = guild.roles.cache.find(r => r.name === "teacher");
     if (!teacherRole) {
