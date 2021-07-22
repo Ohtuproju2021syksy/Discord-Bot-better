@@ -4,7 +4,6 @@ const SequelizeMock = require("sequelize-mock");
 const dbMock = new SequelizeMock();
 
 const makeApp = require("../../src/server/app");
-const { sendMessage } = require("corde");
 
 const client = {
   guilds: {
