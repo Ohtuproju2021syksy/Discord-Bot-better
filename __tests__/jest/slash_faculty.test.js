@@ -1,4 +1,4 @@
-const { execute } = require("../../src/discordBot/slash_commands/faculty/faculty");
+const { execute } = require("../../src/discordBot/slash_commands/student/auth");
 const { sendEphemeral } = require("../../src/discordBot/slash_commands/utils");
 
 jest.mock("../../src/discordBot/slash_commands/utils");
@@ -9,8 +9,8 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
-describe("slash hide command", () => {
-  test("hide command with invalid course name responds with correct ephemeral", async () => {
+describe("slash auth command", () => {
+  test("auth command responds with correct ephemeral", async () => {
     const client = defaultTeacherInteraction.client;
     await execute(defaultTeacherInteraction, client);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);

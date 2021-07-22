@@ -4,6 +4,7 @@ const SequelizeMock = require("sequelize-mock");
 const dbMock = new SequelizeMock();
 
 const makeApp = require("../../src/server/app");
+const { sendMessage } = require("corde");
 
 const client = {
   guilds: {
@@ -28,14 +29,22 @@ describe("Endpoint urls", () => {
       .get("/")
       .expect(200);
   });
+
   test("invalid url returns status 302", async () => {
     await api
       .get("/invalidURL")
       .expect(302);
   });
+
   test("invalid invite returns status 400", async () => {
     await api
       .get("/join/invalidURL")
       .expect(400);
+  });
+
+  test("authenticate url returns status 200", async () => {
+    await api
+      .get("/authenticate_faculty")
+      .expect(200);
   });
 });
