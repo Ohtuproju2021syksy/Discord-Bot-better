@@ -15,6 +15,7 @@ module.exports = (client, sequelize) => {
   const app = express();
   const discordAuthRoute = discordAuth(client);
   const discordJoinRoute = discordJoin(client);
+  const facultyAuthRoute = authenticateFaculty(client);
 
   app.use(
     session({
@@ -32,7 +33,7 @@ module.exports = (client, sequelize) => {
   app.use("/", defaultRouteHandler);
   app.use("/discordAuth", discordAuthRoute);
   app.use("/join", discordJoinRoute);
-  app.use("/authenticate_faculty", authenticateFaculty);
+  app.use("/authenticate_faculty", facultyAuthRoute);
   app.use("*", defaultRouteErrorHandler);
 
   return app;
