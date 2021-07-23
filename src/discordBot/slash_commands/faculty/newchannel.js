@@ -10,6 +10,7 @@ const findOrCreateChannel = async (channelObject, guild) => {
 };
 
 const getChannelObjects = (guild, admin, student, roleName, channelName, category) => {
+  roleName = roleName.replace(/ /g, "-");
   return [
     {
       name: `${roleName}_${channelName}`,

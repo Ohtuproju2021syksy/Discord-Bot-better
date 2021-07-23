@@ -34,6 +34,7 @@ const getPermissionOverwrites = (guild, admin, student) => ([
 ]);
 
 const getChannelObjects = (guild, admin, student, roleName, category) => {
+  roleName = roleName.replace(/ /g, "-");
   return [
     {
       name: `${roleName}_announcement`,
@@ -60,11 +61,6 @@ const getChannelObjects = (guild, admin, student, roleName, category) => {
     },
     {
       name: `${roleName}_general`,
-      parent: category,
-      options: { type: "text", parent: category, permissionOverwrites: [] },
-    },
-    {
-      name: `${roleName}_questions`,
       parent: category,
       options: { type: "text", parent: category, permissionOverwrites: [] },
     },
