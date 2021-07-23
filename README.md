@@ -51,7 +51,7 @@ Make your own Discord Bot. You can find instructions [here](./documentation/setu
 
 Download and install PostgreSQL [here](https://www.postgresql.org/download/)
 
-More help for PostgreSQL (in Finnish) [here](https://hy-tsoha.github.io/materiaali/content/osa-2/index.html#tietokannan-k%C3%A4ytt%C3%A4minen)
+More help for PostgreSQL (in Finnish) [here](https://hy-tsoha.github.io/materiaali/osa-2/#tietokannan-k%C3%A4ytt%C3%A4minen)
 
 Setting up the backend [here](./documentation/OAuth2.md).
 
