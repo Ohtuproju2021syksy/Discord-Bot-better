@@ -51,6 +51,6 @@ describe("slash leave command", () => {
     setMaxChannels(client);
     await execute(defaultTeacherInteraction, client);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
-    expect(sendEphemeral).toHaveBeenCalledWith(client, defaultTeacherInteraction, "Maximum text channel amount is 10");
+    expect(sendEphemeral).toHaveBeenCalledWith(client, defaultTeacherInteraction, "Maximum added text channel amount is 10");
   });
 });
