@@ -15,7 +15,7 @@ defaultTeacherInteraction.data.options = [{ value: channelName }];
 
 const setMaxChannels = (client) => {
   const category = client.guild.channels.cache.get(2).parent;
-  for (let i = 3; i < 14; i++) {
+  for (let i = 3; i < 17; i++) {
     const channelToCreate = {
       name: i,
       parent: category,
