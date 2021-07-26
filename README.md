@@ -64,21 +64,6 @@ npm run dev (for development vesion)
 npm start (for staging version)
 ```
 
-
-### Running corde tests on command line
-
-Add following contents to `.env` file:
-```
-CORDE_BOT_TOKEN=token-of-your-testing-bot-you-just-created
-BOT_TEST_ID=id-of-your-bot-being-tested 
-CHANNEL_ID=channel-for-the-tests
-```
-
-Make your own Discord test Bot. You can find instructions [here](./documentation/setuptestbot.md).
-
-Once you have setup both of your Bots to your server, run following command to run the tests:
-
 ```
 npm run test (run all the tests)
-npm run test:corde (run only the corde tests)
 ```
