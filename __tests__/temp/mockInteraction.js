@@ -56,12 +56,12 @@ const student = {
 const guideChannel = {
   name: "guide",
   type: "text",
-  parent: "",
+  parent: null,
 };
 
 const testCatecory = {
   name: "test",
-  parent: { name: "📚 test" },
+  parent: { name: "📚 test", type: "category" },
   type: "text",
 };
 
