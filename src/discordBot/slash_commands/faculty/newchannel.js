@@ -31,8 +31,8 @@ const execute = async (interaction, client) => {
     return sendEphemeral(client, interaction, "Course not found, can´t create new channel");
   }
 
-  if (guild.channels.cache.filter(c => c.parent === channel.parent).size >= 10) {
-    return sendEphemeral(client, interaction, "Maximum text channel amount is 10");
+  if (guild.channels.cache.filter(c => c.parent === channel.parent).size >= 13) {
+    return sendEphemeral(client, interaction, "Maximum added text channel amount is 10");
   }
   else {
     const categoryName = channel.parent.name;
