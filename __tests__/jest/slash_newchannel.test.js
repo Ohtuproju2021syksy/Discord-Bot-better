@@ -8,14 +8,14 @@ jest.mock("discord-slash-commands-client");
 
 getRoleFromCategory.mockImplementation((name) => name.replace("📚", "").trim());
 
-const { defaultTeacherInteraction } = require("../temp/mockInteraction");
+const { defaultTeacherInteraction } = require("../mocks/mockInteraction");
 const courseName = "test";
 const channelName = "rules";
 defaultTeacherInteraction.data.options = [{ value: channelName }];
 
 const setMaxChannels = (client) => {
   const category = client.guild.channels.cache.get(2).parent;
-  for (let i = 3; i < 17; i++) {
+  for (let i = 3; i < 15; i++) {
     const channelToCreate = {
       name: i,
       parent: category,

@@ -7,7 +7,7 @@ const {
   studentData,
   invalidInteractionHelp,
   interactionHelpJoin,
-  teacherJoinData } = require("../temp/mockInteraction");
+  teacherJoinData } = require("../mocks/mockInteraction");
 
 const { sendEphemeral } = require("../../src/discordBot/commands/utils");
 

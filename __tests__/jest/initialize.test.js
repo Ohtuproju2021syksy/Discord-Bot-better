@@ -2,7 +2,7 @@ const { initializeApplicationContext } = require("../../src/discordBot/services/
 
 jest.mock("../../src/discordBot/services/service");
 
-const { client } = require("../temp/mockClient");
+const { client } = require("../mocks/mockClient");
 
 afterEach(() => {
   jest.clearAllMocks();

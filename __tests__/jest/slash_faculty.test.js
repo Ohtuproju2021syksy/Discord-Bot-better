@@ -3,7 +3,7 @@ const { sendEphemeral } = require("../../src/discordBot/commands/utils");
 
 jest.mock("../../src/discordBot/commands/utils");
 
-const { defaultTeacherInteraction } = require("../temp/mockInteraction");
+const { defaultTeacherInteraction } = require("../mocks/mockInteraction");
 
 afterEach(() => {
   jest.clearAllMocks();

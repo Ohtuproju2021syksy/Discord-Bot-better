@@ -1,6 +1,6 @@
 const { execute } = require("../../src/discordBot/events/message");
 
-const { messageInGuideChannel } = require("../temp/mockMessages");
+const { messageInGuideChannel } = require("../mocks/mockMessages");
 
 afterEach(() => {
   jest.clearAllMocks();

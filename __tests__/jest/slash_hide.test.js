@@ -7,7 +7,7 @@ jest.mock("../../src/discordBot/services/service");
 
 createCategoryName.mockImplementation((name) => `📚 ${name}`);
 
-const { defaultTeacherInteraction } = require("../temp/mockInteraction");
+const { defaultTeacherInteraction } = require("../mocks/mockInteraction");
 
 afterEach(() => {
   jest.clearAllMocks();

@@ -6,7 +6,7 @@ jest.mock("../../src/discordBot/commands/utils");
 jest.mock("../../src/discordBot/services/service");
 jest.mock("discord-slash-commands-client");
 
-const { defaultTeacherInteraction } = require("../temp/mockInteraction");
+const { defaultTeacherInteraction } = require("../mocks/mockInteraction");
 const roleString = "test";
 defaultTeacherInteraction.data.options = [{ value: roleString }];
 

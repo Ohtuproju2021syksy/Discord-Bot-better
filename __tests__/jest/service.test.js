@@ -8,7 +8,7 @@ const {
   createInvitation,
   findCategoryName } = require("../../src/discordBot/services/service");
 
-const { client } = require("../temp/mockClient");
+const { client } = require("../mocks/mockSlashClient");
 
 afterEach(() => {
   jest.clearAllMocks();

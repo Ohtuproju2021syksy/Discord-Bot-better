@@ -6,7 +6,7 @@ jest.mock("../../src/discordBot/commands/utils");
 jest.mock("../../src/discordBot/services/service");
 jest.mock("discord-slash-commands-client");
 
-const { interactionJoin } = require("../temp/mockInteraction");
+const { interactionJoin } = require("../mocks/mockInteraction");
 
 afterEach(() => {
   jest.clearAllMocks();

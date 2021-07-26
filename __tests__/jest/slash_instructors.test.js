@@ -6,7 +6,7 @@ jest.mock("../../src/discordBot/commands/utils");
 const { intInsWithoutArgs,
   intInsWithValidArgs,
   intInsWithInvalidArgs,
-  intInsWithoutArgsInCourseChannelWithAdmins } = require("../temp/mockInteraction");
+  intInsWithoutArgsInCourseChannelWithAdmins } = require("../mocks/mockInteraction");
 
 afterEach(() => {
   jest.clearAllMocks();
