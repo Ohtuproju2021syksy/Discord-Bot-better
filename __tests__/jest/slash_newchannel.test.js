@@ -1,8 +1,8 @@
-const { execute } = require("../../src/discordBot/slash_commands/faculty/newchannel");
-const { sendEphemeral } = require("../../src/discordBot/slash_commands/utils");
+const { execute } = require("../../src/discordBot/commands/faculty/newchannel");
+const { sendEphemeral } = require("../../src/discordBot/commands/utils");
 const { getRoleFromCategory } = require("../../src/discordBot/services/service");
 
-jest.mock("../../src/discordBot/slash_commands/utils");
+jest.mock("../../src/discordBot/commands/utils");
 jest.mock("../../src/discordBot/services/service");
 jest.mock("discord-slash-commands-client");
 

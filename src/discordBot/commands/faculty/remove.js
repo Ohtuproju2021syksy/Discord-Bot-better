@@ -1,11 +1,17 @@
-const createCategoryName = (courseString) => `📚 ${courseString}`;
+const { updateGuide, findCategoryName, removeGroup, getRoleFromCategory } = require("../../services/service");
+const { sendEphemeral } = require("../utils");
 
-const execute = async (message, args) => {
-  const courseName = args;
-  const guild = message.guild;
+const execute = async (interaction, client, Groups) => {
+  const courseName = interaction.data.options[0].value.toLowerCase().trim();
 
-  const courseString = createCategoryName(courseName);
+  const guild = client.guild;
+
+  const courseString = findCategoryName(courseName, guild);
   const category = guild.channels.cache.find(c => c.type === "category" && c.name === courseString);
+
+  const channelGeneral = guild.channels.cache.find(c => c.parent === category && c.name.includes("general"));
+
+  if (!category) return sendEphemeral(client, interaction, `Invalid course name: ${courseName}.`);
   await Promise.all(guild.channels.cache
     .filter(c => c.parent === category)
     .map(async channel => await channel.delete()),
@@ -17,6 +23,15 @@ const execute = async (message, args) => {
     .filter(r => (r.name === `${courseName} admin` || r.name === courseName))
     .map(async role => await role.delete()),
   );
+  sendEphemeral(client, interaction, `Deleted course ${courseName}.`);
+  await client.emit("COURSES_CHANGED");
+  await updateGuide(client.guild);
+
+  // Telegram db link remove
+  if (channelGeneral) {
+    const name = getRoleFromCategory(courseString);
+    removeGroup(name, Groups);
+  }
 };
 
 module.exports = {
@@ -27,5 +42,13 @@ module.exports = {
   joinArgs: true,
   guide: true,
   role: "teacher",
+  options: [
+    {
+      name: "course",
+      description: "Course to delete.",
+      type: 3,
+      required: true,
+    },
+  ],
   execute,
 };

@@ -1,42 +1,53 @@
-require("dotenv").config();
-const prefix = process.env.PREFIX;
+const prefix = "/";
+const { sendEphemeral } = require("../utils");
 
-const execute = (message, args) => {
-  const member = message.member;
+const execute = async (interaction, client) => {
+  const guild = client.guild;
+
+  const member = guild.members.cache.get(interaction.member.user.id);
   const data = [];
-  const commandsReadyToPrint = message.client.commands
+  const commandsReadyToPrint = client.slashCommands.map(c => c.command)
     .filter(command => {
       if (!command.role) return true;
       return member.roles.cache.find(role => role.name === command.role);
     });
 
-  if (!args.length) {
+  if (!interaction.data.options) {
     data.push("Here's a list of all my commands:");
     data.push(commandsReadyToPrint.map(command => `${prefix}${command.name} - ${command.description}`).join("\n"));
     data.push(`\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`);
-    return message.channel.send(data, { split: true });
+    return sendEphemeral(client, interaction, data.join("\n"));
   }
 
-  const name = args[0].toLowerCase();
-  const command = commandsReadyToPrint.get(name);
+  const name = interaction.data.options[0].value.toLowerCase().trim();
+  const command = commandsReadyToPrint.find(c => c.name.includes(name));
 
   if (!command) {
-    return message.reply("that's not a valid command!");
+    return sendEphemeral(client, interaction, "that's not a valid command!");
   }
 
-  data.push(`**Name:** ${command.name}`);
-
-  if (command.description) data.push(`**Description:** ${command.description}`);
-  if (command.usage) data.push(`**Usage:** ${prefix}${command.name} ${command.usage}`);
-
-  message.channel.send(data, { split: true });
+  if (interaction.data.options) {
+    data.push(`**Name:** ${command.name}`);
+    data.push(`**Description:** ${command.description}`);
+    data.push(`**Usage:** ${prefix}${command.name} ${command.usage}`);
+    return sendEphemeral(client, interaction, data.join(" \n"));
+  }
 };
 
 module.exports = {
   name: "help",
   description: "List all of my commands or info about a specific command.",
   usage: "[command name]",
-  args: false,
-  joinArgs: false,
+  args: true,
+  joinArgs: true,
+  guide: true,
+  options: [
+    {
+      name: "command",
+      description: "command instructions",
+      type: 3,
+      required: false,
+    },
+  ],
   execute,
 };

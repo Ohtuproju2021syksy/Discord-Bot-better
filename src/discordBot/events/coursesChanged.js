@@ -1,4 +1,4 @@
-const { reloadCommands } = require("../slash_commands/utils");
+const { reloadCommands } = require("../commands/utils");
 
 const execute = async (client) => {
   await reloadCommands(client, ["join", "leave"]);

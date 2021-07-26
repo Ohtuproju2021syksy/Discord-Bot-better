@@ -1,4 +1,4 @@
-const { execute } = require("../../src/discordBot/slash_commands/student/help");
+const { execute } = require("../../src/discordBot/commands/student/help");
 
 const {
   teacherInteractionHelp,
@@ -9,9 +9,9 @@ const {
   interactionHelpJoin,
   teacherJoinData } = require("../temp/mockInteraction");
 
-const { sendEphemeral } = require("../../src/discordBot/slash_commands/utils");
+const { sendEphemeral } = require("../../src/discordBot/commands/utils");
 
-jest.mock("../../src/discordBot/slash_commands/utils");
+jest.mock("../../src/discordBot/commands/utils");
 jest.mock("../../src/discordBot/services/service");
 jest.mock("discord-slash-commands-client");
 

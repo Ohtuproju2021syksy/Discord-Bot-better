@@ -6,16 +6,6 @@ const { Groups } = require("../db/dbInit");
 const token = process.env.BOT_TOKEN;
 
 const client = new Discord.Client();
-client.commands = new Discord.Collection();
-
-const commandFolders = fs.readdirSync("./src/discordBot/commands");
-for (const folder of commandFolders) {
-  const commandFiles = fs.readdirSync(`./src/discordBot/commands/${folder}`).filter(file => file.endsWith(".js"));
-  for (const file of commandFiles) {
-    const command = require(`./commands/${folder}/${file}`);
-    client.commands.set(command.name, command);
-  }
-}
 
 const eventFiles = fs.readdirSync("./src/discordBot/events").filter(file => file.endsWith(".js"));
 for (const file of eventFiles) {

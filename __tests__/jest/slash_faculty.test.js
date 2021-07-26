@@ -1,7 +1,7 @@
-const { execute } = require("../../src/discordBot/slash_commands/student/auth");
-const { sendEphemeral } = require("../../src/discordBot/slash_commands/utils");
+const { execute } = require("../../src/discordBot/commands/student/auth");
+const { sendEphemeral } = require("../../src/discordBot/commands/utils");
 
-jest.mock("../../src/discordBot/slash_commands/utils");
+jest.mock("../../src/discordBot/commands/utils");
 
 const { defaultTeacherInteraction } = require("../temp/mockInteraction");
 

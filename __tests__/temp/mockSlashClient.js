@@ -53,7 +53,7 @@ const client = {
   emit: jest.fn(),
 };
 
-const slashCommandsPath = path.resolve("src/discordBot/slash_commands");
+const slashCommandsPath = path.resolve("src/discordBot/commands");
 
 const slashCommandFolders = fs.readdirSync(slashCommandsPath, { withFileTypes: true })
   .filter(dirent => dirent.isDirectory())
