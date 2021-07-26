@@ -35,18 +35,22 @@ const teacher = {
   nickname: "teacher",
   roles: {
     cache: [{ name: "teacher" }, { name: "test admin" }],
-    add: jest.fn(),
+    add: jest.fn((name) => teacher.roles.cache.push({ name: name })),
     fetch: jest.fn(),
+    remove: jest.fn((role) => teacher.roles.cache = teacher.roles.cache.filter(r => r.name !== role.name)),
   },
+  fetch: jest.fn(),
 };
 
 const student = {
   nickname: "student",
   roles: {
     cache: [{ name: "student" }],
-    add: jest.fn(),
+    add: jest.fn((name) => student.roles.cache.push({ name: name })),
     fetch: jest.fn(),
+    remove: jest.fn((role) => student.roles.cache = student.roles.cache.filter(r => r.name !== role.name)),
   },
+  fetch: jest.fn(),
 };
 
 const guideChannel = {
