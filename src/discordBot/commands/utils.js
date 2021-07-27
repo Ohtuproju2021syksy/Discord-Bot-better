@@ -121,6 +121,7 @@ const leaveGetChoices = (client) => {
   const choices = client.guild.channels.cache
     .filter(({ type, name }) => type === "category" && name.startsWith("📚") || name.startsWith("🔒"))
     .map(({ name }) => getRoleFromCategory(name))
+    .sort()
     .map(courseName => ({ name: courseName, value: courseName }));
   // console.log(choices);
   return choices;
@@ -130,6 +131,7 @@ const joinGetChoices = (client) => {
   const choices = client.guild.channels.cache
     .filter(({ type, name }) => type === "category" && name.startsWith("📚"))
     .map(({ name }) => getRoleFromCategory(name))
+    .sort()
     .map(courseName => ({ name: courseName, value: courseName }));
   // console.log("join", choices);
   return choices;
