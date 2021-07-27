@@ -27,7 +27,6 @@ describe("courses slash command", () => {
     const result = "No courses available";
     const client = defaultTeacherInteraction.client;
     client.guild.channels.init();
-    console.log(client.guild.channels.cache);
     execute(defaultTeacherInteraction, client);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(client, defaultTeacherInteraction, result);
