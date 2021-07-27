@@ -16,7 +16,7 @@ Copy client secret from developer portal OAtuth section and set to .env `CLIENT_
 
 ### Scopes
 
-Select correct redirect url from drop down menu. From the scopes select **indentify** and **guild.join**.
+Select correct redirect url from drop down menu. From the scopes select **indentify** and **guilds.join**.
 
 ### Redirects
 
