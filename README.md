@@ -38,6 +38,7 @@ DISCORD_SERVER_INVITE=your-discord-server-invite
 PORT=your-custom-backend-port
 SESSION_SECRET=server-session-secret
 BACKEND_SERVER_URL=backend-server-url-without-port
+POSTGRES_USERNAME=your-postgres-username (postgres if not changed)
 POSTGRES_PASSWORD=your-postgres-password
 DB_HOST= (only if you are not using PostgreSQL locally)
 
