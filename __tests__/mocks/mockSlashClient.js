@@ -22,9 +22,9 @@ const client = {
         send: jest.fn((content) => { return { content: content, pin: jest.fn() }; }),
         lastPinTimestamp: null,
         setName: jest.fn(),
-        createInvite: jest.fn(() => {
-          client.guild.invites.cache.push({
-            name: name,
+        createInvite: jest.fn((courseName) => {
+          client.guild.invites.cache.set(id, {
+            name: courseName,
             code: 1,
           });
           id++;
