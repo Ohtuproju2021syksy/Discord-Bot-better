@@ -204,6 +204,14 @@ const handleCooldown = (map, courseName, cooldown) => {
   }, cooldown);
 };
 
+const findOrCreateChannel = async (channelObject, guild) => {
+  const { name, options } = channelObject;
+  const alreadyExists = guild.channels.cache.find(
+    (c) => c.type === options.type && c.name === name);
+  if (alreadyExists) return alreadyExists;
+  return await guild.channels.create(name, options);
+};
+
 module.exports = {
   createCategoryName,
   createPrivateCategoryName,
@@ -221,4 +229,5 @@ module.exports = {
   msToMinutesAndSeconds,
   handleCooldown,
   createCourseInvitationLink,
+  findOrCreateChannel,
 };

@@ -1,4 +1,4 @@
-const { findOrCreateRoleWithName, createInvitation, findCategoryName, updateGuide } = require("../../services/service");
+const { findOrCreateRoleWithName, createInvitation, findCategoryName, updateGuide, findOrCreateChannel } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
 
 /**
@@ -6,13 +6,6 @@ const { sendEphemeral } = require("../utils");
  * @param {Object} channelObject
  * @param {Discord.GuildChannel} parent
  */
-const findOrCreateChannel = async (channelObject, guild) => {
-  const { name, options } = channelObject;
-  const alreadyExists = guild.channels.cache.find(
-    (c) => c.type === options.type && c.name === name);
-  if (alreadyExists) return alreadyExists;
-  return await guild.channels.create(name, options);
-};
 
 const getPermissionOverwrites = (guild, admin, student) => ([
   {

@@ -1,13 +1,5 @@
-const { getRoleFromCategory } = require("../../services/service");
+const { getRoleFromCategory, findOrCreateChannel } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
-
-const findOrCreateChannel = async (channelObject, guild) => {
-  const { name, options } = channelObject;
-  const alreadyExists = guild.channels.cache.find(
-    (c) => c.type === options.type && c.name === name);
-  if (alreadyExists) return alreadyExists;
-  return await guild.channels.create(name, options);
-};
 
 const getChannelObjects = (guild, admin, student, roleName, channelName, category) => {
   roleName = roleName.replace(/ /g, "-");
@@ -28,11 +20,15 @@ const execute = async (interaction, client) => {
   const channel = guild.channels.cache.get(interaction.channel_id);
 
   if (!channel.parent) {
-    return sendEphemeral(client, interaction, "Course not found, can´t create new channel");
+    return sendEphemeral(client, interaction, "Course not found, can not create new channel.");
+  }
+
+  if (!channel.parent.name.startsWith("🔒") && !channel.parent.name.startsWith("📚")) {
+    return sendEphemeral(client, interaction, "This is not a course category, can not create new channel.");
   }
 
   if (guild.channels.cache.filter(c => c.parent === channel.parent).size >= 13) {
-    return sendEphemeral(client, interaction, "Maximum added text channel amount is 10");
+    return sendEphemeral(client, interaction, "Maximum total channel amount is 13.");
   }
   else {
     const categoryName = channel.parent.name;
