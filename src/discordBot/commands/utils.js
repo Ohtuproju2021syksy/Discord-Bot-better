@@ -5,7 +5,7 @@ const { getRoleFromCategory } = require("../services/service");
 
 const slashClient = new Client(
   process.env.BOT_TOKEN,
-  process.env.BOT_TEST_ID,
+  process.env.BOT_ID,
 );
 
 const sendEphemeral = (client, interaction, content) => {

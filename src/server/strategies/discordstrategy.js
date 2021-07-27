@@ -10,7 +10,7 @@ passport.deserializeUser((user, done) => {
 });
 
 passport.use(new DiscordStrategy({
-  clientID: process.env.BOT_TEST_ID,
+  clientID: process.env.BOT_ID,
   clientSecret: process.env.CLIENT_SECRET,
   callbackURL: process.env.DISCORD_REDIRECT_URL,
   scope: ["identify", "guilds", "guilds.join"],
