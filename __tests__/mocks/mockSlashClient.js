@@ -30,6 +30,7 @@ const client = {
           id++;
         }),
       })),
+      init: jest.fn(() => client.guild.channels.cache = new Discord.Collection()),
       messages: {
         cache: [],
         fetchPinned: jest.fn(() => []),

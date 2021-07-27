@@ -60,6 +60,11 @@ const guideChannel = {
 };
 
 const testCatecory = {
+  name: "📚 test",
+  type: "category",
+};
+
+const testChannel = {
   name: "test",
   parent: { name: "📚 test", type: "category" },
   type: "text",
@@ -67,8 +72,9 @@ const testCatecory = {
 
 client.guild.members.cache.set(1, teacher);
 client.guild.members.cache.set(2, student);
+client.guild.channels.cache.set(0, testCatecory);
 client.guild.channels.cache.set(1, guideChannel);
-client.guild.channels.cache.set(2, testCatecory);
+client.guild.channels.cache.set(2, testChannel);
 
 const defaultTeacherInteraction = {
   client: client,
