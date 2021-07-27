@@ -28,7 +28,7 @@ const execute = async (interaction, client) => {
   }
 
   if (guild.channels.cache.filter(c => c.parent === channel.parent).size >= 13) {
-    return sendEphemeral(client, interaction, "Maximum total channel amount is 13.");
+    return sendEphemeral(client, interaction, "Maximum added text channel amount is 10");
   }
   else {
     const categoryName = channel.parent.name;

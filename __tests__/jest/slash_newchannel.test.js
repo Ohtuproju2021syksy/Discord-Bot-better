@@ -34,7 +34,7 @@ describe("slash leave command", () => {
     const client = defaultTeacherInteraction.client;
     await execute(defaultTeacherInteraction, client);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
-    expect(sendEphemeral).toHaveBeenCalledWith(client, defaultTeacherInteraction, "Course not found, can´t create new channel");
+    expect(sendEphemeral).toHaveBeenCalledWith(client, defaultTeacherInteraction, "Course not found, can not create new channel.");
   });
 
   test("new channel can be created if course channel count is less or equel than 10", async () => {
