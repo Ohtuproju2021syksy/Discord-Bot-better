@@ -42,7 +42,7 @@ jobs:
       env:
         BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
         GUILD_ID: ${{ secrets.GUILD_ID }}
-        BOT_TEST_ID: ${{ secrets.BOT_TEST_ID }}
+        BOT_ID: ${{ secrets.BOT_ID }}
         PREFIX: ${{ secrets.PREFIX }}
         POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
         PORT: ${{ secrets.PORT }}
