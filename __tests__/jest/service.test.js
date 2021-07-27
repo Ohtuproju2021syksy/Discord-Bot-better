@@ -5,7 +5,6 @@ const {
   findOrCreateRoleWithName,
   updateFaculty,
   updateGuideMessage,
-  updateGuide,
   createInvitation,
   findCategoryName,
   createNewGroup,
