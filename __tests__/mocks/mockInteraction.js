@@ -1,21 +1,16 @@
-const { alphabetiseCommands } = require("../../src/discordBot/commands/student/help");
 const { client } = require("./mockSlashClient");
 const prefix = "/";
 
-const alphabetisedCommands = client.slashCommands
-  .map(c => c.command)
-  .sort(alphabetiseCommands);
-
 const teacherData = [];
 teacherData.push("Here's a list of all my commands:");
-teacherData.push(alphabetisedCommands.map(command => `${prefix}${command.name} - ${command.description}`).join("\n"));
+teacherData.push(client.slashCommands.map(command => `${prefix}${command.command.name} - ${command.command.description}`).join("\n"));
 teacherData.push(`\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`);
 
 const studentData = [];
 studentData.push("Here's a list of all my commands:");
-studentData.push(alphabetisedCommands
-  .filter(command => command.role !== "teacher")
-  .map(command => `${prefix}${command.name} - ${command.description}`).join("\n"));
+studentData.push(client.slashCommands
+  .filter(command => command.command.role !== "teacher")
+  .map(command => `${prefix}${command.command.name} - ${command.command.description}`).join("\n"));
 studentData.push(`\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`);
 
 const teacherJoinData = [];

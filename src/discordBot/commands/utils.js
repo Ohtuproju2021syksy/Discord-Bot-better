@@ -90,8 +90,10 @@ const loadCommands = (client) => {
 
     }
   }
-  client.slashCommands = slashCommands;
-  return slashCommands;
+
+  const alphabetisedCommands = new Collection([...slashCommands.entries()].sort());
+  client.slashCommands = alphabetisedCommands;
+  return alphabetisedCommands;
 };
 
 const reloadCommands = async (client, commandNames) => {
