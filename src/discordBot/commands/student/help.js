@@ -1,12 +1,17 @@
 const prefix = "/";
 const { sendEphemeral } = require("../utils");
 
+const alphabetiseCommands = (command1, command2) => (
+  command1.name > command2.name ? 1 : command2.name > command1.name ? -1 : 0
+);
+
 const execute = async (interaction, client) => {
   const guild = client.guild;
 
   const member = guild.members.cache.get(interaction.member.user.id);
   const data = [];
   const commandsReadyToPrint = client.slashCommands.map(c => c.command)
+    .sort(alphabetiseCommands)
     .filter(command => {
       if (!command.role) return true;
       return member.roles.cache.find(role => role.name === command.role);
@@ -50,4 +55,5 @@ module.exports = {
     },
   ],
   execute,
+  alphabetiseCommands,
 };
