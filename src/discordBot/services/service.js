@@ -22,7 +22,6 @@ const getRoleFromCategory = (categoryName) => {
   else {
     cleaned = categoryName.replace("🔒", "").trim();
   }
-  // const cleaned = categoryName.replace("📚", "").trim();
   const regExp = /\(([^)]+)\)/;
   const matches = regExp.exec(cleaned);
   return matches?.[1] || cleaned;
@@ -121,10 +120,19 @@ const createInvitation = async (guild, args) => {
   const guide = guild.channels.cache.find(
     c => c.type === "text" && c.name === "guide",
   );
-  const name = createCategoryName(args);
-  const category = guild.channels.cache.find(
+  let name;
+  let category;
+
+  name = createCategoryName(args);
+  category = guild.channels.cache.find(
     c => c.type === "category" && c.name === name,
   );
+  if (!category) {
+    name = createPrivateCategoryName(args);
+    category = guild.channels.cache.find(
+      c => c.type === "category" && c.name === name,
+    );
+  }
   const course = guild.channels.cache.find(
     (c => c.parent === category),
   );
@@ -196,6 +204,14 @@ const handleCooldown = (map, courseName, cooldown) => {
   }, cooldown);
 };
 
+const findOrCreateChannel = async (channelObject, guild) => {
+  const { name, options } = channelObject;
+  const alreadyExists = guild.channels.cache.find(
+    (c) => c.type === options.type && c.name === name);
+  if (alreadyExists) return alreadyExists;
+  return await guild.channels.create(name, options);
+};
+
 module.exports = {
   createCategoryName,
   createPrivateCategoryName,
@@ -213,4 +229,5 @@ module.exports = {
   msToMinutesAndSeconds,
   handleCooldown,
   createCourseInvitationLink,
+  findOrCreateChannel,
 };

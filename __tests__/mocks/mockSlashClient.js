@@ -3,6 +3,7 @@ const fs = require("fs");
 const path = require("path");
 
 let id = 1;
+let roleId = 1;
 
 const client = {
   commands: new Discord.Collection(),
@@ -22,14 +23,15 @@ const client = {
         send: jest.fn((content) => { return { content: content, pin: jest.fn() }; }),
         lastPinTimestamp: null,
         setName: jest.fn(),
-        createInvite: jest.fn(() => {
-          client.guild.invites.cache.push({
-            name: name,
+        createInvite: jest.fn((courseName) => {
+          client.guild.invites.cache.set(id, {
+            name: courseName,
             code: 1,
           });
           id++;
         }),
       })),
+      init: jest.fn(() => client.guild.channels.cache = new Discord.Collection()),
       messages: {
         cache: [],
         fetchPinned: jest.fn(() => []),
@@ -37,10 +39,16 @@ const client = {
       },
     },
     roles: {
-      cache: [],
-      create: jest.fn((data) => client.guild.roles.cache.push({
-        name: data.data.name,
-      })),
+      cache: new Discord.Collection(),
+      create: jest.fn((data) => {
+        client.guild.roles.cache.set(roleId, {
+          name: data.data.name,
+          members: data.data.members,
+          delete: jest.fn(),
+        }),
+        roleId++;
+      }),
+      init: () => client.guild.roles.cache = new Discord.Collection(),
     },
     fetchInvites: jest.fn(() => client.guild.invites.cache),
     members: {
@@ -53,7 +61,7 @@ const client = {
   emit: jest.fn(),
 };
 
-const slashCommandsPath = path.resolve("src/discordBot/slash_commands");
+const slashCommandsPath = path.resolve("src/discordBot/commands");
 
 const slashCommandFolders = fs.readdirSync(slashCommandsPath, { withFileTypes: true })
   .filter(dirent => dirent.isDirectory())

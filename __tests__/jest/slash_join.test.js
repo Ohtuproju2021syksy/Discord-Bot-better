@@ -1,12 +1,12 @@
-const { execute } = require("../../src/discordBot/slash_commands/student/join");
-const { sendEphemeral } = require("../../src/discordBot/slash_commands/utils");
+const { execute } = require("../../src/discordBot/commands/student/join");
+const { sendEphemeral } = require("../../src/discordBot/commands/utils");
 const { updateGuide } = require("../../src/discordBot/services/service");
 
-jest.mock("../../src/discordBot/slash_commands/utils");
+jest.mock("../../src/discordBot/commands/utils");
 jest.mock("../../src/discordBot/services/service");
 jest.mock("discord-slash-commands-client");
 
-const { interactionJoin } = require("../temp/mockInteraction");
+const { interactionJoin } = require("../mocks/mockInteraction");
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -16,7 +16,7 @@ describe("slash join command", () => {
   test("join to valid course adds role and responds with correct epheremal", async () => {
     const roleString = "tester";
     const client = interactionJoin.client;
-    client.guild.roles.cache.push({ name: roleString });
+    client.guild.roles.create({ data: { name: roleString } });
     const member = client.guild.members.cache.get(interactionJoin.member.user.id);
     await execute(interactionJoin, client);
     expect(member.roles.add).toHaveBeenCalledTimes(1);

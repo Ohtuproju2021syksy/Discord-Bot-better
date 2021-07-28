@@ -6,15 +6,9 @@
   "scripts": {
     "start": "cross-env NODE_ENV=production node src/index.js",
     "dev": "cross-env NODE_ENV=development nodemon src/index.js",
-    "dev:server": "cross-env NODE_ENV=test nodemon server/index.js",
     "jest": "jest --coverage --verbose --runInBand --detectOpenHandles",
-    "test:jest": "jest --coverage --verbose --runInBand",
-    "test:corde": "cross-env NODE_ENV=test corde",
-    "lint": "eslint .",
-    "test": "npm run cover:jest && npm run cover:corde && npm run cover:report",
-    "cover:jest": "nyc --silent npm run test:jest",
-    "cover:corde": "nyc --silent --no-clean --exclude=corde.config.js npm run test:corde",
-    "cover:report": "nyc report --reporter=lcov --reporter=text"
+    "test": "jest --coverage --verbose --runInBand",
+    "lint": "eslint ."
   },
   "jest": {
     "modulePathIgnorePatterns": [
@@ -51,13 +45,11 @@
     "telegraf": "^4.4.0"
   },
   "devDependencies": {
-    "corde": "^4.1.0",
     "cross-env": "^7.0.3",
     "eslint": "^7.26.0",
     "eslint-plugin-jest": "^24.3.6",
     "jest": "^27.0.1",
     "nodemon": "^2.0.4",
-    "nyc": "^15.1.0",
     "sequelize-mock": "^0.10.2",
     "supertest": "^6.1.3"
   }

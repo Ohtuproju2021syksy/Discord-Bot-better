@@ -1,18 +1,32 @@
 const { getRoleFromCategory } = require("../../services/service");
+const { sendEphemeral } = require("../utils");
 
-const execute = (message) => {
-  const category = message.channel.parent;
-  const roleString = getRoleFromCategory(category.name);
+const execute = async (interaction, client) => {
+  const guild = client.guild;
 
-  const courseAdminRole = message.guild.roles.cache.find(role => role.name === `${roleString} admin`);
-  if (!courseAdminRole) throw new Error(`Could not get admin role for ${roleString}`);
+  let roleString;
+  if (interaction.data.options) {
+    roleString = interaction.data.options[0].value.toLowerCase().trim();
+  }
+  else {
+    const category = guild.channels.cache.get(interaction.channel_id).parent;
+    if (!category) {
+      return sendEphemeral(client, interaction, "Provide course name as argument or use the command in course channel.");
+    }
+    else {
+      roleString = getRoleFromCategory(category.name);
+    }
+  }
+
+  const courseAdminRole = guild.roles.cache.find(r => r.name === `${roleString} admin`);
+  if (!courseAdminRole) return sendEphemeral(client, interaction, `No instructors for ${roleString}`);
 
   const adminsString = courseAdminRole.members
     .map(member => member.nickname || member.user.username)
     .join(", ");
-  if (!adminsString) return message.reply("It seems as if there are no instructors for this course yet. They need to be added manually.");
+  if (!adminsString) return sendEphemeral(client, interaction, `No instructors for ${roleString}`);
 
-  message.reply(`Here are the instructors for ${roleString}: ${adminsString}`);
+  sendEphemeral(client, interaction, `Here are the instructors for ${roleString}: ${adminsString}`);
 };
 
 module.exports = {
@@ -20,5 +34,13 @@ module.exports = {
   description: "Prints out the instructors of the course. This command is available in most channels.",
   args: false,
   joinArgs: false,
+  options: [
+    {
+      name: "command",
+      description: "command instructions",
+      type: 3,
+      required: false,
+    },
+  ],
   execute,
 };

@@ -1,13 +1,13 @@
-const { execute } = require("../../src/discordBot/slash_commands/faculty/unhide");
-const { sendEphemeral } = require("../../src/discordBot/slash_commands/utils");
+const { execute } = require("../../src/discordBot/commands/faculty/unhide");
+const { sendEphemeral } = require("../../src/discordBot/commands/utils");
 const { createPrivateCategoryName, updateGuide, findChannelWithNameAndType, msToMinutesAndSeconds } = require("../../src/discordBot/services/service");
 
-jest.mock("../../src/discordBot/slash_commands/utils");
+jest.mock("../../src/discordBot/commands/utils");
 jest.mock("../../src/discordBot/services/service");
 
 createPrivateCategoryName.mockImplementation((name) => `🔒 ${name}`);
 
-const { defaultTeacherInteraction } = require("../temp/mockInteraction");
+const { defaultTeacherInteraction } = require("../mocks/mockInteraction");
 
 afterEach(() => {
   jest.clearAllMocks();

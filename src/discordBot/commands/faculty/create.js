@@ -1,17 +1,11 @@
-const { findOrCreateRoleWithName, createInvitation, createCategoryName } = require("../../services/service");
+const { findOrCreateRoleWithName, createInvitation, findCategoryName, updateGuide, findOrCreateChannel } = require("../../services/service");
+const { sendEphemeral } = require("../utils");
 
 /**
  *
  * @param {Object} channelObject
  * @param {Discord.GuildChannel} parent
  */
-const findOrCreateChannel = async (channelObject, guild) => {
-  const { name, options } = channelObject;
-  const alreadyExists = guild.channels.cache.find(
-    (c) => c.type === options.type && c.name === name);
-  if (alreadyExists) return alreadyExists;
-  return await guild.channels.create(name, options);
-};
 
 const getPermissionOverwrites = (guild, admin, student) => ([
   {
@@ -33,6 +27,7 @@ const getPermissionOverwrites = (guild, admin, student) => ([
 ]);
 
 const getChannelObjects = (guild, admin, student, roleName, category) => {
+  roleName = roleName.replace(/ /g, "-");
   return [
     {
       name: `${roleName}_announcement`,
@@ -63,11 +58,6 @@ const getChannelObjects = (guild, admin, student, roleName, category) => {
       options: { type: "text", parent: category, permissionOverwrites: [] },
     },
     {
-      name: `${roleName}_questions`,
-      parent: category,
-      options: { type: "text", parent: category, permissionOverwrites: [] },
-    },
-    {
       name: `${roleName}_voice`,
       parent: category,
       options: { type: "voice", parent: category, permissionOverwrites: [] },
@@ -83,21 +73,17 @@ const getCategoryObject = (categoryName, permissionOverwrites) => ({
   },
 });
 
-const execute = async (message, args) => {
-  const role = message.member.roles.cache.find(r => r.name === "teacher");
-  if (!role) {
-    throw new Error("You have no power here!");
-  }
+const execute = async (interaction, client) => {
+  const courseName = interaction.data.options[0].value.toLowerCase().trim();
 
-  const courseName = args;
-  const guild = message.guild;
+  const guild = client.guild;
 
   // Roles
   const student = await findOrCreateRoleWithName(courseName, guild);
   const admin = await findOrCreateRoleWithName(`${courseName} admin`, guild);
 
   // Category
-  const categoryName = createCategoryName(courseName);
+  const categoryName = findCategoryName(courseName, guild);
   const categoryObject = getCategoryObject(categoryName, getPermissionOverwrites(guild, admin, student));
   const category = await findOrCreateChannel(categoryObject, guild);
 
@@ -106,16 +92,27 @@ const execute = async (message, args) => {
   await Promise.all(channelObjects.map(
     async channelObject => await findOrCreateChannel(channelObject, guild),
   ));
-  await createInvitation(message.guild, args);
+  await createInvitation(guild, courseName);
+  sendEphemeral(client, interaction, `Created course ${courseName}.`);
+  await client.emit("COURSES_CHANGED");
+  await updateGuide(client.guild);
 };
 
 module.exports = {
   name: "create",
-  description: "Create new course.",
+  description: "Create a new course.",
   usage: "[course name]",
   args: true,
   joinArgs: true,
   guide: true,
   role: "teacher",
+  options: [
+    {
+      name: "course",
+      description: "Course to create.",
+      type: 3,
+      required: true,
+    },
+  ],
   execute,
 };

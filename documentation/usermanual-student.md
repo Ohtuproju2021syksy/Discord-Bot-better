@@ -1,4 +1,4 @@
-# User manual
+# User manual fot student
 
 ### About Discord
 
@@ -64,10 +64,11 @@ If you want to see who are the teachers on your course, you can use command `/in
 
 Command | Explanation
 --------|-----------
-/join | Joins you into the course given, e.g. /join ohpe
-/leave | Remove you from the course given, e.g. /leave ohpe
-/courses | Prints out all the courses
-/instructors | Prints out the instructors of the course. This command is available in most channels
+/courses | Returns a list of all courses.
+/help | Returns a list of commands with info or info about a specific command.
+/instructors | Used in course channel returns a list of course instructors. Can be used anywhere when a parameter is given.
+/join | Joins you into the course given, e.g. /join ohpe.
+/leave | Remove you from the course given, e.g. /leave ohpe.
 
 ### Material
 

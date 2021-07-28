@@ -28,14 +28,29 @@ describe("Endpoint urls", () => {
       .get("/")
       .expect(200);
   });
+
   test("invalid url returns status 302", async () => {
     await api
       .get("/invalidURL")
       .expect(302);
   });
+
   test("invalid invite returns status 400", async () => {
     await api
       .get("/join/invalidURL")
+      .expect(400);
+  });
+
+  test("authenticate fail return 401", async () => {
+    await api
+      .get("/authenticate_faculty")
+      .expect(401);
+  });
+
+  test("authenticate without teacher role return status 400", async () => {
+    await api
+      .get("/authenticate_faculty")
+      .set({ employeenumber: 1 })
       .expect(400);
   });
 });

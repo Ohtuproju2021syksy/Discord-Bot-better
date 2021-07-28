@@ -35,36 +35,65 @@ const teacher = {
   nickname: "teacher",
   roles: {
     cache: [{ name: "teacher" }, { name: "test admin" }],
-    add: jest.fn(),
+    add: jest.fn((name) => teacher.roles.cache.push({ name: name })),
     fetch: jest.fn(),
+    remove: jest.fn((role) => teacher.roles.cache = teacher.roles.cache.filter(r => r.name !== role.name)),
   },
+  fetch: jest.fn(),
 };
 
 const student = {
   nickname: "student",
   roles: {
     cache: [{ name: "student" }],
-    add: jest.fn(),
+    add: jest.fn((name) => student.roles.cache.push({ name: name })),
     fetch: jest.fn(),
+    remove: jest.fn((role) => student.roles.cache = student.roles.cache.filter(r => r.name !== role.name)),
   },
+  fetch: jest.fn(),
 };
 
 const guideChannel = {
   name: "guide",
   type: "text",
-  parent: "",
+  parent: null,
+  delete: jest.fn(),
 };
 
 const testCatecory = {
-  name: "test",
-  parent: { name: "📚 test" },
+  name: "📚 test",
+  type: "category",
+  delete: jest.fn(),
+};
+
+const testChannel = {
+  name: "test_test",
+  parent: testCatecory,
   type: "text",
+  delete: jest.fn(),
+};
+
+const testChannelGeneral = {
+  name: "test_general",
+  parent: testCatecory,
+  type: "text",
+  delete: jest.fn(),
+};
+
+const chat = {
+  name: "chat",
+  type: "text",
+  parent: { name: "general", type: "category" },
+  delete: jest.fn(),
 };
 
 client.guild.members.cache.set(1, teacher);
 client.guild.members.cache.set(2, student);
+client.guild.channels.cache.set(0, testCatecory);
 client.guild.channels.cache.set(1, guideChannel);
-client.guild.channels.cache.set(2, testCatecory);
+client.guild.channels.cache.set(2, testChannel);
+client.guild.channels.cache.set(3, testChannelGeneral);
+client.guild.channels.cache.set(4, chat);
 
 const defaultTeacherInteraction = {
   client: client,

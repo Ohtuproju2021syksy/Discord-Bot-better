@@ -5,7 +5,7 @@ const { getRoleFromCategory } = require("../services/service");
 
 const slashClient = new Client(
   process.env.BOT_TOKEN,
-  process.env.BOT_TEST_ID,
+  process.env.BOT_ID,
 );
 
 const sendEphemeral = (client, interaction, content) => {
@@ -39,49 +39,50 @@ const createCommandRolePermissions = (client, highestRole) => {
   return permissions;
 };
 
-const createSlashCommand = async (client, slashCommand) => {
-  if (slashCommand.name === "join") slashCommand.options[0].choices = joinGetChoices(client);
-  if (slashCommand.name === "leave") slashCommand.options[0].choices = leaveGetChoices(client);
+const createSlashCommand = async (client, command) => {
+  if (command.name === "join") command.options[0].choices = joinGetChoices(client);
+  if (command.name === "leave") command.options[0].choices = leaveGetChoices(client);
   try {
     const createdCommand = await slashClient
       .createCommand({
-        name: slashCommand.name,
-        description: slashCommand.description,
+        name: command.name,
+        description: command.description,
         guildId: process.env.GUILD_ID,
         // disable the command for everyone if there's a role defined
-        default_permission: !slashCommand.role,
-        options: slashCommand.options,
+        default_permission: !command.role,
+        options: command.options,
       }, process.env.GUILD_ID,
       );
-    if (slashCommand.role) {
-      const permissions = createCommandRolePermissions(client, slashCommand.role);
+    if (command.role) {
+      const permissions = createCommandRolePermissions(client, command.role);
       slashClient.editCommandPermissions(permissions, client.guild.id, createdCommand.id);
     }
   }
   catch (error) {
     // console.log(error);
   }
-  console.log(`Created command ${slashCommand.name}`);
+  console.log(`Created command ${command.name}`);
 };
 
 const loadCommands = (client) => {
+  client.commands = new Collection();
   const slashCommands = new Collection();
-  const slashCommandFolders = fs.readdirSync("./src/discordBot/slash_commands/", { withFileTypes: true })
+  const commandFolders = fs.readdirSync("./src/discordBot/commands/", { withFileTypes: true })
     .filter(dirent => dirent.isDirectory())
     .map(dirent => dirent.name);
-  for (const folder of slashCommandFolders) {
-    const slashCommandFiles = fs.readdirSync(`./src/discordBot/slash_commands/${folder}`).filter(file => file.endsWith(".js"));
+  for (const folder of commandFolders) {
+    const slashCommandFiles = fs.readdirSync(`./src/discordBot/commands/${folder}`).filter(file => file.endsWith(".js"));
     for (const file of slashCommandFiles) {
-      const slashCommand = require(`./${folder}/${file}`);
-      if (slashCommand.devOnly && process.env.NODE_ENV !== "development") continue;
-      if (slashCommand.prefix) {
-        client.commands.set(slashCommand.name, slashCommand);
+      const command = require(`./${folder}/${file}`);
+      if (command.devOnly && process.env.NODE_ENV !== "development") continue;
+      if (command.prefix) {
+        client.commands.set(command.name, command);
       }
       else {
         slashCommands.set(
-          slashCommand.name,
+          command.name,
           {
-            command: slashCommand,
+            command: command,
             file: `./${folder}/${file}`,
           },
         );
@@ -89,8 +90,10 @@ const loadCommands = (client) => {
 
     }
   }
-  client.slashCommands = slashCommands;
-  return slashCommands;
+
+  const alphabetisedCommands = new Collection([...slashCommands.entries()].sort());
+  client.slashCommands = alphabetisedCommands;
+  return alphabetisedCommands;
 };
 
 const reloadCommands = async (client, commandNames) => {
@@ -118,6 +121,7 @@ const leaveGetChoices = (client) => {
   const choices = client.guild.channels.cache
     .filter(({ type, name }) => type === "category" && name.startsWith("📚") || name.startsWith("🔒"))
     .map(({ name }) => getRoleFromCategory(name))
+    .sort()
     .map(courseName => ({ name: courseName, value: courseName }));
   // console.log(choices);
   return choices;
@@ -127,6 +131,7 @@ const joinGetChoices = (client) => {
   const choices = client.guild.channels.cache
     .filter(({ type, name }) => type === "category" && name.startsWith("📚"))
     .map(({ name }) => getRoleFromCategory(name))
+    .sort()
     .map(courseName => ({ name: courseName, value: courseName }));
   // console.log("join", choices);
   return choices;
