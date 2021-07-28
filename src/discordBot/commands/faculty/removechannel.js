@@ -7,6 +7,14 @@ const execute = async (interaction, client) => {
   const guild = client.guild;
   const channel = guild.channels.cache.get(interaction.channel_id);
 
+  if (!channel.parent) {
+    return sendEphemeral(client, interaction, "This command can be used only in course channels");
+  }
+
+  if (!channel.parent.name.startsWith("🔒") && !channel.parent.name.startsWith("📚")) {
+    return sendEphemeral(client, interaction, "This command can be used only in course channels");
+  }
+
   let categoryName = getRoleFromCategory(channel.parent.name);
   if (categoryName.includes(" ")) {
     categoryName = categoryName.replace(/ /g, "-");
@@ -18,21 +26,13 @@ const execute = async (interaction, client) => {
     return sendEphemeral(client, interaction, "Original channels can not be removed.");
   }
 
-  if (!channel.parent) {
-    return sendEphemeral(client, interaction, "Course not found, can not remove given channel.");
-  }
-
-  if (!channel.parent.name.startsWith("🔒") && !channel.parent.name.startsWith("📚")) {
-    return sendEphemeral(client, interaction, "This is not a course category, can not remove given channel.");
-  }
-
   const guildName = guild.channels.cache.find(c => c.parent === channel.parent && c.name === deleteCourseName);
   if (!guildName) {
     return sendEphemeral(client, interaction, "There is not added channel with given name.");
   }
 
   guild.channels.cache.find(c => c.parent === channel.parent && c.name === deleteCourseName).delete();
-  return sendEphemeral(client, interaction, "Given channel is removed.");
+  return sendEphemeral(client, interaction, `${deleteName} removed!`);
 };
 
 module.exports = {
