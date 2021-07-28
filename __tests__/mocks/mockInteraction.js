@@ -67,7 +67,7 @@ const testCatecory = {
 };
 
 const testChannel = {
-  name: "test",
+  name: "test_test",
   parent: testCatecory,
   type: "text",
   delete: jest.fn(),
@@ -80,12 +80,20 @@ const testChannelGeneral = {
   delete: jest.fn(),
 };
 
+const chat = {
+  name: "chat",
+  type: "text",
+  parent: { name: "general", type: "category" },
+  delete: jest.fn(),
+};
+
 client.guild.members.cache.set(1, teacher);
 client.guild.members.cache.set(2, student);
 client.guild.channels.cache.set(0, testCatecory);
 client.guild.channels.cache.set(1, guideChannel);
 client.guild.channels.cache.set(2, testChannel);
 client.guild.channels.cache.set(3, testChannelGeneral);
+client.guild.channels.cache.set(4, chat);
 
 const defaultTeacherInteraction = {
   client: client,
