@@ -2,7 +2,7 @@ const { getRoleFromCategory } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
 
 const execute = async (interaction, client) => {
-  const deleteName = interaction.data.options[0].value.toLowerCase().trim();
+  const deleteName = interaction.data.options[0].value.toLowerCase().trim().replace(/ /g, "-");
 
   const guild = client.guild;
   const channel = guild.channels.cache.get(interaction.channel_id);
@@ -12,7 +12,7 @@ const execute = async (interaction, client) => {
     categoryName = categoryName.replace(/ /g, "-");
   }
 
-  const deleteCourseName = categoryName + "_" + deleteName;
+  const deleteCourseName = `${categoryName}_${deleteName}`;
 
   if (deleteName === "general" || deleteName === "announcement" || deleteName === "voice") {
     return sendEphemeral(client, interaction, "Original channels can not be removed.");
