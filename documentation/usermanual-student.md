@@ -1,4 +1,4 @@
-# User manual fot student
+# User manual for student
 
 ### About Discord
 
