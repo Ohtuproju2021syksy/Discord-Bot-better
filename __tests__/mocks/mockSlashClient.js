@@ -3,6 +3,7 @@ const fs = require("fs");
 const path = require("path");
 
 let id = 1;
+let roleId = 1;
 
 const client = {
   commands: new Discord.Collection(),
@@ -38,10 +39,16 @@ const client = {
       },
     },
     roles: {
-      cache: [],
-      create: jest.fn((data) => client.guild.roles.cache.push({
-        name: data.data.name,
-      })),
+      cache: new Discord.Collection(),
+      create: jest.fn((data) => {
+        client.guild.roles.cache.set(roleId, {
+          name: data.data.name,
+          members: data.data.members,
+          delete: jest.fn(),
+        }),
+        roleId++;
+      }),
+      init: () => client.guild.roles.cache = new Discord.Collection(),
     },
     fetchInvites: jest.fn(() => client.guild.invites.cache),
     members: {
