@@ -15,10 +15,7 @@ const execute = async (interaction, client) => {
     return sendEphemeral(client, interaction, "This command can be used only in course channels");
   }
 
-  let categoryName = getRoleFromCategory(channel.parent.name);
-  if (categoryName.includes(" ")) {
-    categoryName = categoryName.replace(/ /g, "-");
-  }
+  const categoryName = getRoleFromCategory(channel.parent.name).replace(/ /g, "-");
 
   const deleteCourseName = `${categoryName}_${deleteName}`;
 
