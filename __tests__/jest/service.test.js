@@ -60,14 +60,14 @@ describe("Service", () => {
     const roleName = "test";
     await findOrCreateRoleWithName(roleName, client.guild);
     expect(client.guild.roles.create).toHaveBeenCalledTimes(1);
-    expect(client.guild.roles.cache.length).toBe(1);
+    expect(client.guild.roles.cache.size).toBe(1);
   });
 
   test("Dublicated role cannot be created", async () => {
     const roleName = "test";
     await findOrCreateRoleWithName(roleName, client.guild);
     await findOrCreateRoleWithName(roleName, client.guild);
-    expect(client.guild.roles.cache.length).toBe(1);
+    expect(client.guild.roles.cache.size).toBe(1);
     expect(client.guild.roles.create).toHaveBeenCalledTimes(0);
   });
 

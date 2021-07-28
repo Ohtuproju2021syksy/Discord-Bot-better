@@ -10,7 +10,7 @@ afterEach(() => {
 
 describe("Initialize", () => {
   test("After initialization channels correct channels and roles found", async () => {
-    client.guild.roles.cache.push({ id: 0, name: "admin" });
+    client.guild.roles.create({ data: { name: "admin" } });
     await initializeApplicationContext(client);
     const guide = client.guild.channels.cache.find(c => c.type === "text" && c.name === "guide");
     const commands = client.guild.channels.cache.find(c => c.type === "text" && c.name === "commands");

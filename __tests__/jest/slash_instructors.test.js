@@ -31,29 +31,29 @@ describe("slash insctuctors command", () => {
   test("instructors command used with course admins withargs", async () => {
     const roleString = intInsWithValidArgs.data.options[0].value;
     const client = intInsWithValidArgs.client;
-    client.guild.roles.cache.push({ name: `${roleString} admin`, members: [{ nickname: "teacher" }] });
+    client.guild.roles.create({ data: { name: `${roleString} admin`, members: [{ nickname: "teacher" }] } });
     await execute(intInsWithValidArgs, client);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(client, intInsWithValidArgs, `Here are the instructors for ${roleString}: teacher`);
-    client.guild.roles.cache = [];
+    client.guild.roles.init();
   });
 
   test("no course admins", async () => {
     const roleString = intInsWithValidArgs.data.options[0].value;
     const client = intInsWithValidArgs.client;
-    client.guild.roles.cache.push({ name: `${roleString} admin`, members: [] });
+    client.guild.roles.create({ data: { name: `${roleString} admin`, members: [] } });
     await execute(intInsWithValidArgs, client);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(client, intInsWithValidArgs, `No instructors for ${roleString}`);
-    client.guild.roles.cache = [];
+    client.guild.roles.init();
   });
 
   test("instructors command used with course admins in course channel without args", async () => {
     const client = intInsWithoutArgsInCourseChannelWithAdmins.client;
-    client.guild.roles.cache.push({ name: "test admin", members: [{ nickname: "teacher" }] });
+    client.guild.roles.create({ data: { name: "test admin", members: [{ nickname: "teacher" }] } });
     await execute(intInsWithoutArgsInCourseChannelWithAdmins, client);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(client, intInsWithoutArgsInCourseChannelWithAdmins, "Here are the instructors for test: teacher");
-    client.guild.roles.cache = [];
+    client.guild.roles.init();
   });
 });
