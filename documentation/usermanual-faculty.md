@@ -21,6 +21,9 @@ We have created an assistant Bot that helps you. Here are instructions on how yo
 
 Commands can be used by typing to the bottom area `/` and after that the command you want to use. You can see all the available commands on the list that opens after typing `/` (shows on white text) or using the command `/help`.
 
+### How to hide course
+To hide a course, type /hide and enter the course name. For example: "/hide wepa".
+
 ### List of commands
 
 Command | Explanation
