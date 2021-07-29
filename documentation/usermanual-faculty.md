@@ -22,9 +22,14 @@ We have created an assistant Bot that helps you. Here are instructions on how yo
 Commands can be used by typing to the bottom area `/` and after that the command you want to use. You can see all the available commands on the list that opens after typing `/` (shows on white text) or using the command `/help`.
 
 ### How to create course
+To create a new discord channel for a course, use /create command followed by the course name. For example: "/create wepa". The /create command automatically creates three sub-channels for the course. The sub-channels are: announcements (text channel), general (text channel) and one voice channel.
 
 ### How to make secret course
 Once the course is created, it can be made hidden. This means joining the course channel is only possible via link. To make a secret course use /hide command followed by the course name. For example: "/hide wepa". 
+
+To make course public again use /unhide command followed by the course name. For example: "/unhide wepa". Public courses can be found with /join command, unlike secret courses.
+
+### How to bridge discord and telegram
 
 
 
