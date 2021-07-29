@@ -43,7 +43,7 @@ After the course is created there is the invitation link for the course on the c
 
 ### Create Telegram bridge
 
-Today, many courses use Telegram discussion channels. At the moment there are students that might use only one of these platfors (Discord or Telegram). This is why we want to connect Discord and Telegram chat channels so everyone can see all the conversations. The following steps are made in Telegram.
+Today, many courses use Telegram discussion channels. At the moment there are students that might use only one of these platforms (Discord or Telegram). This is why we want to connect Discord and Telegram chat channels so everyone can see all the conversations. The following steps are made in Telegram.
 
 #### Add our Telegram bot to your Telegram channel
 
@@ -80,7 +80,7 @@ To remove added text channel use `/removechannel` command followed by the name o
 ## How to make course secret
 Once the course is created, it can be made hidden. This means joining the course channel is only possible via link. To make a secret course use the `/hide` command followed by the course name. e.g. `/hide wepa`. The secret courses can be identified by the lock emoji. 
 
-To make the course public again use the `/unhide` command followed by the course name. e.g. `/unhide wepa`. Public courses can be found with `/courses` command, unlike secret courses.
+To make the course public again use the `/unhide` command followed by the course name. e.g. `/unhide wepa`. Public courses can be found with `/courses` command and with `/join` command, unlike secret courses.
 
 ### List of commands
 
