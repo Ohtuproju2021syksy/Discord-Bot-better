@@ -24,6 +24,11 @@ Commands can be used by typing to the bottom area `/` and after that the command
 ### How to create course
 To create a new discord channel for a course, use /create command followed by the course name. For example: "/create wepa". The /create command automatically creates three sub-channels for the course. The sub-channels are: announcements (text channel), general (text channel) and one voice channel.
 
+### How to create more text channels
+To create more text channels for a course, first join one of the existing text channels of the course. After joining general channel for example, use /newchannel command followed by the desired text channel name to create new text channel.
+
+To remove text channels use /removechannel command followed by the name of the text channel to be removed. The /removechannel command must also be used in one of the courses text channels, for example the general channel. Announcement or general channels can not be removed.
+
 ### How to make secret course
 Once the course is created, it can be made hidden. This means joining the course channel is only possible via link. To make a secret course use /hide command followed by the course name. For example: "/hide wepa". 
 
