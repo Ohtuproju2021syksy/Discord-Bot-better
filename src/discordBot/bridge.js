@@ -42,6 +42,10 @@ const sendMessageToTelegram = async (groupId, content) => {
   await telegramBot.telegram.sendMessage(groupId, content);
 };
 
+const sendPhotoToTelegram = async (groupId, url, caption) => {
+  await telegramBot.telegram.sendPhoto(groupId, { url }, { caption });
+};
+
 
 // Event handlers
 
@@ -65,7 +69,17 @@ discordClient.on("message", async message => {
   channel = channelName === `${name}_announcement` ? " announcement" : channel;
   channel = channelName === `${name}_general` ? " general" : channel;
 
-  await sendMessageToTelegram(group.groupId, `<${sender}>${channel}: ${message.content}`);
+
+  // Handle images correctly
+  const photo = message.attachments.first()
+  if (photo) {
+    sendPhotoToTelegram(group.groupId,
+      photo.url,
+      `<${sender}>${channel}: ${message.content}`
+    );
+  } else {
+    await sendMessageToTelegram(group.groupId, `<${sender}>${channel}: ${message.content}`);
+  }
 });
 
 telegramBot.on("text", async (ctx) => {
