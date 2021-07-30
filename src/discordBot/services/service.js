@@ -212,6 +212,20 @@ const findOrCreateChannel = async (channelObject, guild) => {
   return await guild.channels.create(name, options);
 };
 
+const setCoursePositionABC = async (guild, courseString) => {
+  let first = 9999;
+  const result = guild.channels.cache
+    .filter(c => c.type === "category" && c.name.startsWith("📚"))
+    .map((c) => {
+      const categoryName = c.name;
+      if (first > c.position) first = c.position;
+      return categoryName;
+    }).sort((a, b) => a.localeCompare(b));
+
+  const category = guild.channels.cache.find(c => c.type === "category" && c.name === courseString);
+  await category.edit({ position: result.indexOf(courseString) + first });
+};
+
 module.exports = {
   createCategoryName,
   createPrivateCategoryName,
@@ -230,4 +244,5 @@ module.exports = {
   handleCooldown,
   createCourseInvitationLink,
   findOrCreateChannel,
+  setCoursePositionABC,
 };

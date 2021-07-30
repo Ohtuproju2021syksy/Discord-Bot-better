@@ -1,4 +1,4 @@
-const { findOrCreateRoleWithName, createInvitation, findCategoryName, updateGuide, findOrCreateChannel } = require("../../services/service");
+const { findOrCreateRoleWithName, createInvitation, findCategoryName, updateGuide, findOrCreateChannel, setCoursePositionABC } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
 
 /**
@@ -92,6 +92,8 @@ const execute = async (interaction, client) => {
   await Promise.all(channelObjects.map(
     async channelObject => await findOrCreateChannel(channelObject, guild),
   ));
+
+  await setCoursePositionABC(guild, categoryName);
   await createInvitation(guild, courseName);
   sendEphemeral(client, interaction, `Created course ${courseName}.`);
   await client.emit("COURSES_CHANGED");
