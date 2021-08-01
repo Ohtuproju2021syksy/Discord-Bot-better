@@ -1,5 +1,5 @@
 const { execute } = require("../../src/discordBot/events/message");
-const { messageInGuideChannel, messageInCommandsChannel, student } = require("../mocks/mockMessages");
+const { messageInGuideChannel, messageInCommandsChannel, student, teacher } = require("../mocks/mockMessages");
 
 jest.mock("../../src/discordBot/commands/admin/deleteCommand");
 jest.mock("../../src/discordBot/commands/admin/sortCourses");
@@ -20,7 +20,7 @@ const Groups = {
 
 describe("prefix commands", () => {
   test("commands cannot be used in guide channel", async () => {
-    messageInGuideChannel.content = "!join test";
+    messageInGuideChannel.content = "!sort";
     const client = messageInGuideChannel.client;
     await execute(messageInGuideChannel, client, Groups);
     expect(messageInGuideChannel.channel.send).toHaveBeenCalledTimes(0);
@@ -39,6 +39,8 @@ describe("prefix commands", () => {
 
   test("command misuse sends corrent info ", async () => {
     messageInCommandsChannel.content = "!deletecommand";
+    messageInCommandsChannel.author = teacher;
+    messageInCommandsChannel.member = teacher;
     const client = messageInCommandsChannel.client;
     await execute(messageInCommandsChannel, client, Groups);
     expect(messageInCommandsChannel.channel.send).toHaveBeenCalledTimes(1);
@@ -47,6 +49,8 @@ describe("prefix commands", () => {
 
   test("valid commands can be used in commands channel", async () => {
     messageInCommandsChannel.content = "!sort";
+    messageInCommandsChannel.author = teacher;
+    messageInCommandsChannel.member = teacher;
     const client = messageInCommandsChannel.client;
     await execute(messageInCommandsChannel, client, Groups);
     expect(messageInCommandsChannel.react).toHaveBeenCalledTimes(1);
