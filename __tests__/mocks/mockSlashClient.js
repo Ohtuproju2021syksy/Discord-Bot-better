@@ -12,6 +12,9 @@ const client = {
     id: 1,
   },
   guild: {
+    me: {
+      roles: ["admin"],
+    },
     invites: {
       cache: [],
     },
