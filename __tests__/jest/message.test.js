@@ -1,5 +1,4 @@
 const { execute } = require("../../src/discordBot/events/message");
-
 const { messageInGuideChannel, messageInCommandsChannel, student } = require("../mocks/mockMessages");
 
 afterEach(() => {
