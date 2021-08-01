@@ -3,7 +3,7 @@ const { deleteCommand } = require("../../src/discordBot/services/service");
 
 jest.mock("../../src/discordBot/services/service");
 
-const { messageInCommandsChannel } = require("../mocks/mockMessages");
+const { messageInCommandsChannel, student } = require("../mocks/mockMessages");
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -17,5 +17,13 @@ describe("prefix deletecommand command", () => {
     await execute(messageInCommandsChannel, args);
     expect(deleteCommand).toHaveBeenCalledTimes(1);
     expect(deleteCommand).toHaveBeenCalledWith(client, commandToRemove);
+  });
+
+  test("user without administrator role cannot delete command", async () => {
+    messageInCommandsChannel.author = student;
+    messageInCommandsChannel.member = student;
+    const args = ["testcommand"];
+    await execute(messageInCommandsChannel, args);
+    expect(deleteCommand).toHaveBeenCalledTimes(0);
   });
 });
