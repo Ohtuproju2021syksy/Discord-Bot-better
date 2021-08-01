@@ -13,6 +13,19 @@ const teacher = {
   fetch: jest.fn(),
 };
 
+const student = {
+  nickname: "student",
+  hasPermission: jest.fn(() => false),
+  roles: {
+    cache: {
+      find: () => true,
+    },
+    add: jest.fn(),
+    fetch: jest.fn(),
+  },
+  fetch: jest.fn(),
+};
+
 const messageInGuideChannel = {
   client: client,
   guild: {
@@ -54,4 +67,6 @@ const messageInCommandsChannel = {
 module.exports = {
   messageInGuideChannel,
   messageInCommandsChannel,
+  student,
+  teacher,
 };

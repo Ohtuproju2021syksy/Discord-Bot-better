@@ -62,9 +62,6 @@ const client = {
     fetch: jest.fn(() => client.guild),
   },
   emit: jest.fn(),
-  api: {
-    applications: client.slashCommands,
-  },
 };
 
 const slashCommandsPath = path.resolve("src/discordBot/commands");
