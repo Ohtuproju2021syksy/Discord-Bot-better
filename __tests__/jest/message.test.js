@@ -1,10 +1,5 @@
 const { execute } = require("../../src/discordBot/events/message");
-const { messageInGuideChannel, messageInCommandsChannel, student, teacher } = require("../mocks/mockMessages");
-
-jest.mock("../../src/discordBot/commands/admin/deleteCommand");
-jest.mock("../../src/discordBot/commands/admin/sortCourses");
-jest.mock("../../src/discordBot/commands/utils");
-jest.mock("../../src/discordBot/services/service");
+const { messageInGuideChannel, messageInCommandsChannel, student } = require("../mocks/mockMessages");
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -35,26 +30,6 @@ describe("prefix commands", () => {
     expect(messageInCommandsChannel.channel.send).toHaveBeenCalledTimes(0);
     expect(messageInCommandsChannel.react).toHaveBeenCalledTimes(0);
     expect(messageInCommandsChannel.reply).toHaveBeenCalledTimes(0);
-  });
-
-  test("command misuse sends corrent info ", async () => {
-    messageInCommandsChannel.content = "!deletecommand";
-    messageInCommandsChannel.author = teacher;
-    messageInCommandsChannel.member = teacher;
-    const client = messageInCommandsChannel.client;
-    await execute(messageInCommandsChannel, client, Groups);
-    expect(messageInCommandsChannel.channel.send).toHaveBeenCalledTimes(1);
-    expect(messageInCommandsChannel.channel.send).toHaveBeenCalledWith(`You didn't provide any arguments, ${messageInCommandsChannel.author}!`);
-  });
-
-  test("valid commands can be used in commands channel", async () => {
-    messageInCommandsChannel.content = "!sort";
-    messageInCommandsChannel.author = teacher;
-    messageInCommandsChannel.member = teacher;
-    const client = messageInCommandsChannel.client;
-    await execute(messageInCommandsChannel, client, Groups);
-    expect(messageInCommandsChannel.react).toHaveBeenCalledTimes(1);
-    expect(messageInCommandsChannel.react).toHaveBeenCalledWith("✅");
   });
 
   test("if no command role do nothing", async () => {
