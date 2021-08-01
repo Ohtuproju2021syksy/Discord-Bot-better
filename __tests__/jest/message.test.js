@@ -8,6 +8,7 @@ afterEach(() => {
 
 describe("prefix commands", () => {
   test("prefix commands cannot be used in guide channel", async () => {
+    messageInGuideChannel.content = "!join test";
     const client = messageInGuideChannel.client;
     await execute(messageInGuideChannel, client);
     expect(messageInGuideChannel.channel.send).toHaveBeenCalledTimes(0);
