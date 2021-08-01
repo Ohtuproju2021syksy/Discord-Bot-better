@@ -18,7 +18,7 @@ const student = {
   hasPermission: jest.fn(() => false),
   roles: {
     cache: {
-      find: () => true,
+      find: () => false,
     },
     add: jest.fn(),
     fetch: jest.fn(),
