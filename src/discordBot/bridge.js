@@ -1,7 +1,8 @@
 const { Telegraf } = require("telegraf");
 const { Groups } = require("../db/dbInit");
 const { createNewGroup, getRoleFromCategory } = require("../discordBot/services/service");
-const Discord = require("discord.js");
+const Discord  = require("discord.js");
+
 
 // Initialize bot clients
 
@@ -36,6 +37,13 @@ const validDiscordChannel = async (courseName) => {
 
 const sendMessageToDiscord = async (channel, content) => {
   await channel.send(content);
+};
+
+const sendPhotoToDiscord = async (channel, photo, caption) => {
+  const photoEmbed = new Discord.MessageEmbed()
+    .setTitle(caption)
+    .setImage(photo);
+  channel.send({ embeds: [ photoEmbed ] });
 };
 
 const sendMessageToTelegram = async (groupId, content) => {
@@ -79,6 +87,27 @@ discordClient.on("message", async message => {
     );
   } else {
     await sendMessageToTelegram(group.groupId, `<${sender}>${channel}: ${message.content}`);
+  }
+});
+
+
+// Todo: Send photo to discord
+telegramBot.on("photo", async (ctx) => {
+  const id = ctx.message.chat.id;
+  const group = await Groups.findOne({ where: { groupId: String(id) } });
+  if (!group) {
+    return;
+  }
+  const url = await telegramBot.telegram.getFileLink(ctx.message.photo[2]);
+  // console.log(url);
+
+  const courseName = group.course;
+  if (String(ctx.message.chat.id) === group.groupId) {
+    const user = ctx.message.from;
+    const sender = user.first_name || user.username;
+    const channel = await validDiscordChannel(courseName);
+    if (!channel) return;
+    // return await sendPhotoToDiscord(channel, url, `<${sender}>: ${ctx.message.text}`);
   }
 });
 
