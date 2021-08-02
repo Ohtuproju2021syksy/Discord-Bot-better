@@ -13,7 +13,7 @@ passport.use(new DiscordStrategy({
   clientID: process.env.BOT_ID,
   clientSecret: process.env.CLIENT_SECRET,
   callbackURL: process.env.DISCORD_REDIRECT_URL,
-  scope: ["identify", "guilds", "guilds.join"],
+  scope: ["identify", "guilds.join"],
   store: true,
 }, async (accessToken, refreshToken, profile, done) => {
   done(null, profile);
