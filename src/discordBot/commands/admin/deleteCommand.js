@@ -1,13 +1,9 @@
+const { deleteCommand } = require("../../services/service");
+
 const execute = async (message, args) => {
   if (message.member.hasPermission("ADMINISTRATOR")) {
     const client = message.client;
-    client.api.applications(client.user.id).guilds(process.env.GUILD_ID).commands.get().then(commands => {
-      commands.forEach(command => {
-        if (command.name === args[0]) {
-          client.api.applications(client.user.id).guilds(process.env.GUILD_ID).commands(command.id).delete();
-        }
-      });
-    });
+    await deleteCommand(client, args[0]);
   }
 };
 

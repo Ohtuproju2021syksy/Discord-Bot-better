@@ -11,7 +11,8 @@ const {
   removeGroup,
   findChannelWithNameAndType,
   findChannelWithId,
-  msToMinutesAndSeconds } = require("../../src/discordBot/services/service");
+  msToMinutesAndSeconds,
+  findOrCreateChannel } = require("../../src/discordBot/services/service");
 
 const Groups = {
   create: jest.fn(),
@@ -83,10 +84,11 @@ describe("Service", () => {
   });
 
   test("find valid channel with name and type", () => {
-    const channel = { name: "guide", type: "text" };
-    client.guild.channels.create("guide", "text");
+    const channelObject = { name: "guide", options: { type: "text" } };
+    client.guild.channels.create(channelObject.name, channelObject.options);
     const channelFound = findChannelWithNameAndType("guide", "text", client.guild);
-    expect(channelFound).toMatchObject(channel);
+    const result = { name: "guide", type: "text" };
+    expect(channelFound).toMatchObject(result);
   });
 
   test("find valid channel with id", () => {
@@ -183,5 +185,21 @@ describe("Service", () => {
     const time = "5:05";
     const result = msToMinutesAndSeconds(305000);
     expect(time).toMatch(result);
+  });
+
+  test("create a new channel if it does not exist", async () => {
+    client.guild.channels.init();
+    const channelObject = { name: "test", options: { type: "text" } };
+    const guild = client.guild;
+    await findOrCreateChannel(channelObject, guild);
+    expect(guild.channels.create).toHaveBeenCalledTimes(1);
+    expect(guild.channels.create).toHaveBeenCalledWith(channelObject.name, channelObject.options);
+  });
+
+  test("Dont create a new channel if exists", async () => {
+    const channelObject = { name: "test", options: { type: "text" } };
+    const guild = client.guild;
+    await findOrCreateChannel(channelObject, guild);
+    expect(guild.channels.create).toHaveBeenCalledTimes(0);
   });
 });

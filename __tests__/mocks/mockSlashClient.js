@@ -12,14 +12,17 @@ const client = {
     id: 1,
   },
   guild: {
+    me: {
+      roles: ["admin"],
+    },
     invites: {
       cache: [],
     },
     channels: {
       cache: new Discord.Collection(),
-      create: jest.fn((name, type) => client.guild.channels.cache.set(id, {
+      create: jest.fn((name, options) => client.guild.channels.cache.set(id, {
         name: name,
-        type: type,
+        type: options.type,
         send: jest.fn((content) => { return { content: content, pin: jest.fn() }; }),
         lastPinTimestamp: null,
         setName: jest.fn(),

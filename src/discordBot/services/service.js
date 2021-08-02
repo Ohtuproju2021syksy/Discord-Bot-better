@@ -226,6 +226,16 @@ const setCoursePositionABC = async (guild, courseString) => {
   await category.edit({ position: result.indexOf(courseString) + first });
 };
 
+const deleteCommand = async (client, commandToDeleteName) => {
+  client.api.applications(client.user.id).guilds(process.env.GUILD_ID).commands.get().then(commands => {
+    commands.forEach(async command => {
+      if (command.name === commandToDeleteName) {
+        await client.api.applications(client.user.id).guilds(process.env.GUILD_ID).commands(command.id).delete();
+      }
+    });
+  });
+};
+
 module.exports = {
   createCategoryName,
   createPrivateCategoryName,
@@ -245,4 +255,5 @@ module.exports = {
   createCourseInvitationLink,
   findOrCreateChannel,
   setCoursePositionABC,
+  deleteCommand,
 };
