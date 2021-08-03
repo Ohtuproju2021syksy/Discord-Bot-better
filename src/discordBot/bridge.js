@@ -31,7 +31,7 @@ const validDiscordChannel = async (courseName) => {
   // temp - create webhook for existing bridged channels
   if (!channel) return;
   const webhooks = await channel.fetchWebhooks();
-  if (!webhooks.length) await channel.createWebhook(courseName, { avatar: "https://i.imgur.com/AfFp7pu.png" }).catch(console.error);
+  if (!webhooks.size) await channel.createWebhook(courseName, { avatar: "https://i.imgur.com/AfFp7pu.png" }).catch(console.error);
   // --
   return channel;
 };
