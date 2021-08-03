@@ -31,7 +31,7 @@ const validDiscordChannel = async (courseName) => {
   // temp - create webhook for existing bridged channels
   if (!channel) return;
   const webhooks = await channel.fetchWebhooks();
-  if (!webhooks) await channel.createWebhook(courseName, { avatar: "https://i.imgur.com/AfFp7pu.png" }).catch(console.error);
+  if (!webhooks.length) await channel.createWebhook(courseName, { avatar: "https://i.imgur.com/AfFp7pu.png" }).catch(console.error);
   // --
   return channel;
 };
@@ -105,17 +105,27 @@ discordClient.on("message", async message => {
   channel = channelName === `${name}_announcement` ? " announcement" : channel;
   channel = channelName === `${name}_general` ? " general" : channel;
 
+  let msg;
+  if (message.content.includes("<@!")) {
+    const userID = message.content.match(/(?<=<@!).*?(?=>)/)[0];
+    let user = message.guild.members.cache.get(userID);
+    user ? user = user.user.username : user = "Jon Doe";
+    msg = message.content.replace(/<.*>/, `${user}`);
+  }
+  else {
+    msg = message.content;
+  }
 
   // Handle images correctly
   const photo = message.attachments.first();
   if (photo) {
     sendPhotoToTelegram(group.groupId,
       photo.url,
-      `<${sender}>${channel}: ${message.content}`,
+      `<${sender}>${channel}: ${msg}`,
     );
   }
   else {
-    await sendMessageToTelegram(group.groupId, `<${sender}>${channel}: ${message.content}`);
+    await sendMessageToTelegram(group.groupId, `<${sender}>${channel}: ${msg}`);
   }
 });
 
