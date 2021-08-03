@@ -1,13 +1,7 @@
 const { execute } = require("../../src/discordBot/commands/faculty/removechannel");
 const { sendEphemeral } = require("../../src/discordBot/commands/utils");
-// const { getRoleFromCategory } = require("../../src/discordBot/services/service");
 
 jest.mock("../../src/discordBot/commands/utils");
-// jest.mock("../../src/discordBot/services/service");
-
-/* getRoleFromCategory
-  .mockImplementation((name) => `📚 ${name}`)
-  .mockImplementationOnce(() => "📚 testa");*/
 
 const { defaultTeacherInteraction } = require("../mocks/mockInteraction");
 

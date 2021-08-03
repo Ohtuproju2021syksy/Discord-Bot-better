@@ -1,22 +1,24 @@
 const execute = async (message) => {
-  const guild = message.client;
+  if (message.member.hasPermission("ADMINISTRATOR")) {
+    const guild = message.client.guild;
 
-  let first = 9999;
+    let first = 9999;
 
-  const result = guild.channels.cache
-    .filter(c => c.type === "category" && c.name.startsWith("📚"))
-    .map((c) => {
-      const categoryName = c.name;
-      if (first > c.position) first = c.position;
-      return categoryName;
-    }).sort((a, b) => a.localeCompare(b));
+    const result = guild.channels.cache
+      .filter(c => c.type === "category" && c.name.startsWith("📚"))
+      .map((c) => {
+        const categoryName = c.name;
+        if (first > c.position) first = c.position;
+        return categoryName;
+      }).sort((a, b) => a.localeCompare(b));
 
-  let category;
+    let category;
 
-  for (let index = 0; index < result.length; index++) {
-    const courseString = result[index];
-    category = guild.channels.cache.find(c => c.type === "category" && c.name === courseString);
-    await category.edit({ position: index + first });
+    for (let index = 0; index < result.length; index++) {
+      const courseString = result[index];
+      category = guild.channels.cache.find(c => c.type === "category" && c.name === courseString);
+      await category.edit({ position: index + first });
+    }
   }
 };
 

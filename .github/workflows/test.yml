@@ -38,7 +38,7 @@ jobs:
       run: npm install
     - name: run lint
       run: npm run lint
-    - name: run jest and corde test with nyc
+    - name: run jest tests
       env:
         BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
         GUILD_ID: ${{ secrets.GUILD_ID }}
