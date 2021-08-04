@@ -56,7 +56,7 @@ General - main discussion area.
 
 Voice - you can hang out over voice and video.
 
-If you want to see who are the teachers on your course, you can use command `/instructors`.
+If you want to see who are the instructors on your course, you can use command `/instructors`.
 
 ![instructors](./images/instructors.png)
 

@@ -1,6 +1,6 @@
 const { findOrCreateRoleWithName, createInvitation, findCategoryName, updateGuide, findOrCreateChannel, setCoursePositionABC } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
-const { courseAdminRole } = require("../../../../config.json");
+const { courseAdminRole, facultyRole } = require("../../../../config.json");
 
 /**
  *
@@ -108,7 +108,7 @@ module.exports = {
   args: true,
   joinArgs: true,
   guide: true,
-  role: "teacher",
+  role: facultyRole,
   options: [
     {
       name: "course",

@@ -31,7 +31,7 @@ Commands can be used by typing to the bottom area `/` and after that the command
 
 ### Authentication
 
-To be able to use all the faculty commands, you need to authenticate yourself. Use command `/auth` and you receive an authentication link. Click the link and go through the verfication steps. Now you have the teacher role and you can use all the commands.
+To be able to use all the faculty commands, you need to authenticate yourself. Use command `/auth` and you receive an authentication link. Click the link and go through the verfication steps. Now you have the faculty role and you can use all the commands.
 
 ### Creating a new course
 
@@ -86,7 +86,7 @@ To make the course public again use the `/unhide` command followed by the course
 
 Command | Explanation
 --------|-----------
-/auth | Returns the URL from which the teacher role can be requested.
+/auth | Returns the URL from which the faculty role can be requested.
 /create | Create a new course, e.g. /create weba.
 /hide | Make given course private, e.g. /hide weba.
 /unhide | Make given course public, e.g. /unhide weba.

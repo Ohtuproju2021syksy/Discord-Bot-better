@@ -2,6 +2,7 @@ const fs = require("fs");
 const { Client } = require("discord-slash-commands-client");
 const { Collection } = require("discord.js");
 const { getRoleFromCategory } = require("../services/service");
+const { facultyRole } = require("../../../config.json");
 
 const slashClient = new Client(
   process.env.BOT_TOKEN,
@@ -22,7 +23,7 @@ const sendEphemeral = (client, interaction, content) => {
 };
 
 const createCommandRolePermissions = (client, highestRole) => {
-  const allRoles = highestRole === "teacher" ? ["admin", "teacher"] : ["admin"];
+  const allRoles = highestRole === facultyRole ? ["admin", facultyRole] : ["admin"];
   const permissions = [];
 
   allRoles.forEach(role => {

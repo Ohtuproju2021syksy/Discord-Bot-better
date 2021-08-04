@@ -1,6 +1,6 @@
 const { updateGuide, findCategoryName, removeGroup, getRoleFromCategory } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
-const { courseAdminRole } = require("../../../../config.json");
+const { courseAdminRole, facultyRole } = require("../../../../config.json");
 
 const execute = async (interaction, client, Groups) => {
   const courseName = interaction.data.options[0].value.toLowerCase().trim();
@@ -42,7 +42,7 @@ module.exports = {
   args: true,
   joinArgs: true,
   guide: true,
-  role: "teacher",
+  role: facultyRole,
   options: [
     {
       name: "course",

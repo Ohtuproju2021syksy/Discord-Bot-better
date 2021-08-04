@@ -1,6 +1,6 @@
 const { getRoleFromCategory, findOrCreateChannel } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
-const { courseAdminRole } = require("../../../../config.json");
+const { courseAdminRole, facultyRole } = require("../../../../config.json");
 
 const getChannelObjects = (guild, admin, student, roleName, channelName, category) => {
   roleName = roleName.replace(/ /g, "-");
@@ -57,7 +57,7 @@ module.exports = {
   args: true,
   joinArgs: true,
   guide: true,
-  role: "teacher",
+  role: facultyRole,
   options: [
     {
       name: "channel",

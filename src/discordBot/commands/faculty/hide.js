@@ -1,5 +1,6 @@
 const { updateGuide, createCategoryName, findChannelWithNameAndType, msToMinutesAndSeconds, handleCooldown } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
+const { facultyRole } = require("../../../../config.json");
 
 const used = new Map();
 
@@ -35,7 +36,7 @@ module.exports = {
   args: true,
   joinArgs: true,
   guide: true,
-  role: "teacher",
+  role: facultyRole,
   options: [
     {
       name: "course",

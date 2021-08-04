@@ -1,4 +1,5 @@
 const { client } = require("./mockSlashClient");
+const { courseAdminRole, facultyRole } = require("../../config.json");
 const prefix = "/";
 
 const teacherData = [];
@@ -9,7 +10,7 @@ teacherData.push(`\nYou can send \`${prefix}help [command name]\` to get info on
 const studentData = [];
 studentData.push("Here's a list of all my commands:");
 studentData.push(client.slashCommands
-  .filter(command => command.command.role !== "teacher")
+  .filter(command => command.command.role !== facultyRole)
   .map(command => `${prefix}${command.command.name} - ${command.command.description}`).join("\n"));
 studentData.push(`\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`);
 
@@ -34,7 +35,7 @@ client.slashCommands
 const teacher = {
   nickname: "teacher",
   roles: {
-    cache: [{ name: "teacher" }, { name: "test admin" }],
+    cache: [{ name: facultyRole }, { name: `test ${courseAdminRole}` }],
     add: jest.fn((name) => teacher.roles.cache.push({ name: name })),
     fetch: jest.fn(),
     remove: jest.fn((role) => teacher.roles.cache = teacher.roles.cache.filter(r => r.name !== role.name)),

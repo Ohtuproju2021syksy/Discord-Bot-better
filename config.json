@@ -1,3 +1,4 @@
 {
-    "courseAdminRole": "instructor"
+    "courseAdminRole": "instructor",
+    "facultyRole": "faculty"
 }
