@@ -60,7 +60,7 @@ const createSlashCommand = async (client, command) => {
     }
   }
   catch (error) {
-    // console.log(error);
+    console.log(error);
   }
   console.log(`Created command ${command.name}`);
 };
