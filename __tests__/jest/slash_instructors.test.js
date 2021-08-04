@@ -1,5 +1,6 @@
 const { execute } = require("../../src/discordBot/commands/student/instructors");
 const { sendEphemeral } = require("../../src/discordBot/commands/utils");
+const { courseAdminRole } = require("../../config.json");
 
 jest.mock("../../src/discordBot/commands/utils");
 
@@ -31,7 +32,7 @@ describe("slash insctuctors command", () => {
   test("instructors command used with course admins withargs", async () => {
     const roleString = intInsWithValidArgs.data.options[0].value;
     const client = intInsWithValidArgs.client;
-    client.guild.roles.create({ data: { name: `${roleString} admin`, members: [{ nickname: "teacher" }] } });
+    client.guild.roles.create({ data: { name: `${roleString} ${courseAdminRole}`, members: [{ nickname: "teacher" }] } });
     await execute(intInsWithValidArgs, client);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(client, intInsWithValidArgs, `Here are the instructors for ${roleString}: teacher`);
@@ -41,7 +42,7 @@ describe("slash insctuctors command", () => {
   test("no course admins", async () => {
     const roleString = intInsWithValidArgs.data.options[0].value;
     const client = intInsWithValidArgs.client;
-    client.guild.roles.create({ data: { name: `${roleString} admin`, members: [] } });
+    client.guild.roles.create({ data: { name: `${roleString} ${courseAdminRole}`, members: [] } });
     await execute(intInsWithValidArgs, client);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(client, intInsWithValidArgs, `No instructors for ${roleString}`);
@@ -49,8 +50,9 @@ describe("slash insctuctors command", () => {
   });
 
   test("instructors command used with course admins in course channel without args", async () => {
+    const roleString = intInsWithValidArgs.data.options[0].value;
     const client = intInsWithoutArgsInCourseChannelWithAdmins.client;
-    client.guild.roles.create({ data: { name: "test admin", members: [{ nickname: "teacher" }] } });
+    client.guild.roles.create({ data: { name: `${roleString} ${courseAdminRole}`, members: [{ nickname: "teacher" }] } });
     await execute(intInsWithoutArgsInCourseChannelWithAdmins, client);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(client, intInsWithoutArgsInCourseChannelWithAdmins, "Here are the instructors for test: teacher");

@@ -1,5 +1,6 @@
 const { findOrCreateRoleWithName, createInvitation, findCategoryName, updateGuide, findOrCreateChannel, setCoursePositionABC } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
+const { courseAdminRole } = require("../../../../config.json");
 
 /**
  *
@@ -80,7 +81,7 @@ const execute = async (interaction, client) => {
 
   // Roles
   const student = await findOrCreateRoleWithName(courseName, guild);
-  const admin = await findOrCreateRoleWithName(`${courseName} admin`, guild);
+  const admin = await findOrCreateRoleWithName(`${courseName} ${courseAdminRole}`, guild);
 
   // Category
   const categoryName = findCategoryName(courseName, guild);

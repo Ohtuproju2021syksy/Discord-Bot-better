@@ -1,5 +1,6 @@
 const { getRoleFromCategory, findOrCreateChannel } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
+const { courseAdminRole } = require("../../../../config.json");
 
 const getChannelObjects = (guild, admin, student, roleName, channelName, category) => {
   roleName = roleName.replace(/ /g, "-");
@@ -38,7 +39,7 @@ const execute = async (interaction, client) => {
 
     // Roles
     const student = await guild.roles.cache.find((role) => role.name === courseName);
-    const admin = await guild.roles.cache.find((role) => role.name === `${courseName} admin`);
+    const admin = await guild.roles.cache.find((role) => role.name === `${courseName} ${courseAdminRole}`);
 
     // Channels
     const channelObjects = getChannelObjects(guild, admin, student, courseName, channelName, category);

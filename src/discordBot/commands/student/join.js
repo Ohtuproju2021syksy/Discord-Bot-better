@@ -1,5 +1,6 @@
 const { updateGuide } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
+const { courseAdminRole } = require("../../../../config.json");
 
 const execute = async (interaction, client) => {
   const roleString = interaction.data.options[0].value.toLowerCase().trim();
@@ -11,7 +12,7 @@ const execute = async (interaction, client) => {
   const courseRole = guild.roles.cache.find(r => r.name === roleString);
 
   const courseRoles = guild.roles.cache
-    .filter(r => (r.name === `${roleString} admin` || r.name === `${roleString}`))
+    .filter(r => (r.name === `${roleString} ${courseAdminRole}` || r.name === `${roleString}`))
     .map(r => r.name);
 
   if (!courseRoles.length) return sendEphemeral(client, interaction, `Invalid course name: ${roleString}`);

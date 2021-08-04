@@ -6,6 +6,7 @@ const { findOrCreateRoleWithName,
   setCoursePositionABC,
   createInvitation,
   updateGuide } = require("../../src/discordBot/services/service");
+const { courseAdminRole } = require("../../config.json");
 
 jest.mock("../../src/discordBot/commands/utils");
 jest.mock("../../src/discordBot/services/service");
@@ -27,7 +28,7 @@ describe("slash create command", () => {
     await execute(defaultTeacherInteraction, client);
     expect(findOrCreateRoleWithName).toHaveBeenCalledTimes(2);
     expect(findOrCreateRoleWithName).toHaveBeenCalledWith(courseName, client.guild);
-    expect(findOrCreateRoleWithName).toHaveBeenCalledWith(`${courseName} admin`, client.guild);
+    expect(findOrCreateRoleWithName).toHaveBeenCalledWith(`${courseName} ${courseAdminRole}`, client.guild);
   });
 
   test("find category name", async () => {

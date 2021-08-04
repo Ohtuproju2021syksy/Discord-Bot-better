@@ -1,5 +1,6 @@
 const { getRoleFromCategory } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
+const { courseAdminRole } = require("../../../../config.json");
 
 const execute = async (interaction, client) => {
   const guild = client.guild;
@@ -18,10 +19,10 @@ const execute = async (interaction, client) => {
     }
   }
 
-  const courseAdminRole = guild.roles.cache.find(r => r.name === `${roleString} admin`);
-  if (!courseAdminRole) return sendEphemeral(client, interaction, `No instructors for ${roleString}`);
+  const instructorRole = guild.roles.cache.find(r => r.name === `${roleString} ${courseAdminRole}`);
+  if (!instructorRole) return sendEphemeral(client, interaction, `No instructors for ${roleString}`);
 
-  const adminsString = courseAdminRole.members
+  const adminsString = instructorRole.members
     .map(member => member.nickname || member.user.username)
     .join(", ");
   if (!adminsString) return sendEphemeral(client, interaction, `No instructors for ${roleString}`);

@@ -1,5 +1,6 @@
 const { updateGuide, findCategoryName, removeGroup, getRoleFromCategory } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
+const { courseAdminRole } = require("../../../../config.json");
 
 const execute = async (interaction, client, Groups) => {
   const courseName = interaction.data.options[0].value.toLowerCase().trim();
@@ -20,7 +21,7 @@ const execute = async (interaction, client, Groups) => {
   await category.delete();
 
   await Promise.all(guild.roles.cache
-    .filter(r => (r.name === `${courseName} admin` || r.name === courseName))
+    .filter(r => (r.name === `${courseName} ${courseAdminRole}` || r.name === courseName))
     .map(async role => await role.delete()),
   );
   sendEphemeral(client, interaction, `Deleted course ${courseName}.`);
