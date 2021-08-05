@@ -236,25 +236,23 @@ const deleteCommand = async (client, commandToDeleteName) => {
   });
 };
 
+const emojiRegex = /(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/gi;
+
 const isACourseCategory = (channel) => {
-  const emojiRegex = /(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/gi;
   return emojiRegex.test(channel.name);
 };
 
 const trimCourseName = (channel) => {
-  const emojiRegex = /(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/gi;
   const trimmedName = channel.name.replace(emojiRegex, "").trim();
   return trimmedName;
 };
 
 const findAllCourseNames = (guild) => {
   const courseNames = [];
-  const emojiRegex = /(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/gi;
 
   guild.channels.cache.forEach(channel => {
-    if (emojiRegex.test(channel.name)) {
-      const trimmedName = channel.name.replace(emojiRegex, "").trim();
-      courseNames.push(trimmedName);
+    if (isACourseCategory(channel)) {
+      courseNames.push(trimCourseName(channel));
     }
   });
   return courseNames;
