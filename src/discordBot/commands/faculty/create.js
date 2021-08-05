@@ -1,4 +1,10 @@
-const { findOrCreateRoleWithName, createInvitation, findCategoryName, updateGuide, findOrCreateChannel, setCoursePositionABC } = require("../../services/service");
+const {
+  findOrCreateRoleWithName,
+  createInvitation,
+  findCategoryName,
+  updateGuide,
+  findOrCreateChannel,
+  setCoursePositionABC } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
 
@@ -27,13 +33,14 @@ const getPermissionOverwrites = (guild, admin, student) => ([
   },
 ]);
 
-const getChannelObjects = (guild, admin, student, roleName, category) => {
+const getChannelObjects = (guild, admin, student, roleName, category, topic) => {
   roleName = roleName.replace(/ /g, "-");
   return [
     {
       name: `${roleName}_announcement`,
       options: {
         type: "text",
+        topic: topic,
         description: "Messages from course admins",
         parent: category,
         permissionOverwrites: [
@@ -56,12 +63,12 @@ const getChannelObjects = (guild, admin, student, roleName, category) => {
     {
       name: `${roleName}_general`,
       parent: category,
-      options: { type: "text", parent: category, permissionOverwrites: [] },
+      options: { type: "text", topic: topic, parent: category, permissionOverwrites: [] },
     },
     {
       name: `${roleName}_voice`,
       parent: category,
-      options: { type: "voice", parent: category, permissionOverwrites: [] },
+      options: { type: "voice", topic: topic, parent: category, permissionOverwrites: [] },
     },
   ];
 };
@@ -75,7 +82,18 @@ const getCategoryObject = (categoryName, permissionOverwrites) => ({
 });
 
 const execute = async (interaction, client) => {
-  const courseName = interaction.data.options[0].value.toLowerCase().trim();
+  const courseCode = interaction.data.options[0].value.toLowerCase().trim();
+  const courseFullName = interaction.data.options[1].value.toLowerCase().trim();
+  let courseName;
+
+  if (!interaction.data.options[2]) {
+    courseName = courseCode;
+  }
+  else {
+    courseName = interaction.data.options[2].value.toLowerCase().trim();
+  }
+
+  const topicName = courseCode.toUpperCase() + " :star: " + courseFullName.toUpperCase() + " :star: " + courseName.toUpperCase();
 
   const guild = client.guild;
 
@@ -89,7 +107,7 @@ const execute = async (interaction, client) => {
   const category = await findOrCreateChannel(categoryObject, guild);
 
   // Channels
-  const channelObjects = getChannelObjects(guild, admin, student, courseName, category);
+  const channelObjects = getChannelObjects(guild, admin, student, courseName, category, topicName);
   await Promise.all(channelObjects.map(
     async channelObject => await findOrCreateChannel(channelObject, guild),
   ));
@@ -111,10 +129,22 @@ module.exports = {
   role: facultyRole,
   options: [
     {
-      name: "course",
-      description: "Course to create.",
+      name: "coursecode",
+      description: "Course coursecode",
       type: 3,
       required: true,
+    },
+    {
+      name: "full_name",
+      description: "Course full name",
+      type: 3,
+      required: true,
+    },
+    {
+      name: "nick_name",
+      description: "Course nick name",
+      type: 3,
+      required: false,
     },
   ],
   execute,

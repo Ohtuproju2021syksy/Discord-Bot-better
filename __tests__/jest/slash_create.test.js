@@ -21,10 +21,27 @@ afterEach(() => {
 });
 
 describe("slash create command", () => {
-  test("find or create correct roles", async () => {
-    const courseName = "test";
-    defaultTeacherInteraction.data.options[0].value = courseName;
+  test("create course name without nick", async () => {
+    const courseCode = "tkt-100";
+    const courseFull = "Long course name";
+    defaultTeacherInteraction.data.options[0].value = courseCode;
+    defaultTeacherInteraction.data.options[1].value = courseFull;
     const client = defaultTeacherInteraction.client;
+    await execute(defaultTeacherInteraction, client);
+    expect(findOrCreateRoleWithName).toHaveBeenCalledTimes(2);
+    expect(findOrCreateRoleWithName).toHaveBeenCalledWith(courseCode, client.guild);
+    expect(findOrCreateRoleWithName).toHaveBeenCalledWith(`${courseCode} ${courseAdminRole}`, client.guild);
+  });
+
+  test("find or create correct roles", async () => {
+    const courseCode = "TKT-100";
+    const courseFull = "Long course name";
+    const courseName = "nick name";
+    const client = defaultTeacherInteraction.client;
+    defaultTeacherInteraction.data.options.push({ value: "", command: {} });
+    defaultTeacherInteraction.data.options[0].value = courseCode;
+    defaultTeacherInteraction.data.options[1].value = courseFull;
+    defaultTeacherInteraction.data.options[2].value = courseName;
     await execute(defaultTeacherInteraction, client);
     expect(findOrCreateRoleWithName).toHaveBeenCalledTimes(2);
     expect(findOrCreateRoleWithName).toHaveBeenCalledWith(courseName, client.guild);
@@ -32,64 +49,93 @@ describe("slash create command", () => {
   });
 
   test("find category name", async () => {
-    const courseName = "test";
-    defaultTeacherInteraction.data.options[0].value = courseName;
+    const courseCode = "TKT-100";
+    const courseFull = "Long course name";
+    const courseName = "nick name";
     const client = defaultTeacherInteraction.client;
+    defaultTeacherInteraction.data.options[0].value = courseCode;
+    defaultTeacherInteraction.data.options[1].value = courseFull;
+    defaultTeacherInteraction.data.options[2].value = courseName;
     await execute(defaultTeacherInteraction, client);
     expect(findCategoryName).toHaveBeenCalledTimes(1);
     expect(findCategoryName).toHaveBeenCalledWith(courseName, client.guild);
   });
 
   test("create channels: category, announcement, general and voice ", async () => {
-    const courseName = "test";
-    defaultTeacherInteraction.data.options[0].value = courseName;
+    const courseCode = "TKT-100";
+    const courseFull = "Long course name";
+    const courseName = "nick name";
     const client = defaultTeacherInteraction.client;
+    defaultTeacherInteraction.data.options[0].value = courseCode;
+    defaultTeacherInteraction.data.options[1].value = courseFull;
+    defaultTeacherInteraction.data.options[2].value = courseName;
     await execute(defaultTeacherInteraction, client);
     expect(findOrCreateChannel).toHaveBeenCalledTimes(4);
   });
 
   test("set course positions", async () => {
-    const courseName = "test";
+    const courseCode = "TKT-100";
+    const courseFull = "Long course name";
+    const courseName = "nick name";
+    const client = defaultTeacherInteraction.client;
+    defaultTeacherInteraction.data.options[0].value = courseCode;
+    defaultTeacherInteraction.data.options[1].value = courseFull;
+    defaultTeacherInteraction.data.options[2].value = courseName;
     const categoryName = `📚 ${courseName}`;
     defaultTeacherInteraction.data.options[0].value = courseName;
-    const client = defaultTeacherInteraction.client;
     await execute(defaultTeacherInteraction, client);
     expect(setCoursePositionABC).toHaveBeenCalledTimes(1);
     expect(setCoursePositionABC).toHaveBeenCalledWith(client.guild, categoryName);
   });
 
   test("create invitation", async () => {
-    const courseName = "test";
-    defaultTeacherInteraction.data.options[0].value = courseName;
+    const courseCode = "TKT-100";
+    const courseFull = "Long course name";
+    const courseName = "nick name";
     const client = defaultTeacherInteraction.client;
+    defaultTeacherInteraction.data.options[0].value = courseCode;
+    defaultTeacherInteraction.data.options[1].value = courseFull;
+    defaultTeacherInteraction.data.options[2].value = courseName;
     await execute(defaultTeacherInteraction, client);
     expect(createInvitation).toHaveBeenCalledTimes(1);
     expect(createInvitation).toHaveBeenCalledWith(client.guild, courseName);
   });
 
   test("respond with correct emphemeral", async () => {
-    const courseName = "test";
-    const result = `Created course ${courseName}.`;
-    defaultTeacherInteraction.data.options[0].value = courseName;
+    const courseCode = "TKT-100";
+    const courseFull = "Long course name";
+    const courseName = "nick name";
     const client = defaultTeacherInteraction.client;
+    defaultTeacherInteraction.data.options[0].value = courseCode;
+    defaultTeacherInteraction.data.options[1].value = courseFull;
+    defaultTeacherInteraction.data.options[2].value = courseName;
+    const result = `Created course ${courseName}.`;
     await execute(defaultTeacherInteraction, client);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(client, defaultTeacherInteraction, result);
   });
 
   test("update join/leave command list", async () => {
-    const courseName = "test";
-    defaultTeacherInteraction.data.options[0].value = courseName;
+    const courseCode = "TKT-100";
+    const courseFull = "Long course name";
+    const courseName = "nick name";
     const client = defaultTeacherInteraction.client;
+    defaultTeacherInteraction.data.options[0].value = courseCode;
+    defaultTeacherInteraction.data.options[1].value = courseFull;
+    defaultTeacherInteraction.data.options[2].value = courseName;
     await execute(defaultTeacherInteraction, client);
     expect(client.emit).toHaveBeenCalledTimes(1);
     expect(client.emit).toHaveBeenCalledWith("COURSES_CHANGED");
   });
 
   test("update guide", async () => {
-    const courseName = "test";
-    defaultTeacherInteraction.data.options[0].value = courseName;
+    const courseCode = "TKT-100";
+    const courseFull = "Long course name";
+    const courseName = "nick name";
     const client = defaultTeacherInteraction.client;
+    defaultTeacherInteraction.data.options[0].value = courseCode;
+    defaultTeacherInteraction.data.options[1].value = courseFull;
+    defaultTeacherInteraction.data.options[2].value = courseName;
     await execute(defaultTeacherInteraction, client);
     expect(updateGuide).toHaveBeenCalledTimes(1);
     expect(updateGuide).toHaveBeenCalledWith(client.guild);

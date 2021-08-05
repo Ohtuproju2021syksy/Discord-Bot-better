@@ -107,10 +107,16 @@ const defaultTeacherInteraction = {
     },
   },
   data: {
-    options: [{
-      value: "",
-      command: {},
-    }],
+    options: [
+      {
+        value: "",
+        command: {},
+      },
+      {
+        value: "",
+        command: {},
+      },
+    ],
   },
 };
 
