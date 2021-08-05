@@ -2,7 +2,7 @@ const fs = require("fs");
 const { Client } = require("discord-slash-commands-client");
 const { Collection } = require("discord.js");
 const { getRoleFromCategory } = require("../services/service");
-const { facultyRole } = require("../../../config.json");
+const { facultyRole, courseAdminRole } = require("../../../config.json");
 
 const slashClient = new Client(
   process.env.BOT_TOKEN,
@@ -22,8 +22,28 @@ const sendEphemeral = (client, interaction, content) => {
   });
 };
 
+const findInstructorRoles = (client) => {
+  const instructorRoles = client.guild.roles.cache.filter(r => r.name.includes(courseAdminRole));
+  const roleNames = instructorRoles.map(r => r.name);
+  return roleNames;
+};
+
 const createCommandRolePermissions = (client, highestRole) => {
-  const allRoles = highestRole === facultyRole ? ["admin", facultyRole] : ["admin"];
+  const allRoles = [];
+  switch (highestRole) {
+    case "admin":
+      allRoles.push("admin");
+      break;
+    case facultyRole:
+      allRoles.push("admin", facultyRole);
+      break;
+    case courseAdminRole:
+      allRoles.push("admin", facultyRole);
+      allRoles.push(...findInstructorRoles(client));
+      break;
+    default:
+      break;
+  }
   const permissions = [];
 
   allRoles.forEach(role => {

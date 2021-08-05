@@ -34,6 +34,7 @@ const execute = async (interaction, client) => {
 module.exports = {
   name: "addinstructor",
   description: "Add instructor to the course.",
+  role: courseAdminRole,
   options: [
     {
       name: "user",

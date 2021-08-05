@@ -1,15 +1,17 @@
 const prefix = "/";
 const { sendEphemeral } = require("../utils");
+const { facultyRole } = require("../../../../config.json");
 
 const execute = async (interaction, client) => {
   const guild = client.guild;
 
   const member = guild.members.cache.get(interaction.member.user.id);
+  const highestRole = member.roles.highest.name;
   const data = [];
   const commandsReadyToPrint = client.slashCommands.map(c => c.command)
     .filter(command => {
-      if (!command.role) return true;
-      return member.roles.cache.find(role => role.name === command.role);
+      if (!command.role || highestRole === "admin" || highestRole === facultyRole) return true;
+      return member.roles.cache.find(role => role.name.includes(command.role));
     });
 
   if (!interaction.data.options) {

@@ -10,7 +10,7 @@ teacherData.push(`\nYou can send \`${prefix}help [command name]\` to get info on
 const studentData = [];
 studentData.push("Here's a list of all my commands:");
 studentData.push(client.slashCommands
-  .filter(command => command.command.role !== facultyRole)
+  .filter(command => command.command.role !== facultyRole && command.command.role !== courseAdminRole)
   .map(command => `${prefix}${command.command.name} - ${command.command.description}`).join("\n"));
 studentData.push(`\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`);
 
@@ -37,6 +37,7 @@ const teacher = {
   roles: {
     cache: [{ name: facultyRole }, { name: `test ${courseAdminRole}` }],
     add: jest.fn((name) => teacher.roles.cache.push({ name: name })),
+    highest: { name: facultyRole },
     fetch: jest.fn(),
     remove: jest.fn((role) => teacher.roles.cache = teacher.roles.cache.filter(r => r.name !== role.name)),
   },
@@ -48,6 +49,7 @@ const student = {
   roles: {
     cache: [{ name: "student" }],
     add: jest.fn((name) => student.roles.cache.push({ name: name })),
+    highest: { name: "@everyone" },
     fetch: jest.fn(),
     remove: jest.fn((role) => student.roles.cache = student.roles.cache.filter(r => r.name !== role.name)),
   },
