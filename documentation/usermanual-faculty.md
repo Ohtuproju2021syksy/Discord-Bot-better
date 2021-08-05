@@ -47,7 +47,7 @@ Today, many courses use Telegram discussion channels. At the moment there are st
 
 #### Add our Telegram bot to your Telegram channel
 
-Invite the **@Discord kurssibotti** bot to your Telegram channel. First go to your channel. From the right top corner choose three dots and from the drop down menu choose _Add members_.
+Invite the **@cs-discord-bot** bot to your Telegram channel. First go to your channel. From the right top corner choose three dots and from the drop down menu choose _Add members_.
 
 Give the bot admin role (choose channel member and give the bot admin rights). You need to have an admin role to do this change. Under _What can this admin do?_ mark all the showing rights off.
 
