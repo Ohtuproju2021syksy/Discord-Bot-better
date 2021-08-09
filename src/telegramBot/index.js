@@ -16,7 +16,14 @@ process.once("SIGTERM", () => telegramClient.stop("SIGTERM"));
 const eventFiles = fs.readdirSync("./src/telegramBot/events").filter(file => file.endsWith(".js"));
 for (const file of eventFiles) {
   const event = require(`./events/${file}`);
-  telegramClient.on(event.name, (...args) => event.execute(...args, telegramClient, Groups));
+  telegramClient.on(event.name, (...args) => {
+    try {
+      event.execute(...args, telegramClient, Groups);
+    }
+    catch (error) {
+      console.log(error);
+    }
+  });
 }
 
 const start = () => {
