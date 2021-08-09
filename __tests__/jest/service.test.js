@@ -3,7 +3,6 @@ const {
   createPrivateCategoryName,
   getRoleFromCategory,
   findOrCreateRoleWithName,
-  updateFaculty,
   updateGuideMessage,
   createInvitation,
   findCategoryName,
@@ -71,12 +70,6 @@ describe("Service", () => {
     expect(client.guild.roles.cache.size).toBe(1);
     expect(client.guild.roles.create).toHaveBeenCalledTimes(0);
   });
-
-  test("Update faculty", async () => {
-    await updateFaculty(client.guild);
-    expect(client.guild.roles.create).toHaveBeenCalledTimes(1);
-  });
-
 
   test("dont find invalid channel with name and type", () => {
     const channelFound = findChannelWithNameAndType("guide", "text", client.guild);

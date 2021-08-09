@@ -1,6 +1,5 @@
 require("dotenv").config();
 const GUIDE_CHANNEL_NAME = "guide";
-const FACULTY_ROLE = "faculty";
 
 const { sendMessageToTelegram, sendPhotoToTelegram } = require("../../bridge/index");
 
@@ -44,25 +43,6 @@ const findOrCreateRoleWithName = async (name, guild) => {
   );
 };
 
-/**
- *
- * @param {Discord.Message} message
- */
-const updateFaculty = async (guild) => {
-  const facultyRole = await findOrCreateRoleWithName(FACULTY_ROLE, guild);
-  const usersWhoShouldBeFaculty = guild.roles.cache
-    .filter((role) => role.name.includes("admin"))
-    .reduce((acc, role) => [...acc, ...role.members.array()], []);
-
-  for (const member of usersWhoShouldBeFaculty) {
-    if (!member.roles.cache.find((role) => role.id === facultyRole.id)) {
-      await member.roles.add(facultyRole);
-      await member.fetch(true);
-      console.log("Gave faculty to", member.nickname || member.user.username);
-    }
-  }
-};
-
 const updateGuideMessage = async (message) => {
   const guild = message.guild;
   const invites = await guild.fetchInvites();
@@ -104,7 +84,6 @@ Invitation link for the server https://discord.gg/${guideInvite.code}
 };
 
 const updateGuide = async (guild) => {
-  await updateFaculty(guild);
   const channel = guild.channels.cache.find(
     (c) => c.name === GUIDE_CHANNEL_NAME,
   );
@@ -309,7 +288,6 @@ module.exports = {
   createPrivateCategoryName,
   getRoleFromCategory,
   findOrCreateRoleWithName,
-  updateFaculty,
   updateGuideMessage,
   updateGuide,
   createInvitation,
