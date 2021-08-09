@@ -47,6 +47,30 @@ const createDiscordUser = async (ctx) => {
   return user;
 };
 
+
+const escapeChars = (content) => {
+  return content
+    .replaceAll("_", "\\_")
+    .replaceAll("*", "\\*")
+    .replaceAll("[", "\\[")
+    .replaceAll("]", "\\]")
+    .replaceAll("(", "\\(")
+    .replaceAll(")", "\\)")
+    .replaceAll("~", "\\~")
+    // .replaceAll("`", "\\`")
+    .replaceAll(">", "\\>")
+    .replaceAll("#", "\\#")
+    .replaceAll("+", "\\+")
+    .replaceAll("-", "\\-")
+    .replaceAll("=", "\\=")
+    .replaceAll("|", "\\|")
+    .replaceAll("{", "\\{")
+    .replaceAll("}", "\\}")
+    .replaceAll(".", "\\.")
+    .replaceAll("!", "\\!");
+};
+
+
 // Send message methods
 const sendMessageToDiscord = async (message, channel) => {
   try {
@@ -76,7 +100,8 @@ const sendMessageToDiscord = async (message, channel) => {
 };
 
 const sendMessageToTelegram = async (groupId, content) => {
-  await telegramBot.telegram.sendMessage(groupId, content);
+  content = escapeChars(content);
+  await telegramBot.telegram.sendMessage(groupId, content, { parse_mode: "MarkdownV2" });
 };
 
 const sendPhotoToTelegram = async (groupId, url, caption) => {
