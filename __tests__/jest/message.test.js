@@ -50,7 +50,6 @@ describe("prefix commands", () => {
     await execute(messageInCommandsChannel, client, Groups);
     expect(messageInCommandsChannel.channel.send).toHaveBeenCalledTimes(0);
     expect(messageInCommandsChannel.reply).toHaveBeenCalledTimes(0);
-    expect(messageInCommandsChannel.react).toHaveBeenCalledTimes(1);
     expect(messageInCommandsChannel.react).toHaveBeenCalledWith("❌");
   });
 
@@ -60,7 +59,6 @@ describe("prefix commands", () => {
     await execute(messageInCommandsChannel, client, Groups);
     expect(messageInCommandsChannel.channel.send).toHaveBeenCalledTimes(0);
     expect(messageInCommandsChannel.reply).toHaveBeenCalledTimes(0);
-    expect(messageInCommandsChannel.react).toHaveBeenCalledTimes(1);
     expect(messageInCommandsChannel.react).toHaveBeenCalledWith("✅");
   });
 
