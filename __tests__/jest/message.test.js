@@ -44,7 +44,7 @@ describe("prefix commands", () => {
     expect(messageInCommandsChannel.react).toHaveBeenCalledTimes(0);
   });
 
-  test("valid command with  invalid args reacts with x", async () => {
+  test("valid command with invalid args reacts with x", async () => {
     messageInCommandsChannel.content = "!updateinstructors";
     const client = messageInCommandsChannel.client;
     await execute(messageInCommandsChannel, client, Groups);
