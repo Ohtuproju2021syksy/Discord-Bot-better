@@ -3,7 +3,7 @@ const { updateGuide, handleBridgeMessage } = require("../services/service");
 const prefix = process.env.PREFIX;
 
 const execute = async (message, client, Groups) => {
-  if (!message.content.startsWith(prefix) || message.channel.name !== "commands") handleBridgeMessage(message, Groups);
+  if (!message.content.startsWith(prefix) || message.channel.name !== "commands") return handleBridgeMessage(message, Groups);
 
   let args = message.content.slice(prefix.length).trim().split(/ +/);
   const commandName = args.shift().toLowerCase();
@@ -15,15 +15,9 @@ const execute = async (message, client, Groups) => {
   if (command.args && !args.length) {
     return message.channel.send(`You didn't provide any arguments, ${message.author}!`);
   }
-  if (command.joinArgs) {
-    args = args.join(" ");
-  }
 
   try {
     await command.execute(message, args, Groups);
-    if (command.guide) {
-      await updateGuide(message.guild);
-    }
     await message.react("✅");
   }
   catch (error) {
