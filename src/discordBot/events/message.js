@@ -1,4 +1,4 @@
-const { updateGuide, handleBridgeMessage } = require("../services/service");
+const { handleBridgeMessage } = require("../services/service");
 
 const prefix = process.env.PREFIX;
 
