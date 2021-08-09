@@ -3,7 +3,7 @@ const {
   validDiscordChannel,
   sendMessageToDiscord,
   sendMessageToTelegram,
-  createNewGroup } = require("../../bridge/service");
+  createNewGroup } = require("../../bridge/index");
 
 const execute = async (ctx, message, telegramClient, Groups) => {
   const id = ctx.message.chat.id;

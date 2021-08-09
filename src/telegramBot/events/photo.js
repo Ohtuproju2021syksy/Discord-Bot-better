@@ -1,4 +1,4 @@
-const { createDiscordUser, validDiscordChannel, sendMessageToDiscord } = require("../../bridge/service");
+const { createDiscordUser, validDiscordChannel, sendMessageToDiscord } = require("../../bridge/index");
 
 const execute = async (ctx, message, telegramClient, Groups) => {
   const id = ctx.message.chat.id;

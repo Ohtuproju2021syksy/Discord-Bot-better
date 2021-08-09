@@ -71,8 +71,8 @@ const createNewGroup = async (args, Groups) => {
   await Groups.create({ groupId: groupId, course: courseName });
 };
 
-const startBridge = (client, tClient) => {
-  discordClient = client;
+const startBridge = (dclient, tClient) => {
+  discordClient = dclient;
   telegramClient = tClient;
   console.log("Bridge started");
 };

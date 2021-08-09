@@ -2,7 +2,7 @@ require("dotenv").config();
 const GUIDE_CHANNEL_NAME = "guide";
 const FACULTY_ROLE = "faculty";
 
-const { sendMessageToTelegram, sendPhotoToTelegram } = require("../../bridge/service");
+const { sendMessageToTelegram, sendPhotoToTelegram } = require("../../bridge/index");
 
 let invite_url = "";
 
