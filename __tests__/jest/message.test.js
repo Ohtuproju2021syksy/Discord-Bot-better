@@ -1,6 +1,7 @@
 const { execute } = require("../../src/discordBot/events/message");
 const { messageInGuideChannel, messageInCommandsChannel, student } = require("../mocks/mockMessages");
 
+jest.mock("../../src/discordBot/commands/admin/deleteCommand");
 jest.mock("../../src/discordBot/services/service");
 
 afterEach(() => {
@@ -44,21 +45,13 @@ describe("prefix commands", () => {
     expect(messageInCommandsChannel.react).toHaveBeenCalledTimes(0);
   });
 
-  test("valid command with invalid args reacts with x", async () => {
-    messageInCommandsChannel.content = "!updateinstructors";
-    const client = messageInCommandsChannel.client;
-    await execute(messageInCommandsChannel, client, Groups);
-    expect(messageInCommandsChannel.channel.send).toHaveBeenCalledTimes(0);
-    expect(messageInCommandsChannel.reply).toHaveBeenCalledTimes(0);
-    expect(messageInCommandsChannel.react).toHaveBeenCalledWith("❌");
-  });
-
   test("Valid use of command reacts with checkmark", async () => {
     messageInCommandsChannel.content = "!deletecommand help";
     const client = messageInCommandsChannel.client;
     await execute(messageInCommandsChannel, client, Groups);
     expect(messageInCommandsChannel.channel.send).toHaveBeenCalledTimes(0);
     expect(messageInCommandsChannel.reply).toHaveBeenCalledTimes(0);
+    expect(messageInCommandsChannel.react).toHaveBeenCalledTimes(1);
     expect(messageInCommandsChannel.react).toHaveBeenCalledWith("✅");
   });
 
