@@ -126,7 +126,8 @@ const execute = async (interaction, client, Groups) => {
     channelGeneral.setTopic(newTopic);
 
     // change all course values
-    await changeCourseNames(newValue, channel, category, guild);
+    const change = await changeCourseNames(newValue, channel, category, guild);
+    if (!change) return sendEphemeral(client, interaction, "Course name already exists");
     await changeCourseRoles(categoryName, newValue, guild);
     await changeInvitationLink(channelAnnouncement, interaction);
 
