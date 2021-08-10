@@ -68,7 +68,7 @@ const getChannelObjects = (guild, admin, student, roleName, category, topic) => 
     {
       name: `${roleName}_voice`,
       parent: category,
-      options: { type: "voice", topic: topic, parent: category, permissionOverwrites: [] },
+      options: { type: "voice", parent: category, permissionOverwrites: [] },
     },
   ];
 };

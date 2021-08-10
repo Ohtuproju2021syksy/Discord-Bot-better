@@ -1,6 +1,5 @@
 const prefix = "/";
 const { sendEphemeral } = require("../utils");
-const { facultyRole } = require("../../../../config.json");
 
 const execute = async (interaction, client) => {
   const guild = client.guild;
