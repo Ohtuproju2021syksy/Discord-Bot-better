@@ -10,7 +10,7 @@ const execute = async (interaction, client) => {
   const data = [];
   const commandsReadyToPrint = client.slashCommands.map(c => c.command)
     .filter(command => {
-      if (!command.role || highestRole === "admin" || highestRole === facultyRole) return true;
+      if (!command.role || highestRole === command.role) return true;
       return member.roles.cache.find(role => role.name.includes(command.role));
     });
 

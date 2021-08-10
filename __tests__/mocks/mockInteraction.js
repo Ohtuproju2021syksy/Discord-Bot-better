@@ -4,13 +4,15 @@ const prefix = "/";
 
 const teacherData = [];
 teacherData.push("Here's a list of all my commands:");
-teacherData.push(client.slashCommands.map(command => `${prefix}${command.command.name} - ${command.command.description}`).join("\n"));
+teacherData.push(client.slashCommands
+  .filter(command => command.command.role !== "admin")
+  .map(command => `${prefix}${command.command.name} - ${command.command.description}`).join("\n"));
 teacherData.push(`\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`);
 
 const studentData = [];
 studentData.push("Here's a list of all my commands:");
 studentData.push(client.slashCommands
-  .filter(command => command.command.role !== facultyRole && command.command.role !== courseAdminRole)
+  .filter(command => command.command.role !== facultyRole && command.command.role !== courseAdminRole && command.command.role !== "admin")
   .map(command => `${prefix}${command.command.name} - ${command.command.description}`).join("\n"));
 studentData.push(`\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`);
 
