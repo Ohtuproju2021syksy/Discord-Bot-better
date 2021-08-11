@@ -94,7 +94,7 @@ const handleBridgeMessage = async (message, courseName, Groups) => {
     await sendAnimationToTelegram(group.groupId, sender, gif.video.url);
   }
   else {
-    await sendMessageToTelegram(group.groupId, msg, sender);
+    await sendMessageToTelegram(group.groupId, `${msg}`, sender);
   }
 };
 
