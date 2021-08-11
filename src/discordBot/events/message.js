@@ -5,8 +5,11 @@ const prefix = process.env.PREFIX;
 
 const execute = async (message, client, Groups) => {
   if (!message.content.startsWith(prefix) || message.channel.name !== "commands") {
-    const courseName = getRoleFromCategory(message?.channel?.parent?.name);
-    return handleBridgeMessage(message, courseName, Groups);
+    if (message?.channel?.parent) {
+      const courseName = getRoleFromCategory(message.channel.parent.name);
+      return handleBridgeMessage(message, courseName, Groups);
+    }
+    return;
   }
 
   let args = message.content.slice(prefix.length).trim().split(/ +/);
