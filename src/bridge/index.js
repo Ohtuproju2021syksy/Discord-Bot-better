@@ -55,19 +55,97 @@ const sendMessageToDiscord = async (message, channel) => {
   }
 };
 
-const sendMessageToTelegram = async (groupId, content) => {
-  await telegramClient.telegram.sendMessage(groupId, content);
+const handleBridgeMessage = async (message, courseName, Groups) => {
+  if (!message.channel.parent) return;
+  // const channelName = message.channel.name;
+
+  const group = await Groups.findOne({ where: { course: String(courseName) } });
+
+  if (!group) {
+    return;
+  }
+  if (message.author.bot) return;
+
+  const sender = message.member.nickname || message.author.username;
+
+  /* let channel = "";
+  const name = courseName.replace(/ /g, "-");
+  channel = channelName === `${name}_announcement` ? " announcement" : channel;
+  channel = channelName === `${name}_general` ? " general" : channel;*/
+
+  let msg;
+  if (message.content.includes("<@!")) {
+    const userID = message.content.match(/(?<=<@!).*?(?=>)/)[0];
+    let user = message.guild.members.cache.get(userID);
+    user ? user = user.user.username : user = "Jon Doe";
+    msg = message.content.replace(/<.*>/, `${user}`);
+  }
+  else {
+    msg = message.content;
+  }
+
+  // Handle content correctly
+  const photo = message.attachments.first();
+  const gif = message.embeds[0];
+  if (photo) {
+    await sendPhotoToTelegram(group.groupId, msg, sender, photo.url);
+  }
+  else if (gif) {
+    await sendAnimationToTelegram(group.groupId, sender, gif.video.url);
+  }
+  else {
+    await sendMessageToTelegram(group.groupId, msg, sender);
+  }
 };
 
-const sendPhotoToTelegram = async (groupId, url, caption) => {
-  await telegramClient.telegram.sendPhoto(groupId, { url }, { caption });
+const escapeChars = (content) => {
+  return content
+    .replaceAll("_", "\\_")
+    .replaceAll("*", "\\*")
+    .replaceAll("[", "\\[")
+    .replaceAll("]", "\\]")
+    .replaceAll("(", "\\(")
+    .replaceAll(")", "\\)")
+    .replaceAll("~", "\\~")
+    .replaceAll("`", "\\`")
+    .replaceAll(">", "\\>")
+    .replaceAll("#", "\\#")
+    .replaceAll("+", "\\+")
+    .replaceAll("-", "\\-")
+    .replaceAll("=", "\\=")
+    .replaceAll("|", "\\|")
+    .replaceAll("{", "\\{")
+    .replaceAll("}", "\\}")
+    .replaceAll(".", "\\.")
+    .replaceAll("!", "\\!");
+};
+
+const validateContent = (content) => {
+  const regexp = /^`((.|\n)*)`$/;
+  if (!regexp.test(content)) content = escapeChars(content);
+  return content;
+};
+
+const sendMessageToTelegram = async (groupId, content, sender) => {
+  content = validateContent(content);
+  await telegramClient.telegram.sendMessage(groupId, `*${sender}:*\n ${content}`, { parse_mode: "MarkdownV2" });
+};
+
+const sendPhotoToTelegram = async (groupId, info, sender, url) => {
+  info = validateContent(info);
+  const caption = `*${sender}:* ${info}`;
+  await telegramClient.telegram.sendPhoto(groupId, { url }, { caption, parse_mode: "MarkdownV2" });
+};
+
+const sendAnimationToTelegram = async (groupId, sender, url) => {
+  sender = validateContent(sender);
+  const caption = `*${sender}*`;
+  await telegramClient.telegram.sendAnimation(groupId, { url }, { caption, parse_mode: "MarkdownV2" });
 };
 
 const createNewGroup = async (args, Groups) => {
   const courseName = args[0];
-  // const groupId = parseInt(args[1]);
   const groupId = args[1];
-
   await Groups.create({ groupId: groupId, course: courseName });
 };
 
@@ -85,4 +163,6 @@ module.exports = {
   sendPhotoToTelegram,
   createNewGroup,
   startBridge,
+  sendAnimationToTelegram,
+  handleBridgeMessage,
 };

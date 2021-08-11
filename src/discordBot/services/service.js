@@ -1,8 +1,6 @@
 require("dotenv").config();
 const GUIDE_CHANNEL_NAME = "guide";
 
-const { sendMessageToTelegram, sendPhotoToTelegram } = require("../../bridge/index");
-
 let invite_url = "";
 
 process.env.NODE_ENV === "production" ? invite_url = `${process.env.BACKEND_SERVER_URL}` : invite_url = `${process.env.BACKEND_SERVER_URL}:${process.env.PORT}`;
@@ -54,7 +52,7 @@ const updateGuideMessage = async (message) => {
       const courseRole = getRoleFromCategory(ch.name);
       const count = guild.roles.cache.find(
         (role) => role.name === courseRole,
-      ).members.size;
+      )?.members.size;
       return `  - ${courseFullName} \`/join ${courseRole}\` 👤${count}`;
     }).sort((a, b) => a.localeCompare(b));
 
@@ -239,50 +237,6 @@ const findAllCourseNames = (guild) => {
   return courseNames;
 };
 
-const handleBridgeMessage = async (message, Groups) => {
-  if (!message.channel.parent) return;
-  const channelName = message.channel.name;
-
-  const courseName = getRoleFromCategory(message.channel.parent.name);
-
-  const group = await Groups.findOne({ where: { course: String(courseName) } });
-
-  if (!group) {
-    return;
-  }
-  if (message.author.bot) return;
-
-  const sender = message.member.nickname || message.author.username;
-
-  let channel = "";
-  const name = courseName.replace(/ /g, "-");
-  channel = channelName === `${name}_announcement` ? " announcement" : channel;
-  channel = channelName === `${name}_general` ? " general" : channel;
-
-  let msg;
-  if (message.content.includes("<@!")) {
-    const userID = message.content.match(/(?<=<@!).*?(?=>)/)[0];
-    let user = message.guild.members.cache.get(userID);
-    user ? user = user.user.username : user = "Jon Doe";
-    msg = message.content.replace(/<.*>/, `${user}`);
-  }
-  else {
-    msg = message.content;
-  }
-
-  // Handle images correctly
-  const photo = message.attachments.first();
-  if (photo) {
-    sendPhotoToTelegram(group.groupId,
-      photo.url,
-      `<${sender}>${channel}: ${msg}`,
-    );
-  }
-  else {
-    await sendMessageToTelegram(group.groupId, `<${sender}>${channel}: ${msg}`);
-  }
-};
-
 module.exports = {
   createCategoryName,
   createPrivateCategoryName,
@@ -305,5 +259,4 @@ module.exports = {
   isACourseCategory,
   trimCourseName,
   findAllCourseNames,
-  handleBridgeMessage,
 };

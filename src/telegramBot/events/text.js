@@ -35,7 +35,8 @@ const execute = async (ctx, message, telegramClient, Groups) => {
 
   if (String(ctx.message.chat.id) === group.groupId) {
     const discordUser = await createDiscordUser(ctx);
-    const msg = { user: discordUser, content: { text: `${ctx.message.text}` } };
+    const msg = { user: discordUser, content: { text: ctx.message.text } };
+    if (ctx.message?.entities?.[0].type === "code") msg.content.text = ["`", msg.content.text, "`"].join("");
     const channel = await validDiscordChannel(courseName);
     if (!channel) return;
     await sendMessageToDiscord(msg, channel);
