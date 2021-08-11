@@ -1,4 +1,4 @@
-const { execute } = require("../../src/discordBot/commands/faculty/remove");
+const { execute } = require("../../src/discordBot/commands/admin/remove");
 const { sendEphemeral } = require("../../src/discordBot/commands/utils");
 const { findCategoryName, updateGuide, removeGroup } = require("../../src/discordBot/services/service");
 

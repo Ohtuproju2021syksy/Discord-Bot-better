@@ -7,7 +7,7 @@
     "start": "cross-env NODE_ENV=production node src/index.js",
     "dev": "cross-env NODE_ENV=development nodemon src/index.js",
     "jest": "jest --coverage --verbose --runInBand --detectOpenHandles",
-    "test": "jest --coverage --verbose --runInBand",
+    "test": "jest --coverage --runInBand",
     "lint": "eslint ."
   },
   "jest": {

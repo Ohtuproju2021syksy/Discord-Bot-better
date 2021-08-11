@@ -1,10 +1,9 @@
 const { sequelize } = require("./db/index");
-const startDiscordBot = require("./discordBot/index");
-const startBridge = require("./discordBot/bridge");
 const startServer = require("./server/server");
-const { client } = startDiscordBot;
+const { client } = require("./discordBot/index");
+const { telegramClient, start } = require("./telegramBot/index");
+const { startBridge } = require("./bridge/index");
 
-if (process.env.TG_BRIDGE_ENABLED) {
-  startBridge();
-}
+if (process.env.TG_BRIDGE_ENABLED) start();
 startServer(client, sequelize);
+startBridge(client, telegramClient);
