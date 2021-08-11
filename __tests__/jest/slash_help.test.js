@@ -21,7 +21,7 @@ afterEach(() => {
 });
 
 describe("slash help command", () => {
-  test("slash help with teacher role should see all commands", async () => {
+  test("slash help with teacher role should see all non-admin commands", async () => {
     const client = teacherInteractionHelp.client;
     await execute(teacherInteractionHelp, client);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);

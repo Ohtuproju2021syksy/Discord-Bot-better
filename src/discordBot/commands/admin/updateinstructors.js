@@ -7,12 +7,14 @@ const findAndUpdateInstructorRole = async (name, guild) => {
 };
 
 const execute = async (message) => {
-  const guild = message.client.guild;
-  const courseNames = findAllCourseNames(guild);
+  if (message.member.hasPermission("ADMINISTRATOR")) {
+    const guild = message.client.guild;
+    const courseNames = findAllCourseNames(guild);
 
-  courseNames.forEach(course => {
-    findAndUpdateInstructorRole(course, guild);
-  });
+    courseNames.forEach(course => {
+      findAndUpdateInstructorRole(course, guild);
+    });
+  }
 };
 
 module.exports = {

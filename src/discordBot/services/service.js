@@ -202,7 +202,9 @@ const setCoursePositionABC = async (guild, courseString) => {
     }).sort((a, b) => a.localeCompare(b));
 
   const category = guild.channels.cache.find(c => c.type === "category" && c.name === courseString);
-  await category.edit({ position: result.indexOf(courseString) + first });
+  if (category) {
+    await category.edit({ position: result.indexOf(courseString) + first });
+  }
 };
 
 const deleteCommand = async (client, commandToDeleteName) => {
