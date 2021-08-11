@@ -50,7 +50,7 @@ const execute = async (ctx, message, telegramClient, Groups) => {
           formattedMessage = `${start}\`${mid}\`${end}`;
         }
         else if (ent.type === "pre") {
-          formattedMessage = `${start}\`\`\`${mid}\`\`\`${end}`;
+          formattedMessage = `${start}\`\`\`\n${mid}\`\`\`${end}`;
         }
       });
       msg.content.text = formattedMessage;
