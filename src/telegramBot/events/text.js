@@ -41,18 +41,19 @@ const execute = async (ctx, message, telegramClient, Groups) => {
     if (ents) {
       ents.sort((a, b) => b.offset - a.offset);
 
-      let message = msg.content.text;
+      let formattedMessage = msg.content.text;
       ents.forEach(ent => {
-        const start = message.substring(0, ent.offset);
-        const mid = message.substr(ent.offset, ent.length);
-        const end = message.substring(ent.offset + ent.length);
-        if (ent.type === 'code') {
-          message = `${start}\`${mid}\`${end}`;
-        } else if (ent.type === 'pre') {
-          message = `${start}\`\`\`${mid}\`\`\`${end}`;
+        const start = formattedMessage.substring(0, ent.offset);
+        const mid = formattedMessage.substr(ent.offset, ent.length);
+        const end = formattedMessage.substring(ent.offset + ent.length);
+        if (ent.type === "code") {
+          formattedMessage = `${start}\`${mid}\`${end}`;
+        }
+        else if (ent.type === "pre") {
+          formattedMessage = `${start}\`\`\`${mid}\`\`\`${end}`;
         }
       });
-      msg.content.text = message;
+      msg.content.text = formattedMessage;
     }
 
     const channel = await validDiscordChannel(courseName);
