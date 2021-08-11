@@ -37,7 +37,7 @@ const execute = async (ctx, message, telegramClient, Groups) => {
     const discordUser = await createDiscordUser(ctx);
     const msg = { user: discordUser, content: { text: ctx.message.text } };
 
-    const ents = [ ...ctx.message.entities ];
+    const ents = ctx.message.entities ? [ ...ctx.message.entities ] : undefined;
     if (ents) {
       ents.sort((a, b) => b.offset - a.offset);
 
