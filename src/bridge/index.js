@@ -94,30 +94,30 @@ const handleBridgeMessage = async (message, courseName, Groups) => {
     await sendAnimationToTelegram(group.groupId, sender, gif.video.url);
   }
   else {
-    await sendMessageToTelegram(group.groupId, `${msg}`, sender);
+    await sendMessageToTelegram(group.groupId, msg, sender);
   }
 };
 
 const escapeChars = (content) => {
   return content
-    .replaceAll("_", "\\_")
-    .replaceAll("*", "\\*")
-    .replaceAll("[", "\\[")
-    .replaceAll("]", "\\]")
-    .replaceAll("(", "\\(")
-    .replaceAll(")", "\\)")
-    .replaceAll("~", "\\~")
-    .replaceAll("`", "\\`")
-    .replaceAll(">", "\\>")
-    .replaceAll("#", "\\#")
-    .replaceAll("+", "\\+")
-    .replaceAll("-", "\\-")
-    .replaceAll("=", "\\=")
-    .replaceAll("|", "\\|")
-    .replaceAll("{", "\\{")
-    .replaceAll("}", "\\}")
-    .replaceAll(".", "\\.")
-    .replaceAll("!", "\\!");
+    .replace(/_/g, "\\_")
+    .replace(/\*/g, "\\*")
+    .replace(/\[/g, "\\[")
+    .replace(/\]/g, "\\]")
+    .replace(/\(/g, "\\(")
+    .replace(/\)/g, "\\)")
+    .replace(/~/g, "\\~")
+    .replace(/`/g, "\\`")
+    .replace(/>/g, "\\>")
+    .replace(/#/g, "\\#")
+    .replace(/\+/g, "\\+")
+    .replace(/-/g, "\\-")
+    .replace(/=/g, "\\=")
+    .replace(/\|/g, "\\|")
+    .replace(/\{/g, "\\{")
+    .replace(/\}/g, "\\}")
+    .replace(/\./g, "\\.")
+    .replace(/!/g, "\\!");
 };
 
 const validateContent = (content) => {
