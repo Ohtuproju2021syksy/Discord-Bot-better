@@ -2,6 +2,7 @@ require("dotenv").config();
 const Discord = require("discord.js");
 const fs = require("fs");
 const { Groups } = require("../db/dbInit");
+const { Course } = require("../db/dbInit");
 
 const token = process.env.BOT_TOKEN;
 
@@ -12,14 +13,14 @@ for (const file of eventFiles) {
   const event = require(`./events/${file}`);
   if (event.ws) {
     client.ws.on(event.name, async (interaction) => {
-      event.execute(interaction, client, Groups);
+      event.execute(interaction, client, Groups, Course);
     });
   }
   else if (event.once) {
     client.once(event.name, (...args) => event.execute(...args, client));
   }
   else {
-    client.on(event.name, (...args) => event.execute(...args, client, Groups));
+    client.on(event.name, (...args) => event.execute(...args, client, Groups, Course));
   }
 }
 

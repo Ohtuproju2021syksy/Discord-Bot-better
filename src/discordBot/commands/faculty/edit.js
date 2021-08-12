@@ -8,7 +8,7 @@ const { setCoursePositionABC,
   trimCourseName } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
-const { Course } = require("../../../db/dbInit");
+
 
 const used = new Map();
 
@@ -53,7 +53,7 @@ const changeInvitationLink = async (channelAnnouncement, interaction) => {
   await invMessage.edit(updatedMsg);
 };
 
-const execute = async (interaction, client, Groups) => {
+const execute = async (interaction, client, Groups, Course) => {
   const choice = interaction.data.options[0].value;
   const newValue = interaction.data.options[1].value.toLowerCase().trim();
 

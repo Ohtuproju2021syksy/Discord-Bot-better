@@ -7,13 +7,13 @@ const {
   setCoursePositionABC } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
-const { Course } = require("../../../db/dbInit");
 
+/*
 const printCourses = async () => {
   const courses = await Course.findAll();
   console.log("All courses in db:", JSON.stringify(courses, null, 2));
 };
-
+*/
 /**
  *
  * @param {Object} channelObject
@@ -86,7 +86,7 @@ const getCategoryObject = (categoryName, permissionOverwrites) => ({
   },
 });
 
-const execute = async (interaction, client) => {
+const execute = async (interaction, client, Groups, Course) => {
   const courseCode = interaction.data.options[0].value.toLowerCase().trim();
   const courseFullName = interaction.data.options[1].value.toLowerCase().trim();
   let courseName;
