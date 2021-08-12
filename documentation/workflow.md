@@ -76,8 +76,6 @@ Markdown guide [Basic writing and formatting syntax](https://docs.github.com/en/
 
 Discord bot [file structure](https://discordjs.guide/command-handling/#individual-command-files).
 
-Testing with corde [cordejs](https://github.com/cordejs/corde)
-
 Testing with jest [jestjs.io docs](https://jestjs.io/docs/getting-started)
 
 JavaScript for Programmers [Course](http://nicholasjohnson.com/javascript/javascript-for-programmers/)

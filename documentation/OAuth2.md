@@ -20,18 +20,16 @@ Select correct redirect url from drop down menu. From the scopes select **indent
 
 ### Redirects
 
-Set redirect to **<backend_server_url>/discordAuth** to `DISCORD_REDIRECT_URL`, e.g. if you are using local server use **http://localhost:3000/discordAuth**
+Set redirect to **<backend_server_url>/discordAuth** to `DISCORD_REDIRECT_URL`, e.g., if you are using local server use **http://localhost:3000/discordAuth**
 
-### Backend server url
+### Backend server URL
 
 From Discord add your default discord server invite to .env `DISCORD_SERVER_INVITE`. This can be found from the _#guide_ channel.
 
-Add your backend server url to `BACKEND_SERVER_URL`, e.g. if you are using local server use **http://localhost**.
+Add your backend server url to `BACKEND_SERVER_URL`, e.g., if you are using local server use **http://localhost**.
 
-Add your local port to `PORT`, e.g. 3000.
+Add your local port to `PORT`, e.g., 3000.
 
 ### Session secret
 
 Give `SESSION_SECRET` any value you want to use.
-
-
