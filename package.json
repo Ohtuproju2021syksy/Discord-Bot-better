@@ -11,9 +11,6 @@
     "lint": "eslint ."
   },
   "jest": {
-    "modulePathIgnorePatterns": [
-      "corde"
-    ],
     "coveragePathIgnorePatterns": [
       "/node_modules/",
       "__tests__"
