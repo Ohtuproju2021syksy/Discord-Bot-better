@@ -22,5 +22,7 @@ module.exports = {
   name: "updateinstructors",
   description: "Update course admin roles.",
   role: "admin",
+  usage: "",
+  args: false,
   execute,
 };

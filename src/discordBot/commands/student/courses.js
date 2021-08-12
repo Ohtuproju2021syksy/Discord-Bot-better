@@ -20,7 +20,7 @@ const execute = async (interaction, client) => {
 module.exports = {
   name: "courses",
   description: "Prints out the courses to use with `/join` and `/leave`.",
-  usage: "[no arg]",
+  usage: "",
   args: false,
   joinArgs: false,
   guide: false,
