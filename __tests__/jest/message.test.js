@@ -43,22 +43,13 @@ describe("prefix commands", () => {
     messageInCommandsChannel.content = "!sort";
     const client = messageInCommandsChannel.client;
     await execute(messageInCommandsChannel, client, Groups);
-    expect(messageInCommandsChannel.channel.send).toHaveBeenCalledTimes(0);
-    expect(messageInCommandsChannel.react).toHaveBeenCalledTimes(1);
-    expect(messageInCommandsChannel.react).toHaveBeenCalledWith("✅");
-    expect(messageInCommandsChannel.reply).toHaveBeenCalledTimes(0);
     expect(sort.execute).toHaveBeenCalledTimes(1);
   });
 
   test("invalid use of command sends correct message", async () => {
     messageInCommandsChannel.content = "!deletecommand";
-    const response = `You didn't provide any arguments, ${messageInCommandsChannel.author}!`;
     const client = messageInCommandsChannel.client;
     await execute(messageInCommandsChannel, client, Groups);
-    expect(messageInCommandsChannel.channel.send).toHaveBeenCalledTimes(1);
-    expect(messageInCommandsChannel.channel.send).toHaveBeenCalledWith(response);
-    expect(messageInCommandsChannel.react).toHaveBeenCalledTimes(0);
-    expect(messageInCommandsChannel.reply).toHaveBeenCalledTimes(0);
     expect(deleteCommand.execute).toHaveBeenCalledTimes(0);
   });
 
