@@ -26,6 +26,7 @@ const changeCourseNames = async (newValue, channel, category, guild) => {
       await ch.setName(newName);
     },
     ));
+  return true;
 };
 
 const changeCourseRoles = async (categoryName, newValue, guild) => {
@@ -107,13 +108,12 @@ const execute = async (interaction, client, Groups) => {
       await client.emit("COURSES_CHANGED");
       await updateGuide(client.guild);
     }
+    else {
+      newTopic = originalTopic.replace(splitted[0], newValue.toUpperCase());
+      await channelAnnouncement.setTopic(newTopic);
+      await channelGeneral.setTopic(newTopic);
+    }
   }
-  else {
-    newTopic = originalTopic.replace(splitted[0], newValue.toUpperCase());
-    await channelAnnouncement.setTopic(newTopic);
-    await channelGeneral.setTopic(newTopic);
-  }
-
   if (choice === "name") {
     newTopic = originalTopic.replace(splitted[1], newValue.toUpperCase());
     await channelAnnouncement.setTopic(newTopic);
