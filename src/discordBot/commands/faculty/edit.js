@@ -8,6 +8,7 @@ const { setCoursePositionABC,
   trimCourseName } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
+const { Course } = require("../../../db/dbInit");
 
 const used = new Map();
 
@@ -26,6 +27,7 @@ const changeCourseNames = async (newValue, channel, category, guild) => {
       await ch.setName(newName);
     },
     ));
+  return true;
 };
 
 const changeCourseRoles = async (categoryName, newValue, guild) => {
@@ -65,15 +67,12 @@ const execute = async (interaction, client, Groups) => {
   const categoryName = trimCourseName(channel.parent, guild);
   const category = findChannelWithNameAndType(channel.parent.name, "category", guild);
   const channelAnnouncement = guild.channels.cache.find(c => c.parent === channel.parent && c.name.includes("_announcement"));
-  const channelGeneral = guild.channels.cache.find(c => c.parent === channel.parent && c.name.includes("_general"));
-  const originalTopic = channelAnnouncement.topic;
 
-  if (!originalTopic) {
-    return sendEphemeral(client, interaction, "Course topic not found, can not execute the command");
+  let databaseValue = await Course.findOne({ where: { name: categoryName } }).catch((error) => console.log(error));
+
+  if (!databaseValue) {
+    databaseValue = await Course.create({ code: "change me", fullName: categoryName, name: categoryName });
   }
-
-  const splitted = originalTopic.split(" :star: ");
-  let newTopic;
 
   const cooldown = used.get(categoryName);
   if (cooldown) {
@@ -81,17 +80,17 @@ const execute = async (interaction, client, Groups) => {
     const time = msToMinutesAndSeconds(timeRemaining);
     return sendEphemeral(client, interaction, `Command cooldown [mm:ss]: you need to wait ${time}.`);
   }
+
   if (choice === "code") {
-    if (splitted[0] === splitted[2]) {
-      newTopic = originalTopic.replace(splitted[0], newValue.toUpperCase());
-      newTopic = newTopic.replace(splitted[2], newValue.toUpperCase());
-
-      await channelAnnouncement.setTopic(newTopic);
-      await channelGeneral.setTopic(newTopic);
-
-      // change all course values
+    if (databaseValue.code === databaseValue.name) {
       const change = await changeCourseNames(newValue, channel, category, guild);
       if (!change) return sendEphemeral(client, interaction, "Course name already exists");
+
+      // save values to database
+      databaseValue.code = newValue;
+      databaseValue.name = newValue;
+      await databaseValue.save();
+
       await changeCourseRoles(categoryName, newValue, guild);
       await changeInvitationLink(channelAnnouncement, interaction);
 
@@ -101,33 +100,33 @@ const execute = async (interaction, client, Groups) => {
         group.course = newValue;
         await group.save();
       }
+
       const newCategoryName = findCategoryName(newValue, guild);
       await setCoursePositionABC(guild, newCategoryName);
 
       await client.emit("COURSES_CHANGED");
       await updateGuide(client.guild);
     }
+    else {
+      console.log("muutetaan pelkkä koodi");
+      databaseValue.code = newValue;
+      await databaseValue.save();
+    }
   }
-  else {
-    newTopic = originalTopic.replace(splitted[0], newValue.toUpperCase());
-    await channelAnnouncement.setTopic(newTopic);
-    await channelGeneral.setTopic(newTopic);
-  }
-
   if (choice === "name") {
-    newTopic = originalTopic.replace(splitted[1], newValue.toUpperCase());
-    await channelAnnouncement.setTopic(newTopic);
-    await channelGeneral.setTopic(newTopic);
+    console.log("muutetaan nimeä");
+    databaseValue.fullName = newValue;
+    await databaseValue.save();
   }
 
   if (choice === "nick") {
-    newTopic = originalTopic.replace(splitted[2], newValue.toUpperCase());
-    channelAnnouncement.setTopic(newTopic);
-    channelGeneral.setTopic(newTopic);
-
-    // change all course values
     const change = await changeCourseNames(newValue, channel, category, guild);
     if (!change) return sendEphemeral(client, interaction, "Course name already exists");
+
+    // save values to database
+    databaseValue.name = newValue;
+    await databaseValue.save();
+
     await changeCourseRoles(categoryName, newValue, guild);
     await changeInvitationLink(channelAnnouncement, interaction);
 
@@ -144,10 +143,12 @@ const execute = async (interaction, client, Groups) => {
     await updateGuide(client.guild);
   }
 
-  const nameToCoolDown = trimCourseName(channel.parent, guild);
-  const cooldownTimeMs = 1000 * 60 * 15;
-  used.set(nameToCoolDown, Date.now() + cooldownTimeMs);
-  handleCooldown(used, nameToCoolDown, cooldownTimeMs);
+  if ((choice === "code" && databaseValue.code === databaseValue.name) || choice === "nick") {
+    const nameToCoolDown = trimCourseName(channel.parent, guild);
+    const cooldownTimeMs = 1000 * 60 * 15;
+    used.set(nameToCoolDown, Date.now() + cooldownTimeMs);
+    handleCooldown(used, nameToCoolDown, cooldownTimeMs);
+  }
 
   return sendEphemeral(client, interaction, "Course information has been changed");
 };
