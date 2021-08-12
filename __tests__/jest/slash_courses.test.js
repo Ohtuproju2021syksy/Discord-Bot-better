@@ -6,7 +6,7 @@ jest.mock("../../src/discordBot/commands/utils");
 jest.mock("../../src/discordBot/services/service");
 jest.mock("discord-slash-commands-client");
 
-getRoleFromCategory.mockImplementationOnce(() => "test");
+getRoleFromCategory.mockImplementation((name) => name.replace("📚", "").trim());
 
 const { defaultTeacherInteraction } = require("../mocks/mockInteraction");
 
@@ -16,8 +16,9 @@ afterEach(() => {
 
 describe("courses slash command", () => {
   test("responds correct list as ephemeral", () => {
-    const result = "test - `/join test`";
+    const result = "a - `/join a` \ntest - `/join test`";
     const client = defaultTeacherInteraction.client;
+    client.guild.channels.create("📚 a", { type: "category" });
     execute(defaultTeacherInteraction, client);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(client, defaultTeacherInteraction, result);

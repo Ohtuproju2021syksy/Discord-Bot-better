@@ -33,6 +33,7 @@ const client = {
           });
           id++;
         }),
+        edit: jest.fn(),
       })),
       init: jest.fn(() => client.guild.channels.cache = new Discord.Collection()),
       messages: {

@@ -199,24 +199,6 @@ const interactionHelpJoin = {
   },
 };
 
-const interactionJoin = {
-  client: client,
-  channel_id: 1,
-  member: {
-    user: {
-      id: 1,
-    },
-  },
-  data: {
-    options: [{
-      value: "tester",
-      command: {
-        name: "join",
-      },
-    }],
-  },
-};
-
 const intInsWithoutArgs = {
   client: client,
   channel_id: 1,
@@ -283,7 +265,6 @@ module.exports = {
   studentInteractionHelp,
   invalidInteractionHelp,
   interactionHelpJoin,
-  interactionJoin,
   intInsWithoutArgs,
   intInsWithValidArgs,
   intInsWithInvalidArgs,
