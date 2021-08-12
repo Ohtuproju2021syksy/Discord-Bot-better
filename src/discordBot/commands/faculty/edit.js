@@ -111,12 +111,16 @@ const execute = async (interaction, client, Groups) => {
       console.log("muutetaan pelkkä koodi");
       databaseValue.code = newValue;
       await databaseValue.save();
+      await client.emit("COURSES_CHANGED");
+      await updateGuide(client.guild);
     }
   }
   if (choice === "name") {
     console.log("muutetaan nimeä");
     databaseValue.fullName = newValue;
     await databaseValue.save();
+    await client.emit("COURSES_CHANGED");
+    await updateGuide(client.guild);
   }
 
   if (choice === "nick") {
