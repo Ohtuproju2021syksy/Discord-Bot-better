@@ -7,6 +7,12 @@ const {
   setCoursePositionABC } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
+const { Course } = require("../../../db/dbInit");
+
+const printCourses = async () => {
+  const courses = await Course.findAll();
+  console.log("All courses in db:", JSON.stringify(courses, null, 2));
+};
 
 /**
  *
@@ -111,6 +117,10 @@ const execute = async (interaction, client) => {
   await Promise.all(channelObjects.map(
     async channelObject => await findOrCreateChannel(channelObject, guild),
   ));
+
+  // Database
+  await Course.create({ code: courseCode, fullName: courseFullName, name: courseName });
+  // await printCourses();
 
   await setCoursePositionABC(guild, categoryName);
   await createInvitation(guild, courseName);

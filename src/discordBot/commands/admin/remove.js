@@ -1,6 +1,12 @@
 const { updateGuide, findCategoryName, removeGroup, getRoleFromCategory } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
 const { courseAdminRole } = require("../../../../config.json");
+const { Course } = require("../../../db/dbInit");
+
+const printCourses = async () => {
+  const courses = await Course.findAll();
+  console.log("All courses in db:", JSON.stringify(courses, null, 2));
+};
 
 const execute = async (interaction, client, Groups) => {
   const courseName = interaction.data.options[0].value.toLowerCase().trim();
@@ -33,6 +39,10 @@ const execute = async (interaction, client, Groups) => {
     const name = getRoleFromCategory(courseString);
     removeGroup(name, Groups);
   }
+
+  // Database
+  await Course.destroy({ where: { name: courseName } });
+  // await printCourses();
 };
 
 module.exports = {

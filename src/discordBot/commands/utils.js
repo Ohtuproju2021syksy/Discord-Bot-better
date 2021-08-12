@@ -3,6 +3,7 @@ const { Client } = require("discord-slash-commands-client");
 const { Collection } = require("discord.js");
 const { getRoleFromCategory } = require("../services/service");
 const { facultyRole, courseAdminRole } = require("../../../config.json");
+const { Course } = require("../../db/dbInit");
 
 const slashClient = new Client(
   process.env.BOT_TOKEN,
@@ -61,8 +62,8 @@ const createCommandRolePermissions = (client, highestRole) => {
 };
 
 const createSlashCommand = async (client, command) => {
-  if (command.name === "join") command.options[0].choices = joinGetChoices(client);
-  if (command.name === "leave") command.options[0].choices = leaveGetChoices(client);
+  if (command.name === "join") command.options[0].choices = await getCourseChoices();
+  if (command.name === "leave") command.options[0].choices = await getCourseChoices(true);
   try {
     const createdCommand = await slashClient
       .createCommand({
@@ -144,7 +145,6 @@ const leaveGetChoices = (client) => {
     .map(({ name }) => getRoleFromCategory(name))
     .sort()
     .map(courseName => ({ name: courseName, value: courseName }));
-  // console.log(choices);
   return choices;
 };
 
@@ -155,6 +155,18 @@ const joinGetChoices = (client) => {
     .sort()
     .map(courseName => ({ name: courseName, value: courseName }));
   // console.log("join", choices);
+  return choices;
+};
+
+const getCourseChoices = async (showPrivate = false) => {
+  const courseData = await Course.findAll({});
+  const choices = courseData.map(c => (
+    {
+      name: `${c.dataValues.code} - ${c.dataValues.fullName} - ${c.dataValues.code === c.dataValues.name ? c.dataValues.code : c.dataValues.name}`,
+      value: c.dataValues.name,
+    }
+  ));
+  console.log(choices);
   return choices;
 };
 
