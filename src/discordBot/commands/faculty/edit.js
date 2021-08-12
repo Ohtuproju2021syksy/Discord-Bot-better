@@ -100,27 +100,19 @@ const execute = async (interaction, client, Groups) => {
         group.course = newValue;
         await group.save();
       }
-
       const newCategoryName = findCategoryName(newValue, guild);
       await setCoursePositionABC(guild, newCategoryName);
 
-      await client.emit("COURSES_CHANGED");
-      await updateGuide(client.guild);
     }
     else {
-      console.log("muutetaan pelkkä koodi");
       databaseValue.code = newValue;
       await databaseValue.save();
-      await client.emit("COURSES_CHANGED");
-      await updateGuide(client.guild);
     }
   }
+
   if (choice === "name") {
-    console.log("muutetaan nimeä");
     databaseValue.fullName = newValue;
     await databaseValue.save();
-    await client.emit("COURSES_CHANGED");
-    await updateGuide(client.guild);
   }
 
   if (choice === "nick") {
@@ -142,9 +134,6 @@ const execute = async (interaction, client, Groups) => {
     }
     const newCategoryName = findCategoryName(newValue, guild);
     await setCoursePositionABC(guild, newCategoryName);
-
-    await client.emit("COURSES_CHANGED");
-    await updateGuide(client.guild);
   }
 
   if ((choice === "code" && databaseValue.code === databaseValue.name) || choice === "nick") {
@@ -153,6 +142,9 @@ const execute = async (interaction, client, Groups) => {
     used.set(nameToCoolDown, Date.now() + cooldownTimeMs);
     handleCooldown(used, nameToCoolDown, cooldownTimeMs);
   }
+
+  await client.emit("COURSES_CHANGED");
+  await updateGuide(client.guild);
 
   return sendEphemeral(client, interaction, "Course information has been changed");
 };
