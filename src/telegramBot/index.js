@@ -26,12 +26,12 @@ for (const file of eventFiles) {
   });
 }
 
-const start = () => {
-  telegramClient.launch();
+const startTelegramBot = async () => {
+  await telegramClient.launch();
   console.log("Telegram bot launched");
 };
 
 module.exports = {
-  start,
   telegramClient,
+  startTelegramBot,
 };

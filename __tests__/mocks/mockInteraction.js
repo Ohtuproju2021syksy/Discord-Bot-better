@@ -192,7 +192,7 @@ const interactionHelpJoin = {
       value: "join",
       command: {
         name: "join",
-        description: "Join a course, e.g. `/join ohpe`",
+        description: "Join a course, e.g., `/join ohpe`",
         usage: "[course name]",
       },
     }],

@@ -10,7 +10,7 @@ const createCategoryName = (courseString) => `📚 ${courseString}`;
 const createPrivateCategoryName = (courseString) => `🔒 ${courseString}`;
 
 /**
- * Expects role to be between parenthesis e.g. (role)
+ * Expects role to be between parenthesis e.g., (role)
  * @param {String} string
  */
 const getRoleFromCategory = (categoryName) => {

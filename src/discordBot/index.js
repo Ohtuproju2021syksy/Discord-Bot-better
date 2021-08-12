@@ -4,7 +4,6 @@ const fs = require("fs");
 const { Groups } = require("../db/dbInit");
 
 const token = process.env.BOT_TOKEN;
-
 const client = new Discord.Client();
 
 const eventFiles = fs.readdirSync("./src/discordBot/events").filter(file => file.endsWith(".js"));
@@ -23,15 +22,12 @@ for (const file of eventFiles) {
   }
 }
 
-const login = async () => {
+const startDiscordBot = async () => {
   await client.login(token);
+  console.log("Discord bot logged in");
 };
 
-if (process.env.NODE_ENV !== "test") {
-  login();
-}
-
 module.exports = {
-  login,
   client,
+  startDiscordBot,
 };
