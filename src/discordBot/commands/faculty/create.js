@@ -39,14 +39,13 @@ const getPermissionOverwrites = (guild, admin, student) => ([
   },
 ]);
 
-const getChannelObjects = (guild, admin, student, roleName, category, topic) => {
+const getChannelObjects = (guild, admin, student, roleName, category) => {
   roleName = roleName.replace(/ /g, "-");
   return [
     {
       name: `${roleName}_announcement`,
       options: {
         type: "text",
-        topic: topic,
         description: "Messages from course admins",
         parent: category,
         permissionOverwrites: [
@@ -69,7 +68,7 @@ const getChannelObjects = (guild, admin, student, roleName, category, topic) => 
     {
       name: `${roleName}_general`,
       parent: category,
-      options: { type: "text", topic: topic, parent: category, permissionOverwrites: [] },
+      options: { type: "text", parent: category, permissionOverwrites: [] },
     },
     {
       name: `${roleName}_voice`,
@@ -99,8 +98,6 @@ const execute = async (interaction, client) => {
     courseName = interaction.data.options[2].value.toLowerCase().trim();
   }
 
-  const topicName = courseCode.toUpperCase() + " :star: " + courseFullName.toUpperCase() + " :star: " + courseName.toUpperCase();
-
   const guild = client.guild;
 
   // Roles
@@ -113,7 +110,7 @@ const execute = async (interaction, client) => {
   const category = await findOrCreateChannel(categoryObject, guild);
 
   // Channels
-  const channelObjects = getChannelObjects(guild, admin, student, courseName, category, topicName);
+  const channelObjects = getChannelObjects(guild, admin, student, courseName, category);
   await Promise.all(channelObjects.map(
     async channelObject => await findOrCreateChannel(channelObject, guild),
   ));
