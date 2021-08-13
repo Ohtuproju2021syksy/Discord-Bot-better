@@ -166,7 +166,8 @@ const getCourseChoices = async (showPrivate = false) => {
       value: c.dataValues.name,
     }
   ));
-  console.log(choices);
+  // console.log(choices);
+  choices.sort((a, b) => a.value.localeCompare(b.value));
   return choices;
 };
 
