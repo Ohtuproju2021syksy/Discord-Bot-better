@@ -71,7 +71,7 @@ const execute = async (interaction, client, Groups, Course) => {
   let databaseValue = await Course.findOne({ where: { name: categoryName } }).catch((error) => console.log(error));
 
   if (!databaseValue) {
-    databaseValue = await Course.create({ code: "change me", fullName: categoryName, name: categoryName });
+    databaseValue = await Course.create({ code: "change me", fullName: categoryName, name: categoryName, private: false });
   }
 
   const cooldown = used.get(categoryName);

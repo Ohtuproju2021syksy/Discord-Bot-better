@@ -116,7 +116,7 @@ const execute = async (interaction, client, Groups, Course) => {
   ));
 
   // Database
-  await Course.create({ code: courseCode, fullName: courseFullName, name: courseName });
+  await Course.create({ code: courseCode, fullName: courseFullName, name: courseName, private: false });
   // await printCourses();
 
   await setCoursePositionABC(guild, categoryName);

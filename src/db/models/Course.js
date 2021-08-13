@@ -20,6 +20,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
       unique: true,
     },
+    private: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+      unique: false,
+    },
   }, {
     timestamps: false,
     freezeTableName: true,

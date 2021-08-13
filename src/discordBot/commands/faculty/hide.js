@@ -4,7 +4,7 @@ const { facultyRole } = require("../../../../config.json");
 
 const used = new Map();
 
-const execute = async (interaction, client) => {
+const execute = async (interaction, client, Groups, Course) => {
   const courseName = interaction.data.options[0].value.toLowerCase().trim();
   const guild = client.guild;
   const courseString = createCategoryName(courseName);
@@ -12,6 +12,7 @@ const execute = async (interaction, client) => {
   if (!category) {
     return sendEphemeral(client, interaction, `Invalid course name: ${courseName} or the course is private already.`);
   }
+  const databaseValue = await Course.findOne({ where: { name: courseName } }).catch((error) => console.log(error));
   const cooldown = used.get(courseName);
   if (cooldown) {
     const timeRemaining = Math.floor(cooldown - Date.now());
@@ -21,6 +22,8 @@ const execute = async (interaction, client) => {
   else {
     await category.setName(`🔒 ${courseName}`);
     sendEphemeral(client, interaction, `This course ${courseName} is now private.`);
+    databaseValue.private = true;
+    await databaseValue.save();
     const cooldownTimeMs = 1000 * 60 * 15;
     used.set(courseName, Date.now() + cooldownTimeMs);
     handleCooldown(used, courseName, cooldownTimeMs);

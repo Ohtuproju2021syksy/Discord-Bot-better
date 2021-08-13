@@ -160,12 +160,14 @@ const joinGetChoices = (client) => {
 
 const getCourseChoices = async (showPrivate = false) => {
   const courseData = await Course.findAll({});
-  const choices = courseData.map(c => (
-    {
-      name: `${c.dataValues.code} - ${c.dataValues.fullName} - ${c.dataValues.code === c.dataValues.name ? c.dataValues.code : c.dataValues.name}`,
-      value: c.dataValues.name,
-    }
-  ));
+  const choices = courseData
+    .filter(val => val.private === false)
+    .map(c => (
+      {
+        name: `${c.dataValues.code === c.dataValues.name ? c.dataValues.code : c.dataValues.name} - ${c.dataValues.code} - ${c.dataValues.fullName}`,
+        value: c.dataValues.name,
+      }
+    ));
   // console.log(choices);
   choices.sort((a, b) => a.value.localeCompare(b.value));
   return choices;
