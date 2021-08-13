@@ -7,13 +7,15 @@ const { messageInGuideChannel, messageInCommandsChannel, student } = require("..
 jest.mock("../../src/discordBot/commands/admin/sortCourses");
 jest.mock("../../src/discordBot/commands/admin/deleteCommand");
 
+const prefix = process.env.PREFIX;
+
 afterEach(() => {
   jest.clearAllMocks();
 });
 
 describe("prefix commands", () => {
   test("commands cannot be used in guide channel", async () => {
-    messageInGuideChannel.content = "!sort";
+    messageInGuideChannel.content = `${prefix}sort`;
     const client = messageInGuideChannel.client;
     await execute(messageInGuideChannel, client);
     expect(messageInGuideChannel.channel.send).toHaveBeenCalledTimes(0);
@@ -22,7 +24,7 @@ describe("prefix commands", () => {
   });
 
   test("invalid command in commands channel does nothing", async () => {
-    messageInCommandsChannel.content = "!join test";
+    messageInCommandsChannel.content = `${prefix}join test`;
     const client = messageInCommandsChannel.client;
     await execute(messageInCommandsChannel, client);
     expect(messageInCommandsChannel.channel.send).toHaveBeenCalledTimes(0);
@@ -31,21 +33,26 @@ describe("prefix commands", () => {
   });
 
   test("valid command in commands channel is executed", async () => {
-    messageInCommandsChannel.content = "!sort";
+    messageInCommandsChannel.content = `${prefix}sort`;
     const client = messageInCommandsChannel.client;
     await execute(messageInCommandsChannel, client);
     expect(sort.execute).toHaveBeenCalledTimes(1);
   });
 
   test("invalid use of command sends correct message", async () => {
-    messageInCommandsChannel.content = "!deletecommand";
+    messageInCommandsChannel.content = `${prefix}deletecommand`;
+    const response = `You didn't provide any arguments, ${messageInCommandsChannel.author}!`;
     const client = messageInCommandsChannel.client;
     await execute(messageInCommandsChannel, client);
+    expect(messageInCommandsChannel.channel.send).toHaveBeenCalledTimes(1);
+    expect(messageInCommandsChannel.channel.send).toHaveBeenCalledWith(response);
+    expect(messageInCommandsChannel.react).toHaveBeenCalledTimes(0);
+    expect(messageInCommandsChannel.reply).toHaveBeenCalledTimes(0);
     expect(deleteCommand.execute).toHaveBeenCalledTimes(0);
   });
 
   test("if no command role do nothing", async () => {
-    messageInCommandsChannel.content = "!sort";
+    messageInCommandsChannel.content = `${prefix}sort`;
     const client = messageInCommandsChannel.client;
     messageInCommandsChannel.author = student;
     messageInCommandsChannel.member = student;
