@@ -99,6 +99,8 @@ client.guild.channels.cache.set(1, guideChannel);
 client.guild.channels.cache.set(2, testChannel);
 client.guild.channels.cache.set(3, testChannelGeneral);
 client.guild.channels.cache.set(4, chat);
+client.guild.roles.cache.set(1, { name: "test" });
+client.guild.roles.cache.set(2, { name: `${courseAdminRole}_test` });
 
 const defaultTeacherInteraction = {
   client: client,

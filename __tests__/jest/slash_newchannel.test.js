@@ -30,27 +30,39 @@ afterEach(() => {
 });
 
 describe("slash leave command", () => {
-  test("if command is used outside course channels return correct ephemeral", async () => {
+  test("Cannot use command if channel has no parent", async () => {
     const client = defaultTeacherInteraction.client;
+    const response = "Course not found, can not create new channel.";
     await execute(defaultTeacherInteraction, client);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
-    expect(sendEphemeral).toHaveBeenCalledWith(client, defaultTeacherInteraction, "Course not found, can not create new channel.");
+    expect(sendEphemeral).toHaveBeenCalledWith(client, defaultTeacherInteraction, response);
+  });
+
+  test("Cannot use command if channel is not course channel", async () => {
+    const client = defaultTeacherInteraction.client;
+    defaultTeacherInteraction.channel_id = 4;
+    const response = "This is not a course category, can not create new channel.";
+    await execute(defaultTeacherInteraction, client);
+    expect(sendEphemeral).toHaveBeenCalledTimes(1);
+    expect(sendEphemeral).toHaveBeenCalledWith(client, defaultTeacherInteraction, response);
   });
 
   test("new channel can be created if course channel count is less or equel than 10", async () => {
     const client = defaultTeacherInteraction.client;
     defaultTeacherInteraction.channel_id = 2;
+    const response = `Created new channel ${courseName}_${channelName}`;
     await execute(defaultTeacherInteraction, client);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
-    expect(sendEphemeral).toHaveBeenCalledWith(client, defaultTeacherInteraction, `Created new channel ${courseName}_${channelName}`);
+    expect(sendEphemeral).toHaveBeenCalledWith(client, defaultTeacherInteraction, response);
   });
 
   test("new channel cannot be created if course channel count is greater than 10", async () => {
     const client = defaultTeacherInteraction.client;
     defaultTeacherInteraction.channel_id = 2;
     setMaxChannels(client);
+    const response = "Maximum added text channel amount is 10";
     await execute(defaultTeacherInteraction, client);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
-    expect(sendEphemeral).toHaveBeenCalledWith(client, defaultTeacherInteraction, "Maximum added text channel amount is 10");
+    expect(sendEphemeral).toHaveBeenCalledWith(client, defaultTeacherInteraction, response);
   });
 });
