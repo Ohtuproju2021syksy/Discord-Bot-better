@@ -1,12 +1,12 @@
 const { execute } = require("../../src/discordBot/commands/student/help");
 
 const {
+  defaultTeacherInteraction,
+  defaultStudentInteraction,
   teacherInteractionHelp,
   teacherData,
-  studentInteractionHelp,
+  studentInteractionWithoutOptions,
   studentData,
-  invalidInteractionHelp,
-  interactionHelpJoin,
   teacherJoinData } = require("../mocks/mockInteraction");
 
 const { sendEphemeral } = require("../../src/discordBot/commands/utils");
@@ -29,29 +29,31 @@ describe("slash help command", () => {
   });
 
   test("slash help with student role cannot see teacher commands", async () => {
-    const client = studentInteractionHelp.client;
-    await execute(studentInteractionHelp, client);
+    const client = studentInteractionWithoutOptions.client;
+    await execute(studentInteractionWithoutOptions, client);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
-    expect(sendEphemeral).toHaveBeenCalledWith(client, studentInteractionHelp, studentData.join("\n"));
+    expect(sendEphemeral).toHaveBeenCalledWith(client, studentInteractionWithoutOptions, studentData.join("\n"));
   });
 
   test("slash help with invalid arg should give error", async () => {
-    const client = invalidInteractionHelp.client;
-    await execute(invalidInteractionHelp, client);
+    const client = defaultTeacherInteraction.client;
+    defaultTeacherInteraction.data.options[0].value = "invalidCommand";
+    const response = "that's not a valid command!";
+    await execute(defaultTeacherInteraction, client);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
-    expect(sendEphemeral).toHaveBeenCalledWith(client, invalidInteractionHelp, "that's not a valid command!");
+    expect(sendEphemeral).toHaveBeenCalledWith(client, defaultTeacherInteraction, response);
   });
 
   test("slash help with valid arg should give correct command info", async () => {
-    const client = interactionHelpJoin.client;
-    await execute(interactionHelpJoin, client);
+    const client = defaultStudentInteraction.client;
+    defaultStudentInteraction.data.options = [{ value: "join", command: {
+      name: "join",
+      description: "Join a course, e.g., `/join ohpe`",
+      usage: "[course name]",
+    },
+    }];
+    await execute(defaultStudentInteraction, client);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
-    expect(sendEphemeral).toHaveBeenCalledWith(client, interactionHelpJoin, teacherJoinData.join(" \n"));
+    expect(sendEphemeral).toHaveBeenCalledWith(client, defaultStudentInteraction, teacherJoinData.join(" \n"));
   });
-
-  /* test("help with valid arg should give correct command info if no command.usage", async () => {
-    await execute(studentMessageHelp, ["instructors"]);
-    expect(studentMessageHelp.channel.send).toHaveBeenCalledTimes(1);
-    expect(studentMessageHelp.channel.send).toHaveBeenCalledWith(studentInsData, { "split": true });
-  });*/
 });

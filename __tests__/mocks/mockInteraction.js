@@ -61,7 +61,7 @@ const student = {
 const guideChannel = {
   name: "guide",
   type: "text",
-  parent: null,
+  parent: undefined,
   delete: jest.fn(),
 };
 
@@ -153,7 +153,7 @@ const teacherInteractionHelp = {
   },
 };
 
-const studentInteractionHelp = {
+const studentInteractionWithoutOptions = {
   client: client,
   channel_id: 1,
   member: {
@@ -165,98 +165,6 @@ const studentInteractionHelp = {
     options: false,
   },
 };
-
-const invalidInteractionHelp = {
-  client: client,
-  channel_id: 1,
-  member: {
-    user: {
-      id: 2,
-    },
-  },
-  data: {
-    options: [{
-      value: "invalid",
-    }],
-  },
-};
-
-const interactionHelpJoin = {
-  client: client,
-  channel_id: 1,
-  member: {
-    user: {
-      id: 1,
-    },
-  },
-  data: {
-    options: [{
-      value: "join",
-      command: {
-        name: "join",
-        description: "Join a course, e.g., `/join ohpe`",
-        usage: "[course name]",
-      },
-    }],
-  },
-};
-
-const intInsWithoutArgs = {
-  client: client,
-  channel_id: 1,
-  member: {
-    user: {
-      id: 2,
-    },
-  },
-  data: {
-    options: false,
-  },
-};
-
-const intInsWithValidArgs = {
-  client: client,
-  channel_id: 1,
-  member: {
-    user: {
-      id: 1,
-    },
-  },
-  data: {
-    options: [{
-      value: "test",
-    }],
-  },
-};
-
-const intInsWithInvalidArgs = {
-  client: client,
-  channel_id: 1,
-  member: {
-    user: {
-      id: 1,
-    },
-  },
-  data: {
-    options: [{
-      value: "tast",
-    }],
-  },
-};
-
-const intInsWithoutArgsInCourseChannelWithAdmins = {
-  client: client,
-  channel_id: 2,
-  member: {
-    user: {
-      id: 2,
-    },
-  },
-  data: {
-    options: false,
-  },
-};
-
 
 module.exports = {
   teacherData,
@@ -264,13 +172,7 @@ module.exports = {
   teacherJoinData,
   studentInsData,
   teacherInteractionHelp,
-  studentInteractionHelp,
-  invalidInteractionHelp,
-  interactionHelpJoin,
-  intInsWithoutArgs,
-  intInsWithValidArgs,
-  intInsWithInvalidArgs,
-  intInsWithoutArgsInCourseChannelWithAdmins,
+  studentInteractionWithoutOptions,
   defaultTeacherInteraction,
   defaultStudentInteraction,
 };
