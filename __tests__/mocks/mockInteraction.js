@@ -35,6 +35,7 @@ client.slashCommands
   });
 
 const teacher = {
+  id: 1,
   nickname: "teacher",
   roles: {
     cache: [{ name: facultyRole }, { name: `test ${courseAdminRole}` }],
@@ -47,6 +48,7 @@ const teacher = {
 };
 
 const student = {
+  id: 2,
   nickname: "student",
   roles: {
     cache: [{ name: "student" }],
@@ -101,14 +103,17 @@ client.guild.channels.cache.set(3, testChannelGeneral);
 client.guild.channels.cache.set(4, chat);
 client.guild.roles.cache.set(1, { name: "test" });
 client.guild.roles.cache.set(2, { name: `${courseAdminRole}_test` });
+client.guild.roles.cache.set(3, { name: "admin" });
+client.guild.roles.cache.set(4, { name: facultyRole });
+client.guild.members.cache.set(1, teacher);
+client.guild.members.cache.set(2, student);
 
 const defaultTeacherInteraction = {
   client: client,
   channel_id: 1,
   member: {
-    user: {
-      id: 1,
-    },
+    user: teacher,
+    roles: [1, 3, 4],
   },
   data: {
     options: [
@@ -128,9 +133,8 @@ const defaultStudentInteraction = {
   client: client,
   channel_id: 1,
   member: {
-    user: {
-      id: 2,
-    },
+    user: student,
+    roles: [],
   },
   data: {
     options: [{
