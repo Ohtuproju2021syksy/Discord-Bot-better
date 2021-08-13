@@ -62,7 +62,7 @@ const createCommandRolePermissions = (client, highestRole) => {
 };
 
 const createSlashCommand = async (client, command) => {
-  if (command.name === "join") command.options[0].choices = await getCourseChoices();
+  if (command.name === "join") command.options[0].choices = await getCourseChoices(false);
   if (command.name === "leave") command.options[0].choices = await getCourseChoices(true);
   try {
     const createdCommand = await slashClient
@@ -158,10 +158,10 @@ const joinGetChoices = (client) => {
   return choices;
 };
 
-const getCourseChoices = async (showPrivate = false) => {
+const getCourseChoices = async (showPrivate) => {
   const courseData = await Course.findAll({});
   const choices = courseData
-    .filter(val => val.private === false)
+    .filter(val => val.private === false || val.private === showPrivate)
     .map(c => (
       {
         name: `${c.dataValues.code === c.dataValues.name ? c.dataValues.code : c.dataValues.name} - ${c.dataValues.code} - ${c.dataValues.fullName}`,
