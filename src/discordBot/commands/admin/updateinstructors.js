@@ -1,10 +1,5 @@
 const { courseAdminRole } = require("../../../../config.json");
-const { findAllCourseNames } = require("../../services/service");
-
-const findAndUpdateInstructorRole = async (name, guild) => {
-  const oldInstructorRole = guild.roles.cache.find((role) => role.name !== name && role.name.includes(name));
-  oldInstructorRole.setName(`${name} ${courseAdminRole}`);
-};
+const { findAllCourseNames, findAndUpdateInstructorRole } = require("../../services/service");
 
 const execute = async (message) => {
   if (message.member.hasPermission("ADMINISTRATOR")) {
@@ -12,7 +7,7 @@ const execute = async (message) => {
     const courseNames = findAllCourseNames(guild);
 
     courseNames.forEach(course => {
-      findAndUpdateInstructorRole(course, guild);
+      findAndUpdateInstructorRole(course, guild, courseAdminRole);
     });
   }
 };
