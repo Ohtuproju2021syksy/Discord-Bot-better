@@ -12,7 +12,6 @@ findAllCourseNames
   .mockImplementation(() => [])
   .mockImplementationOnce(() => [courseString]);
 
-
 afterEach(() => {
   jest.clearAllMocks();
 });
@@ -25,7 +24,7 @@ describe("prefix udpdateinstructors command", () => {
     expect(findAndUpdateInstructorRole).toHaveBeenCalledTimes(0);
   });
 
-  test("if user does not have administrator permission do nothing", async () => {
+  test("if user has administrator permission update roles", async () => {
     messageInCommandsChannel.member = teacher;
     const client = messageInCommandsChannel.client;
     await execute(messageInCommandsChannel);
