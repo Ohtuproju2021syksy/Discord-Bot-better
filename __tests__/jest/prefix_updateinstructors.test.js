@@ -3,7 +3,6 @@ const { findAllCourseNames, findAndUpdateInstructorRole } = require("../../src/d
 const { courseAdminRole } = require("../../config.json");
 
 jest.mock("../../src/discordBot/services/service");
-jest.mock("../../src/discordBot/commands/utils");
 
 const { messageInCommandsChannel, teacher, student } = require("../mocks/mockMessages");
 const courseString = "test";
@@ -16,7 +15,7 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
-describe("prefix udpdateinstructors command", () => {
+describe("prefix updateinstructors command", () => {
   test("if user does not have administrator permission do nothing", async () => {
     messageInCommandsChannel.member = student;
     await execute(messageInCommandsChannel);
