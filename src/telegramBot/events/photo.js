@@ -1,8 +1,8 @@
 const { createDiscordUser, validDiscordChannel, sendMessageToDiscord } = require("../../bridge/service");
 
-const execute = async (ctx, message, telegramClient, Groups) => {
+const execute = async (ctx, message, telegramClient, Groups, Course) => {
   const id = ctx.message.chat.id;
-  const group = await Groups.findOne({ where: { groupId: String(id) } });
+  const group = await Course.findOne({ where: { telegramId: String(id) } });
   if (!group) {
     return;
   }
