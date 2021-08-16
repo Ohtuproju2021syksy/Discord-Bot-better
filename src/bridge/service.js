@@ -54,11 +54,11 @@ const sendMessageToDiscord = async (message, channel) => {
   }
 };
 
-const handleBridgeMessage = async (message, courseName, Groups) => {
+const handleBridgeMessage = async (message, courseName, Course) => {
   if (!message.channel.parent) return;
   // const channelName = message.channel.name;
 
-  const group = await Groups.findOne({ where: { course: String(courseName) } });
+  const group = await Course.findOne({ where: { name: String(courseName) } });
 
   if (!group) {
     return;
