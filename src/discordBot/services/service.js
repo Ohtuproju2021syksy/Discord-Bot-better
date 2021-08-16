@@ -244,6 +244,18 @@ const findAndUpdateInstructorRole = async (name, guild, courseAdminRole) => {
   oldInstructorRole.setName(`${name} ${courseAdminRole}`);
 };
 
+const setCourseToPrivate = async (courseName, Course) => {
+  const course = await Course.findOne({ where: { name: courseName } }).catch((error) => console.log(error));
+  course.private = true;
+  course.save();
+};
+
+const setCourseToPublic = async (courseName, Course) => {
+  const course = await Course.findOne({ where: { name: courseName } }).catch((error) => console.log(error));
+  course.private = false;
+  course.save();
+};
+
 module.exports = {
   createCategoryName,
   createPrivateCategoryName,
@@ -267,4 +279,6 @@ module.exports = {
   trimCourseName,
   findAllCourseNames,
   findAndUpdateInstructorRole,
+  setCourseToPrivate,
+  setCourseToPublic,
 };

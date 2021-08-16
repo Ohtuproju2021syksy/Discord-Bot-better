@@ -4,7 +4,7 @@ const {
   findChannelWithNameAndType,
   msToMinutesAndSeconds,
   handleCooldown,
-} = require("../../services/service");
+  setCourseToPublic } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
 const { facultyRole } = require("../../../../config.json");
 
@@ -18,7 +18,6 @@ const execute = async (interaction, client, Course) => {
   if (!category) {
     return sendEphemeral(client, interaction, `Invalid course name: ${courseName} or the course is public already.`);
   }
-  const databaseValue = await Course.findOne({ where: { name: courseName } }).catch((error) => console.log(error));
   const cooldown = used.get(courseName);
   if (cooldown) {
     const timeRemaining = Math.floor(cooldown - Date.now());
@@ -28,8 +27,7 @@ const execute = async (interaction, client, Course) => {
   else {
     await category.setName(`📚 ${courseName}`);
     sendEphemeral(client, interaction, `This course ${courseName} is now public.`);
-    databaseValue.private = false;
-    await databaseValue.save();
+    await setCourseToPublic(courseName, Course);
     const cooldownTimeMs = 1000 * 60 * 15;
     used.set(courseName, Date.now() + cooldownTimeMs);
     handleCooldown(used, courseName, cooldownTimeMs);

@@ -1,6 +1,11 @@
 const { execute } = require("../../src/discordBot/commands/faculty/hide");
 const { sendEphemeral } = require("../../src/discordBot/commands/utils");
-const { createCategoryName, updateGuide, findChannelWithNameAndType, msToMinutesAndSeconds } = require("../../src/discordBot/services/service");
+const {
+  createCategoryName,
+  updateGuide,
+  findChannelWithNameAndType,
+  msToMinutesAndSeconds,
+  setCourseToPrivate } = require("../../src/discordBot/services/service");
 
 jest.mock("../../src/discordBot/commands/utils");
 jest.mock("../../src/discordBot/services/service");
@@ -43,6 +48,7 @@ describe("slash hide command", () => {
     expect(createCategoryName).toHaveBeenCalledTimes(1);
     expect(createCategoryName).toHaveBeenCalledWith(courseName);
     expect(findChannelWithNameAndType).toHaveBeenCalledTimes(1);
+    expect(setCourseToPrivate).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(client, defaultTeacherInteraction, `This course ${courseName} is now private.`);
     expect(client.emit).toHaveBeenCalledTimes(1);
