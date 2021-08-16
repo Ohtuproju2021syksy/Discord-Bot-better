@@ -10,7 +10,7 @@ const validDiscordChannel = async (courseName) => {
   // temp - create webhook for existing bridged channels
   if (!channel) return;
   const webhooks = await channel.fetchWebhooks();
-  if (!webhooks.size) await channel.createWebhook(courseName, { avatar: "https://i.imgur.com/AfFp7pu.png" }).catch(console.error);
+  if (!webhooks.size) await channel.createWebhook(courseName, { avatar: "https://cdn.discordapp.com/embed/avatars/1.png" }).catch(console.error);
   // --
   return channel;
 };
@@ -20,8 +20,7 @@ const createDiscordUser = async (ctx) => {
   const username = ctx.message.from.first_name || ctx.message.from.username;
   let url;
   const t = await telegramClient.telegram.getUserProfilePhotos(ctx.message.from.id);
-  if (!t.photos.length) url = "https://i.imgur.com/AfFp7pu.png";
-  else url = await telegramClient.telegram.getFileLink(t.photos[0][0].file_id);
+  if (t.photos.length) url = await telegramClient.telegram.getFileLink(t.photos[0][0].file_id);
   const user = { username: username, avatarUrl: url };
   return user;
 };

@@ -21,7 +21,7 @@ const execute = async (ctx, message, telegramClient, Groups) => {
       return await sendMessageToTelegram(id,
         `Bridge not created: the bridge already exists ${telegramCourseName} <--> ${group.course}`);
     }
-    await channel.createWebhook(discordCourseName, { avatar: "https://i.imgur.com/AfFp7pu.png" }).catch(console.error);
+    await channel.createWebhook(discordCourseName, { avatar: "https://cdn.discordapp.com/embed/avatars/1.png" }).catch(console.error);
     await createNewGroup([discordCourseName, id], Groups).catch((error) => console.log(error));
     const discordUser = await createDiscordUser(ctx);
     const msg = { user: discordUser, content: { text: `Bridge created: Discord course ${discordCourseName} <--> Telegram course ${telegramCourseName}` } };
