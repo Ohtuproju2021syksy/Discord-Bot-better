@@ -29,7 +29,7 @@ const execute = async (interaction, client, Course) => {
     .map(async role => await role.delete()),
   );
   sendEphemeral(client, interaction, `Deleted course ${courseName}.`);
-  await client.emit("COURSES_CHANGED");
+  await client.emit("COURSES_CHANGED", Course);
   await updateGuide(client.guild);
 
   // Database

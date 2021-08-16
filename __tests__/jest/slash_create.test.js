@@ -125,7 +125,6 @@ describe("slash create command", () => {
     defaultTeacherInteraction.data.options[2].value = courseName;
     await execute(defaultTeacherInteraction, client);
     expect(client.emit).toHaveBeenCalledTimes(1);
-    expect(client.emit).toHaveBeenCalledWith("COURSES_CHANGED");
   });
 
   test("update guide", async () => {

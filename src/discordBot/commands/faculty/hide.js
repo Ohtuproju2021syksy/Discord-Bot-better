@@ -31,7 +31,7 @@ const execute = async (interaction, client, Course) => {
     const cooldownTimeMs = 1000 * 60 * 15;
     used.set(courseName, Date.now() + cooldownTimeMs);
     handleCooldown(used, courseName, cooldownTimeMs);
-    await client.emit("COURSES_CHANGED");
+    await client.emit("COURSES_CHANGED", Course);
     await updateGuide(client.guild);
   }
 };

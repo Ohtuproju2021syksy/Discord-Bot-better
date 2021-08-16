@@ -123,7 +123,7 @@ const execute = async (interaction, client, Course) => {
   await setCoursePositionABC(guild, categoryName);
   await createInvitation(guild, courseName);
   sendEphemeral(client, interaction, `Created course ${courseName}.`);
-  await client.emit("COURSES_CHANGED");
+  await client.emit("COURSES_CHANGED", Course);
   await updateGuide(client.guild);
 };
 

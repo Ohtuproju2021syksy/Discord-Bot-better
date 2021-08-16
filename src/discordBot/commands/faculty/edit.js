@@ -131,7 +131,7 @@ const execute = async (interaction, client, Course) => {
     handleCooldown(used, nameToCoolDown, cooldownTimeMs);
   }
 
-  await client.emit("COURSES_CHANGED");
+  await client.emit("COURSES_CHANGED", Course);
   await updateGuide(client.guild);
 
   return sendEphemeral(client, interaction, "Course information has been changed");

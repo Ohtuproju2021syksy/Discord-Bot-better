@@ -15,7 +15,7 @@ for (const file of eventFiles) {
     });
   }
   else if (event.once) {
-    client.once(event.name, (...args) => event.execute(...args, client));
+    client.once(event.name, (...args) => event.execute(...args, client, Course));
   }
   else {
     client.on(event.name, (...args) => event.execute(...args, client, Course));

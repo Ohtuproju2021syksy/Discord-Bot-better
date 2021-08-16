@@ -17,11 +17,12 @@ const {
   trimCourseName,
   findAllCourseNames } = require("../../src/discordBot/services/service");
 
+jest.mock("../../src/discordBot/commands/utils");
+
 const Course = {
   create: jest.fn(),
   findOne: jest
     .fn(() => true)
-    .mockImplementationOnce(() => false)
     .mockImplementationOnce(() => false),
   destroy: jest.fn(),
 };
