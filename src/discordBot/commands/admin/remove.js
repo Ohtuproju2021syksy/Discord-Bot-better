@@ -34,12 +34,6 @@ const execute = async (interaction, client, Course) => {
   await client.emit("COURSES_CHANGED");
   await updateGuide(client.guild);
 
-  // Telegram db link remove
-  if (channelGeneral) {
-    const name = getRoleFromCategory(courseString);
-    removeGroup(name, Course);
-  }
-
   // Database
   await Course.destroy({ where: { name: courseName } });
   // await printCourses();
