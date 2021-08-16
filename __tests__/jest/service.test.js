@@ -11,7 +11,11 @@ const {
   findChannelWithNameAndType,
   findChannelWithId,
   msToMinutesAndSeconds,
-  findOrCreateChannel } = require("../../src/discordBot/services/service");
+  findOrCreateChannel,
+  setCoursePositionABC,
+  isACourseCategory,
+  trimCourseName,
+  findAllCourseNames } = require("../../src/discordBot/services/service");
 
 const Groups = {
   create: jest.fn(),
@@ -194,5 +198,53 @@ describe("Service", () => {
     const guild = client.guild;
     await findOrCreateChannel(channelObject, guild);
     expect(guild.channels.create).toHaveBeenCalledTimes(0);
+  });
+
+  test("setCourse positions", async () => {
+    client.guild.channels.init();
+    client.guild.channels.create("📚 testA", { type: "category" });
+    const categoryA = client.guild.channels.cache.find(c => c.name === "📚 testA");
+    setCoursePositionABC(client.guild, "📚 testA");
+    expect(categoryA.edit).toHaveBeenCalledTimes(1);
+  });
+
+  test("valid private category is course category", async () => {
+    const privateCategoryName = "🔒 test";
+    const channel = { name: privateCategoryName };
+    const result = isACourseCategory(channel);
+    expect(result).toBe(true);
+  });
+
+  test("channel without emoji is not course category", async () => {
+    const privateCategoryName = "test";
+    const channel = { name: privateCategoryName };
+    const result = isACourseCategory(channel);
+    expect(result).toBe(false);
+  });
+
+  test("trimmer returs correct string public", async () => {
+    const category = "test";
+    const privateCategoryName = "📚 test";
+    const channel = { name: privateCategoryName };
+    const result = trimCourseName(channel);
+    expect(result).toBe(category);
+  });
+
+  test("trimmer returs correct string private", async () => {
+    const category = "test";
+    const privateCategoryName = "🔒 test";
+    const channel = { name: privateCategoryName };
+    const result = trimCourseName(channel);
+    expect(result).toBe(category);
+  });
+
+  test("find all channel names", async () => {
+    client.guild.channels.init();
+    const guild = client.guild;
+    guild.channels.cache.set(1, { name: "🔒 test" });
+    guild.channels.cache.set(2, { name: "testing" });
+    const channelNames = ["test"];
+    const result = findAllCourseNames(guild);
+    expect(result).toStrictEqual(channelNames);
   });
 });

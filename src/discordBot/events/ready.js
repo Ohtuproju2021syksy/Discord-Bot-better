@@ -5,7 +5,7 @@ const execute = async (client) => {
   client.guild = await client.guilds.fetch(process.env.GUILD_ID);
   await initializeApplicationContext(client);
   await initCommands(client);
-  console.log(`Logged in as ${client.user.tag}!`);
+  console.log(`${client.user.tag} initialized!`);
 };
 
 module.exports = {

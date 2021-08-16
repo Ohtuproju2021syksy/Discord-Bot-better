@@ -10,7 +10,7 @@ const createCategoryName = (courseString) => `📚 ${courseString}`;
 const createPrivateCategoryName = (courseString) => `🔒 ${courseString}`;
 
 /**
- * Expects role to be between parenthesis e.g. (role)
+ * Expects role to be between parenthesis e.g., (role)
  * @param {String} string
  */
 const getRoleFromCategory = (categoryName) => {
@@ -239,6 +239,11 @@ const findAllCourseNames = (guild) => {
   return courseNames;
 };
 
+const findAndUpdateInstructorRole = async (name, guild, courseAdminRole) => {
+  const oldInstructorRole = guild.roles.cache.find((role) => role.name !== name && role.name.includes(name));
+  oldInstructorRole.setName(`${name} ${courseAdminRole}`);
+};
+
 module.exports = {
   createCategoryName,
   createPrivateCategoryName,
@@ -261,4 +266,5 @@ module.exports = {
   isACourseCategory,
   trimCourseName,
   findAllCourseNames,
+  findAndUpdateInstructorRole,
 };

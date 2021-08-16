@@ -32,7 +32,8 @@ const execute = async (interaction, client) => {
 
 module.exports = {
   name: "instructors",
-  description: "Prints out the instructors of the course. This command is available in most channels.",
+  description: "Prints out the instructors of the course.",
+  usage: "<course name>",
   args: false,
   joinArgs: false,
   options: [

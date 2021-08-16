@@ -1,16 +1,7 @@
-const { handleBridgeMessage } = require("../../bridge/index");
-const { getRoleFromCategory } = require("../services/service");
-
 const prefix = process.env.PREFIX;
 
 const execute = async (message, client, Groups) => {
-  if (!message.content.startsWith(prefix) || message.channel.name !== "commands") {
-    if (message?.channel?.parent) {
-      const courseName = getRoleFromCategory(message.channel.parent.name);
-      return handleBridgeMessage(message, courseName, Groups);
-    }
-    return;
-  }
+  if (!message.content.startsWith(prefix) || message.channel.name !== "commands") return;
 
   let args = message.content.slice(prefix.length).trim().split(/ +/);
   const commandName = args.shift().toLowerCase();

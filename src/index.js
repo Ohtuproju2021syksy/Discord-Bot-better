@@ -1,9 +1,15 @@
+require("dotenv").config();
 const { sequelize } = require("./db/index");
 const startServer = require("./server/server");
-const { client } = require("./discordBot/index");
-const { telegramClient, start } = require("./telegramBot/index");
+const { client, startDiscordBot } = require("./discordBot/index");
+const { telegramClient, startTelegramBot } = require("./telegramBot/index");
 const { startBridge } = require("./bridge/index");
 
-if (process.env.TG_BRIDGE_ENABLED) start();
-startServer(client, sequelize);
-startBridge(client, telegramClient);
+const start = async () => {
+  if (process.env.TG_BRIDGE_ENABLED) await startTelegramBot();
+  await startDiscordBot();
+  startServer(client, sequelize);
+  startBridge(client, telegramClient);
+};
+
+start();
