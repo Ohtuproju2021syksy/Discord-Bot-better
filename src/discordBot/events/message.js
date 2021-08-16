@@ -1,6 +1,6 @@
 const prefix = process.env.PREFIX;
 
-const execute = async (message, client, Groups) => {
+const execute = async (message, client, Course) => {
   if (!message.content.startsWith(prefix) || message.channel.name !== "commands") return;
 
   let args = message.content.slice(prefix.length).trim().split(/ +/);
@@ -15,7 +15,7 @@ const execute = async (message, client, Groups) => {
   }
 
   try {
-    await command.execute(message, args, Groups);
+    await command.execute(message, args, Course);
     await message.react("✅");
   }
   catch (error) {

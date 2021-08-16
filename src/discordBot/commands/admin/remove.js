@@ -8,7 +8,7 @@ const printCourses = async () => {
   console.log("All courses in db:", JSON.stringify(courses, null, 2));
 };
 */
-const execute = async (interaction, client, Groups, Course) => {
+const execute = async (interaction, client, Course) => {
   const courseName = interaction.data.options[0].value.toLowerCase().trim();
 
   const guild = client.guild;
@@ -37,7 +37,7 @@ const execute = async (interaction, client, Groups, Course) => {
   // Telegram db link remove
   if (channelGeneral) {
     const name = getRoleFromCategory(courseString);
-    removeGroup(name, Groups);
+    removeGroup(name, Course);
   }
 
   // Database

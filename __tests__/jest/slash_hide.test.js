@@ -13,12 +13,20 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
+const Course = {
+  create: jest.fn(),
+  findOne: jest
+    .fn(() => true)
+    .mockImplementationOnce(() => false),
+  destroy: jest.fn(),
+};
+
 describe("slash hide command", () => {
   test("hide command with invalid course name responds with correct ephemeral", async () => {
     const courseName = "test";
     defaultTeacherInteraction.data.options[0].value = courseName;
     const client = defaultTeacherInteraction.client;
-    await execute(defaultTeacherInteraction, client);
+    await execute(defaultTeacherInteraction, client, Course);
     expect(createCategoryName).toHaveBeenCalledTimes(1);
     expect(createCategoryName).toHaveBeenCalledWith(courseName);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
@@ -31,7 +39,7 @@ describe("slash hide command", () => {
     findChannelWithNameAndType.mockImplementationOnce((name) => { return { name: `📚 ${name}`, setName: jest.fn() }; });
     defaultTeacherInteraction.data.options[0].value = courseName;
     const client = defaultTeacherInteraction.client;
-    await execute(defaultTeacherInteraction, client);
+    await execute(defaultTeacherInteraction, client, Course);
     expect(createCategoryName).toHaveBeenCalledTimes(1);
     expect(createCategoryName).toHaveBeenCalledWith(courseName);
     expect(findChannelWithNameAndType).toHaveBeenCalledTimes(1);
@@ -46,7 +54,7 @@ describe("slash hide command", () => {
     findChannelWithNameAndType.mockImplementation((name) => { return { name: `📚 ${name}`, setName: jest.fn() }; });
     defaultTeacherInteraction.data.options[0].value = courseName;
     const client = defaultTeacherInteraction.client;
-    await execute(defaultTeacherInteraction, client);
+    await execute(defaultTeacherInteraction, client, Course);
     expect(createCategoryName).toHaveBeenCalledTimes(1);
     expect(createCategoryName).toHaveBeenCalledWith(courseName);
     expect(findChannelWithNameAndType).toHaveBeenCalledTimes(1);

@@ -54,11 +54,11 @@ const sendMessageToDiscord = async (message, channel) => {
   }
 };
 
-const handleBridgeMessage = async (message, courseName, Groups) => {
+const handleBridgeMessage = async (message, courseName, Course) => {
   if (!message.channel.parent) return;
   // const channelName = message.channel.name;
 
-  const group = await Groups.findOne({ where: { course: String(courseName) } });
+  const group = await Course.findOne({ where: { name: String(courseName) } });
 
   if (!group) {
     return;
@@ -87,13 +87,13 @@ const handleBridgeMessage = async (message, courseName, Groups) => {
   const photo = message.attachments.first();
   const gif = message.embeds[0];
   if (photo) {
-    await sendPhotoToTelegram(group.groupId, msg, sender, photo.url);
+    await sendPhotoToTelegram(group.telegramId, msg, sender, photo.url);
   }
   else if (gif) {
-    await sendAnimationToTelegram(group.groupId, sender, gif.video.url);
+    await sendAnimationToTelegram(group.telegramId, sender, gif.video.url);
   }
   else {
-    await sendMessageToTelegram(group.groupId, msg, sender);
+    await sendMessageToTelegram(group.telegramId, msg, sender);
   }
 };
 
@@ -125,29 +125,29 @@ const validateContent = (content) => {
   return content;
 };
 
-const sendMessageToTelegram = async (groupId, content, sender) => {
+const sendMessageToTelegram = async (telegramId, content, sender) => {
   content = validateContent(content);
   sender ?
-    await telegramClient.telegram.sendMessage(groupId, `*${sender}:*\n ${content}`, { parse_mode: "MarkdownV2" }) :
-    await telegramClient.telegram.sendMessage(groupId, `${content}`, { parse_mode: "MarkdownV2" });
+    await telegramClient.telegram.sendMessage(telegramId, `*${sender}:*\n ${content}`, { parse_mode: "MarkdownV2" }) :
+    await telegramClient.telegram.sendMessage(telegramId, `${content}`, { parse_mode: "MarkdownV2" });
 };
 
-const sendPhotoToTelegram = async (groupId, info, sender, url) => {
+const sendPhotoToTelegram = async (telegramId, info, sender, url) => {
   info = validateContent(info);
   const caption = `*${sender}:* ${info}`;
-  await telegramClient.telegram.sendPhoto(groupId, { url }, { caption, parse_mode: "MarkdownV2" });
+  await telegramClient.telegram.sendPhoto(telegramId, { url }, { caption, parse_mode: "MarkdownV2" });
 };
 
-const sendAnimationToTelegram = async (groupId, sender, url) => {
+const sendAnimationToTelegram = async (telegramId, sender, url) => {
   sender = validateContent(sender);
   const caption = `*${sender}*`;
-  await telegramClient.telegram.sendAnimation(groupId, { url }, { caption, parse_mode: "MarkdownV2" });
+  await telegramClient.telegram.sendAnimation(telegramId, { url }, { caption, parse_mode: "MarkdownV2" });
 };
 
-const createNewGroup = async (args, Groups) => {
+const createNewGroup = async (args, Course) => {
   const courseName = args[0];
-  const groupId = args[1];
-  await Groups.create({ groupId: groupId, course: courseName });
+  const telegramId = args[1];
+  await Course.create({ telegramId: telegramId, course: courseName });
 };
 
 const getCourseName = (categoryName) => {

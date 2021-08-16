@@ -53,7 +53,7 @@ const changeInvitationLink = async (channelAnnouncement, interaction) => {
   await invMessage.edit(updatedMsg);
 };
 
-const execute = async (interaction, client, Groups, Course) => {
+const execute = async (interaction, client, Course) => {
   const choice = interaction.data.options[0].value;
   const newValue = interaction.data.options[1].value.toLowerCase().trim();
 
@@ -95,11 +95,6 @@ const execute = async (interaction, client, Groups, Course) => {
       await changeInvitationLink(channelAnnouncement, interaction);
 
       // change Telegram link if existing
-      const group = await Groups.findOne({ where: { course: categoryName } }).catch((error) => console.log(error));
-      if (group) {
-        group.course = newValue;
-        await group.save();
-      }
       const newCategoryName = findCategoryName(newValue, guild);
       await setCoursePositionABC(guild, newCategoryName);
 
@@ -127,11 +122,6 @@ const execute = async (interaction, client, Groups, Course) => {
     await changeInvitationLink(channelAnnouncement, interaction);
 
     // change Telegram link if existing
-    const group = await Groups.findOne({ where: { course: categoryName } }).catch((error) => console.log(error));
-    if (group) {
-      group.course = newValue;
-      await group.save();
-    }
     const newCategoryName = findCategoryName(newValue, guild);
     await setCoursePositionABC(guild, newCategoryName);
   }

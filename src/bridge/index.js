@@ -1,5 +1,5 @@
 const { initService, handleBridgeMessage, getCourseName } = require("./service");
-const { Groups } = require("../db/dbInit");
+const { Course } = require("../db/dbInit");
 
 const startBridge = (discordClient, telegramClient) => {
   initService(discordClient, telegramClient);
@@ -7,7 +7,7 @@ const startBridge = (discordClient, telegramClient) => {
     if (!message.channel.parent) return;
 
     const courseName = getCourseName(message.channel.parent.name);
-    return await handleBridgeMessage(message, courseName, Groups);
+    return await handleBridgeMessage(message, courseName, Course);
   });
   console.log("Bridge started");
 };

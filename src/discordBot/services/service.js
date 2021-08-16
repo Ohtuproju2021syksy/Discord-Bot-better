@@ -147,19 +147,19 @@ const findCategoryName = (courseString, guild) => {
   }
 };
 
-const createNewGroup = async (args, Groups) => {
+const createNewGroup = async (args, Course) => {
   const courseName = args[0];
-  // const groupId = parseInt(args[1]);
-  const groupId = args[1];
+  // const telegramId = parseInt(args[1]);
+  const telegramId = args[1];
 
-  await Groups.create({ groupId: groupId, course: courseName });
+  await Course.create({ telegramId: telegramId, course: courseName });
 };
 
-const removeGroup = async (channelName, Groups) => {
-  const group = await Groups.findOne({ where: { course: channelName } });
+const removeGroup = async (channelName, Course) => {
+  const group = await Course.findOne({ where: { course: channelName } });
 
   if (group) {
-    await Groups.destroy({ where: { course: channelName } });
+    await Course.destroy({ where: { course: channelName } });
   }
 };
 

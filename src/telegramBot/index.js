@@ -1,6 +1,5 @@
 require("dotenv").config();
 const { Telegraf } = require("telegraf");
-const { Groups } = require("../db/dbInit");
 const { Course } = require("../db/dbInit");
 const fs = require("fs");
 
@@ -19,7 +18,7 @@ for (const file of eventFiles) {
   const event = require(`./events/${file}`);
   telegramClient.on(event.name, (...args) => {
     try {
-      event.execute(...args, telegramClient, Groups, Course);
+      event.execute(...args, telegramClient, Course);
     }
     catch (error) {
       console.log(error);

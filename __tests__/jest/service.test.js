@@ -17,7 +17,7 @@ const {
   trimCourseName,
   findAllCourseNames } = require("../../src/discordBot/services/service");
 
-const Groups = {
+const Course = {
   create: jest.fn(),
   findOne: jest
     .fn(() => true)
@@ -155,27 +155,27 @@ describe("Service", () => {
 
   test("create new group", () => {
     const courseString = "test";
-    const groupId = "987654321012";
-    createNewGroup([courseString, groupId], Groups);
-    expect(Groups.create).toHaveBeenCalledTimes(1);
-    expect(Groups.create).toHaveBeenCalledWith({ groupId: groupId, course: courseString });
+    const telegramId = "987654321012";
+    createNewGroup([courseString, telegramId], Course);
+    expect(Course.create).toHaveBeenCalledTimes(1);
+    expect(Course.create).toHaveBeenCalledWith({ telegramId: telegramId, course: courseString });
   });
 
   test("remove group - if no group dont destroy", () => {
     const courseString = "test";
-    removeGroup(courseString, Groups);
-    expect(Groups.findOne).toHaveBeenCalledTimes(1);
-    expect(Groups.findOne).toHaveBeenCalledWith({ where: { course: courseString } });
-    expect(Groups.destroy).toHaveBeenCalledTimes(0);
+    removeGroup(courseString, Course);
+    expect(Course.findOne).toHaveBeenCalledTimes(1);
+    expect(Course.findOne).toHaveBeenCalledWith({ where: { course: courseString } });
+    expect(Course.destroy).toHaveBeenCalledTimes(0);
   });
 
   test("remove group - if group then destroy", async () => {
     const courseString = "test";
-    await removeGroup(courseString, Groups);
-    expect(Groups.findOne).toHaveBeenCalledTimes(1);
-    expect(Groups.findOne).toHaveBeenCalledWith({ where: { course: courseString } });
-    expect(Groups.destroy).toHaveBeenCalledTimes(1);
-    expect(Groups.destroy).toHaveBeenCalledWith({ where: { course: courseString } });
+    await removeGroup(courseString, Course);
+    expect(Course.findOne).toHaveBeenCalledTimes(1);
+    expect(Course.findOne).toHaveBeenCalledWith({ where: { course: courseString } });
+    expect(Course.destroy).toHaveBeenCalledTimes(1);
+    expect(Course.destroy).toHaveBeenCalledWith({ where: { course: courseString } });
   });
 
   test("change ms to dorrect mm:ss format", () => {

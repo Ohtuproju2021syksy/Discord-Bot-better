@@ -4,7 +4,7 @@ const { facultyRole } = require("../../../../config.json");
 
 const used = new Map();
 
-const execute = async (interaction, client, Groups, Course) => {
+const execute = async (interaction, client, Course) => {
   const courseName = interaction.data.options[0].value.toLowerCase().trim();
   const guild = client.guild;
   const courseString = createCategoryName(courseName);

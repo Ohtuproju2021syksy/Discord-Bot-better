@@ -86,7 +86,7 @@ const getCategoryObject = (categoryName, permissionOverwrites) => ({
   },
 });
 
-const execute = async (interaction, client, Groups, Course) => {
+const execute = async (interaction, client, Course) => {
   const courseCode = interaction.data.options[0].value.toLowerCase().trim();
   const courseFullName = interaction.data.options[1].value.toLowerCase().trim();
   let courseName;
