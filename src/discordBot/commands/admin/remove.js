@@ -1,4 +1,4 @@
-const { updateGuide, findCategoryName, removeGroup, getRoleFromCategory } = require("../../services/service");
+const { updateGuide, findCategoryName } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
 const { courseAdminRole } = require("../../../../config.json");
 
@@ -15,8 +15,6 @@ const execute = async (interaction, client, Course) => {
 
   const courseString = findCategoryName(courseName, guild);
   const category = guild.channels.cache.find(c => c.type === "category" && c.name === courseString);
-
-  const channelGeneral = guild.channels.cache.find(c => c.parent === category && c.name.includes("general"));
 
   if (!category) return sendEphemeral(client, interaction, `Invalid course name: ${courseName}.`);
   await Promise.all(guild.channels.cache

@@ -147,22 +147,6 @@ const findCategoryName = (courseString, guild) => {
   }
 };
 
-const createNewGroup = async (args, Course) => {
-  const courseName = args[0];
-  // const telegramId = parseInt(args[1]);
-  const telegramId = args[1];
-
-  await Course.create({ telegramId: telegramId, course: courseName });
-};
-
-const removeGroup = async (channelName, Course) => {
-  const group = await Course.findOne({ where: { course: channelName } });
-
-  if (group) {
-    await Course.destroy({ where: { course: channelName } });
-  }
-};
-
 const findChannelWithNameAndType = (name, type, guild) => {
   return guild.channels.cache.find(c => c.type === type && c.name === name);
 };
@@ -265,8 +249,6 @@ module.exports = {
   updateGuide,
   createInvitation,
   findCategoryName,
-  createNewGroup,
-  removeGroup,
   findChannelWithNameAndType,
   findChannelWithId,
   msToMinutesAndSeconds,

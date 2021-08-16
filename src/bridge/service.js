@@ -144,10 +144,10 @@ const sendAnimationToTelegram = async (telegramId, sender, url) => {
   await telegramClient.telegram.sendAnimation(telegramId, { url }, { caption, parse_mode: "MarkdownV2" });
 };
 
-const createNewGroup = async (args, Course) => {
+const createNewGroup = async (args, Groups) => {
   const courseName = args[0];
-  const telegramId = args[1];
-  await Course.create({ telegramId: telegramId, course: courseName });
+  const groupId = args[1];
+  // await Groups.create({ groupId: groupId, course: courseName });
 };
 
 const getCourseName = (categoryName) => {
