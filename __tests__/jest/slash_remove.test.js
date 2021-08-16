@@ -1,6 +1,6 @@
 const { execute } = require("../../src/discordBot/commands/admin/remove");
 const { sendEphemeral } = require("../../src/discordBot/commands/utils");
-const { findCategoryName, updateGuide, removeGroup } = require("../../src/discordBot/services/service");
+const { findCategoryName, updateGuide, removeCourseFromDb } = require("../../src/discordBot/services/service");
 
 jest.mock("../../src/discordBot/commands/utils");
 jest.mock("../../src/discordBot/services/service");
@@ -40,7 +40,7 @@ describe("slash remove", () => {
     expect(sendEphemeral).toHaveBeenCalledWith(client, defaultTeacherInteraction, response);
     expect(client.emit).toHaveBeenCalledTimes(1);
     expect(updateGuide).toHaveBeenCalledTimes(1);
-    expect(removeGroup).toHaveBeenCalledTimes(1);
+    expect(removeCourseFromDb).toHaveBeenCalledTimes(1);
     client.guild.roles.init();
   });
 });

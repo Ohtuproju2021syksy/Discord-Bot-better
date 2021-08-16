@@ -229,15 +229,33 @@ const findAndUpdateInstructorRole = async (name, guild, courseAdminRole) => {
 };
 
 const setCourseToPrivate = async (courseName, Course) => {
-  const course = await Course.findOne({ where: { name: courseName } }).catch((error) => console.log(error));
-  course.private = true;
-  course.save();
+  const course = await Course.findOne({ where: { name: courseName } });
+  if (course) {
+    course.private = true;
+    await course.save();
+  }
 };
 
 const setCourseToPublic = async (courseName, Course) => {
-  const course = await Course.findOne({ where: { name: courseName } }).catch((error) => console.log(error));
-  course.private = false;
-  course.save();
+  const course = await Course.findOne({ where: { name: courseName } });
+  if (course) {
+    course.private = false;
+    await course.save();
+  }
+};
+
+const createCourseToDatabase = async (courseCode, courseFullName, courseName, Course) => {
+  const alreadyinuse = await Course.findOne({ where: { name: courseName } });
+  if (!alreadyinuse) {
+    await Course.create({ code: courseCode, fullName: courseFullName, name: courseName, private: false });
+  }
+};
+
+const removeCourseFromDb = async (courseName, Course) => {
+  const course = await Course.findOne({ where: { name: courseName } });
+  if (course) {
+    await Course.destroy({ where: { name: courseName } });
+  }
 };
 
 module.exports = {
@@ -263,4 +281,6 @@ module.exports = {
   findAndUpdateInstructorRole,
   setCourseToPrivate,
   setCourseToPublic,
+  createCourseToDatabase,
+  removeCourseFromDb,
 };

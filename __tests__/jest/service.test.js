@@ -6,8 +6,8 @@ const {
   updateGuideMessage,
   createInvitation,
   findCategoryName,
-  createNewGroup,
-  removeGroup,
+  createCourseToDatabase,
+  removeCourseFromDb,
   findChannelWithNameAndType,
   findChannelWithId,
   msToMinutesAndSeconds,
@@ -21,6 +21,7 @@ const Course = {
   create: jest.fn(),
   findOne: jest
     .fn(() => true)
+    .mockImplementationOnce(() => false)
     .mockImplementationOnce(() => false),
   destroy: jest.fn(),
 };
@@ -154,28 +155,29 @@ describe("Service", () => {
   });
 
   test("create new group", () => {
+    const courseCode = "tkt101";
+    const courseFullName = "test course";
     const courseString = "test";
-    const telegramId = "987654321012";
-    createNewGroup([courseString, telegramId], Course);
+    createCourseToDatabase(courseCode, courseFullName, courseString, Course);
     expect(Course.create).toHaveBeenCalledTimes(1);
-    expect(Course.create).toHaveBeenCalledWith({ telegramId: telegramId, course: courseString });
+    expect(Course.create).toHaveBeenCalledWith({ code: courseCode, fullName: courseFullName, name: courseString, private: false });
   });
 
   test("remove group - if no group dont destroy", () => {
     const courseString = "test";
-    removeGroup(courseString, Course);
+    removeCourseFromDb(courseString, Course);
     expect(Course.findOne).toHaveBeenCalledTimes(1);
-    expect(Course.findOne).toHaveBeenCalledWith({ where: { course: courseString } });
+    expect(Course.findOne).toHaveBeenCalledWith({ where: { name: courseString } });
     expect(Course.destroy).toHaveBeenCalledTimes(0);
   });
 
   test("remove group - if group then destroy", async () => {
     const courseString = "test";
-    await removeGroup(courseString, Course);
+    await removeCourseFromDb(courseString, Course);
     expect(Course.findOne).toHaveBeenCalledTimes(1);
-    expect(Course.findOne).toHaveBeenCalledWith({ where: { course: courseString } });
+    expect(Course.findOne).toHaveBeenCalledWith({ where: { name: courseString } });
     expect(Course.destroy).toHaveBeenCalledTimes(1);
-    expect(Course.destroy).toHaveBeenCalledWith({ where: { course: courseString } });
+    expect(Course.destroy).toHaveBeenCalledWith({ where: { name: courseString } });
   });
 
   test("change ms to dorrect mm:ss format", () => {

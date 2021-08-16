@@ -1,4 +1,4 @@
-const { updateGuide, findCategoryName } = require("../../services/service");
+const { updateGuide, findCategoryName, removeCourseFromDb } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
 const { courseAdminRole } = require("../../../../config.json");
 
@@ -33,7 +33,7 @@ const execute = async (interaction, client, Course) => {
   await updateGuide(client.guild);
 
   // Database
-  await Course.destroy({ where: { name: courseName } });
+  await removeCourseFromDb(courseName, Course);
   // await printCourses();
 };
 

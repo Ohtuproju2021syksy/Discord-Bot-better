@@ -4,7 +4,8 @@ const {
   findCategoryName,
   updateGuide,
   findOrCreateChannel,
-  setCoursePositionABC } = require("../../services/service");
+  setCoursePositionABC,
+  createCourseToDatabase } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
 
@@ -116,7 +117,7 @@ const execute = async (interaction, client, Course) => {
   ));
 
   // Database
-  await Course.create({ code: courseCode, fullName: courseFullName, name: courseName, private: false });
+  await createCourseToDatabase(courseCode, courseFullName, courseName, Course);
   // await printCourses();
 
   await setCoursePositionABC(guild, categoryName);
