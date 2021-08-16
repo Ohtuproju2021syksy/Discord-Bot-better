@@ -94,7 +94,6 @@ const execute = async (interaction, client, Course) => {
       await changeCourseRoles(categoryName, newValue, guild);
       await changeInvitationLink(channelAnnouncement, interaction);
 
-      // change Telegram link if existing
       const newCategoryName = findCategoryName(newValue, guild);
       await setCoursePositionABC(guild, newCategoryName);
 
@@ -121,7 +120,6 @@ const execute = async (interaction, client, Course) => {
     await changeCourseRoles(categoryName, newValue, guild);
     await changeInvitationLink(channelAnnouncement, interaction);
 
-    // change Telegram link if existing
     const newCategoryName = findCategoryName(newValue, guild);
     await setCoursePositionABC(guild, newCategoryName);
   }
