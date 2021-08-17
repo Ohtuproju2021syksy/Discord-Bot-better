@@ -163,7 +163,7 @@ const getCourseChoices = async (showPrivate, Course) => {
     .filter(val => val.private === false || val.private === showPrivate)
     .map(c => (
       {
-        name: `${c.dataValues.code === c.dataValues.name ? c.dataValues.code : c.dataValues.name} - ${c.dataValues.code} - ${c.dataValues.fullName}`,
+        name: `${c.dataValues.code}  -  ${c.dataValues.fullName}  -   ${c.dataValues.name}`,
         value: c.dataValues.name,
       }
     ));
