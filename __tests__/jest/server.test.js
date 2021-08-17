@@ -23,10 +23,10 @@ const app = makeApp(client, dbMock);
 const api = supertest(app);
 
 describe("Endpoint urls", () => {
-  test("default url return status 200", async () => {
+  test("default url redirects", async () => {
     await api
       .get("/")
-      .redirects(1);
+      .expect(302);
   });
 
   test("invalid url returns status 302", async () => {
