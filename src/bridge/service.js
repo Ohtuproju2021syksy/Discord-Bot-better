@@ -7,11 +7,6 @@ const validDiscordChannel = async (courseName) => {
   const channel = guild.channels.cache.find(
     c => c.name === `${courseName}_general`,
   );
-  // temp - create webhook for existing bridged channels
-  if (!channel) return;
-  const webhooks = await channel.fetchWebhooks();
-  if (!webhooks.size) await channel.createWebhook(courseName, { avatar: "https://cdn.discordapp.com/embed/avatars/1.png" }).catch(console.error);
-  // --
   return channel;
 };
 
