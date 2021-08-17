@@ -6,7 +6,7 @@ jest.mock("../../src/discordBot/commands/utils");
 jest.mock("../../src/discordBot/services/service");
 jest.mock("discord-slash-commands-client");
 
-const { interactionJoin } = require("../mocks/mockInteraction");
+const { defaultTeacherInteraction } = require("../mocks/mockInteraction");
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -15,25 +15,40 @@ afterEach(() => {
 describe("slash join command", () => {
   test("join to valid course adds role and responds with correct epheremal", async () => {
     const roleString = "tester";
-    const client = interactionJoin.client;
+    defaultTeacherInteraction.data.options[0].value = roleString;
+    defaultTeacherInteraction.data.options[0].command = "join";
+    const client = defaultTeacherInteraction.client;
     client.guild.roles.create({ data: { name: roleString } });
-    const member = client.guild.members.cache.get(interactionJoin.member.user.id);
-    await execute(interactionJoin, client);
+    const member = client.guild.members.cache.get(defaultTeacherInteraction.member.user.id);
+    await execute(defaultTeacherInteraction, client);
     expect(member.roles.add).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
-    expect(sendEphemeral).toHaveBeenCalledWith(client, interactionJoin, `You have been added to a ${roleString} course.`);
+    expect(sendEphemeral).toHaveBeenCalledWith(client, defaultTeacherInteraction, `You have been added to a ${roleString} course.`);
     expect(updateGuide).toHaveBeenCalledTimes(1);
   });
 
   test("join to course twice, role added only ones and second time responds with correct ephemeral", async () => {
     const roleString = "tester";
-    const client = interactionJoin.client;
-    const member = client.guild.members.cache.get(interactionJoin.member.user.id);
+    const client = defaultTeacherInteraction.client;
+    const member = client.guild.members.cache.get(defaultTeacherInteraction.member.user.id);
     member.roles.cache.push({ name: "tester" });
-    await execute(interactionJoin, client);
+    await execute(defaultTeacherInteraction, client);
     expect(member.roles.add).toHaveBeenCalledTimes(0);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
-    expect(sendEphemeral).toHaveBeenCalledWith(client, interactionJoin, `You are already on a ${roleString} course.`);
+    expect(sendEphemeral).toHaveBeenCalledWith(client, defaultTeacherInteraction, `You are already on a ${roleString} course.`);
+    expect(updateGuide).toHaveBeenCalledTimes(0);
+  });
+
+  test("trying to join invalid course responds with correct ephemeral", async () => {
+    const roleString = "testing";
+    defaultTeacherInteraction.data.options[0].value = roleString;
+    const response = `Invalid course name: ${roleString}`;
+    const client = defaultTeacherInteraction.client;
+    const member = client.guild.members.cache.get(defaultTeacherInteraction.member.user.id);
+    await execute(defaultTeacherInteraction, client);
+    expect(member.roles.add).toHaveBeenCalledTimes(0);
+    expect(sendEphemeral).toHaveBeenCalledTimes(1);
+    expect(sendEphemeral).toHaveBeenCalledWith(client, defaultTeacherInteraction, response);
     expect(updateGuide).toHaveBeenCalledTimes(0);
   });
 });

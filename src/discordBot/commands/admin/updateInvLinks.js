@@ -20,5 +20,7 @@ module.exports = {
   name: "updateinvlinks",
   description: "Update invitation links to server and courses.",
   role: "admin",
+  usage: "",
+  args: false,
   execute,
 };

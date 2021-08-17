@@ -1,4 +1,5 @@
 const { findOrCreateRoleWithName, updateGuide } = require("./service");
+const { facultyRole } = require("../../../config.json");
 
 const findOrCreateChannel = (guild, channelObject) => {
   const { name, options } = channelObject;
@@ -18,9 +19,12 @@ const initChannels = async (guild, client) => {
       name: "commands",
       options: {
         type: "text",
-        permissionOverwrites: [{ id: guild.id, deny: ["SEND_MESSAGES", "VIEW_CHANNEL"] },
+        permissionOverwrites: [
+          { id: guild.id, deny: ["SEND_MESSAGES", "VIEW_CHANNEL"] },
           { id: client.user.id, allow: ["SEND_MESSAGES", "VIEW_CHANNEL"] },
-          { id: admin.id, allow: ["SEND_MESSAGES", "VIEW_CHANNEL"] }] },
+          { id: admin.id, allow: ["SEND_MESSAGES", "VIEW_CHANNEL"] },
+        ],
+      },
     },
     {
       name: "guide",
@@ -38,7 +42,7 @@ const initChannels = async (guild, client) => {
 };
 
 const initRoles = async (guild) => {
-  await findOrCreateRoleWithName("teacher", guild);
+  await findOrCreateRoleWithName(facultyRole, guild);
   await findOrCreateRoleWithName("admin", guild);
 };
 

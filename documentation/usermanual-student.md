@@ -56,7 +56,7 @@ General - main discussion area.
 
 Voice - you can hang out over voice and video.
 
-If you want to see who are the teachers on your course, you can use command `/instructors`.
+If you want to see who are the instructors on your course, you can use command `/instructors`.
 
 ![instructors](./images/instructors.png)
 
@@ -64,11 +64,12 @@ If you want to see who are the teachers on your course, you can use command `/in
 
 Command | Explanation
 --------|-----------
+/auth | Command for faculty members with student role.
 /courses | Returns a list of all courses.
 /help | Returns a list of commands with info or info about a specific command.
-/instructors | Used in course channel returns a list of course instructors. Can be used anywhere when a parameter is given.
-/join | Joins you into the course given, e.g. /join ohpe.
-/leave | Remove you from the course given, e.g. /leave ohpe.
+/instructors | Returns a list of course instructors. With agrument, the command can be used anywhere otherwise only on course channels.
+/join | Joins you into the course given, e.g., /join ohpe.
+/leave | Remove you from the course given, e.g., /leave ohpe.
 
 ### Material
 

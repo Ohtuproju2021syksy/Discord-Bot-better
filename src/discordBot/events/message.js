@@ -1,8 +1,6 @@
-const { updateGuide } = require("../services/service");
-
 const prefix = process.env.PREFIX;
 
-const execute = async (message, client, Groups) => {
+const execute = async (message, client, Course) => {
   if (!message.content.startsWith(prefix) || message.channel.name !== "commands") return;
 
   let args = message.content.slice(prefix.length).trim().split(/ +/);
@@ -15,15 +13,9 @@ const execute = async (message, client, Groups) => {
   if (command.args && !args.length) {
     return message.channel.send(`You didn't provide any arguments, ${message.author}!`);
   }
-  if (command.joinArgs) {
-    args = args.join(" ");
-  }
 
   try {
-    await command.execute(message, args, Groups);
-    if (command.guide) {
-      await updateGuide(message.guild);
-    }
+    await command.execute(message, args, Course);
     await message.react("✅");
   }
   catch (error) {

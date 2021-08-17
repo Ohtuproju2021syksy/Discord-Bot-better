@@ -1,5 +1,6 @@
 const { getRoleFromCategory } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
+const { facultyRole } = require("../../../../config.json");
 
 const execute = async (interaction, client) => {
   const deleteName = interaction.data.options[0].value.toLowerCase().trim().replace(/ /g, "-");
@@ -39,7 +40,7 @@ module.exports = {
   args: true,
   joinArgs: true,
   guide: true,
-  role: "teacher",
+  role: facultyRole,
   options: [
     {
       name: "channel",

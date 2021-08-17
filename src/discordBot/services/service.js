@@ -1,6 +1,5 @@
 require("dotenv").config();
 const GUIDE_CHANNEL_NAME = "guide";
-const FACULTY_ROLE = "faculty";
 
 let invite_url = "";
 
@@ -11,7 +10,7 @@ const createCategoryName = (courseString) => `📚 ${courseString}`;
 const createPrivateCategoryName = (courseString) => `🔒 ${courseString}`;
 
 /**
- * Expects role to be between parenthesis e.g. (role)
+ * Expects role to be between parenthesis e.g., (role)
  * @param {String} string
  */
 const getRoleFromCategory = (categoryName) => {
@@ -42,25 +41,6 @@ const findOrCreateRoleWithName = async (name, guild) => {
   );
 };
 
-/**
- *
- * @param {Discord.Message} message
- */
-const updateFaculty = async (guild) => {
-  const facultyRole = await findOrCreateRoleWithName(FACULTY_ROLE, guild);
-  const usersWhoShouldBeFaculty = guild.roles.cache
-    .filter((role) => role.name.includes("admin"))
-    .reduce((acc, role) => [...acc, ...role.members.array()], []);
-
-  for (const member of usersWhoShouldBeFaculty) {
-    if (!member.roles.cache.find((role) => role.id === facultyRole.id)) {
-      await member.roles.add(facultyRole);
-      await member.fetch(true);
-      console.log("Gave faculty to", member.nickname || member.user.username);
-    }
-  }
-};
-
 const updateGuideMessage = async (message) => {
   const guild = message.guild;
   const invites = await guild.fetchInvites();
@@ -72,7 +52,7 @@ const updateGuideMessage = async (message) => {
       const courseRole = getRoleFromCategory(ch.name);
       const count = guild.roles.cache.find(
         (role) => role.name === courseRole,
-      ).members.size;
+      )?.members.size;
       return `  - ${courseFullName} \`/join ${courseRole}\` 👤${count}`;
     }).sort((a, b) => a.localeCompare(b));
 
@@ -102,7 +82,6 @@ Invitation link for the server https://discord.gg/${guideInvite.code}
 };
 
 const updateGuide = async (guild) => {
-  await updateFaculty(guild);
   const channel = guild.channels.cache.find(
     (c) => c.name === GUIDE_CHANNEL_NAME,
   );
@@ -168,22 +147,6 @@ const findCategoryName = (courseString, guild) => {
   }
 };
 
-const createNewGroup = async (args, Groups) => {
-  const courseName = args[0];
-  // const groupId = parseInt(args[1]);
-  const groupId = args[1];
-
-  await Groups.create({ groupId: groupId, course: courseName });
-};
-
-const removeGroup = async (channelName, Groups) => {
-  const group = await Groups.findOne({ where: { course: channelName } });
-
-  if (group) {
-    await Groups.destroy({ where: { course: channelName } });
-  }
-};
-
 const findChannelWithNameAndType = (name, type, guild) => {
   return guild.channels.cache.find(c => c.type === type && c.name === name);
 };
@@ -223,7 +186,9 @@ const setCoursePositionABC = async (guild, courseString) => {
     }).sort((a, b) => a.localeCompare(b));
 
   const category = guild.channels.cache.find(c => c.type === "category" && c.name === courseString);
-  await category.edit({ position: result.indexOf(courseString) + first });
+  if (category) {
+    await category.edit({ position: result.indexOf(courseString) + first });
+  }
 };
 
 const deleteCommand = async (client, commandToDeleteName) => {
@@ -236,18 +201,77 @@ const deleteCommand = async (client, commandToDeleteName) => {
   });
 };
 
+const emojiRegex = /(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/gi;
+
+const isACourseCategory = (channel) => {
+  return emojiRegex.test(channel.name);
+};
+
+const trimCourseName = (channel) => {
+  const trimmedName = channel.name.replace(emojiRegex, "").trim();
+  return trimmedName;
+};
+
+const findAllCourseNames = (guild) => {
+  const courseNames = [];
+
+  guild.channels.cache.forEach(channel => {
+    if (isACourseCategory(channel)) {
+      courseNames.push(trimCourseName(channel));
+    }
+  });
+  return courseNames;
+};
+
+const findAndUpdateInstructorRole = async (name, guild, courseAdminRole) => {
+  const oldInstructorRole = guild.roles.cache.find((role) => role.name !== name && role.name.includes(name));
+  oldInstructorRole.setName(`${name} ${courseAdminRole}`);
+};
+
+const setCourseToPrivate = async (courseName, Course) => {
+  const course = await Course.findOne({ where: { name: courseName } });
+  if (course) {
+    course.private = true;
+    await course.save();
+  }
+};
+
+const setCourseToPublic = async (courseName, Course) => {
+  const course = await Course.findOne({ where: { name: courseName } });
+  if (course) {
+    course.private = false;
+    await course.save();
+  }
+};
+
+const createCourseToDatabase = async (courseCode, courseFullName, courseName, Course) => {
+  const alreadyinuse = await Course.findOne({ where: { name: courseName } });
+  if (!alreadyinuse) {
+    await Course.create({ code: courseCode, fullName: courseFullName, name: courseName, private: false });
+  }
+};
+
+const removeCourseFromDb = async (courseName, Course) => {
+  const course = await Course.findOne({ where: { name: courseName } });
+  if (course) {
+    await Course.destroy({ where: { name: courseName } });
+  }
+};
+
+const findCourseFromDb = async (courseName, Course) => {
+  return await Course.findOne({ where: { name: courseName } });
+};
+
+
 module.exports = {
   createCategoryName,
   createPrivateCategoryName,
   getRoleFromCategory,
   findOrCreateRoleWithName,
-  updateFaculty,
   updateGuideMessage,
   updateGuide,
   createInvitation,
   findCategoryName,
-  createNewGroup,
-  removeGroup,
   findChannelWithNameAndType,
   findChannelWithId,
   msToMinutesAndSeconds,
@@ -256,4 +280,13 @@ module.exports = {
   findOrCreateChannel,
   setCoursePositionABC,
   deleteCommand,
+  isACourseCategory,
+  trimCourseName,
+  findAllCourseNames,
+  findAndUpdateInstructorRole,
+  setCourseToPrivate,
+  setCourseToPublic,
+  createCourseToDatabase,
+  removeCourseFromDb,
+  findCourseFromDb,
 };

@@ -1,7 +1,7 @@
 const { reloadCommands } = require("../commands/utils");
 
-const execute = async (client) => {
-  await reloadCommands(client, ["join", "leave"]);
+const execute = async (event, client, Course) => {
+  await reloadCommands(client, ["join", "leave"], Course);
 };
 
 module.exports = {

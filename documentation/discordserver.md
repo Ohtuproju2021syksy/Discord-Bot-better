@@ -2,9 +2,9 @@
 
 ## New server
 
-Before you can create a Discord server, you need to creat yourself Discord account. You can do this on [Discord Website](https://discord.com/). If you already have the the account, just login.
+Before you can create a Discord server, you need to create yourself Discord account. You can do this on [Discord Website](https://discord.com/). If you already have the the account, just login.
 
-Click the "+" button on the left hand column.
+Click the "+" button on the left-hand column.
 
 ![Create server](./images/newserver.png)
 

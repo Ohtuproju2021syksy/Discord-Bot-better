@@ -1,6 +1,20 @@
-const { findOrCreateRoleWithName, createInvitation, findCategoryName, updateGuide, findOrCreateChannel, setCoursePositionABC } = require("../../services/service");
+const {
+  findOrCreateRoleWithName,
+  createInvitation,
+  findCategoryName,
+  updateGuide,
+  findOrCreateChannel,
+  setCoursePositionABC,
+  createCourseToDatabase } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
+const { courseAdminRole, facultyRole } = require("../../../../config.json");
 
+/*
+const printCourses = async () => {
+  const courses = await Course.findAll();
+  console.log("All courses in db:", JSON.stringify(courses, null, 2));
+};
+*/
 /**
  *
  * @param {Object} channelObject
@@ -73,14 +87,23 @@ const getCategoryObject = (categoryName, permissionOverwrites) => ({
   },
 });
 
-const execute = async (interaction, client) => {
-  const courseName = interaction.data.options[0].value.toLowerCase().trim();
+const execute = async (interaction, client, Course) => {
+  const courseCode = interaction.data.options[0].value.toLowerCase().trim();
+  const courseFullName = interaction.data.options[1].value.toLowerCase().trim();
+  let courseName;
+
+  if (!interaction.data.options[2]) {
+    courseName = courseCode;
+  }
+  else {
+    courseName = interaction.data.options[2].value.toLowerCase().trim();
+  }
 
   const guild = client.guild;
 
   // Roles
   const student = await findOrCreateRoleWithName(courseName, guild);
-  const admin = await findOrCreateRoleWithName(`${courseName} admin`, guild);
+  const admin = await findOrCreateRoleWithName(`${courseName} ${courseAdminRole}`, guild);
 
   // Category
   const categoryName = findCategoryName(courseName, guild);
@@ -93,10 +116,14 @@ const execute = async (interaction, client) => {
     async channelObject => await findOrCreateChannel(channelObject, guild),
   ));
 
+  // Database
+  await createCourseToDatabase(courseCode, courseFullName, courseName, Course);
+  // await printCourses();
+
   await setCoursePositionABC(guild, categoryName);
   await createInvitation(guild, courseName);
   sendEphemeral(client, interaction, `Created course ${courseName}.`);
-  await client.emit("COURSES_CHANGED");
+  await client.emit("COURSES_CHANGED", Course);
   await updateGuide(client.guild);
 };
 
@@ -107,13 +134,25 @@ module.exports = {
   args: true,
   joinArgs: true,
   guide: true,
-  role: "teacher",
+  role: facultyRole,
   options: [
     {
-      name: "course",
-      description: "Course to create.",
+      name: "coursecode",
+      description: "Course coursecode",
       type: 3,
       required: true,
+    },
+    {
+      name: "full_name",
+      description: "Course full name",
+      type: 3,
+      required: true,
+    },
+    {
+      name: "nick_name",
+      description: "Course nick name",
+      type: 3,
+      required: false,
     },
   ],
   execute,

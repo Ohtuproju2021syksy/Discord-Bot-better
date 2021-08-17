@@ -1,15 +1,18 @@
 const { client } = require("./mockSlashClient");
+const { courseAdminRole, facultyRole } = require("../../config.json");
 const prefix = "/";
 
 const teacherData = [];
 teacherData.push("Here's a list of all my commands:");
-teacherData.push(client.slashCommands.map(command => `${prefix}${command.command.name} - ${command.command.description}`).join("\n"));
+teacherData.push(client.slashCommands
+  .filter(command => command.command.role !== "admin")
+  .map(command => `${prefix}${command.command.name} - ${command.command.description}`).join("\n"));
 teacherData.push(`\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`);
 
 const studentData = [];
 studentData.push("Here's a list of all my commands:");
 studentData.push(client.slashCommands
-  .filter(command => command.command.role !== "teacher")
+  .filter(command => command.command.role !== facultyRole && command.command.role !== courseAdminRole && command.command.role !== "admin")
   .map(command => `${prefix}${command.command.name} - ${command.command.description}`).join("\n"));
 studentData.push(`\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`);
 
@@ -32,10 +35,12 @@ client.slashCommands
   });
 
 const teacher = {
+  id: 1,
   nickname: "teacher",
   roles: {
-    cache: [{ name: "teacher" }, { name: "test admin" }],
+    cache: [{ name: facultyRole }, { name: `test ${courseAdminRole}` }],
     add: jest.fn((name) => teacher.roles.cache.push({ name: name })),
+    highest: { name: facultyRole },
     fetch: jest.fn(),
     remove: jest.fn((role) => teacher.roles.cache = teacher.roles.cache.filter(r => r.name !== role.name)),
   },
@@ -43,10 +48,12 @@ const teacher = {
 };
 
 const student = {
+  id: 2,
   nickname: "student",
   roles: {
     cache: [{ name: "student" }],
     add: jest.fn((name) => student.roles.cache.push({ name: name })),
+    highest: { name: "@everyone" },
     fetch: jest.fn(),
     remove: jest.fn((role) => student.roles.cache = student.roles.cache.filter(r => r.name !== role.name)),
   },
@@ -56,7 +63,7 @@ const student = {
 const guideChannel = {
   name: "guide",
   type: "text",
-  parent: null,
+  parent: undefined,
   delete: jest.fn(),
 };
 
@@ -94,20 +101,31 @@ client.guild.channels.cache.set(1, guideChannel);
 client.guild.channels.cache.set(2, testChannel);
 client.guild.channels.cache.set(3, testChannelGeneral);
 client.guild.channels.cache.set(4, chat);
+client.guild.roles.cache.set(1, { name: "test" });
+client.guild.roles.cache.set(2, { name: `${courseAdminRole}_test` });
+client.guild.roles.cache.set(3, { name: "admin" });
+client.guild.roles.cache.set(4, { name: facultyRole });
+client.guild.members.cache.set(1, teacher);
+client.guild.members.cache.set(2, student);
 
 const defaultTeacherInteraction = {
   client: client,
   channel_id: 1,
   member: {
-    user: {
-      id: 1,
-    },
+    user: teacher,
+    roles: [1, 3, 4],
   },
   data: {
-    options: [{
-      value: "",
-      command: {},
-    }],
+    options: [
+      {
+        value: "",
+        command: {},
+      },
+      {
+        value: "",
+        command: {},
+      },
+    ],
   },
 };
 
@@ -115,9 +133,8 @@ const defaultStudentInteraction = {
   client: client,
   channel_id: 1,
   member: {
-    user: {
-      id: 2,
-    },
+    user: student,
+    roles: [],
   },
   data: {
     options: [{
@@ -140,7 +157,7 @@ const teacherInteractionHelp = {
   },
 };
 
-const studentInteractionHelp = {
+const studentInteractionWithoutOptions = {
   client: client,
   channel_id: 1,
   member: {
@@ -152,116 +169,6 @@ const studentInteractionHelp = {
     options: false,
   },
 };
-
-const invalidInteractionHelp = {
-  client: client,
-  channel_id: 1,
-  member: {
-    user: {
-      id: 2,
-    },
-  },
-  data: {
-    options: [{
-      value: "invalid",
-    }],
-  },
-};
-
-const interactionHelpJoin = {
-  client: client,
-  channel_id: 1,
-  member: {
-    user: {
-      id: 1,
-    },
-  },
-  data: {
-    options: [{
-      value: "join",
-      command: {
-        name: "join",
-        description: "Join a course, e.g. `/join ohpe`",
-        usage: "[course name]",
-      },
-    }],
-  },
-};
-
-const interactionJoin = {
-  client: client,
-  channel_id: 1,
-  member: {
-    user: {
-      id: 1,
-    },
-  },
-  data: {
-    options: [{
-      value: "tester",
-      command: {
-        name: "join",
-      },
-    }],
-  },
-};
-
-const intInsWithoutArgs = {
-  client: client,
-  channel_id: 1,
-  member: {
-    user: {
-      id: 2,
-    },
-  },
-  data: {
-    options: false,
-  },
-};
-
-const intInsWithValidArgs = {
-  client: client,
-  channel_id: 1,
-  member: {
-    user: {
-      id: 1,
-    },
-  },
-  data: {
-    options: [{
-      value: "test",
-    }],
-  },
-};
-
-const intInsWithInvalidArgs = {
-  client: client,
-  channel_id: 1,
-  member: {
-    user: {
-      id: 1,
-    },
-  },
-  data: {
-    options: [{
-      value: "tast",
-    }],
-  },
-};
-
-const intInsWithoutArgsInCourseChannelWithAdmins = {
-  client: client,
-  channel_id: 2,
-  member: {
-    user: {
-      id: 2,
-    },
-  },
-  data: {
-    options: false,
-  },
-};
-
 
 module.exports = {
   teacherData,
@@ -269,14 +176,7 @@ module.exports = {
   teacherJoinData,
   studentInsData,
   teacherInteractionHelp,
-  studentInteractionHelp,
-  invalidInteractionHelp,
-  interactionHelpJoin,
-  interactionJoin,
-  intInsWithoutArgs,
-  intInsWithValidArgs,
-  intInsWithInvalidArgs,
-  intInsWithoutArgsInCourseChannelWithAdmins,
+  studentInteractionWithoutOptions,
   defaultTeacherInteraction,
   defaultStudentInteraction,
 };

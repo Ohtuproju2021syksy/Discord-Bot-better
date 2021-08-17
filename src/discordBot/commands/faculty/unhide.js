@@ -1,10 +1,16 @@
-const { updateGuide, createPrivateCategoryName, findChannelWithNameAndType,
-  msToMinutesAndSeconds, handleCooldown } = require("../../services/service");
+const {
+  updateGuide,
+  createPrivateCategoryName,
+  findChannelWithNameAndType,
+  msToMinutesAndSeconds,
+  handleCooldown,
+  setCourseToPublic } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
+const { facultyRole } = require("../../../../config.json");
 
 const used = new Map();
 
-const execute = async (interaction, client) => {
+const execute = async (interaction, client, Course) => {
   const courseName = interaction.data.options[0].value.toLowerCase().trim();
   const guild = client.guild;
   const courseString = createPrivateCategoryName(courseName);
@@ -21,10 +27,11 @@ const execute = async (interaction, client) => {
   else {
     await category.setName(`📚 ${courseName}`);
     sendEphemeral(client, interaction, `This course ${courseName} is now public.`);
+    await setCourseToPublic(courseName, Course);
     const cooldownTimeMs = 1000 * 60 * 15;
     used.set(courseName, Date.now() + cooldownTimeMs);
     handleCooldown(used, courseName, cooldownTimeMs);
-    await client.emit("COURSES_CHANGED");
+    await client.emit("COURSES_CHANGED", Course);
     await updateGuide(client.guild);
   }
 };
@@ -36,7 +43,7 @@ module.exports = {
   args: true,
   joinArgs: true,
   guide: true,
-  role: "teacher",
+  role: facultyRole,
   options: [
     {
       name: "course",
