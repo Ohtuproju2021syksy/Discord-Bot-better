@@ -2,6 +2,7 @@ const fs = require("fs");
 const { Client } = require("discord-slash-commands-client");
 const { Collection } = require("discord.js");
 const { facultyRole, courseAdminRole } = require("../../../config.json");
+require("dotenv").config();
 
 const slashClient = new Client(
   process.env.BOT_TOKEN,
