@@ -258,6 +258,11 @@ const removeCourseFromDb = async (courseName, Course) => {
   }
 };
 
+const findCourseFromDb = async (courseName, Course) => {
+  return await Course.findOne({ where: { name: courseName } });
+};
+
+
 module.exports = {
   createCategoryName,
   createPrivateCategoryName,
@@ -283,4 +288,5 @@ module.exports = {
   setCourseToPublic,
   createCourseToDatabase,
   removeCourseFromDb,
+  findCourseFromDb,
 };

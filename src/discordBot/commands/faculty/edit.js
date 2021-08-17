@@ -5,7 +5,9 @@ const { setCoursePositionABC,
   updateGuide,
   msToMinutesAndSeconds,
   handleCooldown,
-  trimCourseName } = require("../../services/service");
+  trimCourseName,
+  findCourseFromDb,
+  createCourseToDatabase } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
 
@@ -68,10 +70,11 @@ const execute = async (interaction, client, Course) => {
   const category = findChannelWithNameAndType(channel.parent.name, "category", guild);
   const channelAnnouncement = guild.channels.cache.find(c => c.parent === channel.parent && c.name.includes("_announcement"));
 
-  let databaseValue = await Course.findOne({ where: { name: categoryName } }).catch((error) => console.log(error));
+  let databaseValue = await findCourseFromDb(categoryName, Course);
 
   if (!databaseValue) {
-    databaseValue = await Course.create({ code: "change me", fullName: categoryName, name: categoryName, private: false });
+    databaseValue = await createCourseToDatabase("change me", categoryName, categoryName, Course);
+    databaseValue = await findCourseFromDb(categoryName, Course);
   }
 
   const cooldown = used.get(categoryName);
@@ -86,7 +89,6 @@ const execute = async (interaction, client, Course) => {
       const change = await changeCourseNames(newValue, channel, category, guild);
       if (!change) return sendEphemeral(client, interaction, "Course name already exists");
 
-      // save values to database
       databaseValue.code = newValue;
       databaseValue.name = newValue;
       await databaseValue.save();
@@ -113,7 +115,6 @@ const execute = async (interaction, client, Course) => {
     const change = await changeCourseNames(newValue, channel, category, guild);
     if (!change) return sendEphemeral(client, interaction, "Course name already exists");
 
-    // save values to database
     databaseValue.name = newValue;
     await databaseValue.save();
 
