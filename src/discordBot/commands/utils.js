@@ -1,7 +1,6 @@
 const fs = require("fs");
 const { Client } = require("discord-slash-commands-client");
 const { Collection } = require("discord.js");
-const { getRoleFromCategory } = require("../services/service");
 const { facultyRole, courseAdminRole } = require("../../../config.json");
 
 const slashClient = new Client(
@@ -138,36 +137,16 @@ const reloadCommands = async (client, commandNames, Course) => {
   });
 };
 
-const leaveGetChoices = (client) => {
-  const choices = client.guild.channels.cache
-    .filter(({ type, name }) => type === "category" && name.startsWith("📚") || name.startsWith("🔒"))
-    .map(({ name }) => getRoleFromCategory(name))
-    .sort()
-    .map(courseName => ({ name: courseName, value: courseName }));
-  return choices;
-};
-
-const joinGetChoices = (client) => {
-  const choices = client.guild.channels.cache
-    .filter(({ type, name }) => type === "category" && name.startsWith("📚"))
-    .map(({ name }) => getRoleFromCategory(name))
-    .sort()
-    .map(courseName => ({ name: courseName, value: courseName }));
-  // console.log("join", choices);
-  return choices;
-};
-
 const getCourseChoices = async (showPrivate, Course) => {
   const courseData = await Course.findAll({});
   const choices = courseData
     .filter(val => val.private === false || val.private === showPrivate)
     .map(c => (
       {
-        name: `${c.dataValues.code}  -  ${c.dataValues.fullName}  -   ${c.dataValues.name}`,
+        name: `${c.dataValues.code} - ${c.dataValues.fullName} - ${c.dataValues.name}`,
         value: c.dataValues.name,
       }
     ));
-  // console.log(choices);
   choices.sort((a, b) => a.value.localeCompare(b.value));
   return choices;
 };
