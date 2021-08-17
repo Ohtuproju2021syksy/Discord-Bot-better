@@ -26,7 +26,7 @@ describe("Endpoint urls", () => {
   test("default url return status 200", async () => {
     await api
       .get("/")
-      .expect(200);
+      .redirects(1);
   });
 
   test("invalid url returns status 302", async () => {
