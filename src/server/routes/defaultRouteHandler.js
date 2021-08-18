@@ -1,7 +1,7 @@
 const router = require("express").Router();
 
-router.all("/", (request, response) => {
-  response.sendStatus(200);
+router.all("/", (req, res) => {
+  res.redirect(process.env.DISCORD_SERVER_INVITE);
 });
 
 module.exports = router;

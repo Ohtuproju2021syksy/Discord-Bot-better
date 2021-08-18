@@ -4,10 +4,17 @@ const {
   findCategoryName,
   updateGuide,
   findOrCreateChannel,
-  setCoursePositionABC } = require("../../services/service");
+  setCoursePositionABC,
+  createCourseToDatabase } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
 
+/*
+const printCourses = async () => {
+  const courses = await Course.findAll();
+  console.log("All courses in db:", JSON.stringify(courses, null, 2));
+};
+*/
 /**
  *
  * @param {Object} channelObject
@@ -33,14 +40,13 @@ const getPermissionOverwrites = (guild, admin, student) => ([
   },
 ]);
 
-const getChannelObjects = (guild, admin, student, roleName, category, topic) => {
+const getChannelObjects = (guild, admin, student, roleName, category) => {
   roleName = roleName.replace(/ /g, "-");
   return [
     {
       name: `${roleName}_announcement`,
       options: {
         type: "text",
-        topic: topic,
         description: "Messages from course admins",
         parent: category,
         permissionOverwrites: [
@@ -63,7 +69,7 @@ const getChannelObjects = (guild, admin, student, roleName, category, topic) => 
     {
       name: `${roleName}_general`,
       parent: category,
-      options: { type: "text", topic: topic, parent: category, permissionOverwrites: [] },
+      options: { type: "text", parent: category, permissionOverwrites: [] },
     },
     {
       name: `${roleName}_voice`,
@@ -81,7 +87,7 @@ const getCategoryObject = (categoryName, permissionOverwrites) => ({
   },
 });
 
-const execute = async (interaction, client) => {
+const execute = async (interaction, client, Course) => {
   const courseCode = interaction.data.options[0].value.toLowerCase().trim();
   const courseFullName = interaction.data.options[1].value.toLowerCase().trim();
   let courseName;
@@ -92,8 +98,6 @@ const execute = async (interaction, client) => {
   else {
     courseName = interaction.data.options[2].value.toLowerCase().trim();
   }
-
-  const topicName = courseCode.toUpperCase() + " :star: " + courseFullName.toUpperCase() + " :star: " + courseName.toUpperCase();
 
   const guild = client.guild;
 
@@ -107,15 +111,19 @@ const execute = async (interaction, client) => {
   const category = await findOrCreateChannel(categoryObject, guild);
 
   // Channels
-  const channelObjects = getChannelObjects(guild, admin, student, courseName, category, topicName);
+  const channelObjects = getChannelObjects(guild, admin, student, courseName, category);
   await Promise.all(channelObjects.map(
     async channelObject => await findOrCreateChannel(channelObject, guild),
   ));
 
+  // Database
+  await createCourseToDatabase(courseCode, courseFullName, courseName, Course);
+  // await printCourses();
+
   await setCoursePositionABC(guild, categoryName);
   await createInvitation(guild, courseName);
   sendEphemeral(client, interaction, `Created course ${courseName}.`);
-  await client.emit("COURSES_CHANGED");
+  await client.emit("COURSES_CHANGED", Course);
   await updateGuide(client.guild);
 };
 

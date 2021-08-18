@@ -52,6 +52,17 @@ const messageInCommandsChannel = {
       cache: [],
       create: jest.fn(),
     },
+    channels: {
+      cache: [{
+        name: "test_announcement",
+        messages: {
+          fetchPinned: jest.fn(() => { return [{ author: client.user, content: "Invitation link for", edit: jest.fn() }]; }),
+        },
+        parent: {
+          name: "📚 test",
+        },
+      }],
+    },
   },
   channel: {
     name: "commands",

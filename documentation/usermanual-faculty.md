@@ -35,7 +35,7 @@ To be able to use all the faculty commands, you need to authenticate yourself. U
 
 ### Creating a new course
 
-You can create new course with command `/create`. Give the command and after that the course name. At the moment we prefer that you give course a short nick name because it is more readable on Discord for the users.
+You can create new course with command `/create`. Give the command and after that give the course code, course´s full name and course´s nickname. Nick name is optional and if not given then the coursecode will be also course´s nickname. **Note** that nick name is the value that is used as course´s name that users see on the Discord´s left column. So, we prefer that you give course a short nickname because it is more readable on Discord for the users. **Note** also that nickname is unique value.
 
 ![create](./images/create.png)
 
@@ -43,11 +43,11 @@ After the course is created there is the invitation link for the course on the c
 
 ### Create Telegram bridge
 
-Today, many courses use Telegram discussion channels. At the moment there are students that might use only one of these platforms (Discord or Telegram). This is why we want to connect Discord and Telegram chat channels so everyone can see all the conversations. The following steps are made in Telegram.
+Today, many courses use Telegram discussion channels. At the moment there are students that might use only one of these platforms (Discord or Telegram). Therefore, we want to connect Discord and Telegram chat channels so everyone can see all the conversations. The following steps are made in Telegram.
 
 #### Add our Telegram bot to your Telegram channel
 
-Invite the **@cs-discord-bot** bot to your Telegram channel. First go to your channel. From the right top corner choose three dots and from the drop down menu choose _Add members_.
+Invite the **@cs-discord-bot** bot to your Telegram channel. First go to your channel. From the right top corner choose three dots and from the drop-down menu choose _Add members_.
 
 Give the bot admin role (choose channel member and give the bot admin rights). You need to have an admin role to do this change. Under _What can this admin do?_ mark all the showing rights off.
 
@@ -73,30 +73,35 @@ The `/create` command automatically creates three sub-channels for the course. T
 
 ![newchannel](./images/newchannel.png)
 
-Note that the channel name you give is the end part of the name. For example in the picture new channel will be created with name _wepa_feedback_.
+Note that the channel name you give is the end part of the name. For example, in the picture new channel will be created with name _wepa_feedback_.
 
-To remove added text channel use `/removechannel` command followed by the name of the text channel to be removed e.g. `/removechannel feedback` removes _wepa_feedback_. This command must also be used inside the course you want the channel to be removed. Note that announcements or general channels can not be removed.
+To remove added text channel use `/removechannel` command followed by the name of the text channel to be removed e.g., `/removechannel feedback` removes _wepa_feedback_. This command must also be used inside the course you want the channel to be removed. Note that announcements or general channels can not be removed.
 
 ## How to make course secret
-Once the course is created, it can be made hidden. This means joining the course channel is only possible via link. To make a secret course use the `/hide` command followed by the course name. e.g. `/hide wepa`. The secret courses can be identified by the lock emoji. 
+Once the course is created, it can be made hidden. This means joining the course channel is only possible via link. To make a secret course use the `/hide` command followed by the course name. e.g.,, `/hide wepa`. The secret courses can be identified by the lock emoji. 
 
-To make the course public again use the `/unhide` command followed by the course name. e.g. `/unhide wepa`. Public courses can be found with `/courses` command and with `/join` command, unlike secret courses.
+To make the course public again use the `/unhide` command followed by the course name. e.g., `/unhide wepa`. Public courses can be found with `/courses` command and with `/join` command, unlike secret courses.
+
+## How to add instructor to a course
+Students can use the `/instructors` command on a course and see all the instructors on that course. _Faculty_ members and the ones who already have the _course instructor_ role can give other users this course instructor role. The command is `/addinstructor` the value to give is the username you want to give the instructor role. Use this command inside the course you want the role to be.
+
 
 ### List of commands
 
 Command | Explanation
 --------|-----------
-/auth | Returns the URL from which the faculty role can be requested.
-/create | Create a new course, e.g. /create weba.
-/hide | Make given course private, e.g. /hide weba.
-/unhide | Make given course public, e.g. /unhide weba.
-/newchannel | Create new text channel inside a course, e.g. /newchannel feedback.
-/removechannel | Remove given text channel inside a course, e.g. /removechannel feedback.
+/auth | Returns the URL where the faculty role can be obtained.
+/create | Create a new course. 
+/hide | Make given course private, e.g., /hide weba.
+/unhide | Make given course public, e.g., /unhide weba.
+/newchannel | Create new text channel inside a course, e.g., /newchannel feedback.
+/removechannel | Remove given text channel inside a course, e.g., /removechannel feedback.
 /courses | Returns a list of all courses.
 /help | Returns a list of commands with info or info about a specific command.
 /instructors | Used in course channel returns a list of course instructors. Can be used anywhere when a parameter is given.
-/join | Joins you into the course given, e.g. /join ohpe.
-/leave | Remove you from the course given, e.g. /leave ohpe.
+/addinstructor | Give instructor role to another user, e.g., /addinstructor @username.
+/join | Joins you into the course given, e.g., /join ohpe.
+/leave | Remove you from the course given, e.g., /leave ohpe.
 
 ### Material
 

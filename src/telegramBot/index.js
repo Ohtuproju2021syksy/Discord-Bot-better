@@ -1,6 +1,6 @@
 require("dotenv").config();
 const { Telegraf } = require("telegraf");
-const { Groups } = require("../db/dbInit");
+const { Course } = require("../db/dbInit");
 const fs = require("fs");
 
 const telegramClient = new Telegraf(process.env.TELEGRAM_BOT_TOKEN);
@@ -18,7 +18,7 @@ for (const file of eventFiles) {
   const event = require(`./events/${file}`);
   telegramClient.on(event.name, (...args) => {
     try {
-      event.execute(...args, telegramClient, Groups);
+      event.execute(...args, telegramClient, Course);
     }
     catch (error) {
       console.log(error);
@@ -26,12 +26,12 @@ for (const file of eventFiles) {
   });
 }
 
-const start = () => {
-  telegramClient.launch();
+const startTelegramBot = async () => {
+  await telegramClient.launch();
   console.log("Telegram bot launched");
 };
 
 module.exports = {
-  start,
   telegramClient,
+  startTelegramBot,
 };

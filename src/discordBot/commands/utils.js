@@ -1,8 +1,8 @@
 const fs = require("fs");
 const { Client } = require("discord-slash-commands-client");
 const { Collection } = require("discord.js");
-const { getRoleFromCategory } = require("../services/service");
 const { facultyRole, courseAdminRole } = require("../../../config.json");
+require("dotenv").config();
 
 const slashClient = new Client(
   process.env.BOT_TOKEN,
@@ -60,9 +60,9 @@ const createCommandRolePermissions = (client, highestRole) => {
   return permissions;
 };
 
-const createSlashCommand = async (client, command) => {
-  if (command.name === "join") command.options[0].choices = joinGetChoices(client);
-  if (command.name === "leave") command.options[0].choices = leaveGetChoices(client);
+const createSlashCommand = async (client, command, Course) => {
+  if (command.name === "join") command.options[0].choices = await getCourseChoices(false, Course);
+  if (command.name === "leave") command.options[0].choices = await getCourseChoices(true, Course);
   try {
     const createdCommand = await slashClient
       .createCommand({
@@ -117,7 +117,7 @@ const loadCommands = (client) => {
   return alphabetisedCommands;
 };
 
-const reloadCommands = async (client, commandNames) => {
+const reloadCommands = async (client, commandNames, Course) => {
   commandNames.map(async (commandName) => {
     try {
       const { file } = client.slashCommands.get(commandName);
@@ -130,7 +130,7 @@ const reloadCommands = async (client, commandNames) => {
           file,
         },
       );
-      await createSlashCommand(client, reloadedCommand);
+      await createSlashCommand(client, reloadedCommand, Course);
     }
     catch (error) {
       console.log(`Unknown slash command${commandName}`);
@@ -138,33 +138,27 @@ const reloadCommands = async (client, commandNames) => {
   });
 };
 
-const leaveGetChoices = (client) => {
-  const choices = client.guild.channels.cache
-    .filter(({ type, name }) => type === "category" && name.startsWith("📚") || name.startsWith("🔒"))
-    .map(({ name }) => getRoleFromCategory(name))
-    .sort()
-    .map(courseName => ({ name: courseName, value: courseName }));
-  // console.log(choices);
+const getCourseChoices = async (showPrivate, Course) => {
+  const courseData = await Course.findAll({});
+  const choices = courseData
+    .filter(val => val.private === false || val.private === showPrivate)
+    .map(c => (
+      {
+        name: `${c.dataValues.code} - ${c.dataValues.fullName} - ${c.dataValues.name}`,
+        value: c.dataValues.name,
+      }
+    ));
+  choices.sort((a, b) => a.value.localeCompare(b.value));
   return choices;
 };
 
-const joinGetChoices = (client) => {
-  const choices = client.guild.channels.cache
-    .filter(({ type, name }) => type === "category" && name.startsWith("📚"))
-    .map(({ name }) => getRoleFromCategory(name))
-    .sort()
-    .map(courseName => ({ name: courseName, value: courseName }));
-  // console.log("join", choices);
-  return choices;
-};
-
-const initCommands = async (client) => {
+const initCommands = async (client, Course) => {
   if (process.env.NODE_ENV === "test") return;
 
   const slashCommands = loadCommands(client);
 
   for (const slashCommand of slashCommands.values()) {
-    await createSlashCommand(client, slashCommand.command);
+    await createSlashCommand(client, slashCommand.command, Course);
     // reduce spam to discord api
     await new Promise(resolve => setTimeout(resolve, 4000));
   }

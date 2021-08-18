@@ -5,8 +5,6 @@
 
 [Setup for the Bot](./setupmainbot.md)
 
-[Setup for testing Bot](./setuptestbot.md)
-
 [Setup for the backend](./OAuth2.md)
 
 [Setup for the Telegram bridge](./telegram.md)
@@ -26,5 +24,3 @@
 [Discord Developer Portal](https://discord.com/developers/docs/intro)
 
 [The Modern JavaScript Tutorial](https://javascript.info/)
-
-[Corde Documentation](https://cordejs.org/docs/)

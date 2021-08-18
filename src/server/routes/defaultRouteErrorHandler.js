@@ -1,7 +1,7 @@
 const router = require("express").Router();
 
-router.all("*", (request, response) => {
-  response.redirect("/");
+router.all("*", (req, res) => {
+  res.redirect("/");
 });
 
 module.exports = router;

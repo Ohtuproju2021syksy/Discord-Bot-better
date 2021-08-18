@@ -35,6 +35,7 @@ client.slashCommands
   });
 
 const teacher = {
+  id: 1,
   nickname: "teacher",
   roles: {
     cache: [{ name: facultyRole }, { name: `test ${courseAdminRole}` }],
@@ -47,6 +48,7 @@ const teacher = {
 };
 
 const student = {
+  id: 2,
   nickname: "student",
   roles: {
     cache: [{ name: "student" }],
@@ -61,7 +63,7 @@ const student = {
 const guideChannel = {
   name: "guide",
   type: "text",
-  parent: null,
+  parent: undefined,
   delete: jest.fn(),
 };
 
@@ -99,14 +101,19 @@ client.guild.channels.cache.set(1, guideChannel);
 client.guild.channels.cache.set(2, testChannel);
 client.guild.channels.cache.set(3, testChannelGeneral);
 client.guild.channels.cache.set(4, chat);
+client.guild.roles.cache.set(1, { name: "test" });
+client.guild.roles.cache.set(2, { name: `${courseAdminRole}_test` });
+client.guild.roles.cache.set(3, { name: "admin" });
+client.guild.roles.cache.set(4, { name: facultyRole });
+client.guild.members.cache.set(1, teacher);
+client.guild.members.cache.set(2, student);
 
 const defaultTeacherInteraction = {
   client: client,
   channel_id: 1,
   member: {
-    user: {
-      id: 1,
-    },
+    user: teacher,
+    roles: [1, 3, 4],
   },
   data: {
     options: [
@@ -126,9 +133,8 @@ const defaultStudentInteraction = {
   client: client,
   channel_id: 1,
   member: {
-    user: {
-      id: 2,
-    },
+    user: student,
+    roles: [],
   },
   data: {
     options: [{
@@ -151,7 +157,7 @@ const teacherInteractionHelp = {
   },
 };
 
-const studentInteractionHelp = {
+const studentInteractionWithoutOptions = {
   client: client,
   channel_id: 1,
   member: {
@@ -163,116 +169,6 @@ const studentInteractionHelp = {
     options: false,
   },
 };
-
-const invalidInteractionHelp = {
-  client: client,
-  channel_id: 1,
-  member: {
-    user: {
-      id: 2,
-    },
-  },
-  data: {
-    options: [{
-      value: "invalid",
-    }],
-  },
-};
-
-const interactionHelpJoin = {
-  client: client,
-  channel_id: 1,
-  member: {
-    user: {
-      id: 1,
-    },
-  },
-  data: {
-    options: [{
-      value: "join",
-      command: {
-        name: "join",
-        description: "Join a course, e.g. `/join ohpe`",
-        usage: "[course name]",
-      },
-    }],
-  },
-};
-
-const interactionJoin = {
-  client: client,
-  channel_id: 1,
-  member: {
-    user: {
-      id: 1,
-    },
-  },
-  data: {
-    options: [{
-      value: "tester",
-      command: {
-        name: "join",
-      },
-    }],
-  },
-};
-
-const intInsWithoutArgs = {
-  client: client,
-  channel_id: 1,
-  member: {
-    user: {
-      id: 2,
-    },
-  },
-  data: {
-    options: false,
-  },
-};
-
-const intInsWithValidArgs = {
-  client: client,
-  channel_id: 1,
-  member: {
-    user: {
-      id: 1,
-    },
-  },
-  data: {
-    options: [{
-      value: "test",
-    }],
-  },
-};
-
-const intInsWithInvalidArgs = {
-  client: client,
-  channel_id: 1,
-  member: {
-    user: {
-      id: 1,
-    },
-  },
-  data: {
-    options: [{
-      value: "tast",
-    }],
-  },
-};
-
-const intInsWithoutArgsInCourseChannelWithAdmins = {
-  client: client,
-  channel_id: 2,
-  member: {
-    user: {
-      id: 2,
-    },
-  },
-  data: {
-    options: false,
-  },
-};
-
 
 module.exports = {
   teacherData,
@@ -280,14 +176,7 @@ module.exports = {
   teacherJoinData,
   studentInsData,
   teacherInteractionHelp,
-  studentInteractionHelp,
-  invalidInteractionHelp,
-  interactionHelpJoin,
-  interactionJoin,
-  intInsWithoutArgs,
-  intInsWithValidArgs,
-  intInsWithInvalidArgs,
-  intInsWithoutArgsInCourseChannelWithAdmins,
+  studentInteractionWithoutOptions,
   defaultTeacherInteraction,
   defaultStudentInteraction,
 };

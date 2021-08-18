@@ -1,15 +1,15 @@
-const { createDiscordUser, validDiscordChannel, sendMessageToDiscord } = require("../../bridge/index");
+const { createDiscordUser, validDiscordChannel, sendMessageToDiscord } = require("../../bridge/service");
 
-const execute = async (ctx, message, telegramClient, Groups) => {
+const execute = async (ctx, message, telegramClient, Course) => {
   const id = ctx.message.chat.id;
-  const group = await Groups.findOne({ where: { groupId: String(id) } });
+  const group = await Course.findOne({ where: { telegramId: String(id) } });
   if (!group) {
     return;
   }
   const url = await telegramClient.telegram.getFileLink(ctx.message.photo[ctx.message.photo.length - 1]);
 
-  const courseName = group.course;
-  if (String(ctx.message.chat.id) === group.groupId) {
+  const courseName = group.name;
+  if (String(ctx.message.chat.id) === group.telegramId) {
     const discordUser = await createDiscordUser(ctx);
     const channel = await validDiscordChannel(courseName);
     if (!channel) return;
