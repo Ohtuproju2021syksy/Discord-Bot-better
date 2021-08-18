@@ -95,7 +95,7 @@ Students can use the `/instructors` command on a course and see all the instruct
 
 ## How to edit course name information
 
-the `/edit` command allows you to edit the information for the course you are in. You can change the _course code_, _full name_ and _nickname_. If you change the value users see on the Discord´s left column, this value is either the course code or nickname depending on which values the course is based on, you have 15 minutes cooldown until you can use the command again.
+The `/edit` command allows you to edit the information for the course you are in. You can change the _course code_, _full name_ and _nickname_. If you change the value users see on the Discord´s left column, this value is either the course code or nickname depending on which values the course is based on, you have 15 minutes cooldown until you can use the command again.
 
 ![edit](./images/edit.png)
 
