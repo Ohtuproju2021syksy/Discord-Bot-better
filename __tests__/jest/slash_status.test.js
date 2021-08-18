@@ -8,7 +8,6 @@ jest.mock("../../src/discordBot/services/service");
 const {
   defaultTeacherInteraction,
 } = require("../mocks/mockInteraction");
-
 const roleString = "test";
 
 afterEach(() => {
