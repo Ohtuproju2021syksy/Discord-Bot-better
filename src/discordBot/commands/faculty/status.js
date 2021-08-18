@@ -32,7 +32,9 @@ const execute = async (interaction, client, Course) => {
     (role) => role.name === instructorRole,
   )?.members.map(m => m.displayName);
 
-  console.log(instructors);
+  const instructorMessage = (instructors && instructors.length) ?
+    `${instructors.join(", ")}` :
+    "No instructors";
 
 
   return sendEphemeral(client, interaction, `
@@ -41,8 +43,8 @@ Fullname: ${course.fullName}
 Code: ${course.code}
 Invitation Link: ${createCourseInvitationLink(course.name)}
 
+Instructors: ${instructorMessage}
 Members: ${count}
-Instructors: ${instructors.join(", ")}
   `);
 };
 
