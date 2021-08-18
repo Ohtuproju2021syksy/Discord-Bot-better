@@ -1,6 +1,5 @@
 const { execute } = require("../../src/discordBot/commands/faculty/status");
 const { sendEphemeral } = require("../../src/discordBot/commands/utils");
-const { courseAdminRole } = require("../../config.json");
 
 jest.mock("../../src/discordBot/commands/utils");
 jest.mock("../../src/discordBot/services/service");
@@ -8,7 +7,6 @@ jest.mock("../../src/discordBot/services/service");
 const {
   defaultTeacherInteraction,
 } = require("../mocks/mockInteraction");
-const roleString = "test";
 
 afterEach(() => {
   jest.clearAllMocks();

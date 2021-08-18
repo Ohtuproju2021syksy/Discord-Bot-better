@@ -1,7 +1,6 @@
-const { setCoursePositionABC,
+const {
   getRoleFromCategory,
   createCourseInvitationLink,
-  findChannelWithNameAndType,
   trimCourseName,
   findCourseFromDb,
 } = require("../../services/service");
@@ -17,9 +16,6 @@ const execute = async (interaction, client, Course) => {
   }
 
   const categoryName = trimCourseName(channel.parent, guild);
-  const category = findChannelWithNameAndType(channel.parent.name, "category", guild);
-  const channelAnnouncement = guild.channels.cache.find(c => c.parent === channel.parent && c.name.includes("_announcement"));
-
   const course = await findCourseFromDb(categoryName, Course);
 
   const courseRole = getRoleFromCategory(categoryName);
