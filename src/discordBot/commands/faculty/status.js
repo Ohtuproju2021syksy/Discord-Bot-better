@@ -1,18 +1,49 @@
-const { trimCourseName } = require("../../services/service");
+const { setCoursePositionABC,
+  getRoleFromCategory,
+  createCourseInvitationLink,
+  findChannelWithNameAndType,
+  trimCourseName,
+  findCourseFromDb,
+} = require("../../services/service");
 const { sendEphemeral } = require("../utils");
 const { facultyRole } = require("../../../../config.json");
 
-const execute = async (interaction, client) => {
+const execute = async (interaction, client, Course) => {
   const guild = client.guild;
   const channel = guild.channels.cache.get(interaction.channel_id);
-  const category = channel.parent;
-  const courseName = trimCourseName(category)
 
-  console.log(channel);
-  console.log(category);
-  console.log(trimCourseName(category));
+  if (!channel?.parent?.name?.startsWith("🔒") && !channel?.parent?.name?.startsWith("📚")) {
+    return sendEphemeral(client, interaction, "This is not a course category, can not execute the command");
+  }
 
-  return sendEphemeral(client, interaction, `Course: ${channel.name}`);
+  const categoryName = trimCourseName(channel.parent, guild);
+  const category = findChannelWithNameAndType(channel.parent.name, "category", guild);
+  const channelAnnouncement = guild.channels.cache.find(c => c.parent === channel.parent && c.name.includes("_announcement"));
+
+  const course = await findCourseFromDb(categoryName, Course);
+
+  const courseRole = getRoleFromCategory(categoryName);
+  const instructorRole = `${courseRole} instructor`;
+  const count = guild.roles.cache.find(
+    (role) => role.name === courseRole,
+  )?.members.size;
+
+  const instructors = guild.roles.cache.find(
+    (role) => role.name === instructorRole,
+  )?.members.map(m => m.displayName);
+
+  console.log(instructors);
+
+
+  return sendEphemeral(client, interaction, `
+Course: ${course.name}
+Fullname: ${course.fullName}
+Code: ${course.code}
+Invitation Link: ${createCourseInvitationLink(course.name)}
+
+Members: ${count}
+Instructors: ${instructors.join(", ")}
+  `);
 };
 
 module.exports = {
