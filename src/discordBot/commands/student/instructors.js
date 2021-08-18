@@ -38,8 +38,8 @@ module.exports = {
   joinArgs: false,
   options: [
     {
-      name: "command",
-      description: "command instructions",
+      name: "course",
+      description: "Course to print instructors of",
       type: 3,
       required: false,
     },

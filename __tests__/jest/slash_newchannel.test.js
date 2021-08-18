@@ -29,7 +29,7 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
-describe("slash leave command", () => {
+describe("slash new channel command", () => {
   test("Cannot use command if channel has no parent", async () => {
     const client = defaultTeacherInteraction.client;
     const response = "Course not found, can not create new channel.";
