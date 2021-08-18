@@ -35,7 +35,15 @@ To be able to use all the faculty commands, you need to authenticate yourself. U
 
 ### Creating a new course
 
-You can create new course with command `/create`. Give the command and after that give the course code, course´s full name and course´s nickname. Nick name is optional and if not given then the coursecode will be also course´s nickname. **Note** that nick name is the value that is used as course´s name that users see on the Discord´s left column. So, we prefer that you give course a short nickname because it is more readable on Discord for the users. **Note** also that nickname is unique value.
+You can create new course with command `/create`. Give the command and after that give the _course code_, course´s _full name_ and course´s _nickname_. Nickname is optional and if not given then the coursecode will be also course´s nickname. **Note** that nickname is the value that is used as course´s name that users see on the Discord´s left column. So, we prefer that you give course a short nickname because it is more readable on Discord for the users. **Note** also that nickname is unique value.
+
+#### Multilingual course name
+
+If your course has multilingual course name, enter all the information in the _full name_ field.
+
+#### Open university course
+
+If your course is an open university course, use the abbreviation **MOOC** in the _full name_ field next to your course name.
 
 ![create](./images/create.png)
 
@@ -85,6 +93,11 @@ To make the course public again use the `/unhide` command followed by the course
 ## How to add instructor to a course
 Students can use the `/instructors` command on a course and see all the instructors on that course. _Faculty_ members and the ones who already have the _course instructor_ role can give other users this course instructor role. The command is `/addinstructor` the value to give is the username you want to give the instructor role. Use this command inside the course you want the role to be.
 
+## How to edit course name information
+
+the `/edit` command allows you to edit the information for the course you are in. You can change the _course code_, _full name_ and _nickname_. If you change the value users see on the Discord´s left column, this value is either the course code or nickname depending on which values the course is based on, you have 15 minutes cooldown until you can use the command again.
+
+![edit](./images/edit.png)
 
 ### List of commands
 
@@ -97,6 +110,7 @@ Command | Explanation
 /newchannel | Create new text channel inside a course, e.g., /newchannel feedback.
 /removechannel | Remove given text channel inside a course, e.g., /removechannel feedback.
 /courses | Returns a list of all courses.
+/edit | Edit course information, options; coursecode, full name, nickname
 /help | Returns a list of commands with info or info about a specific command.
 /instructors | Used in course channel returns a list of course instructors. Can be used anywhere when a parameter is given.
 /addinstructor | Give instructor role to another user, e.g., /addinstructor @username.
