@@ -5,7 +5,9 @@ const {
   updateGuide,
   findOrCreateChannel,
   setCoursePositionABC,
-  createCourseToDatabase } = require("../../services/service");
+  createCourseToDatabase,
+  findCourseFromDb,
+  findCourseFromDbWithFullName } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
 
@@ -90,17 +92,18 @@ const getCategoryObject = (categoryName, permissionOverwrites) => ({
 const execute = async (interaction, client, Course) => {
   const courseCode = interaction.data.options[0].value.toLowerCase().trim();
   const courseFullName = interaction.data.options[1].value.toLowerCase().trim();
-  let courseName;
+  if (await findCourseFromDbWithFullName(courseFullName, Course)) return sendEphemeral(client, interaction, "Error: Course fullname must be unique.");
 
+  let courseName;
   if (!interaction.data.options[2]) {
     courseName = courseCode;
   }
   else {
     courseName = interaction.data.options[2].value.toLowerCase().trim();
   }
+  if (await findCourseFromDb(courseName, Course)) return sendEphemeral(client, interaction, "Error: Course name must be unique.");
 
   const guild = client.guild;
-
   // Roles
   const student = await findOrCreateRoleWithName(courseName, guild);
   const admin = await findOrCreateRoleWithName(`${courseName} ${courseAdminRole}`, guild);
@@ -119,12 +122,11 @@ const execute = async (interaction, client, Course) => {
   // Database
   await createCourseToDatabase(courseCode, courseFullName, courseName, Course);
   // await printCourses();
-
   await setCoursePositionABC(guild, categoryName);
   await createInvitation(guild, courseName);
   sendEphemeral(client, interaction, `Created course ${courseName}.`);
   await client.emit("COURSES_CHANGED", Course);
-  await updateGuide(client.guild);
+  await updateGuide(client.guild, Course);
 };
 
 module.exports = {

@@ -133,7 +133,7 @@ const execute = async (interaction, client, Course) => {
   }
 
   await client.emit("COURSES_CHANGED", Course);
-  await updateGuide(client.guild);
+  await updateGuide(client.guild, Course);
 
   return sendEphemeral(client, interaction, "Course information has been changed");
 };

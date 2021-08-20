@@ -35,7 +35,7 @@ const execute = async (interaction, client, Course) => {
   // await printCourses();
 
   await client.emit("COURSES_CHANGED", Course);
-  await updateGuide(client.guild);
+  await updateGuide(client.guild, Course);
 
 };
 

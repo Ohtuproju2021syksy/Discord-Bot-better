@@ -32,7 +32,7 @@ const execute = async (interaction, client, Course) => {
     used.set(courseName, Date.now() + cooldownTimeMs);
     handleCooldown(used, courseName, cooldownTimeMs);
     await client.emit("COURSES_CHANGED", Course);
-    await updateGuide(client.guild);
+    await updateGuide(client.guild, Course);
   }
 };
 
