@@ -121,6 +121,7 @@ const validateContent = (content) => {
 };
 
 const sendMessageToTelegram = async (telegramId, content, sender) => {
+  sender = escapeChars(sender);
   content = validateContent(content);
   sender ?
     await telegramClient.telegram.sendMessage(telegramId, `*${sender}:*\n ${content}`, { parse_mode: "MarkdownV2" }) :
@@ -128,13 +129,14 @@ const sendMessageToTelegram = async (telegramId, content, sender) => {
 };
 
 const sendPhotoToTelegram = async (telegramId, info, sender, url) => {
+  sender = escapeChars(sender);
   info = validateContent(info);
   const caption = `*${sender}:* ${info}`;
   await telegramClient.telegram.sendPhoto(telegramId, { url }, { caption, parse_mode: "MarkdownV2" });
 };
 
 const sendAnimationToTelegram = async (telegramId, sender, url) => {
-  sender = validateContent(sender);
+  sender = escapeChars(sender);
   const caption = `*${sender}*`;
   await telegramClient.telegram.sendAnimation(telegramId, { url }, { caption, parse_mode: "MarkdownV2" });
 };
