@@ -10,16 +10,21 @@ const slashClient = new Client(
 );
 
 const sendEphemeral = (client, interaction, content) => {
-  client.api.interactions(interaction.id, interaction.token).callback.post({
-    data: {
-      type: 4,
+  try {
+    client.api.interactions(interaction.id, interaction.token).callback.post({
       data: {
-        content,
-        // make the response ephemeral
-        flags: 64,
+        type: 4,
+        data: {
+          content,
+          // make the response ephemeral
+          flags: 64,
+        },
       },
-    },
-  });
+    });
+  }
+  catch (error) {
+    console.log("Ephemeral message token expired");
+  }
 };
 
 const findInstructorRoles = (client) => {
