@@ -37,6 +37,7 @@ const execute = async (interaction, client, Course) => {
 Course: ${course.name}
 Fullname: ${course.fullName}
 Code: ${course.code}
+Hidden: ${course.private}
 Invitation Link: ${createCourseInvitationLink(course.name)}
 
 Instructors: ${instructorMessage}
