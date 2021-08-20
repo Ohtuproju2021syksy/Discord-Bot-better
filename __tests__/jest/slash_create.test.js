@@ -1,6 +1,9 @@
 const { execute } = require("../../src/discordBot/commands/faculty/create");
 const { sendEphemeral } = require("../../src/discordBot/commands/utils");
-const { findOrCreateRoleWithName,
+const {
+  findCourseFromDb,
+  findCourseFromDbWithFullName,
+  findOrCreateRoleWithName,
   findCategoryName,
   findOrCreateChannel,
   setCoursePositionABC,
@@ -13,6 +16,12 @@ jest.mock("../../src/discordBot/services/service");
 
 findOrCreateRoleWithName.mockImplementation((name) => { return { id: Math.floor(Math.random() * 10) + 5, name: name }; });
 findCategoryName.mockImplementation((name) => `📚 ${name}`);
+findCourseFromDbWithFullName
+  .mockImplementation(() => false)
+  .mockImplementationOnce(() => true);
+findCourseFromDb
+  .mockImplementation(() => false)
+  .mockImplementationOnce(() => true);
 
 const { defaultTeacherInteraction } = require("../mocks/mockInteraction");
 
@@ -21,6 +30,32 @@ afterEach(() => {
 });
 
 describe("slash create command", () => {
+  test("course name must be unique", async () => {
+    const courseCode = "TKT-100";
+    const courseFull = "Long course name";
+    const client = defaultTeacherInteraction.client;
+    defaultTeacherInteraction.data.options[0].value = courseCode;
+    defaultTeacherInteraction.data.options[1].value = courseFull;
+    const response = "Error: Course fullname must be unique.";
+    await execute(defaultTeacherInteraction, client);
+    expect(findCourseFromDbWithFullName).toHaveBeenCalledTimes(1);
+    expect(sendEphemeral).toHaveBeenCalledTimes(1);
+    expect(sendEphemeral).toHaveBeenCalledWith(client, defaultTeacherInteraction, response);
+  });
+
+  test("course name must be unique", async () => {
+    const courseCode = "TKT-100";
+    const courseFull = "Long course name";
+    const client = defaultTeacherInteraction.client;
+    defaultTeacherInteraction.data.options[0].value = courseCode;
+    defaultTeacherInteraction.data.options[1].value = courseFull;
+    const response = "Error: Course name must be unique.";
+    await execute(defaultTeacherInteraction, client);
+    expect(findCourseFromDbWithFullName).toHaveBeenCalledTimes(1);
+    expect(sendEphemeral).toHaveBeenCalledTimes(1);
+    expect(sendEphemeral).toHaveBeenCalledWith(client, defaultTeacherInteraction, response);
+  });
+
   test("create course name without nick", async () => {
     const courseCode = "tkt-100";
     const courseFull = "Long course name";
@@ -131,12 +166,13 @@ describe("slash create command", () => {
     const courseCode = "TKT-100";
     const courseFull = "Long course name";
     const courseName = "nick name";
+    const Course = undefined;
     const client = defaultTeacherInteraction.client;
     defaultTeacherInteraction.data.options[0].value = courseCode;
     defaultTeacherInteraction.data.options[1].value = courseFull;
     defaultTeacherInteraction.data.options[2].value = courseName;
-    await execute(defaultTeacherInteraction, client);
+    await execute(defaultTeacherInteraction, client, Course);
     expect(updateGuide).toHaveBeenCalledTimes(1);
-    expect(updateGuide).toHaveBeenCalledWith(client.guild);
+    expect(updateGuide).toHaveBeenCalledWith(client.guild, Course);
   });
 });

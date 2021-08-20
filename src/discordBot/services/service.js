@@ -41,19 +41,18 @@ const findOrCreateRoleWithName = async (name, guild) => {
   );
 };
 
-const updateGuideMessage = async (message) => {
+const updateGuideMessage = async (message, Course) => {
   const guild = message.guild;
-  const rows = guild.channels.cache
-    .filter((ch) => ch.type === "category" && ch.name.startsWith("📚"))
-    .map((ch) => {
-      const courseFullName = ch.name.replace("📚", "").trim();
-      const courseRole = getRoleFromCategory(ch.name);
+  const courseData = await findAllCoursesFromDb(Course);
+  const rows = courseData
+    .map((course) => {
+      const code = course.code.toUpperCase();
+      const fullname = course.fullName.charAt(0).toUpperCase() + course.fullName.slice(1);
       const count = guild.roles.cache.find(
-        (role) => role.name === courseRole,
+        (role) => role.name === course.name,
       )?.members.size;
-      return `  - ${courseFullName} \`/join ${courseRole}\` 👤${count}`;
-    }).sort((a, b) => a.localeCompare(b));
-
+      return `  - ${code} - ${fullname} - \`/join ${course.name}\` 👤${count}`;
+    });
 
   const newContent = `
 Käytössäsi on seuraavia komentoja:
@@ -79,13 +78,13 @@ Invitation link for the server ${invite_url}
   await message.edit(newContent);
 };
 
-const updateGuide = async (guild) => {
+const updateGuide = async (guild, Course) => {
   const channel = guild.channels.cache.find(
     (c) => c.name === GUIDE_CHANNEL_NAME,
   );
   const messages = await channel.messages.fetchPinned(true);
   const message = messages.first();
-  await updateGuideMessage(message);
+  await updateGuideMessage(message, Course);
 };
 
 const createCourseInvitationLink = (courseName) => {
@@ -116,12 +115,11 @@ const createInvitation = async (guild, args) => {
   let invitationlink;
   if (args === GUIDE_CHANNEL_NAME) {
     await guide.createInvite({ maxAge: 0, unique: true, reason: args });
-    invitationlink = `Invitation link for the course ${invite_url}`;
+    invitationlink = `Invitation link for the server ${invite_url}`;
   }
   else {
     invitationlink = createCourseInvitationLink(args);
   }
-
 
   const message = await course.send(invitationlink);
   await message.pin();
@@ -260,6 +258,18 @@ const findCourseFromDb = async (courseName, Course) => {
   return await Course.findOne({ where: { name: courseName } });
 };
 
+const findAllCoursesFromDb = async (Course) => {
+  return await Course.findAll({
+    attributes: ["code", "fullName", "name"],
+    order: ["code"],
+    where: { private: false },
+    raw: true });
+};
+
+const findCourseFromDbWithFullName = async (courseFullName, Course) => {
+  return await Course.findOne({ where: { fullName: courseFullName } });
+};
+
 
 module.exports = {
   createCategoryName,
@@ -287,4 +297,5 @@ module.exports = {
   createCourseToDatabase,
   removeCourseFromDb,
   findCourseFromDb,
+  findCourseFromDbWithFullName,
 };
