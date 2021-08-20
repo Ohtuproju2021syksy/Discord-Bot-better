@@ -17,6 +17,44 @@ const {
   trimCourseName,
   findAllCourseNames } = require("../../src/discordBot/services/service");
 
+const createGuidePinnedMessage = (guild) => {
+  const rows = guild.channels.cache
+    .filter((ch) => ch.type === "category" && ch.name.startsWith("📚"))
+    .map((ch) => {
+      const courseFullName = ch.name.replace("📚", "").trim();
+      const courseRole = getRoleFromCategory(ch.name);
+      const count = guild.roles.cache.find(
+        (role) => role.name === courseRole,
+      )?.members.size;
+      return `  - ${courseFullName} \`/join ${courseRole}\` 👤${count}`;
+    }).sort((a, b) => a.localeCompare(b));
+
+  let invite_url = "";
+  process.env.NODE_ENV === "production" ? invite_url = `${process.env.BACKEND_SERVER_URL}` : invite_url = `${process.env.BACKEND_SERVER_URL}:${process.env.PORT}`;
+
+  const newContent = `
+Käytössäsi on seuraavia komentoja:
+  - \`/join\` jolla voit liittyä kurssille
+  - \`/leave\` jolla voit poistua kurssilta
+Esim: \`/join ohpe\`
+  
+You have the following commands available:
+  - \`/join\` which you can use to join a course
+  - \`/leave\` which you can use to leave a course
+For example: \`/join ohpe\`
+
+Kurssit / Courses:
+${rows.join("\n")}
+
+In course specific channels you can also list instructors \`/instructors\`
+
+See more with \`/help\` command.
+
+Invitation link for the server ${invite_url}
+`;
+  return newContent;
+};
+
 const Course = {
   create: jest.fn(),
   findOne: jest
@@ -104,9 +142,10 @@ describe("Service", () => {
     client.guild.channels.cache = [guide, commands, testCategory];
     client.guild.roles.cache = [role];
     const msg = { guild: client.guild, pin: jest.fn(), edit: jest.fn() };
+    const guideMessage = createGuidePinnedMessage(client.guild);
     await updateGuideMessage(msg);
-    expect(client.guild.fetchInvites).toHaveBeenCalledTimes(1);
     expect(msg.edit).toHaveBeenCalledTimes(1);
+    expect(msg.edit).toHaveBeenCalledWith(guideMessage);
     client.guild.channels.cache = [];
   });
 

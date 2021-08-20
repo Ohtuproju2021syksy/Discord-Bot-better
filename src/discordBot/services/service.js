@@ -43,8 +43,6 @@ const findOrCreateRoleWithName = async (name, guild) => {
 
 const updateGuideMessage = async (message) => {
   const guild = message.guild;
-  const invites = await guild.fetchInvites();
-  const guideInvite = invites.find(invite => invite.channel.name === "guide");
   const rows = guild.channels.cache
     .filter((ch) => ch.type === "category" && ch.name.startsWith("📚"))
     .map((ch) => {
@@ -75,7 +73,7 @@ In course specific channels you can also list instructors \`/instructors\`
 
 See more with \`/help\` command.
 
-Invitation link for the server https://discord.gg/${guideInvite.code}
+Invitation link for the server ${invite_url}
 `;
 
   await message.edit(newContent);
@@ -117,8 +115,8 @@ const createInvitation = async (guild, args) => {
   );
   let invitationlink;
   if (args === GUIDE_CHANNEL_NAME) {
-    const invite = await guide.createInvite({ maxAge: 0, unique: true, reason: args });
-    invitationlink = `Invitation link for the course https://discord.gg/${invite.code}`;
+    await guide.createInvite({ maxAge: 0, unique: true, reason: args });
+    invitationlink = `Invitation link for the course ${invite_url}`;
   }
   else {
     invitationlink = createCourseInvitationLink(args);
