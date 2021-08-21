@@ -9,17 +9,27 @@ const {
 jest.mock("../../src/discordBot/commands/utils");
 jest.mock("../../src/discordBot/services/service");
 
-findCourseFromDb.mockImplementationOnce(() => {
-  return {
-    name: "test",
-    fullname: "test course",
-    code: "101",
-  };
-});
+const course = { name: "test", fullName: "test course", code: "101", private: false };
+const url = "mockUrl";
 
-createCourseInvitationLink.mockImplementationOnce(() => "www.mockparadise.org");
+findCourseFromDb.mockImplementation(() => course);
+
+createCourseInvitationLink.mockImplementation(() => url);
 
 const { defaultTeacherInteraction } = require("../mocks/mockInteraction");
+
+const createResponse = () => {
+  return `
+Course: ${course.name}
+Fullname: ${course.fullName}
+Code: ${course.code}
+Hidden: ${course.private}
+Invitation Link: ${url}
+
+Instructors: No instructors
+Members: undefined
+  `;
+};
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -34,14 +44,16 @@ describe("slash status command", () => {
     expect(sendEphemeral).toHaveBeenCalledWith(client, defaultTeacherInteraction, response);
   });
 
-  test("used outside course channels", async () => {
+  test("used in course channels", async () => {
     const client = defaultTeacherInteraction.client;
     defaultTeacherInteraction.channel_id = 2;
+    const response = createResponse();
     await execute(defaultTeacherInteraction, client);
     expect(trimCourseName).toHaveBeenCalledTimes(1);
     expect(findCourseFromDb).toHaveBeenCalledTimes(1);
     expect(getRoleFromCategory).toHaveBeenCalledTimes(1);
     expect(createCourseInvitationLink).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
+    expect(sendEphemeral).toHaveBeenCalledWith(client, defaultTeacherInteraction, response);
   });
 });
