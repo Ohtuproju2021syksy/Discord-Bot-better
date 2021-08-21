@@ -62,13 +62,13 @@ If you want to see who are the instructors on your course, you can use command `
 
 ### List of commands
 
-Command | Explanation
---------|-----------
-/auth | Command for faculty members with student role.
-/courses | Returns a list of all courses.
-/help | Returns a list of commands with info or info about a specific command.
-/instructors | Returns a list of course instructors. With agrument, the command can be used anywhere otherwise only on course channels.
-/join | Joins you into the course given, e.g., /join ohpe.
+Command | Explanation | Arguments
+--------|-------------|----------:
+[/auth](./commands/auth.md) | Command for faculty members with student role. | :x:
+/courses | Returns a list of all courses. | :x:
+/help | Returns a list of commands with info or info about a specific command. | <optional>
+/instructors | Returns a list of course instructors. With agrument, the command can be used anywhere otherwise only on course channels. | <optional>
+/join | Joins you into the course given, e.g., /join ohpe. | :heavy_check_mark:
 /leave | Remove you from the course given, e.g., /leave ohpe.
 
 ### Material
