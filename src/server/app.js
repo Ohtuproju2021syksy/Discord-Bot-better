@@ -2,20 +2,17 @@ require("dotenv").config();
 const express = require("express");
 const session = require("express-session");
 const passport = require("passport");
-const discordAuth = require("./routes/discordAuth");
-const discordJoin = require("./routes/join");
-const authenticateFaculty = require("./routes/authenticateFaculty");
+const discordAuthRoute = require("./routes/discordAuth");
+const discordJoinRoute = require("./routes/join");
+const facultyAuthRoute = require("./routes/authenticateFaculty");
 const defaultRouteHandler = require("./routes/defaultRouteHandler");
 const defaultRouteErrorHandler = require("./routes/defaultRouteErrorHandler");
 require("./strategies/discordstrategy");
 
 const SequelizeStore = require("connect-session-sequelize")(session.Store);
 
-module.exports = (client, sequelize) => {
+module.exports = (sequelize) => {
   const app = express();
-  const discordAuthRoute = discordAuth(client);
-  const discordJoinRoute = discordJoin(client);
-  const facultyAuthRoute = authenticateFaculty(client);
 
   app.use(
     session({
