@@ -66,10 +66,10 @@ Command | Explanation | Arguments
 --------|-------------|----------:
 [/auth](./commands/auth.md) | Command for faculty members with student role. | :x:
 /courses | Returns a list of all courses. | :x:
-/help | Returns a list of commands with info or info about a specific command. | <optional>
-/instructors | Returns a list of course instructors. With agrument, the command can be used anywhere otherwise only on course channels. | <optional>
+/help | Returns a list of commands with info or info about a specific command. | :o:
+/instructors | Returns a list of course instructors. With agrument, the command can be used anywhere otherwise only on course channels. | :o:
 /join | Joins you into the course given, e.g., /join ohpe. | :heavy_check_mark:
-/leave | Remove you from the course given, e.g., /leave ohpe.
+/leave | Remove you from the course given, e.g., /leave ohpe. | :heavy_check_mark:
 
 ### Material
 

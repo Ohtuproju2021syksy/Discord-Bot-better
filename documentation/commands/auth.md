@@ -1,10 +1,10 @@
 ## /auth
 
-- [x] Can be used in every channel.
-- [x] Responds with ephemeral message - visible only to interaction user.
-- [x] Response contains authentication URL to obtain faculty role.
-- [x] For faculty members with student role.
-- [x] All members can use this command.
+:heavy_check_mark: Can be used in every channel.
+:heavy_check_mark: Responds with ephemeral message - visible only to interaction user.
+:heavy_check_mark: Response contains authentication URL to obtain faculty role.
+:heavy_check_mark: For faculty members with student role.
+:heavy_check_mark: All members can use this command.
 
-- [ ] Student can get faculty role with this command.
-- [ ] Arguments.
+:x: Student can get faculty role with this command.
+:x: Needs arguments.
