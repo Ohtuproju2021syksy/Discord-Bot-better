@@ -6,4 +6,4 @@
 - :heavy_check_mark: All members can use this command.
 - :heavy_check_mark: Needs argument.
 
-- :x: The user can use join command to join private course.
+- :x: The user can join a private course with a join command.
