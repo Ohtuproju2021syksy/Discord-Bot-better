@@ -7,4 +7,4 @@
 - :heavy_check_mark: This command has cooldown (course specific).
 - :x: All members can use this command.
 
-Note: User can join a unhidden course with /join command and invitation.
+Note: The user can join the public course with the /join command and an invitation.
