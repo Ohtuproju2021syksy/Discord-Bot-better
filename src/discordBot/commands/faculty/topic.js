@@ -38,10 +38,9 @@ const execute = async (interaction, client) => {
   await channelAnnouncement.setTopic(newTopic);
   await channelGeneral.setTopic(newTopic);
 
-  const nameToCoolDown = trimCourseName(channel.parent, guild);
   const cooldownTimeMs = 1000 * 60 * 15;
-  used.set(nameToCoolDown, Date.now() + cooldownTimeMs);
-  handleCooldown(used, nameToCoolDown, cooldownTimeMs);
+  used.set(categoryName, Date.now() + cooldownTimeMs);
+  handleCooldown(used, categoryName, cooldownTimeMs);
 
   return sendEphemeral(client, interaction, "Channel topic has been changed");
 };
