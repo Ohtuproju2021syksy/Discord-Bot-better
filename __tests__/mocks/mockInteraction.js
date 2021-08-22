@@ -85,6 +85,15 @@ const testChannelGeneral = {
   parent: testCatecory,
   type: "text",
   delete: jest.fn(),
+  setTopic: jest.fn(),
+};
+
+const testChannelAccouncement = {
+  name: "test_announcement",
+  parent: testCatecory,
+  type: "text",
+  delete: jest.fn(),
+  setTopic: jest.fn(),
 };
 
 const chat = {
@@ -101,6 +110,7 @@ client.guild.channels.cache.set(1, guideChannel);
 client.guild.channels.cache.set(2, testChannel);
 client.guild.channels.cache.set(3, testChannelGeneral);
 client.guild.channels.cache.set(4, chat);
+client.guild.channels.cache.set(5, testChannelAccouncement);
 client.guild.roles.cache.set(1, { name: "test" });
 client.guild.roles.cache.set(2, { name: `${courseAdminRole}_test` });
 client.guild.roles.cache.set(3, { name: "admin" });
