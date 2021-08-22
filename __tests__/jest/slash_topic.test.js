@@ -1,14 +1,17 @@
-const { execute } = require("../../src/discordBot/commands/faculty/create");
-// const { sendEphemeral } = require("../../src/discordBot/commands/utils");
-const { findOrCreateRoleWithName,
-  findCategoryName } = require("../../src/discordBot/services/service");
+const { execute } = require("../../src/discordBot/commands/faculty/topic");
+const { sendEphemeral } = require("../../src/discordBot/commands/utils");
+const {
+  trimCourseName,
+  handleCooldown,
+  msToMinutesAndSeconds } = require("../../src/discordBot/services/service");
 // const { courseAdminRole } = require("../../config.json");
 
 jest.mock("../../src/discordBot/commands/utils");
 jest.mock("../../src/discordBot/services/service");
 
-findOrCreateRoleWithName.mockImplementation((name) => { return { id: Math.floor(Math.random() * 10) + 5, name: name }; });
-findCategoryName.mockImplementation((name) => `📚 ${name}`);
+const time = "15:00";
+
+msToMinutesAndSeconds.mockImplementation(() => time);
 
 const { defaultTeacherInteraction } = require("../mocks/mockInteraction");
 
@@ -17,122 +20,48 @@ afterEach(() => {
 });
 
 describe("slash topic command", () => {
-  test("add a new topic", async () => {
+  test("command must be used in course channels", async () => {
     const newTopic = "New topic!";
     defaultTeacherInteraction.data.options[0].value = newTopic;
     const client = defaultTeacherInteraction.client;
+    defaultTeacherInteraction.channel_id = 4;
+    const response = "This is not a course category, can not execute the command";
     await execute(defaultTeacherInteraction, client);
-    // expect(findOrCreateRoleWithName).toHaveBeenCalledTimes(2);
-    // expect(findOrCreateRoleWithName).toHaveBeenCalledWith(courseCode, client.guild);
-    // expect(findOrCreateRoleWithName).toHaveBeenCalledWith(`${courseCode} ${courseAdminRole}`, client.guild);
-  });
-
-  /*
-  test("find or create correct roles", async () => {
-    const courseCode = "TKT-100";
-    const courseFull = "Long course name";
-    const courseName = "nick name";
-    const client = defaultTeacherInteraction.client;
-    defaultTeacherInteraction.data.options.push({ value: "", command: {} });
-    defaultTeacherInteraction.data.options[0].value = courseCode;
-    defaultTeacherInteraction.data.options[1].value = courseFull;
-    defaultTeacherInteraction.data.options[2].value = courseName;
-    await execute(defaultTeacherInteraction, client);
-    expect(findOrCreateRoleWithName).toHaveBeenCalledTimes(2);
-    expect(findOrCreateRoleWithName).toHaveBeenCalledWith(courseName, client.guild);
-    expect(findOrCreateRoleWithName).toHaveBeenCalledWith(`${courseName} ${courseAdminRole}`, client.guild);
-  });
-
-  test("find category name", async () => {
-    const courseCode = "TKT-100";
-    const courseFull = "Long course name";
-    const courseName = "nick name";
-    const client = defaultTeacherInteraction.client;
-    defaultTeacherInteraction.data.options[0].value = courseCode;
-    defaultTeacherInteraction.data.options[1].value = courseFull;
-    defaultTeacherInteraction.data.options[2].value = courseName;
-    await execute(defaultTeacherInteraction, client);
-    expect(findCategoryName).toHaveBeenCalledTimes(1);
-    expect(findCategoryName).toHaveBeenCalledWith(courseName, client.guild);
-  });
-
-  test("create channels: category, announcement, general and voice ", async () => {
-    const courseCode = "TKT-100";
-    const courseFull = "Long course name";
-    const courseName = "nick name";
-    const client = defaultTeacherInteraction.client;
-    defaultTeacherInteraction.data.options[0].value = courseCode;
-    defaultTeacherInteraction.data.options[1].value = courseFull;
-    defaultTeacherInteraction.data.options[2].value = courseName;
-    await execute(defaultTeacherInteraction, client);
-    expect(findOrCreateChannel).toHaveBeenCalledTimes(4);
-  });
-
-  test("set course positions", async () => {
-    const courseCode = "TKT-100";
-    const courseFull = "Long course name";
-    const courseName = "nick name";
-    const client = defaultTeacherInteraction.client;
-    defaultTeacherInteraction.data.options[0].value = courseCode;
-    defaultTeacherInteraction.data.options[1].value = courseFull;
-    defaultTeacherInteraction.data.options[2].value = courseName;
-    const categoryName = `📚 ${courseName}`;
-    defaultTeacherInteraction.data.options[0].value = courseName;
-    await execute(defaultTeacherInteraction, client);
-    expect(setCoursePositionABC).toHaveBeenCalledTimes(1);
-    expect(setCoursePositionABC).toHaveBeenCalledWith(client.guild, categoryName);
-  });
-
-  test("create invitation", async () => {
-    const courseCode = "TKT-100";
-    const courseFull = "Long course name";
-    const courseName = "nick name";
-    const client = defaultTeacherInteraction.client;
-    defaultTeacherInteraction.data.options[0].value = courseCode;
-    defaultTeacherInteraction.data.options[1].value = courseFull;
-    defaultTeacherInteraction.data.options[2].value = courseName;
-    await execute(defaultTeacherInteraction, client);
-    expect(createInvitation).toHaveBeenCalledTimes(1);
-    expect(createInvitation).toHaveBeenCalledWith(client.guild, courseName);
-  });
-
-  test("respond with correct emphemeral", async () => {
-    const courseCode = "TKT-100";
-    const courseFull = "Long course name";
-    const courseName = "nick name";
-    const client = defaultTeacherInteraction.client;
-    defaultTeacherInteraction.data.options[0].value = courseCode;
-    defaultTeacherInteraction.data.options[1].value = courseFull;
-    defaultTeacherInteraction.data.options[2].value = courseName;
-    const result = `Created course ${courseName}.`;
-    await execute(defaultTeacherInteraction, client);
+    expect(handleCooldown).toHaveBeenCalledTimes(0);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
-    expect(sendEphemeral).toHaveBeenCalledWith(client, defaultTeacherInteraction, result);
+    expect(sendEphemeral).toHaveBeenCalledWith(client, defaultTeacherInteraction, response);
   });
 
-  test("update join/leave command list", async () => {
-    const courseCode = "TKT-100";
-    const courseFull = "Long course name";
-    const courseName = "nick name";
+  test("command can be used in course channel", async () => {
+    const newTopic = "New topic!";
+    defaultTeacherInteraction.data.options[0].value = newTopic;
     const client = defaultTeacherInteraction.client;
-    defaultTeacherInteraction.data.options[0].value = courseCode;
-    defaultTeacherInteraction.data.options[1].value = courseFull;
-    defaultTeacherInteraction.data.options[2].value = courseName;
+    defaultTeacherInteraction.channel_id = 2;
+    const channel = client.guild.channels.cache.get(2);
+    const general = client.guild.channels.cache.get(3);
+    const accouncement = client.guild.channels.cache.get(5);
+    const response = "Channel topic has been changed";
     await execute(defaultTeacherInteraction, client);
-    expect(client.emit).toHaveBeenCalledTimes(1);
+    expect(trimCourseName).toHaveBeenCalledTimes(1);
+    expect(trimCourseName).toHaveBeenCalledWith(channel.parent, client.guild);
+    expect(general.setTopic).toHaveBeenCalledTimes(1);
+    expect(general.setTopic).toHaveBeenCalledWith(newTopic);
+    expect(accouncement.setTopic).toHaveBeenCalledTimes(1);
+    expect(accouncement.setTopic).toHaveBeenCalledWith(newTopic);
+    expect(handleCooldown).toHaveBeenCalledTimes(1);
+    expect(sendEphemeral).toHaveBeenCalledTimes(1);
+    expect(sendEphemeral).toHaveBeenCalledWith(client, defaultTeacherInteraction, response);
   });
 
-  test("update guide", async () => {
-    const courseCode = "TKT-100";
-    const courseFull = "Long course name";
-    const courseName = "nick name";
+  test("command has cooldown", async () => {
+    const newTopic = "New topic!";
+    defaultTeacherInteraction.data.options[0].value = newTopic;
     const client = defaultTeacherInteraction.client;
-    defaultTeacherInteraction.data.options[0].value = courseCode;
-    defaultTeacherInteraction.data.options[1].value = courseFull;
-    defaultTeacherInteraction.data.options[2].value = courseName;
+    defaultTeacherInteraction.channel_id = 2;
+    const response = `Command cooldown [mm:ss]: you need to wait ${time}.`;
     await execute(defaultTeacherInteraction, client);
-    expect(updateGuide).toHaveBeenCalledTimes(1);
-    expect(updateGuide).toHaveBeenCalledWith(client.guild);
+    await execute(defaultTeacherInteraction, client);
+    expect(sendEphemeral).toHaveBeenCalledTimes(2);
+    expect(sendEphemeral).toHaveBeenCalledWith(client, defaultTeacherInteraction, response);
   });
-  */
 });
