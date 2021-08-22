@@ -7,4 +7,4 @@
 - :heavy_check_mark: This command has cooldown (course specific).
 - :x: All members can use this command.
 
-Note: Hidden course can be joined only with invitation.
+Note: User can join a hidden course by invitation only.
