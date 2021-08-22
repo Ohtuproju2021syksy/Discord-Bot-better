@@ -101,21 +101,21 @@ The `/edit` command allows you to edit the information for the course you are in
 
 ### List of commands
 
-Command | Explanation
---------|-----------
-/auth | Returns the URL where the faculty role can be obtained.
-/create | Create a new course. 
-/hide | Make given course private, e.g., /hide weba.
-/unhide | Make given course public, e.g., /unhide weba.
-/newchannel | Create new text channel inside a course, e.g., /newchannel feedback.
-/removechannel | Remove given text channel inside a course, e.g., /removechannel feedback.
-/courses | Returns a list of all courses.
-/edit | Edit course information, options; coursecode, full name, nickname
-/help | Returns a list of commands with info or info about a specific command.
-/instructors | Used in course channel returns a list of course instructors. Can be used anywhere when a parameter is given.
-/addinstructor | Give instructor role to another user, e.g., /addinstructor @username.
-/join | Joins you into the course given, e.g., /join ohpe.
-/leave | Remove you from the course given, e.g., /leave ohpe.
+Command | Explanation | Arguments
+--------|-------------|----------:
+[/addinstructor](./commands/addinstructor.md) | Give instructor role to another user, e.g., /addinstructor @username. | :heavy_check_mark:
+[/auth](./commands/auth.md) | Returns the URL from which the faculty role can be obtained. | :x:
+[/courses](./commands/courses.md) | Returns a list of all courses. | :x:
+[/create](./commands/create.md) | Create a new course | :heavy_check_mark:
+[/edit](./commands/edit.md) | Edit course information, options; coursecode, full name, nickname | :heavy_check_mark:
+[/help](./commands/help.md) | Returns a list of commands with info or info about a specific command. | :o:
+[/hide](./commands/hide.md)| Make given course private, e.g., /hide weba. | :heavy_check_mark:
+[/instructors](./commands/instructors.md) | Used in course channel returns a list of course instructors. Can be used anywhere when a parameter is given. | :o:
+[/join](./commands/join.md) | Joins you into the course given, e.g., /join ohpe. | :heavy_check_mark:
+[/leave](./commands/leave.md) | Remove you from the course given, e.g., /leave ohpe. | :heavy_check_mark:
+[/newchannel](./commands/newchannel.md) | Create new text channel inside a course, e.g., /newchannel feedback. | :heavy_check_mark:
+[/removechannel](./commands/removechannel.md) | Remove given text channel inside a course, e.g., /removechannel feedback. | :heavy_check_mark:
+[/unhide](./commands/unhide.md) | Make given course public, e.g., /unhide weba. | :heavy_check_mark:
 
 ### Material
 
