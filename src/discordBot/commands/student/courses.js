@@ -1,18 +1,9 @@
-const { getRoleFromCategory } = require("../../services/service");
+const { findAllCoursesFromDb } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
 
-const execute = async (interaction, client) => {
-  const guild = client.guild;
-
-  const data = guild.channels.cache
-    .filter((ch) => ch.type === "category" && ch.name.startsWith("📚"))
-    .map((ch) => {
-      const courseFullName = ch.name.replace("📚", "").trim();
-      const courseRole = getRoleFromCategory(ch.name);
-      return `${courseFullName} - \`/join ${courseRole}\``;
-    })
-    .sort((a, b) => a.localeCompare(b));
-
+const execute = async (interaction, client, Course) => {
+  const courses = await findAllCoursesFromDb("fullName", Course);
+  const data = courses.map((c) => `${c.fullName} - \`/join ${c.name}\``);
   if (data.length === 0) sendEphemeral(client, interaction, "No courses available");
   else sendEphemeral(client, interaction, data.join(" \n"));
 };

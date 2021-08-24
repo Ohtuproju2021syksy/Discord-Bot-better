@@ -43,7 +43,7 @@ const findOrCreateRoleWithName = async (name, guild) => {
 
 const updateGuideMessage = async (message, Course) => {
   const guild = message.guild;
-  const courseData = await findAllCoursesFromDb(Course);
+  const courseData = await findAllCoursesFromDb("code", Course);
   const rows = courseData
     .map((course) => {
       const code = course.code.toUpperCase();
@@ -258,10 +258,10 @@ const findCourseFromDb = async (courseName, Course) => {
   return await Course.findOne({ where: { name: courseName } });
 };
 
-const findAllCoursesFromDb = async (Course) => {
+const findAllCoursesFromDb = async (order, Course) => {
   return await Course.findAll({
     attributes: ["code", "fullName", "name"],
-    order: ["code"],
+    order: [order],
     where: { private: false },
     raw: true });
 };
@@ -298,4 +298,5 @@ module.exports = {
   removeCourseFromDb,
   findCourseFromDb,
   findCourseFromDbWithFullName,
+  findAllCoursesFromDb,
 };
