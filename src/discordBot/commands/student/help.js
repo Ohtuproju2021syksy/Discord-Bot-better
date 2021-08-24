@@ -75,7 +75,7 @@ const handleSingleCommand = (title, color, embeds, adminData, roleData, studentD
   }
 };
 
-const execute = async (interaction, client) => {
+const executeEmbed = async (interaction, client) => {
   const guild = client.guild;
   const member = guild.members.cache.get(interaction.member.user.id);
   const highestRole = getBestRole(member);
@@ -95,6 +95,46 @@ const execute = async (interaction, client) => {
   else {
     return handleSingleCommand(title, color, embeds, adminData, roleData, studentData, client, interaction);
   }
+};
+
+const prefix = "/";
+
+const executeEphemeral = async (interaction, client) => {
+  const guild = client.guild;
+
+  const member = guild.members.cache.get(interaction.member.user.id);
+  const highestRole = member.roles.highest.name;
+  const data = [];
+  const commandsReadyToPrint = client.slashCommands.map(c => c.command)
+    .filter(command => {
+      if (!command.role || highestRole === command.role) return true;
+      return member.roles.cache.find(role => role.name.includes(command.role));
+    });
+
+  if (!interaction.data.options) {
+    data.push("Here's a list of all my commands:");
+    data.push(commandsReadyToPrint.map(command => `${prefix}${command.name} - ${command.description}`).join("\n"));
+    data.push(`\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`);
+    return sendEphemeral(client, interaction, data.join("\n"));
+  }
+
+  const name = interaction.data.options[0].value.toLowerCase().trim();
+  const command = commandsReadyToPrint.find(c => c.name.includes(name));
+
+  if (!command) {
+    return sendEphemeral(client, interaction, "that's not a valid command!");
+  }
+
+  if (interaction.data.options) {
+    data.push(`**Name:** ${command.name}`);
+    data.push(`**Description:** ${command.description}`);
+    data.push(`**Usage:** ${prefix}${command.name} ${command.usage}`);
+    return sendEphemeral(client, interaction, data.join(" \n"));
+  }
+};
+
+const execute = async (interaction, client) => {
+  client.guild.channels.cache.get(interaction.channel_id).name === "asiakastapaamiset" ? executeEmbed(interaction, client) : executeEphemeral(interaction, client);
 };
 
 module.exports = {
