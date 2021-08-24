@@ -47,8 +47,8 @@ const execute = async (interaction, client) => {
 
 module.exports = {
   name: "topic",
-  description: "Add or update course announcement and general channel topics.",
-  usage: "[new topic]",
+  description: "Add or update course channel topics.",
+  usage: "/topic [new topic]",
   args: true,
   joinArgs: true,
   guide: true,
