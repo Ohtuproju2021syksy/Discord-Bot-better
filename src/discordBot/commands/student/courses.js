@@ -3,7 +3,10 @@ const { sendEphemeral } = require("../utils");
 
 const execute = async (interaction, client, Course) => {
   const courses = await findAllCoursesFromDb("fullName", Course);
-  const data = courses.map((c) => `${c.fullName} - \`/join ${c.name}\``);
+  const data = courses.map((c) => {
+    const fullname = c.fullName.charAt(0).toUpperCase() + c.fullName.slice(1);
+    return `${fullname} - \`/join ${c.name}\``;
+  });
   if (data.length === 0) sendEphemeral(client, interaction, "No courses available");
   else sendEphemeral(client, interaction, data.join(" \n"));
 };
