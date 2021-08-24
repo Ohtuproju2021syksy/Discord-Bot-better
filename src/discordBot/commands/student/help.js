@@ -2,7 +2,7 @@ const { sendEphemeral, sendEphemeralembed } = require("../utils");
 const { MessageEmbed } = require("discord.js");
 const { facultyRole, courseAdminRole, gitRepoUrl } = require("../../../../config.json");
 
-const branch = process.env.NODE_ENV === "production" ? "main" : "dev";
+const branch = process.env.NODE_ENV === "production" ? "dev" : "dev";
 
 const createHeaderEmbed = (title, description, color) => {
   color = color ?? "#ff0099";
@@ -51,11 +51,12 @@ const getBestRole = (member) => {
   return highestRole;
 };
 
-const handleAllCommands = (title, color, embeds, adminData, roleData, studentData, client, interaction) => {
+const handleAllCommands = (title, color, embeds, adminData, facultyData, courseAdminData, studentData, client, interaction) => {
   const description = "Here's a list of commands you can use:\nArgument syntax [compulsatory] <optional>\nClick command to read GitHub command.md";
   embeds.push(createHeaderEmbed(title, description, color));
   if (adminData.length !== 0) embeds.push(createEmbed(adminData, false, "admin", "#ff001a"));
-  if (roleData.length !== 0) embeds.push(createEmbed(roleData, false, facultyRole, "#ff0099"));
+  if (facultyData.length !== 0) embeds.push(createEmbed(facultyData, false, facultyRole, "#ff0099"));
+  if (courseAdminData.length !== 0) embeds.push(createEmbed(courseAdminData, false, courseAdminRole, "#ff0099"));
   embeds.push(createEmbed(studentData, true, "default", "#0099ff"));
   return sendEphemeralembed(client, interaction, embeds);
 };
@@ -68,7 +69,7 @@ const handleSingleCommand = (title, color, embeds, adminData, roleData, studentD
     return sendEphemeral(client, interaction, "Error: Invalid command name!");
   }
   else {
-    const description = "Argument syntax [compulsatory] <optional>";
+    const description = "Argument syntax [compulsatory] <optional>\nClick command to read GitHub command.md";
     embeds.push(createHeaderEmbed(title, description, color));
     embeds.push(createEmbed([command], false, command.role, getColor(command.role)));
     return sendEphemeralembed(client, interaction, embeds);
@@ -80,9 +81,16 @@ const executeEmbed = async (interaction, client) => {
   const member = guild.members.cache.get(interaction.member.user.id);
   const highestRole = getBestRole(member);
   const adminData = client.commands.map((c) => c).filter(command => member.roles.cache.find(role => role.name === command.role));
-  const roleData = client.slashCommands.map(c => c.command)
+  const facultyData = client.slashCommands.map(c => c.command)
+    .filter(command => command.role !== courseAdminRole)
     .filter(command => {
-      if (command.role && highestRole === "admin") return true;
+      if (command.role && (highestRole === "admin" || highestRole === facultyRole)) return true;
+      return member.roles.cache.find(role => role.name.includes(command.role));
+    });
+  const courseAdminData = client.slashCommands.map(c => c.command)
+    .filter(command => command.role === courseAdminRole)
+    .filter(command => {
+      if (command.role && (highestRole === "admin" || highestRole === facultyRole)) return true;
       return member.roles.cache.find(role => role.name.includes(command.role));
     });
   const studentData = client.slashCommands.map(c => c.command).filter(command => !command.role && command.name !== "auth");
@@ -90,10 +98,10 @@ const executeEmbed = async (interaction, client) => {
   const embeds = [];
   const color = getColor(highestRole);
   if (!interaction.data.options) {
-    return handleAllCommands(title, color, embeds, adminData, roleData, studentData, client, interaction);
+    return handleAllCommands(title, color, embeds, adminData, facultyData, courseAdminData, studentData, client, interaction);
   }
   else {
-    return handleSingleCommand(title, color, embeds, adminData, roleData, studentData, client, interaction);
+    return handleSingleCommand(title, color, embeds, adminData, facultyData, studentData, client, interaction);
   }
 };
 
@@ -103,17 +111,48 @@ const executeEphemeral = async (interaction, client) => {
   const guild = client.guild;
 
   const member = guild.members.cache.get(interaction.member.user.id);
-  const highestRole = member.roles.highest.name;
-  const data = [];
-  const commandsReadyToPrint = client.slashCommands.map(c => c.command)
+  const highestRole = getBestRole(member);
+  const adminData = client.commands.map((c) => c).filter(command => member.roles.cache.find(role => role.name === command.role));
+  const facultyData = client.slashCommands.map(c => c.command)
+    .filter(command => command.role !== courseAdminRole)
     .filter(command => {
-      if (!command.role || highestRole === command.role) return true;
+      if (command.role && (highestRole === "admin" || highestRole === facultyRole)) return true;
       return member.roles.cache.find(role => role.name.includes(command.role));
     });
-
+  const courseAdminData = client.slashCommands.map(c => c.command)
+    .filter(command => command.role === courseAdminRole)
+    .filter(command => {
+      if (command.role && (highestRole === "admin" || highestRole === facultyRole)) return true;
+      return member.roles.cache.find(role => role.name.includes(command.role));
+    });
+  const studentData = client.slashCommands.map(c => c.command).filter(command => !command.role && command.name !== "auth");
+  const commandsReadyToPrint = client.slashCommands.map(c => c.command)
+    .filter(command => {
+      if (!command.role || member.roles.cache.find((r) => r.name === command.role)) return true;
+      return member.roles.cache.find(role => role.name.includes(command.role));
+    });
+  const data = [];
   if (!interaction.data.options) {
-    data.push("Here's a list of all my commands:");
-    data.push(commandsReadyToPrint.map(command => `${prefix}${command.name} - ${command.description}`).join("\n"));
+    data.push(`Hi **${member.displayName}**!\n`);
+    data.push("Here's a list of commands you can use:\n");
+    if (adminData.length !== 0) {
+      data.push("Category: **admin**");
+      data.push(adminData.map((command) => `**!${command.name}** - ${command.description}`).join("\n"));
+      data.push("\n");
+    }
+    if (facultyData.length !== 0) {
+      data.push(`Category: **${facultyRole}**`);
+      data.push(facultyData.map((command) => `**${prefix}${command.name}** - ${command.description}`).join("\n"));
+      data.push("\n");
+    }
+    if (courseAdminData.length !== 0) {
+      data.push(`Category: **${courseAdminRole}**`);
+      data.push(courseAdminData.map((command) => `**${prefix}${command.name}** - ${command.description}`).join("\n"));
+      data.push("\n");
+    }
+    data.push("Category: **default**");
+    data.push(studentData.map((command) => `**${prefix}${command.name}** - ${command.description}`).join("\n"));
+    data.push("\n");
     data.push(`\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`);
     return sendEphemeral(client, interaction, data.join("\n"));
   }
@@ -125,12 +164,10 @@ const executeEphemeral = async (interaction, client) => {
     return sendEphemeral(client, interaction, "that's not a valid command!");
   }
 
-  if (interaction.data.options) {
-    data.push(`**Name:** ${command.name}`);
-    data.push(`**Description:** ${command.description}`);
-    data.push(`**Usage:** ${prefix}${command.name} ${command.usage}`);
-    return sendEphemeral(client, interaction, data.join(" \n"));
-  }
+  data.push(`**Name:** ${command.name}`);
+  data.push(`**Description:** ${command.description}`);
+  data.push(`**Usage:** ${prefix}${command.name} ${command.usage}`);
+  return sendEphemeral(client, interaction, data.join(" \n"));
 };
 
 const execute = async (interaction, client) => {
