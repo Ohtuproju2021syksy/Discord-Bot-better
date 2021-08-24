@@ -46,7 +46,7 @@ By typing the command `/join`, you can see all the courses available on the list
 
 If you want to leave a course, use command `/leave`. You see from the list all the courses you have joined earlier. Choose a course you want to leave from and press enter.
 
-After you have joined a course, you can see different course channels on the left bar. At this stage there are four types of channels; announcement, general and voice (these might change during the development).
+After you have joined a course, you can see different course channels on the left bar. At this stage there are four types of channels; announcement, general and possible added text channels and voice channel (these might change during the development).
 
 ![channels](./images/channels.png)
 

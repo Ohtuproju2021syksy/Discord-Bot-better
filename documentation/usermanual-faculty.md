@@ -15,7 +15,7 @@ Note: You will need to verify your phone number to your Discord account before u
 
 ### Joining to the Discord
 
-You can join to the Helsinki University Discord server in two different ways. Join directly to the server using this [link]( https://discord.gg/V5R9dZFCkD). Join directly using the course´s own link (MOOC, Moodle, etc.).
+You can join to the Helsinki University Discord server in two different ways. Join directly to the server using this [link]( https://study.cs.helsinki.fi/discord). Join directly using the course´s own link (MOOC, Moodle, etc.).
 
 ![commands](./images/courselink.png)
 
@@ -97,6 +97,10 @@ Students can use the `/instructors` command on a course and see all the instruct
 
 The `/edit` command allows you to edit the information for the course you are in. You can change the _course code_, _full name_ and _nickname_. If you change the value users see on the Discord´s left column, this value is either the course code or nickname depending on which values the course is based on, you have 15 minutes cooldown until you can use the command again.
 
+## How to create or edit course channel topics
+
+The `/topic` command allows you to create or edit the information in announcement and general channels topic field. You can use this to customize channel appearance.
+
 ![edit](./images/edit.png)
 
 ### List of commands
@@ -115,6 +119,7 @@ Command | Explanation | Arguments
 [/leave](./commands/leave.md) | Remove you from the course given, e.g., /leave ohpe. | :heavy_check_mark:
 [/newchannel](./commands/newchannel.md) | Create new text channel inside a course, e.g., /newchannel feedback. | :heavy_check_mark:
 [/removechannel](./commands/removechannel.md) | Remove given text channel inside a course, e.g., /removechannel feedback. | :heavy_check_mark:
+[/topic](./commands/topic.md) | Make given in course , e.g., /topic A new topic. | :heavy_check_mark:
 [/unhide](./commands/unhide.md) | Make given course public, e.g., /unhide weba. | :heavy_check_mark:
 
 ### Material
