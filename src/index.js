@@ -6,10 +6,12 @@ const { telegramClient, startTelegramBot } = require("./telegramBot/index");
 const { startBridge } = require("./bridge/index");
 
 const start = async () => {
-  if (process.env.TG_BRIDGE_ENABLED) await startTelegramBot();
-  await startDiscordBot();
   startServer(sequelize);
-  startBridge(client, telegramClient);
+  await startDiscordBot();
+  if (process.env.TG_BRIDGE_ENABLED) {
+    await startTelegramBot();
+    startBridge(client, telegramClient);
+  }
 };
 
 start();
