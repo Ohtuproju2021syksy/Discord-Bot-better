@@ -25,8 +25,8 @@ const execute = async (interaction, client, Course) => {
 
 module.exports = {
   name: "join",
-  description: "Join a course, e.g., `/join ohpe`",
-  usage: "[course name]",
+  description: "Join a course.",
+  usage: "/join [course name]",
   args: true,
   joinArgs: true,
   guide: true,

@@ -141,6 +141,7 @@ const execute = async (interaction, client, Course) => {
 module.exports = {
   name: "edit",
   description: "Edit course code, name or nickname",
+  usage: "/edit [parameter]",
   args: true,
   joinArgs: true,
   guide: true,

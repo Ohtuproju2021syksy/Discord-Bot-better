@@ -47,7 +47,8 @@ Members: ${count}
 
 module.exports = {
   name: "status",
-  description: "Get full status of course",
+  description: "Get full status of course.*",
+  usage: "/status",
   role: facultyRole,
   execute,
 };

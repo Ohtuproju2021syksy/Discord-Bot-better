@@ -132,7 +132,7 @@ const execute = async (interaction, client, Course) => {
 module.exports = {
   name: "create",
   description: "Create a new course.",
-  usage: "[course name]",
+  usage: "/create [course name]",
   args: true,
   joinArgs: true,
   guide: true,

@@ -53,7 +53,7 @@ const execute = async (interaction, client) => {
 module.exports = {
   name: "newchannel",
   description: "Create new text channel to course.",
-  usage: "[channel name]",
+  usage: "/newchannel[channel name]",
   args: true,
   joinArgs: true,
   guide: true,

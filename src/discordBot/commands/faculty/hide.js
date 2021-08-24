@@ -39,7 +39,7 @@ const execute = async (interaction, client, Course) => {
 module.exports = {
   name: "hide",
   description: "Hide given course",
-  usage: "[course name]",
+  usage: "/hide [course name]",
   args: true,
   joinArgs: true,
   guide: true,

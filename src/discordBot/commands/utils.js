@@ -27,6 +27,24 @@ const sendEphemeral = (client, interaction, content) => {
   }
 };
 
+const sendEphemeralembed = (client, interaction, embeds) => {
+  try {
+    client.api.interactions(interaction.id, interaction.token).callback.post({
+      data: {
+        type: 4,
+        data: {
+          embeds: embeds,
+          // make the response ephemeral
+          flags: 64,
+        },
+      },
+    });
+  }
+  catch (error) {
+    console.log("Ephemeral message token expired");
+  }
+};
+
 const findInstructorRoles = (client) => {
   const instructorRoles = client.guild.roles.cache.filter(r => r.name.includes(courseAdminRole));
   const roleNames = instructorRoles.map(r => r.name);
@@ -173,4 +191,5 @@ module.exports = {
   sendEphemeral,
   initCommands,
   reloadCommands,
+  sendEphemeralembed,
 };

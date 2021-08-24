@@ -27,8 +27,8 @@ const execute = async (interaction, client, Course) => {
 
 module.exports = {
   name: "leave",
-  description: "Remove you from the course, e.g., `/leave ohpe`",
-  usage: "[course name]",
+  description: "Remove you from the course.",
+  usage: "/leave [course name]",
   args: true,
   joinArgs: true,
   guide: true,

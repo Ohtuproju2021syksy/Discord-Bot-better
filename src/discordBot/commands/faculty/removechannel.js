@@ -36,7 +36,7 @@ const execute = async (interaction, client) => {
 module.exports = {
   name: "removechannel",
   description: "Remove given text channel from course.",
-  usage: "[channel name]",
+  usage: "/removechannel [channel name]",
   args: true,
   joinArgs: true,
   guide: true,

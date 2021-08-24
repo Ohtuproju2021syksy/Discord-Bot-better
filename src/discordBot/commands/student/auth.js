@@ -7,7 +7,7 @@ const execute = async (interaction, client) => {
 
 module.exports = {
   name: "auth",
-  description: `Get auth url to obtain ${facultyRole} role`,
-  usage: "",
+  description: `Get auth URL to acquire ${facultyRole} role.`,
+  usage: "/auth",
   execute,
 };

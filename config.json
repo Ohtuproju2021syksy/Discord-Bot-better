@@ -1,4 +1,5 @@
 {
     "courseAdminRole": "instructor",
-    "facultyRole": "faculty"
+    "facultyRole": "faculty",
+    "gitRepoUrl": "https://github.com/CS-DISCORD-BOT/cs-discord-bot"
 }
