@@ -52,7 +52,6 @@ Setup config.json file:
 ```
 courseAdminRole: course-admin-role-name
 facultyRole: techer-role-name
-gitRepoUrl: git-hub-repository-url-for-root-used-in-help-command-links
 ```
 
 Make your own Discord Server. You can find instructions [here](./documentation/discordserver.md).
