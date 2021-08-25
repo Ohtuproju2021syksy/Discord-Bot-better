@@ -43,11 +43,13 @@ const findOrCreateRoleWithName = async (name, guild) => {
 
 const updateGuideMessage = async (message, Course) => {
   const guild = message.guild;
-  const courseData = await findAllCoursesFromDb("code", Course);
+  const courseData = await findCoursesFromDb("code", Course, false);
   const rows = courseData
     .map((course) => {
-      const code = course.code.toUpperCase();
+      const regExp = /[^0-9]*/;
       const fullname = course.fullName.charAt(0).toUpperCase() + course.fullName.slice(1);
+      const matches = regExp.exec(course.code)?.[0];
+      const code = matches ? matches.toUpperCase() + course.code.slice(matches.length) : course.code;
       const count = guild.roles.cache.find(
         (role) => role.name === course.name,
       )?.members.size;
@@ -258,11 +260,11 @@ const findCourseFromDb = async (courseName, Course) => {
   return await Course.findOne({ where: { name: courseName } });
 };
 
-const findAllCoursesFromDb = async (order, Course) => {
+const findCoursesFromDb = async (order, Course, state) => {
   return await Course.findAll({
     attributes: ["code", "fullName", "name"],
     order: [order],
-    where: { private: false },
+    where: { private: state },
     raw: true });
 };
 
@@ -298,5 +300,5 @@ module.exports = {
   removeCourseFromDb,
   findCourseFromDb,
   findCourseFromDbWithFullName,
-  findAllCoursesFromDb,
+  findCoursesFromDb,
 };
