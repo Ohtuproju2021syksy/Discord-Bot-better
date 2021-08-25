@@ -27,7 +27,7 @@ module.exports = {
   name: "sort",
   description: "Sort courses to alphabetical order",
   role: "admin",
-  usage: "",
+  usage: "!sort",
   args: false,
   execute,
 };

@@ -32,14 +32,14 @@ const execute = async (interaction, client, Course) => {
     used.set(courseName, Date.now() + cooldownTimeMs);
     handleCooldown(used, courseName, cooldownTimeMs);
     await client.emit("COURSES_CHANGED", Course);
-    await updateGuide(client.guild);
+    await updateGuide(client.guild, Course);
   }
 };
 
 module.exports = {
   name: "hide",
   description: "Hide given course",
-  usage: "[course name]",
+  usage: "/hide [course name]",
   args: true,
   joinArgs: true,
   guide: true,

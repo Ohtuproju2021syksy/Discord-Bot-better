@@ -12,7 +12,7 @@ module.exports = {
   name: "deletecommand",
   description: "Delete a slash command",
   role: "admin",
-  usage: "[command name]",
+  usage: "!deletecommand [command name]",
   args: true,
   execute,
 };

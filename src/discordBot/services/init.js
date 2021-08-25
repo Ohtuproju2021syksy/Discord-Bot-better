@@ -46,7 +46,7 @@ const initRoles = async (guild) => {
   await findOrCreateRoleWithName("admin", guild);
 };
 
-const setInitialGuideMessage = async (guild, channelName) => {
+const setInitialGuideMessage = async (guild, channelName, Course) => {
   const guideChannel = guild.channels.cache.find(c => c.type === "text" && c.name === channelName);
   if (!guideChannel.lastPinTimestamp) {
     const msg = await guideChannel.send("initial");
@@ -55,13 +55,13 @@ const setInitialGuideMessage = async (guild, channelName) => {
   const invs = await guild.fetchInvites();
   const guideinvite = invs.find(invite => invite.channel.name === "guide");
   if (!guideinvite) await guideChannel.createInvite({ maxAge: 0 });
-  await updateGuide(guild);
+  await updateGuide(guild, Course);
 };
 
-const initializeApplicationContext = async (client) => {
+const initializeApplicationContext = async (client, Course) => {
   await initRoles(client.guild);
   await initChannels(client.guild, client);
-  await setInitialGuideMessage(client.guild, "guide");
+  await setInitialGuideMessage(client.guild, "guide", Course);
 };
 
 module.exports = {

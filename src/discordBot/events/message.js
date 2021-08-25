@@ -16,6 +16,7 @@ const execute = async (message, client, Course) => {
 
   try {
     await command.execute(message, args, Course);
+    if (command.emit) await client.emit("COURSES_CHANGED", Course);
     await message.react("✅");
   }
   catch (error) {

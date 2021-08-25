@@ -1,6 +1,8 @@
 const { execute } = require("../../src/discordBot/commands/student/help");
 
 const {
+  adminData,
+  defaultAdminInteraction,
   defaultTeacherInteraction,
   defaultStudentInteraction,
   teacherInteractionHelp,
@@ -21,6 +23,13 @@ afterEach(() => {
 });
 
 describe("slash help command", () => {
+  test("admin can see all commands", async () => {
+    const client = defaultAdminInteraction.client;
+    await execute(defaultAdminInteraction, client);
+    expect(sendEphemeral).toHaveBeenCalledTimes(1);
+    expect(sendEphemeral).toHaveBeenCalledWith(client, defaultAdminInteraction, adminData.join("\n"));
+  });
+
   test("slash help with teacher role should see all non-admin commands", async () => {
     const client = teacherInteractionHelp.client;
     await execute(teacherInteractionHelp, client);
@@ -49,7 +58,7 @@ describe("slash help command", () => {
     defaultStudentInteraction.data.options = [{ value: "join", command: {
       name: "join",
       description: "Join a course, e.g., `/join ohpe`",
-      usage: "[course name]",
+      usage: "/join [course name]",
     },
     }];
     await execute(defaultStudentInteraction, client);

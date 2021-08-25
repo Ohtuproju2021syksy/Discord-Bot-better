@@ -133,7 +133,7 @@ const execute = async (interaction, client, Course) => {
   }
 
   await client.emit("COURSES_CHANGED", Course);
-  await updateGuide(client.guild);
+  await updateGuide(client.guild, Course);
 
   return sendEphemeral(client, interaction, "Course information has been changed");
 };
@@ -141,6 +141,7 @@ const execute = async (interaction, client, Course) => {
 module.exports = {
   name: "edit",
   description: "Edit course code, name or nickname",
+  usage: "/edit [parameter]",
   args: true,
   joinArgs: true,
   guide: true,

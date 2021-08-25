@@ -48,6 +48,12 @@ TELEGRAM_BOT_TOKEN=telegram-bridge-bot-token
 TG_BRIDGE_ENABLED=true
 ```
 
+Setup config.json file:
+```
+courseAdminRole: course-admin-role-name
+facultyRole: techer-role-name
+```
+
 Make your own Discord Server. You can find instructions [here](./documentation/discordserver.md).
 
 Make your own Discord Bot. You can find instructions [here](./documentation/setupmainbot.md).

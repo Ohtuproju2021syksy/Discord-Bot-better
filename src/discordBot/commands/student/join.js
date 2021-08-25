@@ -2,7 +2,7 @@ const { updateGuide } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
 const { courseAdminRole } = require("../../../../config.json");
 
-const execute = async (interaction, client) => {
+const execute = async (interaction, client, Course) => {
   const roleString = interaction.data.options[0].value.toLowerCase().trim();
 
   const guild = client.guild;
@@ -20,13 +20,13 @@ const execute = async (interaction, client) => {
 
   await member.roles.add(courseRole);
   sendEphemeral(client, interaction, `You have been added to a ${roleString} course.`);
-  await updateGuide(guild);
+  await updateGuide(guild, Course);
 };
 
 module.exports = {
   name: "join",
-  description: "Join a course, e.g., `/join ohpe`",
-  usage: "[course name]",
+  description: "Join a course.",
+  usage: "/join [course name]",
   args: true,
   joinArgs: true,
   guide: true,

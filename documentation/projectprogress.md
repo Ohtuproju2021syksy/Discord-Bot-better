@@ -4,6 +4,8 @@
 
 [Definition of Done](https://helsinkifi-my.sharepoint.com/:x:/g/personal/azkantol_ad_helsinki_fi/EXotXTenqklFnjJfmTqnzMoB6UpvxAZ4OACvC3MywKMIjQ?e=o8bycQ&action=embedview&wdbipreview=true&wdHideSheetTabs=true&Item=DoD)
 
+[Sprint 7 backlog](https://helsinkifi-my.sharepoint.com/:x:/g/personal/azkantol_ad_helsinki_fi/EXotXTenqklFnjJfmTqnzMoB6UpvxAZ4OACvC3MywKMIjQ?e=o8bycQ&action=embedview&wdbipreview=true&wdHideSheetTabs=true&Item=Sprint7)
+
 [Sprint 6 backlog](https://helsinkifi-my.sharepoint.com/:x:/g/personal/azkantol_ad_helsinki_fi/EXotXTenqklFnjJfmTqnzMoB6UpvxAZ4OACvC3MywKMIjQ?e=o8bycQ&action=embedview&wdbipreview=true&wdHideSheetTabs=true&Item=Sprint6)
 
 [Sprint 5 backlog](https://helsinkifi-my.sharepoint.com/:x:/g/personal/azkantol_ad_helsinki_fi/EXotXTenqklFnjJfmTqnzMoB6UpvxAZ4OACvC3MywKMIjQ?e=o8bycQ&action=embedview&wdbipreview=true&wdHideSheetTabs=true&Item=Sprint5)

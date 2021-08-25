@@ -46,7 +46,7 @@ By typing the command `/join`, you can see all the courses available on the list
 
 If you want to leave a course, use command `/leave`. You see from the list all the courses you have joined earlier. Choose a course you want to leave from and press enter.
 
-After you have joined a course, you can see different course channels on the left bar. At this stage there are four types of channels; announcement, general and voice (these might change during the development).
+After you have joined a course, you can see different course channels on the left bar. At this stage there are four types of channels; announcement, general and possible added text channels and voice channel (these might change during the development).
 
 ![channels](./images/channels.png)
 
@@ -62,14 +62,14 @@ If you want to see who are the instructors on your course, you can use command `
 
 ### List of commands
 
-Command | Explanation
---------|-----------
-/auth | Command for faculty members with student role.
-/courses | Returns a list of all courses.
-/help | Returns a list of commands with info or info about a specific command.
-/instructors | Returns a list of course instructors. With agrument, the command can be used anywhere otherwise only on course channels.
-/join | Joins you into the course given, e.g., /join ohpe.
-/leave | Remove you from the course given, e.g., /leave ohpe.
+Command | Explanation | Arguments
+--------|-------------|----------:
+[/auth](./commands/auth.md) | For faculty members with student role to acquire the faculty role. | :x:
+[/courses](./commands/courses.md) | Get public course information | :x:
+[/help](./commands/help.md) | Get help how to use slash commands. | :o:
+[/instructors](./commands/instructors.md) | Get course intructors information. | :o:
+[/join](./commands/join.md) | Joins you into the course given, e.g., /join ohpe. | :heavy_check_mark:
+[/leave](./commands/leave.md) | Remove you from the course given, e.g., /leave ohpe. | :heavy_check_mark:
 
 ### Material
 

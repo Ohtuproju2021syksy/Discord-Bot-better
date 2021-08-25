@@ -17,17 +17,16 @@ const {
   trimCourseName,
   findAllCourseNames } = require("../../src/discordBot/services/service");
 
-const createGuidePinnedMessage = (guild) => {
-  const rows = guild.channels.cache
-    .filter((ch) => ch.type === "category" && ch.name.startsWith("📚"))
-    .map((ch) => {
-      const courseFullName = ch.name.replace("📚", "").trim();
-      const courseRole = getRoleFromCategory(ch.name);
+const createGuidePinnedMessage = async (guild) => {
+  const rows = courses
+    .map((course) => {
+      const code = course.code.toUpperCase();
+      const fullname = course.fullName.charAt(0).toUpperCase() + course.fullName.slice(1);
       const count = guild.roles.cache.find(
-        (role) => role.name === courseRole,
+        (role) => role.name === course.name,
       )?.members.size;
-      return `  - ${courseFullName} \`/join ${courseRole}\` 👤${count}`;
-    }).sort((a, b) => a.localeCompare(b));
+      return `  - ${code} - ${fullname} - \`/join ${course.name}\` 👤${count}`;
+    });
 
   let invite_url = "";
   process.env.NODE_ENV === "production" ? invite_url = `${process.env.BACKEND_SERVER_URL}` : invite_url = `${process.env.BACKEND_SERVER_URL}:${process.env.PORT}`;
@@ -55,12 +54,15 @@ Invitation link for the server ${invite_url}
   return newContent;
 };
 
+const courses = [{ code: "tkt", fullName: "test course", name: "test" }];
+
 const Course = {
   create: jest.fn(),
   findOne: jest
     .fn(() => true)
     .mockImplementationOnce(() => false)
     .mockImplementationOnce(() => false),
+  findAll: jest.fn(() => courses),
   destroy: jest.fn(),
 };
 
@@ -142,8 +144,8 @@ describe("Service", () => {
     client.guild.channels.cache = [guide, commands, testCategory];
     client.guild.roles.cache = [role];
     const msg = { guild: client.guild, pin: jest.fn(), edit: jest.fn() };
-    const guideMessage = createGuidePinnedMessage(client.guild);
-    await updateGuideMessage(msg);
+    const guideMessage = await createGuidePinnedMessage(client.guild, Course);
+    await updateGuideMessage(msg, Course);
     expect(msg.edit).toHaveBeenCalledTimes(1);
     expect(msg.edit).toHaveBeenCalledWith(guideMessage);
     client.guild.channels.cache = [];
@@ -277,6 +279,16 @@ describe("Service", () => {
     const channel = { name: privateCategoryName };
     const result = trimCourseName(channel);
     expect(result).toBe(category);
+  });
+
+  test("find all channel names", async () => {
+    client.guild.channels.init();
+    const guild = client.guild;
+    guild.channels.cache.set(1, { name: "🔒 test" });
+    guild.channels.cache.set(2, { name: "testing" });
+    const channelNames = ["test"];
+    const result = findAllCourseNames(guild);
+    expect(result).toStrictEqual(channelNames);
   });
 
   test("find all channel names", async () => {
