@@ -261,10 +261,15 @@ const findCourseFromDb = async (courseName, Course) => {
 };
 
 const findCoursesFromDb = async (order, Course, state) => {
+  const filter = {
+    true: { private: true },
+    false: { private: false },
+    undefined: {},
+  };
   return await Course.findAll({
     attributes: ["code", "fullName", "name"],
     order: [order],
-    where: { private: state },
+    where: filter[state],
     raw: true });
 };
 

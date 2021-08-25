@@ -163,6 +163,7 @@ const reloadCommands = async (client, commandNames, Course) => {
 };
 
 const getCourseChoices = async (showPrivate, Course) => {
+  showPrivate = showPrivate ? undefined : false;
   const courseData = await findCoursesFromDb("name", Course, showPrivate);
   const choices = courseData
     .map((c) => {
