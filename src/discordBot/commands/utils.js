@@ -2,6 +2,7 @@ const fs = require("fs");
 const { Client } = require("discord-slash-commands-client");
 const { Collection } = require("discord.js");
 const { facultyRole, courseAdminRole } = require("../../../config.json");
+const { findCoursesFromDb } = require("../services/service");
 require("dotenv").config();
 
 const slashClient = new Client(
@@ -162,16 +163,20 @@ const reloadCommands = async (client, commandNames, Course) => {
 };
 
 const getCourseChoices = async (showPrivate, Course) => {
-  const courseData = await Course.findAll({});
+  const courseData = await findCoursesFromDb("name", Course, showPrivate);
   const choices = courseData
-    .filter(val => val.private === false || val.private === showPrivate)
-    .map(c => (
-      {
-        name: `${c.dataValues.code} - ${c.dataValues.fullName} - ${c.dataValues.name}`,
-        value: c.dataValues.name,
-      }
-    ));
-  choices.sort((a, b) => a.value.localeCompare(b.value));
+    .map((c) => {
+      const regExp = /[^0-9]*/;
+      const fullname = c.fullName.charAt(0).toUpperCase() + c.fullName.slice(1);
+      const matches = regExp.exec(c.code)?.[0];
+      const code = matches ? matches.toUpperCase() + c.code.slice(matches.length) : c.code;
+      return (
+        {
+          name: `${code} - ${fullname} - ${c.name}`,
+          value: c.name,
+        }
+      );
+    });
   return choices;
 };
 
@@ -192,4 +197,5 @@ module.exports = {
   initCommands,
   reloadCommands,
   sendEphemeralembed,
+  getCourseChoices,
 };
