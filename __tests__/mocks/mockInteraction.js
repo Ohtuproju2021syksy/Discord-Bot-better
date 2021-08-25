@@ -53,7 +53,7 @@ client.slashCommands
   .map(command => {
     teacherJoinData.push(`**Name:** ${command.name}`);
     if (command.description) teacherJoinData.push(`**Description:** ${command.description}`);
-    if (command.usage) teacherJoinData.push(`**Usage:** ${prefix}${command.name} ${command.usage}`);
+    if (command.usage) teacherJoinData.push(`**Usage:** ${command.usage}`);
   });
 
 const studentInsData = [];

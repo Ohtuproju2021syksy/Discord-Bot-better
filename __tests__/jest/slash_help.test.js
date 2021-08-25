@@ -58,7 +58,7 @@ describe("slash help command", () => {
     defaultStudentInteraction.data.options = [{ value: "join", command: {
       name: "join",
       description: "Join a course, e.g., `/join ohpe`",
-      usage: "[course name]",
+      usage: "/join [course name]",
     },
     }];
     await execute(defaultStudentInteraction, client);

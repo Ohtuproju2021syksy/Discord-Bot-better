@@ -1,6 +1,6 @@
 const { execute } = require("../../src/discordBot/commands/student/courses");
 const { sendEphemeral } = require("../../src/discordBot/commands/utils");
-const { findAllCoursesFromDb } = require("../../src/discordBot/services/service");
+const { findCoursesFromDb } = require("../../src/discordBot/services/service");
 
 jest.mock("../../src/discordBot/commands/utils");
 jest.mock("../../src/discordBot/services/service");
@@ -8,7 +8,7 @@ jest.mock("discord-slash-commands-client");
 
 const course = [{ code: "tkt test", fullName: "test course", name: "test" }];
 
-findAllCoursesFromDb
+findCoursesFromDb
   .mockImplementation(() => course)
   .mockImplementationOnce(() => []);
 
