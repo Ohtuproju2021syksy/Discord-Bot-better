@@ -28,7 +28,7 @@ const execute = async (interaction, client) => {
   const memberToPromote = guild.members.cache.get(interaction.data.options[0].value);
 
   memberToPromote.roles.add(instructorRole);
-  return sendEphemeral(client, interaction, `Gave role '${instructorRole.name}' to ${memberToPromote.user.username}.`);
+  return sendEphemeral(client, interaction, `Gave role '${instructorRole.name}' to ${memberToPromote.displayName}.`);
 };
 
 module.exports = {
