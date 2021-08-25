@@ -1,8 +1,8 @@
-const { findAllCoursesFromDb } = require("../../services/service");
+const { findCoursesFromDb } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
 
 const execute = async (interaction, client, Course) => {
-  const courses = await findAllCoursesFromDb("fullName", Course);
+  const courses = await findCoursesFromDb("fullName", Course, false);
   const data = courses.map((c) => {
     const fullname = c.fullName.charAt(0).toUpperCase() + c.fullName.slice(1);
     return `${fullname} - \`/join ${c.name}\``;
