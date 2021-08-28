@@ -1,9 +1,9 @@
+const { SlashCommandBuilder } = require("@discordjs/builders");
 const { updateGuide } = require("../../services/service");
-const { sendEphemeral } = require("../utils");
 const { courseAdminRole } = require("../../../../config.json");
 
 const execute = async (interaction, client, Course) => {
-  const roleString = interaction.data.options[0].value.toLowerCase().trim();
+  const roleString = interaction.options.getString("test").toLowerCase().trim();
 
   const guild = client.guild;
 
@@ -15,29 +15,24 @@ const execute = async (interaction, client, Course) => {
     .filter(r => (r.name === `${roleString} ${courseAdminRole}` || r.name === `${roleString}`))
     .map(r => r.name);
 
-  if (!courseRoles.length) return sendEphemeral(client, interaction, `Invalid course name: ${roleString}`);
-  if (member.roles.cache.some(r => courseRoles.includes(r.name))) return sendEphemeral(client, interaction, `You are already on a ${roleString} course.`);
+  if (!courseRoles.length) return await interaction.reply({ content: `Error: Invalid course name: ${roleString}`, ephemeral: true });
+  if (member.roles.cache.some(r => courseRoles.includes(r.name))) return await interaction.reply({ content: `Error: You are already on a ${roleString} course.`, ephemeral: true });
 
   await member.roles.add(courseRole);
-  sendEphemeral(client, interaction, `You have been added to a ${roleString} course.`);
+  await interaction.reply({ constent: `You have been added to a ${roleString} course.`, ephemeral: true });
   await updateGuide(guild, Course);
 };
 
 module.exports = {
-  name: "join",
-  description: "Join a course.",
-  usage: "/join [course name]",
-  args: true,
-  joinArgs: true,
-  guide: true,
-  options: [
-    {
-      name: "course",
-      description: "Course to join.",
-      type: 3,
-      choices: [],
-      required: true,
-    },
-  ],
+  data: new SlashCommandBuilder()
+    .setName("join")
+    .setDescription("Join a course.")
+    .setDefaultPermission(true)
+    .addStringOption(option =>
+      option.setName("course")
+        .setDescription("Course to join.")
+        .setRequired(true)),
   execute,
+  usage: "/join [course name]",
+  description: "Join a course.",
 };

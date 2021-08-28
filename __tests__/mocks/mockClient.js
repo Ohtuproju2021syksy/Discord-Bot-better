@@ -12,11 +12,12 @@ const client = {
   guild: {
     invites: {
       cache: [],
+      fetch: jest.fn(() => client.guild.invites.cache),
     },
     channels: {
       cache: [],
       create: jest.fn((name) => client.guild.channels.cache.push({
-        name: name, type: "text",
+        name: name, type: "GUILD_TEXT",
         send: jest.fn((content) => { return { content: content, pin: jest.fn() }; }),
         lastPinTimestamp: null,
         createInvite: jest.fn(() => client.guild.invites.cache.push({
@@ -36,7 +37,6 @@ const client = {
         name: data.data.name,
       })),
     },
-    fetchInvites: jest.fn(() => client.guild.invites.cache),
   },
 };
 

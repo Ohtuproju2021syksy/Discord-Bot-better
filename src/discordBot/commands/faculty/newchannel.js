@@ -1,3 +1,5 @@
+const { SlashCommandBuilder } = require("@discordjs/builders");
+
 const { getRoleFromCategory, findOrCreateChannel } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
@@ -8,14 +10,14 @@ const getChannelObjects = (guild, admin, student, roleName, channelName, categor
     {
       name: `${roleName}_${channelName}`,
       parent: category,
-      options: { type: "text", parent: category, permissionOverwrites: [] },
+      options: { type: "GUILD_TEXT", parent: category, permissionOverwrites: [] },
     },
   ];
 };
 
 const execute = async (interaction, client) => {
 
-  const channelName = interaction.data.options[0].value.toLowerCase().trim();
+  const channelName = interaction.options.getString("input").value.toLowerCase().trim();
 
   const guild = client.guild;
   const channel = guild.channels.cache.get(interaction.channel_id);
@@ -51,20 +53,16 @@ const execute = async (interaction, client) => {
 };
 
 module.exports = {
-  name: "newchannel",
-  description: "Create new text channel to course.",
-  usage: "/newchannel[channel name]",
-  args: true,
-  joinArgs: true,
-  guide: true,
-  role: facultyRole,
-  options: [
-    {
-      name: "channel",
-      description: "Create new text channel",
-      type: 3,
-      required: true,
-    },
-  ],
+  data: new SlashCommandBuilder()
+    .setName("newchannel")
+    .setDescription("Create new text channel to course.")
+    .setDefaultPermission(false)
+    .addStringOption(option =>
+      option.setName("channel")
+        .setDescription("Create new text channel")
+        .setRequired(true)),
   execute,
+  usage: "/newchannel [channel name]",
+  description: "Create new text channel to course.*",
+  roles: ["admin", facultyRole],
 };

@@ -1,3 +1,5 @@
+const { SlashCommandBuilder } = require("@discordjs/builders");
+
 const { setCoursePositionABC,
   findCategoryName,
   createCourseInvitationLink,
@@ -56,7 +58,7 @@ const changeInvitationLink = async (channelAnnouncement, interaction) => {
 };
 
 const execute = async (interaction, client, Course) => {
-  const choice = interaction.data.options[0].value;
+  const choice = interaction.options.getString("input").value;
   const newValue = interaction.data.options[1].value.toLowerCase().trim();
 
   const guild = client.guild;
@@ -139,40 +141,23 @@ const execute = async (interaction, client, Course) => {
 };
 
 module.exports = {
-  name: "edit",
-  description: "Edit course code, name or nickname",
-  usage: "/edit [parameter]",
-  args: true,
-  joinArgs: true,
-  guide: true,
-  role: facultyRole,
-  options: [
-    {
-      name: "options",
-      description: "Edit current course",
-      type: 3,
-      required: true,
-      choices: [
-        {
-          name: "coursecode",
-          value: "code",
-        },
-        {
-          name: "full name",
-          value: "name",
-        },
-        {
-          name: "nickname",
-          value: "nick",
-        },
-      ],
-    },
-    {
-      name: "new_value",
-      description: "Give new value",
-      type: 3,
-      required: true,
-    },
-  ],
+  data: new SlashCommandBuilder()
+    .setName("edit")
+    .setDescription("Edit course code, name or nickname")
+    .setDefaultPermission(false)
+    .addStringOption(option =>
+      option.setName("options")
+        .setDescription("Edit current course")
+        .setRequired(true)
+        .addChoice("coursecode", "code")
+        .addChoice("full name", "name")
+        .addChoice("nickname", "nick"))
+    .addStringOption(option =>
+      option.setName("new_value")
+        .setDescription("Give new value")
+        .setRequired(true)),
   execute,
+  usage: "/edit [parameter]",
+  description: "Edit course code, name or nickname.*",
+  roles: ["admin", facultyRole],
 };

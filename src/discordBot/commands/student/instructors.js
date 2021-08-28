@@ -1,3 +1,5 @@
+const { SlashCommandBuilder } = require("@discordjs/builders");
+
 const { getRoleFromCategory } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
 const { courseAdminRole } = require("../../../../config.json");
@@ -7,7 +9,7 @@ const execute = async (interaction, client) => {
 
   let roleString;
   if (interaction.data.options) {
-    roleString = interaction.data.options[0].value.toLowerCase().trim();
+    roleString = interaction.options.getString("input").value.toLowerCase().trim();
   }
   else {
     const category = guild.channels.cache.get(interaction.channel_id).parent;
@@ -31,18 +33,15 @@ const execute = async (interaction, client) => {
 };
 
 module.exports = {
-  name: "instructors",
-  description: "Prints out the instructors of the course.*",
-  usage: "/instructors <course name>",
-  args: false,
-  joinArgs: false,
-  options: [
-    {
-      name: "course",
-      description: "Course to print instructors of",
-      type: 3,
-      required: false,
-    },
-  ],
+  data: new SlashCommandBuilder()
+    .setName("instructors")
+    .setDescription("Prints out the instructors of the course.*")
+    .setDefaultPermission(true)
+    .addStringOption(option =>
+      option.setName("course")
+        .setDescription("Course to print instructors of")
+        .setRequired(false)),
   execute,
+  usage: "/instructors <course name>",
+  description: "Prints out the instructors of the course.",
 };

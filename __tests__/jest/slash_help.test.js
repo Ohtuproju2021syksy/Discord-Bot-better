@@ -46,7 +46,7 @@ describe("slash help command", () => {
 
   test("slash help with invalid arg should give error", async () => {
     const client = defaultTeacherInteraction.client;
-    defaultTeacherInteraction.data.options[0].value = "invalidCommand";
+    defaultTeacherinteraction.options.getString("input").value = "invalidCommand";
     const response = "that's not a valid command!";
     await execute(defaultTeacherInteraction, client);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);

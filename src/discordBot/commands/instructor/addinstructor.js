@@ -1,3 +1,5 @@
+const { SlashCommandBuilder } = require("@discordjs/builders");
+
 const { isACourseCategory, trimCourseName } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
@@ -25,24 +27,23 @@ const execute = async (interaction, client) => {
   }
 
   const instructorRole = guild.roles.cache.find(r => r.name === `${roleName} ${courseAdminRole}`);
-  const memberToPromote = guild.members.cache.get(interaction.data.options[0].value);
+  const memberToPromote = guild.members.cache.get(interaction.options.getString("input").value);
 
   memberToPromote.roles.add(instructorRole);
   return sendEphemeral(client, interaction, `Gave role '${instructorRole.name}' to ${memberToPromote.displayName}.`);
 };
 
 module.exports = {
-  name: "addinstructor",
-  description: "Add instructor to the course.",
-  usage: "/addinstructor [member]",
-  role: courseAdminRole,
-  options: [
-    {
-      name: "user",
-      description: "@User to be added as instructor",
-      type: 6,
-      required: true,
-    },
-  ],
+  data: new SlashCommandBuilder()
+    .setName("addinstructor")
+    .setDescription("Add instructor to the course.")
+    .setDefaultPermission(false)
+    .addUserOption(option =>
+      option.setName("user")
+        .setDescription("@User to be added as instructor")
+        .setRequired(true)),
   execute,
+  usage: "/addinstructor [member]",
+  description: "Add instructor to the course.*",
+  roles: ["admin", facultyRole, courseAdminRole],
 };

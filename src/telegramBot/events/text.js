@@ -70,6 +70,6 @@ const execute = async (ctx, message, telegramClient, Course) => {
 };
 
 module.exports = {
-  name: "text",
+  name: "GUILD_TEXT",
   execute,
 };

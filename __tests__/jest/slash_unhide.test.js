@@ -21,7 +21,7 @@ afterEach(() => {
 describe("slash hide command", () => {
   test("hide command with invalid course name responds with correct ephemeral", async () => {
     const courseName = "test";
-    defaultTeacherInteraction.data.options[0].value = courseName;
+    defaultTeacherinteraction.options.getString("input").value = courseName;
     const client = defaultTeacherInteraction.client;
     await execute(defaultTeacherInteraction, client);
     expect(createPrivateCategoryName).toHaveBeenCalledTimes(1);
@@ -34,7 +34,7 @@ describe("slash hide command", () => {
   test("hide command with valid course name responds with correct ephemeral", async () => {
     const courseName = "test";
     findChannelWithNameAndType.mockImplementationOnce((name) => { return { name: `📚 ${name}`, setName: jest.fn() }; });
-    defaultTeacherInteraction.data.options[0].value = courseName;
+    defaultTeacherinteraction.options.getString("input").value = courseName;
     const client = defaultTeacherInteraction.client;
     await execute(defaultTeacherInteraction, client);
     expect(createPrivateCategoryName).toHaveBeenCalledTimes(1);
@@ -50,7 +50,7 @@ describe("slash hide command", () => {
   test("hide command with cooldown", async () => {
     const courseName = "test";
     findChannelWithNameAndType.mockImplementation((name) => { return { name: `📚 ${name}`, setName: jest.fn() }; });
-    defaultTeacherInteraction.data.options[0].value = courseName;
+    defaultTeacherinteraction.options.getString("input").value = courseName;
     const client = defaultTeacherInteraction.client;
     await execute(defaultTeacherInteraction, client);
     expect(createPrivateCategoryName).toHaveBeenCalledTimes(1);

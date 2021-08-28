@@ -17,6 +17,7 @@ const client = {
     },
     invites: {
       cache: [],
+      fetch: jest.fn(() => client.guild.invites.cache),
     },
     channels: {
       cache: new Discord.Collection(),
@@ -54,7 +55,6 @@ const client = {
       }),
       init: () => client.guild.roles.cache = new Discord.Collection(),
     },
-    fetchInvites: jest.fn(() => client.guild.invites.cache),
     members: {
       cache: new Discord.Collection(),
     },

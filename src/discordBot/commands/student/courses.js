@@ -1,3 +1,5 @@
+const { SlashCommandBuilder } = require("@discordjs/builders");
+
 const { findCoursesFromDb } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
 
@@ -12,11 +14,11 @@ const execute = async (interaction, client, Course) => {
 };
 
 module.exports = {
-  name: "courses",
-  description: "Get public course information.",
-  usage: "/courses",
-  args: false,
-  joinArgs: false,
-  guide: false,
+  data: new SlashCommandBuilder()
+    .setName("courses")
+    .setDescription("Get public course information.")
+    .setDefaultPermission(true),
   execute,
+  usage: "/courses",
+  description: "Get public course information.",
 };

@@ -2,7 +2,7 @@ const { updateGuide, findCategoryName, removeCourseFromDb } = require("../../ser
 const { courseAdminRole } = require("../../../../config.json");
 
 const execute = async (message, args, Course) => {
-  if (message.member.hasPermission("ADMINISTRATOR")) {
+  if (message.member.permissions.has("ADMINISTRATOR")) {
     const courseName = args[0];
 
     const guild = message.guild;

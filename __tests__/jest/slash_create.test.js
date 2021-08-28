@@ -34,7 +34,7 @@ describe("slash create command", () => {
     const courseCode = "TKT-100";
     const courseFull = "Long course name";
     const client = defaultTeacherInteraction.client;
-    defaultTeacherInteraction.data.options[0].value = courseCode;
+    defaultTeacherinteraction.options.getString("input").value = courseCode;
     defaultTeacherInteraction.data.options[1].value = courseFull;
     const response = "Error: Course fullname must be unique.";
     await execute(defaultTeacherInteraction, client);
@@ -47,7 +47,7 @@ describe("slash create command", () => {
     const courseCode = "TKT-100";
     const courseFull = "Long course name";
     const client = defaultTeacherInteraction.client;
-    defaultTeacherInteraction.data.options[0].value = courseCode;
+    defaultTeacherinteraction.options.getString("input").value = courseCode;
     defaultTeacherInteraction.data.options[1].value = courseFull;
     const response = "Error: Course name must be unique.";
     await execute(defaultTeacherInteraction, client);
@@ -59,7 +59,7 @@ describe("slash create command", () => {
   test("create course name without nick", async () => {
     const courseCode = "tkt-100";
     const courseFull = "Long course name";
-    defaultTeacherInteraction.data.options[0].value = courseCode;
+    defaultTeacherinteraction.options.getString("input").value = courseCode;
     defaultTeacherInteraction.data.options[1].value = courseFull;
     const client = defaultTeacherInteraction.client;
     await execute(defaultTeacherInteraction, client);
@@ -74,7 +74,7 @@ describe("slash create command", () => {
     const courseName = "nick name";
     const client = defaultTeacherInteraction.client;
     defaultTeacherInteraction.data.options.push({ value: "", command: {} });
-    defaultTeacherInteraction.data.options[0].value = courseCode;
+    defaultTeacherinteraction.options.getString("input").value = courseCode;
     defaultTeacherInteraction.data.options[1].value = courseFull;
     defaultTeacherInteraction.data.options[2].value = courseName;
     await execute(defaultTeacherInteraction, client);
@@ -88,7 +88,7 @@ describe("slash create command", () => {
     const courseFull = "Long course name";
     const courseName = "nick name";
     const client = defaultTeacherInteraction.client;
-    defaultTeacherInteraction.data.options[0].value = courseCode;
+    defaultTeacherinteraction.options.getString("input").value = courseCode;
     defaultTeacherInteraction.data.options[1].value = courseFull;
     defaultTeacherInteraction.data.options[2].value = courseName;
     await execute(defaultTeacherInteraction, client);
@@ -101,7 +101,7 @@ describe("slash create command", () => {
     const courseFull = "Long course name";
     const courseName = "nick name";
     const client = defaultTeacherInteraction.client;
-    defaultTeacherInteraction.data.options[0].value = courseCode;
+    defaultTeacherinteraction.options.getString("input").value = courseCode;
     defaultTeacherInteraction.data.options[1].value = courseFull;
     defaultTeacherInteraction.data.options[2].value = courseName;
     await execute(defaultTeacherInteraction, client);
@@ -113,11 +113,11 @@ describe("slash create command", () => {
     const courseFull = "Long course name";
     const courseName = "nick name";
     const client = defaultTeacherInteraction.client;
-    defaultTeacherInteraction.data.options[0].value = courseCode;
+    defaultTeacherinteraction.options.getString("input").value = courseCode;
     defaultTeacherInteraction.data.options[1].value = courseFull;
     defaultTeacherInteraction.data.options[2].value = courseName;
     const categoryName = `📚 ${courseName}`;
-    defaultTeacherInteraction.data.options[0].value = courseName;
+    defaultTeacherinteraction.options.getString("input").value = courseName;
     await execute(defaultTeacherInteraction, client);
     expect(setCoursePositionABC).toHaveBeenCalledTimes(1);
     expect(setCoursePositionABC).toHaveBeenCalledWith(client.guild, categoryName);
@@ -128,7 +128,7 @@ describe("slash create command", () => {
     const courseFull = "Long course name";
     const courseName = "nick name";
     const client = defaultTeacherInteraction.client;
-    defaultTeacherInteraction.data.options[0].value = courseCode;
+    defaultTeacherinteraction.options.getString("input").value = courseCode;
     defaultTeacherInteraction.data.options[1].value = courseFull;
     defaultTeacherInteraction.data.options[2].value = courseName;
     await execute(defaultTeacherInteraction, client);
@@ -141,7 +141,7 @@ describe("slash create command", () => {
     const courseFull = "Long course name";
     const courseName = "nick name";
     const client = defaultTeacherInteraction.client;
-    defaultTeacherInteraction.data.options[0].value = courseCode;
+    defaultTeacherinteraction.options.getString("input").value = courseCode;
     defaultTeacherInteraction.data.options[1].value = courseFull;
     defaultTeacherInteraction.data.options[2].value = courseName;
     const result = `Created course ${courseName}.`;
@@ -155,7 +155,7 @@ describe("slash create command", () => {
     const courseFull = "Long course name";
     const courseName = "nick name";
     const client = defaultTeacherInteraction.client;
-    defaultTeacherInteraction.data.options[0].value = courseCode;
+    defaultTeacherinteraction.options.getString("input").value = courseCode;
     defaultTeacherInteraction.data.options[1].value = courseFull;
     defaultTeacherInteraction.data.options[2].value = courseName;
     await execute(defaultTeacherInteraction, client);
@@ -168,7 +168,7 @@ describe("slash create command", () => {
     const courseName = "nick name";
     const Course = undefined;
     const client = defaultTeacherInteraction.client;
-    defaultTeacherInteraction.data.options[0].value = courseCode;
+    defaultTeacherinteraction.options.getString("input").value = courseCode;
     defaultTeacherInteraction.data.options[1].value = courseFull;
     defaultTeacherInteraction.data.options[2].value = courseName;
     await execute(defaultTeacherInteraction, client, Course);

@@ -109,7 +109,7 @@ const admin = {
 
 const guideChannel = {
   name: "guide",
-  type: "text",
+  type: "GUILD_TEXT",
   parent: undefined,
   delete: jest.fn(),
 };
@@ -123,14 +123,14 @@ const testCatecory = {
 const testChannel = {
   name: "test_test",
   parent: testCatecory,
-  type: "text",
+  type: "GUILD_TEXT",
   delete: jest.fn(),
 };
 
 const testChannelGeneral = {
   name: "test_general",
   parent: testCatecory,
-  type: "text",
+  type: "GUILD_TEXT",
   delete: jest.fn(),
   setTopic: jest.fn(),
 };
@@ -138,14 +138,14 @@ const testChannelGeneral = {
 const testChannelAccouncement = {
   name: "test_announcement",
   parent: testCatecory,
-  type: "text",
+  type: "GUILD_TEXT",
   delete: jest.fn(),
   setTopic: jest.fn(),
 };
 
 const chat = {
   name: "chat",
-  type: "text",
+  type: "GUILD_TEXT",
   parent: { name: "general", type: "category" },
   delete: jest.fn(),
 };

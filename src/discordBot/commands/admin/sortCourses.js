@@ -1,5 +1,5 @@
 const execute = async (message) => {
-  if (message.member.hasPermission("ADMINISTRATOR")) {
+  if (message.member.permissions.has("ADMINISTRATOR")) {
     const guild = message.client.guild;
 
     let first = 9999;
@@ -25,7 +25,7 @@ const execute = async (message) => {
 module.exports = {
   prefix: true,
   name: "sort",
-  description: "Sort courses to alphabetical order",
+  description: "Sort courses to alphabetical order.",
   role: "admin",
   usage: "!sort",
   args: false,

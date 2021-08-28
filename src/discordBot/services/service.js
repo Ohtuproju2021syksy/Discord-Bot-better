@@ -96,7 +96,7 @@ const createCourseInvitationLink = (courseName) => {
 
 const createInvitation = async (guild, args) => {
   const guide = guild.channels.cache.find(
-    c => c.type === "text" && c.name === "guide",
+    c => c.type === "GUILD_TEXT" && c.name === "guide",
   );
   let name;
   let category;

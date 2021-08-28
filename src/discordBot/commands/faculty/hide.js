@@ -1,3 +1,5 @@
+const { SlashCommandBuilder } = require("@discordjs/builders");
+
 const {
   updateGuide,
   createCategoryName,
@@ -11,7 +13,7 @@ const { facultyRole } = require("../../../../config.json");
 const used = new Map();
 
 const execute = async (interaction, client, Course) => {
-  const courseName = interaction.data.options[0].value.toLowerCase().trim();
+  const courseName = interaction.options.getString("input").value.toLowerCase().trim();
   const guild = client.guild;
   const courseString = createCategoryName(courseName);
   const category = findChannelWithNameAndType(courseString, "category", guild);
@@ -37,20 +39,16 @@ const execute = async (interaction, client, Course) => {
 };
 
 module.exports = {
-  name: "hide",
-  description: "Hide given course",
-  usage: "/hide [course name]",
-  args: true,
-  joinArgs: true,
-  guide: true,
-  role: facultyRole,
-  options: [
-    {
-      name: "course",
-      description: "Hide given course",
-      type: 3,
-      required: true,
-    },
-  ],
+  data: new SlashCommandBuilder()
+    .setName("hide")
+    .setDescription("Hide given course")
+    .setDefaultPermission(false)
+    .addStringOption(option =>
+      option.setName("course")
+        .setDescription("Hide given course")
+        .setRequired(true)),
   execute,
+  usage: "/hide [course name]",
+  description: "Hide given course.",
+  roles: ["admin", facultyRole],
 };

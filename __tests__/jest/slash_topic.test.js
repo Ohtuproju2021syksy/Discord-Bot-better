@@ -22,7 +22,7 @@ afterEach(() => {
 describe("slash topic command", () => {
   test("command must be used in course channels", async () => {
     const newTopic = "New topic!";
-    defaultTeacherInteraction.data.options[0].value = newTopic;
+    defaultTeacherinteraction.options.getString("input").value = newTopic;
     const client = defaultTeacherInteraction.client;
     defaultTeacherInteraction.channel_id = 4;
     const response = "This is not a course category, can not execute the command";
@@ -34,7 +34,7 @@ describe("slash topic command", () => {
 
   test("command can be used in course channel", async () => {
     const newTopic = "New topic!";
-    defaultTeacherInteraction.data.options[0].value = newTopic;
+    defaultTeacherinteraction.options.getString("input").value = newTopic;
     const client = defaultTeacherInteraction.client;
     defaultTeacherInteraction.channel_id = 2;
     const channel = client.guild.channels.cache.get(2);
@@ -55,7 +55,7 @@ describe("slash topic command", () => {
 
   test("command has cooldown", async () => {
     const newTopic = "New topic!";
-    defaultTeacherInteraction.data.options[0].value = newTopic;
+    defaultTeacherinteraction.options.getString("input").value = newTopic;
     const client = defaultTeacherInteraction.client;
     defaultTeacherInteraction.channel_id = 2;
     const response = `Command cooldown [mm:ss]: you need to wait ${time}.`;

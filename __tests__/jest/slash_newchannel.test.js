@@ -19,7 +19,7 @@ const setMaxChannels = (client) => {
     const channelToCreate = {
       name: i,
       parent: category,
-      type: "text",
+      type: "GUILD_TEXT",
     };
     client.guild.channels.cache.set(i, channelToCreate);
   }

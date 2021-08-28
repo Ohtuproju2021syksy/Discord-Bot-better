@@ -1,9 +1,11 @@
+const { SlashCommandBuilder } = require("@discordjs/builders");
+
 const { getRoleFromCategory } = require("../../services/service");
 const { sendEphemeral } = require("../utils");
 const { facultyRole } = require("../../../../config.json");
 
 const execute = async (interaction, client) => {
-  const deleteName = interaction.data.options[0].value.toLowerCase().trim().replace(/ /g, "-");
+  const deleteName = interaction.options.getString("input").value.toLowerCase().trim().replace(/ /g, "-");
 
   const guild = client.guild;
   const channel = guild.channels.cache.get(interaction.channel_id);
@@ -34,20 +36,16 @@ const execute = async (interaction, client) => {
 };
 
 module.exports = {
-  name: "removechannel",
-  description: "Remove given text channel from course.",
-  usage: "/removechannel [channel name]",
-  args: true,
-  joinArgs: true,
-  guide: true,
-  role: facultyRole,
-  options: [
-    {
-      name: "channel",
-      description: "Remove given text channel",
-      type: 3,
-      required: true,
-    },
-  ],
+  data: new SlashCommandBuilder()
+    .setName("removechannel")
+    .setDescription("Remove given text channel from course.")
+    .setDefaultPermission(false)
+    .addStringOption(option =>
+      option.setName("channel")
+        .setDescription("Remove given text channel")
+        .setRequired(true)),
   execute,
+  usage: "/removechannel [channel name]",
+  description: "Remove given text channel from course.*",
+  roles: ["admin", facultyRole],
 };

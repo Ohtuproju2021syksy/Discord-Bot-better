@@ -1,3 +1,5 @@
+const { SlashCommandBuilder } = require("@discordjs/builders");
+
 const {
   getRoleFromCategory,
   createCourseInvitationLink,
@@ -46,9 +48,16 @@ Members: ${count}
 };
 
 module.exports = {
-  name: "status",
-  description: "Get full status of course.*",
-  usage: "/status",
-  role: facultyRole,
+  data: new SlashCommandBuilder()
+    .setName("status")
+    .setDescription("Get full status of course.*")
+    .setDefaultPermission(false)
+    .addStringOption(option =>
+      option.setName("channel")
+        .setDescription("Remove given text channel")
+        .setRequired(true)),
   execute,
+  usage: "/status",
+  description: "Get full status of course.*",
+  roles: ["admin", facultyRole],
 };

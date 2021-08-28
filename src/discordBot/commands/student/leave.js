@@ -1,9 +1,10 @@
+const { SlashCommandBuilder } = require("@discordjs/builders");
+
 const { updateGuide } = require("../../services/service");
-const { sendEphemeral } = require("../utils");
 const { courseAdminRole } = require("../../../../config.json");
 
 const execute = async (interaction, client, Course) => {
-  const roleString = interaction.data.options[0].value.toLowerCase().trim();
+  const roleString = interaction.options.getString("test").toLowerCase().trim();
 
   const guild = client.guild;
 
@@ -13,33 +14,28 @@ const execute = async (interaction, client, Course) => {
     .map(role => role.name);
 
 
-  if (!courseRoles.length) return sendEphemeral(client, interaction, `Invalid course name: ${roleString}`);
-  if (!member.roles.cache.some((r) => courseRoles.includes(r.name))) return sendEphemeral(client, interaction, `You are not on a ${roleString} course.`);
+  if (!courseRoles.length) return await interaction.reply({ content: `Error: Invalid course name: ${roleString}`, ephemeral: true });
+  if (!member.roles.cache.some((r) => courseRoles.includes(r.name))) return await interaction.reply({ content: `Error: You are not on a ${roleString} course.`, ephemeral: true });
 
   await member.roles.cache
     .filter(role => courseRoles.includes(role.name))
     .map(async role => await member.roles.remove(role));
   await member.fetch(true);
 
-  sendEphemeral(client, interaction, `You have been removed from the ${roleString} course.`);
+  await interaction.reply({ content: `You have been removed from the ${roleString} course.`, ephemeral: true });
   await updateGuide(client.guild, Course);
 };
 
 module.exports = {
-  name: "leave",
-  description: "Remove you from the course.",
-  usage: "/leave [course name]",
-  args: true,
-  joinArgs: true,
-  guide: true,
-  options: [
-    {
-      name: "course",
-      description: "Course to leave.",
-      type: 3,
-      choices: [],
-      required: true,
-    },
-  ],
+  data: new SlashCommandBuilder()
+    .setName("leave")
+    .setDescription("Leave the course.")
+    .setDefaultPermission(true)
+    .addStringOption(option =>
+      option.setName("course")
+        .setDescription("Course to leave.")
+        .setRequired(true)),
   execute,
+  usage: "/leave [course name]",
+  description: "Leave the course.",
 };

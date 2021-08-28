@@ -15,8 +15,8 @@ afterEach(() => {
 describe("slash join command", () => {
   test("join to valid course adds role and responds with correct epheremal", async () => {
     const roleString = "tester";
-    defaultTeacherInteraction.data.options[0].value = roleString;
-    defaultTeacherInteraction.data.options[0].command = "join";
+    defaultTeacherinteraction.options.getString("input").value = roleString;
+    defaultTeacherinteraction.options.getString("input").command = "join";
     const client = defaultTeacherInteraction.client;
     client.guild.roles.create({ data: { name: roleString } });
     const member = client.guild.members.cache.get(defaultTeacherInteraction.member.user.id);
@@ -41,7 +41,7 @@ describe("slash join command", () => {
 
   test("trying to join invalid course responds with correct ephemeral", async () => {
     const roleString = "testing";
-    defaultTeacherInteraction.data.options[0].value = roleString;
+    defaultTeacherinteraction.options.getString("input").value = roleString;
     const response = `Invalid course name: ${roleString}`;
     const client = defaultTeacherInteraction.client;
     const member = client.guild.members.cache.get(defaultTeacherInteraction.member.user.id);

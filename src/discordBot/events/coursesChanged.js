@@ -1,7 +1,7 @@
-const { reloadCommands } = require("../commands/utils");
+const { updateDynamicChoices } = require("../services/commands");
 
 const execute = async (event, client, Course) => {
-  await reloadCommands(client, ["join", "leave"], Course);
+  await updateDynamicChoices(client, ["join", "leave"], Course);
 };
 
 module.exports = {

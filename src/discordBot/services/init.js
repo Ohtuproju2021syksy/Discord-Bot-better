@@ -18,7 +18,7 @@ const initChannels = async (guild, client) => {
     {
       name: "commands",
       options: {
-        type: "text",
+        type: "GUILD_TEXT",
         permissionOverwrites: [
           { id: guild.id, deny: ["SEND_MESSAGES", "VIEW_CHANNEL"] },
           { id: client.user.id, allow: ["SEND_MESSAGES", "VIEW_CHANNEL"] },
@@ -29,7 +29,7 @@ const initChannels = async (guild, client) => {
     {
       name: "guide",
       options: {
-        type: "text",
+        type: "GUILD_TEXT",
         topic: " ",
         permissionOverwrites: [{ id: guild.id, deny: ["SEND_MESSAGES"], "allow": ["VIEW_CHANNEL"] }, { id: client.user.id, allow: ["SEND_MESSAGES", "VIEW_CHANNEL"] }],
       },
@@ -47,12 +47,12 @@ const initRoles = async (guild) => {
 };
 
 const setInitialGuideMessage = async (guild, channelName, Course) => {
-  const guideChannel = guild.channels.cache.find(c => c.type === "text" && c.name === channelName);
+  const guideChannel = guild.channels.cache.find(c => c.type === "GUILD_TEXT" && c.name === channelName);
   if (!guideChannel.lastPinTimestamp) {
     const msg = await guideChannel.send("initial");
     await msg.pin();
   }
-  const invs = await guild.fetchInvites();
+  const invs = await guild.invites.fetch();
   const guideinvite = invs.find(invite => invite.channel.name === "guide");
   if (!guideinvite) await guideChannel.createInvite({ maxAge: 0 });
   await updateGuide(guild, Course);

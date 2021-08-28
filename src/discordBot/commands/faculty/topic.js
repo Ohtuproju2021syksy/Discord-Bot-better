@@ -1,3 +1,5 @@
+const { SlashCommandBuilder } = require("@discordjs/builders");
+
 const {
   handleCooldown,
   msToMinutesAndSeconds,
@@ -15,7 +17,7 @@ const used = new Map();
 
 
 const execute = async (interaction, client) => {
-  const newTopic = interaction.data.options[0].value.trim();
+  const newTopic = interaction.options.getString("input").value.trim();
 
   const guild = client.guild;
   const channel = guild.channels.cache.get(interaction.channel_id);
@@ -46,20 +48,16 @@ const execute = async (interaction, client) => {
 };
 
 module.exports = {
-  name: "topic",
-  description: "Add or update course channel topics.",
-  usage: "/topic [new topic]",
-  args: true,
-  joinArgs: true,
-  guide: true,
-  role: facultyRole,
-  options: [
-    {
-      name: "topic",
-      description: "Topic text",
-      type: 3,
-      required: true,
-    },
-  ],
+  data: new SlashCommandBuilder()
+    .setName("topic")
+    .setDescription("Add or update course channel topics.")
+    .setDefaultPermission(false)
+    .addStringOption(option =>
+      option.setName("topic")
+        .setDescription("Topic text")
+        .setRequired(true)),
   execute,
+  usage: "/topic [new topic]",
+  description: "Add or update course channel topics.*",
+  roles: ["admin", facultyRole],
 };

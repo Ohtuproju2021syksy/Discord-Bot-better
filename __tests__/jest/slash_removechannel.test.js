@@ -14,7 +14,7 @@ describe("slash removechannel", () => {
   test("Command cannot be used in normal channel", async () => {
     const courseName = "guide";
     const response = "This command can be used only in course channels";
-    defaultTeacherInteraction.data.options[0].value = courseName;
+    defaultTeacherinteraction.options.getString("input").value = courseName;
     const client = defaultTeacherInteraction.client;
     await execute(defaultTeacherInteraction, client);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
@@ -24,7 +24,7 @@ describe("slash removechannel", () => {
   test("Command can be used only in course channels", async () => {
     const courseName = "guide";
     const response = "This command can be used only in course channels";
-    defaultTeacherInteraction.data.options[0].value = courseName;
+    defaultTeacherinteraction.options.getString("input").value = courseName;
     defaultTeacherInteraction.channel_id = 4;
     const client = defaultTeacherInteraction.client;
     client.guild.channels.create("notcourse", "category");
@@ -36,7 +36,7 @@ describe("slash removechannel", () => {
   test("Orginals cannot be removed", async () => {
     const courseName = "general";
     const response = "Original channels can not be removed.";
-    defaultTeacherInteraction.data.options[0].value = courseName;
+    defaultTeacherinteraction.options.getString("input").value = courseName;
     defaultTeacherInteraction.channel_id = 3;
     const client = defaultTeacherInteraction.client;
     await execute(defaultTeacherInteraction, client);
@@ -47,7 +47,7 @@ describe("slash removechannel", () => {
   test("Invalid channel cannot be removed", async () => {
     const courseName = "invalid";
     const response = "There is not added channel with given name.";
-    defaultTeacherInteraction.data.options[0].value = courseName;
+    defaultTeacherinteraction.options.getString("input").value = courseName;
     defaultTeacherInteraction.channel_id = 3;
     const client = defaultTeacherInteraction.client;
     await execute(defaultTeacherInteraction, client);
@@ -58,7 +58,7 @@ describe("slash removechannel", () => {
   test("Valid channel can be removed", async () => {
     const courseName = "test";
     const response = `${courseName} removed!`;
-    defaultTeacherInteraction.data.options[0].value = courseName;
+    defaultTeacherinteraction.options.getString("input").value = courseName;
     defaultTeacherInteraction.channel_id = 3;
     const client = defaultTeacherInteraction.client;
     await execute(defaultTeacherInteraction, client);

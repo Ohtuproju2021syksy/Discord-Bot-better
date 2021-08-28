@@ -1,3 +1,5 @@
+const { SlashCommandBuilder } = require("@discordjs/builders");
+
 const {
   findOrCreateRoleWithName,
   createInvitation,
@@ -48,7 +50,7 @@ const getChannelObjects = (guild, admin, student, roleName, category) => {
     {
       name: `${roleName}_announcement`,
       options: {
-        type: "text",
+        type: "GUILD_TEXT",
         description: "Messages from course admins",
         parent: category,
         permissionOverwrites: [
@@ -71,7 +73,7 @@ const getChannelObjects = (guild, admin, student, roleName, category) => {
     {
       name: `${roleName}_general`,
       parent: category,
-      options: { type: "text", parent: category, permissionOverwrites: [] },
+      options: { type: "GUILD_TEXT", parent: category, permissionOverwrites: [] },
     },
     {
       name: `${roleName}_voice`,
@@ -90,7 +92,7 @@ const getCategoryObject = (categoryName, permissionOverwrites) => ({
 });
 
 const execute = async (interaction, client, Course) => {
-  const courseCode = interaction.data.options[0].value.toLowerCase().trim();
+  const courseCode = interaction.options.getString("input").value.toLowerCase().trim();
   const courseFullName = interaction.data.options[1].value.toLowerCase().trim();
   if (await findCourseFromDbWithFullName(courseFullName, Course)) return sendEphemeral(client, interaction, "Error: Course fullname must be unique.");
 
@@ -130,32 +132,24 @@ const execute = async (interaction, client, Course) => {
 };
 
 module.exports = {
-  name: "create",
-  description: "Create a new course.",
-  usage: "/create [course name]",
-  args: true,
-  joinArgs: true,
-  guide: true,
-  role: facultyRole,
-  options: [
-    {
-      name: "coursecode",
-      description: "Course coursecode",
-      type: 3,
-      required: true,
-    },
-    {
-      name: "full_name",
-      description: "Course full name",
-      type: 3,
-      required: true,
-    },
-    {
-      name: "nick_name",
-      description: "Course nick name",
-      type: 3,
-      required: false,
-    },
-  ],
+  data: new SlashCommandBuilder()
+    .setName("create")
+    .setDescription("Create a new course.")
+    .setDefaultPermission(false)
+    .addStringOption(option =>
+      option.setName("coursecode")
+        .setDescription("Course coursecode")
+        .setRequired(true))
+    .addStringOption(option =>
+      option.setName("full_name")
+        .setDescription("Course full name")
+        .setRequired(true))
+    .addStringOption(option =>
+      option.setName("nick_name")
+        .setDescription("Course nick name")
+        .setRequired(false)),
   execute,
+  usage: "/create [course name]",
+  description: "Create a new course.",
+  roles: ["admin", facultyRole],
 };
