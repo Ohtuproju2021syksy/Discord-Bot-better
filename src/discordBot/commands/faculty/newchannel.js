@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 const { getRoleFromCategory, findOrCreateChannel } = require("../../services/service");
-const { sendEphemeral } = require("../utils");
+const { sendErrorEphemeral, sendEphemeral } = require("../../services/message");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
 
 const getChannelObjects = (guild, admin, student, roleName, channelName, category) => {
@@ -16,39 +16,33 @@ const getChannelObjects = (guild, admin, student, roleName, channelName, categor
 };
 
 const execute = async (interaction, client) => {
-
-  const channelName = interaction.options.getString("input").value.toLowerCase().trim();
+  const channelName = interaction.options.getString("channel").toLowerCase().trim();
 
   const guild = client.guild;
   const channel = guild.channels.cache.get(interaction.channelId);
 
   if (!channel.parent) {
-    return sendEphemeral(client, interaction, "Course not found, can not create new channel.");
+    return await sendErrorEphemeral(interaction, "Course not found, can not create new channel.");
   }
 
   if (!channel.parent.name.startsWith("🔒") && !channel.parent.name.startsWith("📚")) {
-    return sendEphemeral(client, interaction, "This is not a course category, can not create new channel.");
+    return await sendErrorEphemeral(interaction, "This is not a course category, can not create new channel.");
   }
 
   if (guild.channels.cache.filter(c => c.parent === channel.parent).size >= 13) {
-    return sendEphemeral(client, interaction, "Maximum added text channel amount is 10");
+    return await sendErrorEphemeral(interaction, "Maximum added text channel amount is 10");
   }
   else {
     const categoryName = channel.parent.name;
     const category = channel.parent;
-
     const courseName = getRoleFromCategory(categoryName);
-
-    // Roles
     const student = await guild.roles.cache.find((role) => role.name === courseName);
     const admin = await guild.roles.cache.find((role) => role.name === `${courseName} ${courseAdminRole}`);
-
-    // Channels
     const channelObjects = getChannelObjects(guild, admin, student, courseName, channelName, category);
     await Promise.all(channelObjects.map(
       async channelObject => await findOrCreateChannel(channelObject, guild),
     ));
-    sendEphemeral(client, interaction, `Created new channel ${courseName}_${channelName}`);
+    await sendEphemeral(interaction, `Created new channel ${courseName}_${channelName}`);
   }
 };
 
