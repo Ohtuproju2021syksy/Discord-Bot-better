@@ -1,17 +1,15 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 const { isACourseCategory, trimCourseName } = require("../../services/service");
-const { sendEphemeral } = require("../utils");
+const { sendErrorEphemeral, sendEphemeral } = require("../../services/message");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
 
 const execute = async (interaction, client) => {
-
   const guild = client.guild;
   const channel = guild.channels.cache.get(interaction.channelId);
   const roleName = channel.parent ? trimCourseName(channel.parent) : "";
-
   let hasPermission = false;
-  interaction.member.roles.forEach(roleId => {
+  interaction.member._roles.forEach(roleId => {
     const role = guild.roles.cache.get(roleId);
     if (role.name === "admin" || role.name === facultyRole || role.name === `${roleName} ${courseAdminRole}`) {
       hasPermission = true;
@@ -19,18 +17,16 @@ const execute = async (interaction, client) => {
   });
 
   if (!hasPermission) {
-    return sendEphemeral(client, interaction, "You don't have the permission to use this command.");
+    return sendErrorEphemeral(interaction, "You don't have the permission to use this command!");
   }
-
   if (!channel.parent || !isACourseCategory(channel.parent)) {
-    return sendEphemeral(client, interaction, "Command must be used in a course channel.");
+    return sendErrorEphemeral(interaction, "Command must be used in a course channel!");
   }
 
   const instructorRole = guild.roles.cache.find(r => r.name === `${roleName} ${courseAdminRole}`);
-  const memberToPromote = guild.members.cache.get(interaction.options.getString("input").value);
-
+  const memberToPromote = guild.members.cache.get(interaction.options.getUser("user").id);
   memberToPromote.roles.add(instructorRole);
-  return sendEphemeral(client, interaction, `Gave role '${instructorRole.name}' to ${memberToPromote.displayName}.`);
+  return sendEphemeral(interaction, `Gave role '${instructorRole.name}' to ${memberToPromote.displayName}.`);
 };
 
 module.exports = {
