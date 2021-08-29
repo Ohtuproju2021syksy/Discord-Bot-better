@@ -20,7 +20,7 @@ const execute = async (interaction, client) => {
   const channelName = interaction.options.getString("input").value.toLowerCase().trim();
 
   const guild = client.guild;
-  const channel = guild.channels.cache.get(interaction.channel_id);
+  const channel = guild.channels.cache.get(interaction.channelId);
 
   if (!channel.parent) {
     return sendEphemeral(client, interaction, "Course not found, can not create new channel.");

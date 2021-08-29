@@ -11,7 +11,7 @@ const { facultyRole } = require("../../../../config.json");
 
 const execute = async (interaction, client, Course) => {
   const guild = client.guild;
-  const channel = guild.channels.cache.get(interaction.channel_id);
+  const channel = guild.channels.cache.get(interaction.channelId);
 
   if (!channel?.parent?.name?.startsWith("🔒") && !channel?.parent?.name?.startsWith("📚")) {
     return sendEphemeral(client, interaction, "This is not a course category, can not execute the command");

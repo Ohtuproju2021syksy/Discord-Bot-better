@@ -12,7 +12,7 @@ const execute = async (interaction, client) => {
     roleString = interaction.options.getString("input").value.toLowerCase().trim();
   }
   else {
-    const category = guild.channels.cache.get(interaction.channel_id).parent;
+    const category = guild.channels.cache.get(interaction.channelId).parent;
     if (!category) {
       return sendEphemeral(client, interaction, "Provide course name as argument or use the command in course channel.");
     }

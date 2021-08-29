@@ -8,7 +8,7 @@ const execute = async (interaction, client) => {
   const deleteName = interaction.options.getString("input").value.toLowerCase().trim().replace(/ /g, "-");
 
   const guild = client.guild;
-  const channel = guild.channels.cache.get(interaction.channel_id);
+  const channel = guild.channels.cache.get(interaction.channelId);
 
   if (!channel.parent) {
     return sendEphemeral(client, interaction, "This command can be used only in course channels");

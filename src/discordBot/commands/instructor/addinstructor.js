@@ -7,7 +7,7 @@ const { courseAdminRole, facultyRole } = require("../../../../config.json");
 const execute = async (interaction, client) => {
 
   const guild = client.guild;
-  const channel = guild.channels.cache.get(interaction.channel_id);
+  const channel = guild.channels.cache.get(interaction.channelId);
   const roleName = channel.parent ? trimCourseName(channel.parent) : "";
 
   let hasPermission = false;

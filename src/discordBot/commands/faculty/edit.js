@@ -10,7 +10,6 @@ const { setCoursePositionABC,
   trimCourseName,
   findCourseFromDb,
   createCourseToDatabase } = require("../../services/service");
-const { sendEphemeral } = require("../utils");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
 
 
@@ -50,7 +49,7 @@ const changeCourseRoles = async (categoryName, newValue, guild) => {
 
 const changeInvitationLink = async (channelAnnouncement, interaction) => {
   const pinnedMessages = await channelAnnouncement.messages.fetchPinned();
-  const invMessage = pinnedMessages.find(msg => msg.author.id === interaction.application_id && msg.content.includes("Invitation link for"));
+  const invMessage = pinnedMessages.find(msg => msg.author.id === interaction.applicationId && msg.content.includes("Invitation link for"));
   const courseName = channelAnnouncement.parent.name.replace(/([\uE000-\uF8FF]|\uD83C[\uDF00-\uDFFF]|\uD83D[\uDC00-\uDDFF])/g, "").trim();
 
   const updatedMsg = createCourseInvitationLink(courseName);
@@ -58,18 +57,18 @@ const changeInvitationLink = async (channelAnnouncement, interaction) => {
 };
 
 const execute = async (interaction, client, Course) => {
-  const choice = interaction.options.getString("input").value;
-  const newValue = interaction.data.options[1].value.toLowerCase().trim();
+  const choice = interaction.options.getString("options").toLowerCase().trim();
+  const newValue = interaction.options.getString("new_value").toLowerCase().trim();
 
   const guild = client.guild;
-  const channel = guild.channels.cache.get(interaction.channel_id);
+  const channel = guild.channels.cache.get(interaction.channelId);
 
   if (!channel?.parent?.name?.startsWith("🔒") && !channel?.parent?.name?.startsWith("📚")) {
-    return sendEphemeral(client, interaction, "This is not a course category, can not execute the command");
+    return await interaction.reply({ content: "Error: This is not a course category, can not execute the command", ephemeral: true });
   }
 
   const categoryName = trimCourseName(channel.parent, guild);
-  const category = findChannelWithNameAndType(channel.parent.name, "category", guild);
+  const category = findChannelWithNameAndType(channel.parent.name, "GUILD_CATEGORY", guild);
   const channelAnnouncement = guild.channels.cache.find(c => c.parent === channel.parent && c.name.includes("_announcement"));
 
   let databaseValue = await findCourseFromDb(categoryName, Course);
@@ -83,13 +82,13 @@ const execute = async (interaction, client, Course) => {
   if (cooldown) {
     const timeRemaining = Math.floor(cooldown - Date.now());
     const time = msToMinutesAndSeconds(timeRemaining);
-    return sendEphemeral(client, interaction, `Command cooldown [mm:ss]: you need to wait ${time}.`);
+    return await interaction.reply({ content: `Error: Command cooldown [mm:ss]: you need to wait ${time}.`, ephemeral: true });
   }
 
   if (choice === "code") {
     if (databaseValue.code === databaseValue.name) {
       const change = await changeCourseNames(newValue, channel, category, guild);
-      if (!change) return sendEphemeral(client, interaction, "Course name already exists");
+      if (!change) return await interaction.reply({ content: "Error: Course name already exists", ephemeral: true });
 
       databaseValue.code = newValue;
       databaseValue.name = newValue;
@@ -115,7 +114,7 @@ const execute = async (interaction, client, Course) => {
 
   if (choice === "nick") {
     const change = await changeCourseNames(newValue, channel, category, guild);
-    if (!change) return sendEphemeral(client, interaction, "Course name already exists");
+    if (!change) return await interaction.reply({ content: "Error: Course name already exists", ephemeral: true });
 
     databaseValue.name = newValue;
     await databaseValue.save();
@@ -137,7 +136,7 @@ const execute = async (interaction, client, Course) => {
   await client.emit("COURSES_CHANGED", Course);
   await updateGuide(client.guild, Course);
 
-  return sendEphemeral(client, interaction, "Course information has been changed");
+  return await interaction.reply({ content: "Course information has been changed", ephemeral: true });
 };
 
 module.exports = {

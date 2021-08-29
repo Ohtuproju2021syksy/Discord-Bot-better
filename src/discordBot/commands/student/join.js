@@ -19,7 +19,7 @@ const execute = async (interaction, client, Course) => {
   if (member.roles.cache.some(r => courseRoles.includes(r.name))) return await interaction.reply({ content: `Error: You are already on a ${roleString} course.`, ephemeral: true });
 
   await member.roles.add(courseRole);
-  await interaction.reply({ constent: `You have been added to a ${roleString} course.`, ephemeral: true });
+  await interaction.reply({ content: `You have been added to a ${roleString} course.`, ephemeral: true });
   await updateGuide(guild, Course);
 };
 
