@@ -40,15 +40,15 @@ const handleAllCommands = async (interaction, member, adminData, facultyData, co
 
 const handleSingleCommand = async (interaction, member, commandsReadyToPrint) => {
   const name = interaction.options.getString("command");
-  const command = commandsReadyToPrint.find(c => c.name.includes(name));
+  const command = commandsReadyToPrint.find(c => c.data.name.includes(name));
 
   if (!command) {
     return await sendErrorEphemeral(interaction, "that's not a valid command!");
   }
   const data = [];
   data.push(`Hi **${member.displayName}**!\n`);
-  data.push(`Command **${command.name}** info:\n`);
-  data.push(`**Name:** ${command.name}`);
+  data.push(`Command **${command.data.name}** info:\n`);
+  data.push(`**Name:** ${command.data.name}`);
   data.push(`**Description:** ${command.description}`);
   data.push(`**Usage:** ${command.usage}`);
   return await sendEphemeral(interaction, data.join(" \n"));
@@ -80,7 +80,7 @@ const execute = async (interaction, client) => {
       return member.roles.cache.find(role => role.name.includes(command.role));
     });
   if (!interaction.options.getString("command")) await handleAllCommands(interaction, member, adminData, facultyData, courseAdminData, studentData);
-  else handleSingleCommand(interaction, commandsReadyToPrint);
+  else handleSingleCommand(interaction, member, commandsReadyToPrint);
 };
 
 module.exports = {
