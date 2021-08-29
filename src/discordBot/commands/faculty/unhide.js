@@ -7,6 +7,7 @@ const {
   msToMinutesAndSeconds,
   handleCooldown,
   setCourseToPublic } = require("../../services/service");
+const { sendErrorEphemeral, sendEphemeral } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
 
 const used = new Map();
@@ -17,17 +18,17 @@ const execute = async (interaction, client, Course) => {
   const courseString = createPrivateCategoryName(courseName);
   const category = findChannelWithNameAndType(courseString, "GUILD_CATEGORY", guild);
   if (!category) {
-    return await interaction.reply({ content: `Error: Invalid course name: ${courseName} or the course is public already.`, ephemeral: true });
+    return await sendErrorEphemeral(interaction, `Invalid course name: ${courseName} or the course is public already!`);
   }
   const cooldown = used.get(courseName);
   if (cooldown) {
     const timeRemaining = Math.floor(cooldown - Date.now());
     const time = msToMinutesAndSeconds(timeRemaining);
-    return await interaction.reply({ content: `Error: Command cooldown [mm:ss]: you need to wait ${time}.`, ephemeral: true });
+    return await sendErrorEphemeral(interaction, `Command cooldown [mm:ss]: you need to wait ${time}!`);
   }
   else {
     await category.setName(`📚 ${courseName}`);
-    await interaction.reply({ content: `This course ${courseName} is now public.`, ephemeral: true });
+    await sendEphemeral(`This course ${courseName} is now public.`);
     await setCourseToPublic(courseName, Course);
     const cooldownTimeMs = 1000 * 60 * 15;
     used.set(courseName, Date.now() + cooldownTimeMs);
