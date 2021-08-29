@@ -29,10 +29,10 @@ const getCourseChoices = async (showPrivate, Course) => {
 
 const updateDynamicChoices = async (client, commandNames, Course) => {
   const all = await getCourseChoices(undefined, Course);
-  const public = await getCourseChoices(false, Course);
+  const pub = await getCourseChoices(false, Course);
   const loadedCommands = await client.guilds.cache.get(guildId)?.commands.fetch();
   const filteredCommands = await loadedCommands.filter((command) => commandNames.includes(command.name));
-  const commands = filteredCommands.map(async (c) => {
+  filteredCommands.map(async (c) => {
     const obj = {
       data: new SlashCommandBuilder()
         .setName(c.name)
@@ -44,16 +44,14 @@ const updateDynamicChoices = async (client, commandNames, Course) => {
             .setRequired(true)),
     };
     obj.data.name === "join" ?
-      public.forEach((ch) => obj.data.options[0].addChoice(ch.name, ch.value)) :
+      pub.forEach((ch) => obj.data.options[0].addChoice(ch.name, ch.value)) :
       all.forEach((ch) => obj.data.options[0].addChoice(ch.name, ch.value));
     const options = obj.data.options;
     await c.edit({
       options: options,
     })
-      .catch(console.erro);
-    // return obj.data.toJSON();
+      .catch(console.error);
   });
-  // await deployCommands(commands);
 };
 
 const setCommandPermissions = async (client) => {
@@ -122,12 +120,13 @@ const loadCommands = (client) => {
 
 const setUpCommands = async (client, Course) => {
   const commands = loadCommands(client);
-  // await deployCommands(commands);
+  if (process.env.NODE_ENV === "production") await deployCommands(commands);
   await setCommandPermissions(client);
   await updateDynamicChoices(client, ["join", "leave"], Course);
 };
 
 module.exports = {
+  getCourseChoices,
   setUpCommands,
   updateDynamicChoices,
 };

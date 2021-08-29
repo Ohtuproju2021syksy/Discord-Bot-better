@@ -28,7 +28,7 @@ const execute = async (interaction, client, Course) => {
   }
   else {
     await category.setName(`📚 ${courseName}`);
-    await sendEphemeral(`This course ${courseName} is now public.`);
+    await sendEphemeral(interaction, `This course ${courseName} is now public.`);
     await setCourseToPublic(courseName, Course);
     const cooldownTimeMs = 1000 * 60 * 15;
     used.set(courseName, Date.now() + cooldownTimeMs);

@@ -44,7 +44,7 @@ const execute = async (interaction, client) => {
   used.set(categoryName, Date.now() + cooldownTimeMs);
   handleCooldown(used, categoryName, cooldownTimeMs);
 
-  return sendEphemeral(interaction, "Channel topic has been changed");
+  return await sendEphemeral(interaction, "Channel topic has been changed");
 };
 
 module.exports = {
