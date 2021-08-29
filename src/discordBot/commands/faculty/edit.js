@@ -10,6 +10,7 @@ const { setCoursePositionABC,
   trimCourseName,
   findCourseFromDb,
   createCourseToDatabase } = require("../../services/service");
+const { sendErrorEphemeral, sendEphemeral } = require("../../services/message");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
 
 
@@ -64,7 +65,7 @@ const execute = async (interaction, client, Course) => {
   const channel = guild.channels.cache.get(interaction.channelId);
 
   if (!channel?.parent?.name?.startsWith("🔒") && !channel?.parent?.name?.startsWith("📚")) {
-    return await interaction.reply({ content: "Error: This is not a course category, can not execute the command", ephemeral: true });
+    return await sendErrorEphemeral(interaction, "This is not a course category, can not execute the command");
   }
 
   const categoryName = trimCourseName(channel.parent, guild);
@@ -82,13 +83,13 @@ const execute = async (interaction, client, Course) => {
   if (cooldown) {
     const timeRemaining = Math.floor(cooldown - Date.now());
     const time = msToMinutesAndSeconds(timeRemaining);
-    return await interaction.reply({ content: `Error: Command cooldown [mm:ss]: you need to wait ${time}.`, ephemeral: true });
+    return await sendErrorEphemeral(interaction, `Command cooldown [mm:ss]: you need to wait ${time}.`);
   }
 
   if (choice === "code") {
     if (databaseValue.code === databaseValue.name) {
       const change = await changeCourseNames(newValue, channel, category, guild);
-      if (!change) return await interaction.reply({ content: "Error: Course name already exists", ephemeral: true });
+      if (!change) return await sendErrorEphemeral(interaction, "Course name already exists");
 
       databaseValue.code = newValue;
       databaseValue.name = newValue;
@@ -114,7 +115,7 @@ const execute = async (interaction, client, Course) => {
 
   if (choice === "nick") {
     const change = await changeCourseNames(newValue, channel, category, guild);
-    if (!change) return await interaction.reply({ content: "Error: Course name already exists", ephemeral: true });
+    if (!change) return await sendErrorEphemeral(interaction, "Course name already exists");
 
     databaseValue.name = newValue;
     await databaseValue.save();
@@ -136,7 +137,7 @@ const execute = async (interaction, client, Course) => {
   await client.emit("COURSES_CHANGED", Course);
   await updateGuide(client.guild, Course);
 
-  return await interaction.reply({ content: "Course information has been changed", ephemeral: true });
+  return await sendEphemeral(interaction, "Course information has been changed");
 };
 
 module.exports = {

@@ -10,6 +10,7 @@ const {
   createCourseToDatabase,
   findCourseFromDb,
   findCourseFromDbWithFullName } = require("../../services/service");
+const { sendErrorEphemeral, sendEphemeral } = require("../../services/message");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
 
 /**
@@ -87,7 +88,7 @@ const getCategoryObject = (categoryName, permissionOverwrites) => ({
 const execute = async (interaction, client, Course) => {
   const courseCode = interaction.options.getString("coursecode").toLowerCase().trim();
   const courseFullName = interaction.options.getString("full_name").toLowerCase().trim();
-  if (await findCourseFromDbWithFullName(courseFullName, Course)) return await interaction.reply({ content: "Error: Course fullname must be unique.", ephemeral: true });
+  if (await findCourseFromDbWithFullName(courseFullName, Course)) return await sendErrorEphemeral(interaction, "Course fullname must be unique.");
 
   let courseName;
   if (!interaction.options.getString("nick_name")) {
@@ -96,7 +97,7 @@ const execute = async (interaction, client, Course) => {
   else {
     courseName = interaction.options.getString("nick_name").toLowerCase().trim();
   }
-  if (await findCourseFromDb(courseName, Course)) return await interaction.reply({ content: "Error: Course name must be unique.", ephemeral: true });
+  if (await findCourseFromDb(courseName, Course)) return await sendErrorEphemeral(interaction, "Course name must be unique.");
 
   const guild = client.guild;
 
@@ -115,7 +116,7 @@ const execute = async (interaction, client, Course) => {
   await createCourseToDatabase(courseCode, courseFullName, courseName, Course);
   await setCoursePositionABC(guild, categoryName);
   await createInvitation(guild, courseName);
-  await interaction.reply({ content: `Created course ${courseName}.`, ephemeral: true });
+  await sendEphemeral(interaction, `Created course ${courseName}.`);
   await client.emit("COURSES_CHANGED", Course);
   await updateGuide(client.guild, Course);
 };
