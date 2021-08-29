@@ -1,4 +1,4 @@
-const { setUpCommands } = require("../../services/commands");
+const { setUpCommands } = require("../../services/command");
 
 const execute = async (message, args, Course) => {
   if (message.member.permissions.has("ADMINISTRATOR")) {

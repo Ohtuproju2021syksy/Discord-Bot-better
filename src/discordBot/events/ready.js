@@ -1,5 +1,5 @@
 const { initializeApplicationContext } = require("../services/init");
-const { setUpCommands } = require("../services/commands");
+const { setUpCommands } = require("../services/command");
 
 const execute = async (client, Course) => {
   client.guild = await client.guilds.fetch(process.env.GUILD_ID);
