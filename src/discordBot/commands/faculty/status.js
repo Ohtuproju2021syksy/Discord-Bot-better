@@ -6,7 +6,7 @@ const {
   trimCourseName,
   findCourseFromDb,
 } = require("../../services/service");
-const { sendEphemeral } = require("../utils");
+const { sendErrorEphemeral, sendEphemeral } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
 
 const execute = async (interaction, client, Course) => {
@@ -14,7 +14,7 @@ const execute = async (interaction, client, Course) => {
   const channel = guild.channels.cache.get(interaction.channelId);
 
   if (!channel?.parent?.name?.startsWith("🔒") && !channel?.parent?.name?.startsWith("📚")) {
-    return sendEphemeral(client, interaction, "This is not a course category, can not execute the command");
+    return await sendErrorEphemeral(interaction, "This is not a course category, can not execute the command!");
   }
 
   const categoryName = trimCourseName(channel.parent, guild);
@@ -35,7 +35,7 @@ const execute = async (interaction, client, Course) => {
     "No instructors";
 
 
-  return sendEphemeral(client, interaction, `
+  return sendEphemeral(interaction, `
 Course: ${course.name}
 Fullname: ${course.fullName}
 Code: ${course.code}
@@ -51,11 +51,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName("status")
     .setDescription("Get full status of course.*")
-    .setDefaultPermission(false)
-    .addStringOption(option =>
-      option.setName("channel")
-        .setDescription("Remove given text channel")
-        .setRequired(true)),
+    .setDefaultPermission(false),
   execute,
   usage: "/status",
   description: "Get full status of course.*",
