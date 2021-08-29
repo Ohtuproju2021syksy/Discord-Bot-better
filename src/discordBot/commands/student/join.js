@@ -3,7 +3,7 @@ const { updateGuide } = require("../../services/service");
 const { courseAdminRole } = require("../../../../config.json");
 
 const execute = async (interaction, client, Course) => {
-  const roleString = interaction.options.getString("test").toLowerCase().trim();
+  const roleString = interaction.options.getString("course").toLowerCase().trim();
 
   const guild = client.guild;
 

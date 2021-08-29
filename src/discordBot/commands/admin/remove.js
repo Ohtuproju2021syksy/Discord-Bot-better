@@ -8,7 +8,7 @@ const execute = async (message, args, Course) => {
     const guild = message.guild;
 
     const courseString = findCategoryName(courseName, guild);
-    const category = guild.channels.cache.find(c => c.type === "category" && c.name === courseString);
+    const category = guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name === courseString);
 
     if (!category) return message.reply(`Error: Invalid course name: ${courseName}.`);
     await Promise.all(guild.channels.cache

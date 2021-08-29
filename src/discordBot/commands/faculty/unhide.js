@@ -13,7 +13,7 @@ const { facultyRole } = require("../../../../config.json");
 const used = new Map();
 
 const execute = async (interaction, client, Course) => {
-  const courseName = interaction.options.getString("input").value.toLowerCase().trim();
+  const courseName = interaction.options.getString("course").toLowerCase().trim();
   const guild = client.guild;
   const courseString = createPrivateCategoryName(courseName);
   const category = findChannelWithNameAndType(courseString, "category", guild);

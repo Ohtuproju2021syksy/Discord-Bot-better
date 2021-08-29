@@ -34,9 +34,7 @@ const findOrCreateRoleWithName = async (name, guild) => {
   return (
     guild.roles.cache.find((role) => role.name === name) ||
     (await guild.roles.create({
-      data: {
-        name,
-      },
+      name,
     }))
   );
 };
@@ -103,12 +101,12 @@ const createInvitation = async (guild, args) => {
 
   name = createCategoryName(args);
   category = guild.channels.cache.find(
-    c => c.type === "category" && c.name === name,
+    c => c.type === "GUILD_CATEGORY" && c.name === name,
   );
   if (!category) {
     name = createPrivateCategoryName(args);
     category = guild.channels.cache.find(
-      c => c.type === "category" && c.name === name,
+      c => c.type === "GUILD_CATEGORY" && c.name === name,
     );
   }
   const course = guild.channels.cache.find(
@@ -131,8 +129,8 @@ const findCategoryName = (courseString, guild) => {
   const categorypublic = createCategoryName(courseString);
   const categoryprivate = createPrivateCategoryName(courseString);
   try {
-    const publicCourse = guild.channels.cache.find(c => c.type === "category" && c.name === categorypublic);
-    const privateCourse = guild.channels.cache.find(c => c.type === "category" && c.name === categoryprivate);
+    const publicCourse = guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name === categorypublic);
+    const privateCourse = guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name === categoryprivate);
     if (!publicCourse && privateCourse) {
       return categoryprivate;
     }
@@ -176,14 +174,14 @@ const findOrCreateChannel = async (channelObject, guild) => {
 const setCoursePositionABC = async (guild, courseString) => {
   let first = 9999;
   const result = guild.channels.cache
-    .filter(c => c.type === "category" && c.name.startsWith("📚"))
+    .filter(c => c.type === "GUILD_CATEGORY" && c.name.startsWith("📚"))
     .map((c) => {
       const categoryName = c.name;
       if (first > c.position) first = c.position;
       return categoryName;
     }).sort((a, b) => a.localeCompare(b));
 
-  const category = guild.channels.cache.find(c => c.type === "category" && c.name === courseString);
+  const category = guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name === courseString);
   if (category) {
     await category.edit({ position: result.indexOf(courseString) + first });
   }

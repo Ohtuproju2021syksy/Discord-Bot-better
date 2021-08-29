@@ -17,7 +17,7 @@ const { courseAdminRole, facultyRole } = require("../../../../config.json");
 const used = new Map();
 
 const changeCourseNames = async (newValue, channel, category, guild) => {
-  if (guild.channels.cache.find(c => c.type === "category" && (c.name === `📚 ${newValue}` || c.name === `🔒 ${newValue}`))) return;
+  if (guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && (c.name === `📚 ${newValue}` || c.name === `🔒 ${newValue}`))) return;
   if (category.name.includes("📚")) {
     await category.setName(`📚 ${newValue}`);
   }
