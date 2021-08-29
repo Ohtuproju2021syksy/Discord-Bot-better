@@ -150,8 +150,16 @@ const testChannelAccouncement = {
 const chat = {
   name: "chat",
   type: "GUILD_TEXT",
-  parent: { name: "general", type: "GUILD_CATEGORY" },
+  parent: { name: "general", type: "GUILD_TEXT" },
   delete: jest.fn(),
+  send: jest.fn(),
+};
+
+const commands = {
+  name: "commands",
+  type: "GUILD_TEXT",
+  delete: jest.fn(),
+  send: jest.fn(),
 };
 
 client.guild.members.cache.set(1, teacher);
@@ -162,6 +170,7 @@ client.guild.channels.cache.set(2, testChannel);
 client.guild.channels.cache.set(3, testChannelGeneral);
 client.guild.channels.cache.set(4, chat);
 client.guild.channels.cache.set(5, testChannelAccouncement);
+client.guild.channels.cache.set(6, commands);
 client.guild.roles.cache.set(1, { name: "test" });
 client.guild.roles.cache.set(2, { name: `${courseAdminRole}_test` });
 client.guild.roles.cache.set(3, { name: "admin" });
@@ -205,13 +214,16 @@ const studentInteractionWithoutOptions = {
 
 const defaultAdminInteraction = {
   client: client,
-  channelId: 1,
+  channelId: 2,
   member: {
     user: {
       id: 3,
     },
+    _roles: [2, 3],
   },
   options: undefined,
+  commandName: "test",
+  reply: jest.fn(),
 };
 
 module.exports = {
