@@ -7,7 +7,7 @@ const execute = async (interaction, client, Course) => {
   }
   catch (error) {
     console.error(error);
-    await interaction.reply({ content: "There was an error while executing this command!", ephemeral: true });
+    await interaction.reply({ content: "There was an error while executing this command, report this problem to admins!", ephemeral: true });
   }
 };
 
