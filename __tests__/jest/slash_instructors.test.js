@@ -35,7 +35,7 @@ describe("slash insctuctors command", () => {
 
   test("instructors command used without course admins", async () => {
     const client = defaultStudentInteraction.client;
-    defaultStudentinteraction.options.getString("input").value = roleString;
+    defaultStudentInteraction.options.getString("input").value = roleString;
     const response = `No instructors for ${roleString}`;
     await execute(defaultStudentInteraction, client);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
@@ -44,8 +44,8 @@ describe("slash insctuctors command", () => {
 
   test("instructors command used with course admins with args", async () => {
     const client = defaultTeacherInteraction.client;
-    defaultTeacherinteraction.options.getString("input").value = roleString;
-    client.guild.roles.create({ data: { name: `${roleString} ${courseAdminRole}`, members: [{ nickname: "teacher" }] } });
+    defaultTeacherInteraction.options.getString("input").value = roleString;
+    client.guild.roles.create({ name: `${roleString} ${courseAdminRole}`, members: [{ nickname: "teacher" }] });
     const response = `Here are the instructors for ${roleString}: teacher`;
     await execute(defaultTeacherInteraction, client);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
@@ -55,8 +55,8 @@ describe("slash insctuctors command", () => {
 
   test("no course admins", async () => {
     const client = defaultTeacherInteraction.client;
-    defaultTeacherinteraction.options.getString("input").value = roleString;
-    client.guild.roles.create({ data: { name: `${roleString} ${courseAdminRole}`, members: [] } });
+    defaultTeacherInteraction.options.getString("input").value = roleString;
+    client.guild.roles.create({ name: `${roleString} ${courseAdminRole}`, members: [] });
     const response = `No instructors for ${roleString}`;
     await execute(defaultTeacherInteraction, client);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
@@ -66,8 +66,8 @@ describe("slash insctuctors command", () => {
 
   test("instructors command used with in course channel without args", async () => {
     const client = defaultStudentInteraction.client;
-    defaultStudentinteraction.options.getString("input").value = roleString;
-    client.guild.roles.create({ data: { name: `${roleString} ${courseAdminRole}`, members: [{ nickname: "teacher" }] } });
+    defaultStudentInteraction.options.getString("input").value = roleString;
+    client.guild.roles.create({ name: `${roleString} ${courseAdminRole}`, members: [{ nickname: "teacher" }] });
     const response = "Here are the instructors for test: teacher";
     await execute(defaultStudentInteraction, client);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);

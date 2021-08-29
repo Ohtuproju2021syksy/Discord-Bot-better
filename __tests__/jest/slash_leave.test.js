@@ -25,7 +25,7 @@ describe("slash leave command", () => {
 
   test("if user does not have course role responds with correct ephemeral", async () => {
     const client = defaultTeacherInteraction.client;
-    client.guild.roles.create({ data: { name: roleString } });
+    client.guild.roles.create({ name: roleString });
     const response = `You are not on a ${roleString} course.`;
     await execute(defaultTeacherInteraction, client);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);

@@ -139,7 +139,7 @@ describe("Service", () => {
     const role = { name: "test", members: [] };
     const guide = { id: 1, name: "guide", type: "GUILD_TEXT", send: jest.fn(() => msg) };
     const commands = { id: 2, name: "commands", type: "GUILD_TEXT", send: jest.fn(() => msg) };
-    const testCategory = { id: 3, name: "📚 test", type: "category", members: {} };
+    const testCategory = { id: 3, name: "📚 test", type: "GUILD_CATEGORY", members: {} };
     client.guild.invites.cache.push({ channel: { name: "guide", code: 1 } });
     client.guild.channels.cache = [guide, commands, testCategory];
     client.guild.roles.cache = [role];
@@ -176,7 +176,7 @@ describe("Service", () => {
   test("find public category name", () => {
     const courseString = "test";
     const pubCategoryName = "📚 test";
-    const pubChan = { name: pubCategoryName, type: "category" };
+    const pubChan = { name: pubCategoryName, type: "GUILD_CATEGORY" };
     client.guild.channels.cache = [pubChan];
 
     const result = findCategoryName(courseString, client.guild);
@@ -187,7 +187,7 @@ describe("Service", () => {
   test("find private category name", () => {
     const courseString = "test";
     const privCategoryName = "🔒 test";
-    const privChan = { name: privCategoryName, type: "category" };
+    const privChan = { name: privCategoryName, type: "GUILD_CATEGORY" };
     client.guild.channels.cache = [privChan];
 
     const result = findCategoryName(courseString, client.guild);
@@ -245,7 +245,7 @@ describe("Service", () => {
 
   test("setCourse positions", async () => {
     client.guild.channels.init();
-    client.guild.channels.create("📚 testA", { type: "category" });
+    client.guild.channels.create("📚 testA", { type: "GUILD_CATEGORY" });
     const categoryA = client.guild.channels.cache.find(c => c.name === "📚 testA");
     setCoursePositionABC(client.guild, "📚 testA");
     expect(categoryA.edit).toHaveBeenCalledTimes(1);
