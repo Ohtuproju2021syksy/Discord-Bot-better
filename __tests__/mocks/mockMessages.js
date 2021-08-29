@@ -61,12 +61,12 @@ const messageInCommandsChannel = {
           },
           parent: {
             name: "📚 test",
-            type: "category",
+            type: "GUILD_CATEGORY",
           },
         },
         {
           name: "📚 test",
-          type: "category",
+          type: "GUILD_CATEGORY",
           delete: jest.fn(),
         },
       ],

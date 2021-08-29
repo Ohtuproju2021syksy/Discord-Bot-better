@@ -34,7 +34,7 @@ describe("slash create command", () => {
     const courseCode = "TKT-100";
     const courseFull = "Long course name";
     const client = defaultTeacherInteraction.client;
-    defaultTeacherinteraction.options.getString("input").value = courseCode;
+    defaultTeacherInteraction.options.getString("input") = courseCode;
     defaultTeacherInteraction.data.options[1].value = courseFull;
     const response = "Error: Course fullname must be unique.";
     await execute(defaultTeacherInteraction, client);
@@ -128,7 +128,7 @@ describe("slash create command", () => {
     const courseFull = "Long course name";
     const courseName = "nick name";
     const client = defaultTeacherInteraction.client;
-    defaultTeacherinteraction.options.getString("input").value = courseCode;
+    defaultTeacherinteraction.options.getString("input") = courseCode;
     defaultTeacherInteraction.data.options[1].value = courseFull;
     defaultTeacherInteraction.data.options[2].value = courseName;
     await execute(defaultTeacherInteraction, client);

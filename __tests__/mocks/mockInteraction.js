@@ -116,7 +116,7 @@ const guideChannel = {
 
 const testCatecory = {
   name: "📚 test",
-  type: "category",
+  type: "GUILD_CATEGORY",
   delete: jest.fn(),
 };
 
@@ -146,7 +146,7 @@ const testChannelAccouncement = {
 const chat = {
   name: "chat",
   type: "GUILD_TEXT",
-  parent: { name: "general", type: "category" },
+  parent: { name: "general", type: "GUILD_CATEGORY" },
   delete: jest.fn(),
 };
 
@@ -194,11 +194,8 @@ const defaultStudentInteraction = {
     user: student,
     roles: [],
   },
-  data: {
-    options: [{
-      value: "",
-      command: {},
-    }],
+  options: {
+    getString: jest.fn((name) => name),
   },
 };
 
