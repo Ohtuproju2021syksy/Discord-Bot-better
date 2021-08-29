@@ -168,7 +168,7 @@ client.guild.members.cache.set(3, admin);
 
 const defaultTeacherInteraction = {
   client: client,
-  channel_id: 1,
+  channelId: 1,
   member: {
     user: teacher,
     roles: [1, 3, 4],
@@ -189,7 +189,7 @@ const defaultTeacherInteraction = {
 
 const defaultStudentInteraction = {
   client: client,
-  channel_id: 1,
+  channelId: 1,
   member: {
     user: student,
     roles: [],
@@ -201,7 +201,7 @@ const defaultStudentInteraction = {
 
 const teacherInteractionHelp = {
   client: client,
-  channel_id: 1,
+  channelId: 1,
   member: {
     user: {
       id: 1,
@@ -214,7 +214,7 @@ const teacherInteractionHelp = {
 
 const studentInteractionWithoutOptions = {
   client: client,
-  channel_id: 1,
+  channelId: 1,
   member: {
     user: {
       id: 2,
@@ -227,7 +227,7 @@ const studentInteractionWithoutOptions = {
 
 const defaultAdminInteraction = {
   client: client,
-  channel_id: 1,
+  channelId: 1,
   member: {
     user: {
       id: 3,

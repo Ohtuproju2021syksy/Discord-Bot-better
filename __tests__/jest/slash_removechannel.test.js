@@ -25,9 +25,9 @@ describe("slash removechannel", () => {
     const courseName = "guide";
     const response = "This command can be used only in course channels";
     defaultTeacherinteraction.options.getString("input").value = courseName;
-    defaultTeacherInteraction.channel_id = 4;
+    defaultTeacherInteraction.channelId = 4;
     const client = defaultTeacherInteraction.client;
-    client.guild.channels.create("notcourse", "category");
+    client.guild.channels.create("notcourse", "GUILD_CATEGORY");
     await execute(defaultTeacherInteraction, client);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(client, defaultTeacherInteraction, response);
@@ -37,7 +37,7 @@ describe("slash removechannel", () => {
     const courseName = "general";
     const response = "Original channels can not be removed.";
     defaultTeacherinteraction.options.getString("input").value = courseName;
-    defaultTeacherInteraction.channel_id = 3;
+    defaultTeacherInteraction.channelId = 3;
     const client = defaultTeacherInteraction.client;
     await execute(defaultTeacherInteraction, client);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
@@ -48,7 +48,7 @@ describe("slash removechannel", () => {
     const courseName = "invalid";
     const response = "There is not added channel with given name.";
     defaultTeacherinteraction.options.getString("input").value = courseName;
-    defaultTeacherInteraction.channel_id = 3;
+    defaultTeacherInteraction.channelId = 3;
     const client = defaultTeacherInteraction.client;
     await execute(defaultTeacherInteraction, client);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
@@ -59,7 +59,7 @@ describe("slash removechannel", () => {
     const courseName = "test";
     const response = `${courseName} removed!`;
     defaultTeacherinteraction.options.getString("input").value = courseName;
-    defaultTeacherInteraction.channel_id = 3;
+    defaultTeacherInteraction.channelId = 3;
     const client = defaultTeacherInteraction.client;
     await execute(defaultTeacherInteraction, client);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);

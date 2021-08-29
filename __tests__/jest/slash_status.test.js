@@ -46,7 +46,7 @@ describe("slash status command", () => {
 
   test("used in course channels", async () => {
     const client = defaultTeacherInteraction.client;
-    defaultTeacherInteraction.channel_id = 2;
+    defaultTeacherInteraction.channelId = 2;
     const response = createResponse();
     await execute(defaultTeacherInteraction, client);
     expect(trimCourseName).toHaveBeenCalledTimes(1);

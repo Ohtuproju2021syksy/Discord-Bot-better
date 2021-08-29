@@ -26,7 +26,7 @@ describe("slash insctuctors command", () => {
 
   test("instructors command used without args in course channels", async () => {
     const client = studentInteractionWithoutOptions.client;
-    studentInteractionWithoutOptions.channel_id = 2;
+    studentInteractionWithoutOptions.channelId = 2;
     const response = `No instructors for ${roleString}`;
     await execute(studentInteractionWithoutOptions, client);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);

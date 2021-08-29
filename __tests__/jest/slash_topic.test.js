@@ -24,7 +24,7 @@ describe("slash topic command", () => {
     const newTopic = "New topic!";
     defaultTeacherinteraction.options.getString("input").value = newTopic;
     const client = defaultTeacherInteraction.client;
-    defaultTeacherInteraction.channel_id = 4;
+    defaultTeacherInteraction.channelId = 4;
     const response = "This is not a course category, can not execute the command";
     await execute(defaultTeacherInteraction, client);
     expect(handleCooldown).toHaveBeenCalledTimes(0);
@@ -36,7 +36,7 @@ describe("slash topic command", () => {
     const newTopic = "New topic!";
     defaultTeacherinteraction.options.getString("input").value = newTopic;
     const client = defaultTeacherInteraction.client;
-    defaultTeacherInteraction.channel_id = 2;
+    defaultTeacherInteraction.channelId = 2;
     const channel = client.guild.channels.cache.get(2);
     const general = client.guild.channels.cache.get(3);
     const accouncement = client.guild.channels.cache.get(5);
@@ -57,7 +57,7 @@ describe("slash topic command", () => {
     const newTopic = "New topic!";
     defaultTeacherinteraction.options.getString("input").value = newTopic;
     const client = defaultTeacherInteraction.client;
-    defaultTeacherInteraction.channel_id = 2;
+    defaultTeacherInteraction.channelId = 2;
     const response = `Command cooldown [mm:ss]: you need to wait ${time}.`;
     await execute(defaultTeacherInteraction, client);
     await execute(defaultTeacherInteraction, client);
