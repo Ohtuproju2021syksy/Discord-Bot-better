@@ -1,5 +1,5 @@
 require("dotenv").config();
-const { execute } = require("../../src/discordBot/events/message");
+const { execute } = require("../../src/discordBot/events/messageCreate");
 const sort = require("../../src/discordBot/commands/admin/sortCourses");
 const deleteCommand = require("../../src/discordBot/commands/admin/deleteCommand");
 const { messageInGuideChannel, messageInCommandsChannel, student } = require("../mocks/mockMessages");
@@ -41,7 +41,8 @@ describe("prefix commands", () => {
 
   test("invalid use of command sends correct message", async () => {
     messageInCommandsChannel.content = `${prefix}deletecommand`;
-    const response = `You didn't provide any arguments, ${messageInCommandsChannel.author}!`;
+    const msg = `You didn't provide any arguments, ${messageInCommandsChannel.author}!`;
+    const response = { content: msg, reply: { messageReference: messageInCommandsChannel.id } };
     const client = messageInCommandsChannel.client;
     await execute(messageInCommandsChannel, client);
     expect(messageInCommandsChannel.channel.send).toHaveBeenCalledTimes(1);

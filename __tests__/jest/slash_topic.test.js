@@ -1,12 +1,11 @@
 const { execute } = require("../../src/discordBot/commands/faculty/topic");
-const { sendEphemeral } = require("../../src/discordBot/commands/utils");
+const { sendEphemeral, sendErrorEphemeral } = require("../../src/discordBot/services/message");
 const {
   trimCourseName,
   handleCooldown,
   msToMinutesAndSeconds } = require("../../src/discordBot/services/service");
-// const { courseAdminRole } = require("../../config.json");
 
-jest.mock("../../src/discordBot/commands/utils");
+jest.mock("../../src/discordBot/services/message");
 jest.mock("../../src/discordBot/services/service");
 
 const time = "15:00";
@@ -14,6 +13,8 @@ const time = "15:00";
 msToMinutesAndSeconds.mockImplementation(() => time);
 
 const { defaultTeacherInteraction } = require("../mocks/mockInteraction");
+const newTopic = "New topic!";
+defaultTeacherInteraction.options = { getString: jest.fn(() => newTopic) };
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -21,20 +22,16 @@ afterEach(() => {
 
 describe("slash topic command", () => {
   test("command must be used in course channels", async () => {
-    const newTopic = "New topic!";
-    defaultTeacherinteraction.options.getString("input").value = newTopic;
     const client = defaultTeacherInteraction.client;
     defaultTeacherInteraction.channelId = 4;
-    const response = "This is not a course category, can not execute the command";
+    const response = "This is not a course category, can not execute the command!";
     await execute(defaultTeacherInteraction, client);
     expect(handleCooldown).toHaveBeenCalledTimes(0);
-    expect(sendEphemeral).toHaveBeenCalledTimes(1);
-    expect(sendEphemeral).toHaveBeenCalledWith(client, defaultTeacherInteraction, response);
+    expect(sendErrorEphemeral).toHaveBeenCalledTimes(1);
+    expect(sendErrorEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
   });
 
   test("command can be used in course channel", async () => {
-    const newTopic = "New topic!";
-    defaultTeacherinteraction.options.getString("input").value = newTopic;
     const client = defaultTeacherInteraction.client;
     defaultTeacherInteraction.channelId = 2;
     const channel = client.guild.channels.cache.get(2);
@@ -50,18 +47,16 @@ describe("slash topic command", () => {
     expect(accouncement.setTopic).toHaveBeenCalledWith(newTopic);
     expect(handleCooldown).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
-    expect(sendEphemeral).toHaveBeenCalledWith(client, defaultTeacherInteraction, response);
+    expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
   });
 
   test("command has cooldown", async () => {
-    const newTopic = "New topic!";
-    defaultTeacherinteraction.options.getString("input").value = newTopic;
     const client = defaultTeacherInteraction.client;
     defaultTeacherInteraction.channelId = 2;
-    const response = `Command cooldown [mm:ss]: you need to wait ${time}.`;
+    const response = `Command cooldown [mm:ss]: you need to wait ${time}!`;
     await execute(defaultTeacherInteraction, client);
     await execute(defaultTeacherInteraction, client);
-    expect(sendEphemeral).toHaveBeenCalledTimes(2);
-    expect(sendEphemeral).toHaveBeenCalledWith(client, defaultTeacherInteraction, response);
+    expect(sendErrorEphemeral).toHaveBeenCalledTimes(2);
+    expect(sendErrorEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
   });
 });

@@ -1,4 +1,4 @@
-const { getCourseChoices } = require("../../src/discordBot/commands/utils");
+const { getCourseChoices } = require("../../src/discordBot/services/command");
 const { findCoursesFromDb } = require("../../src/discordBot/services/service");
 
 jest.mock("../../src/discordBot/services/service");

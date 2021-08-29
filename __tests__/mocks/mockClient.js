@@ -34,7 +34,7 @@ const client = {
     roles: {
       cache: [],
       create: jest.fn((data) => client.guild.roles.cache.push({
-        name: data.data.name,
+        name: data.name,
       })),
     },
   },

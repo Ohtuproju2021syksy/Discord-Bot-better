@@ -1,7 +1,5 @@
 const { execute } = require("../../src/discordBot/commands/admin/sortCourses");
 
-jest.mock("../../src/discordBot/commands/utils");
-
 const { messageInCommandsChannel, student } = require("../mocks/mockMessages");
 
 afterEach(() => {
