@@ -7,7 +7,6 @@ const validateChannel = (channel) => {
 
 const sendErrorReport = async (interaction, client, error) => {
   const commandsChannel = client.guild.channels.cache.find((c) => validateChannel(c));
-  console.log(commandsChannel);
   const member = client.guild.members.cache.get(interaction.member.user.id);
   const channel = client.guild.channels.cache.get(interaction.channelId);
   const msg = `**ERROR DETECTED!**\nMember: ${member.displayName}\nCommand: ${interaction.commandName}\nChannel: ${channel.name}`;

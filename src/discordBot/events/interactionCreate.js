@@ -9,8 +9,8 @@ const execute = async (interaction, client, Course) => {
   }
   catch (error) {
     console.error(error);
-    await sendErrorReport(interaction, client, error);
-    await sendErrorEphemeral("There was an error while executing this command - Error report sent to administrators!");
+    await sendErrorReport(interaction, client, error.toString());
+    await sendErrorEphemeral(interaction, "There was an error while executing this command - Error report sent to administrators!");
   }
 };
 
