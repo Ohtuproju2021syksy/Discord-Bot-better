@@ -1,4 +1,5 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
+const { sendErrorEphemeral, sendEphemeral } = require("../../services/message");
 const { facultyRole, courseAdminRole } = require("../../../../config.json");
 const prefix = "/";
 
@@ -34,7 +35,7 @@ const handleAllCommands = async (interaction, member, adminData, facultyData, co
   data.push("\n");
   data.push("*Commands can be only in course channels");
   data.push(`\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`);
-  return await interaction.reply({ content: data.join("\n"), emphemeral: true });
+  return await sendEphemeral(interaction, data.join("\n"));
 };
 
 const handleSingleCommand = async (interaction, member, commandsReadyToPrint) => {
@@ -42,7 +43,7 @@ const handleSingleCommand = async (interaction, member, commandsReadyToPrint) =>
   const command = commandsReadyToPrint.find(c => c.name.includes(name));
 
   if (!command) {
-    return interaction.reply({ content: "Error: that's not a valid command!", ephemeral: true });
+    return await sendErrorEphemeral(interaction, "that's not a valid command!");
   }
   const data = [];
   data.push(`Hi **${member.displayName}**!\n`);
@@ -50,7 +51,7 @@ const handleSingleCommand = async (interaction, member, commandsReadyToPrint) =>
   data.push(`**Name:** ${command.name}`);
   data.push(`**Description:** ${command.description}`);
   data.push(`**Usage:** ${command.usage}`);
-  return interaction.reply({ content: data.join(" \n"), ephemeral: true });
+  return await sendEphemeral(interaction, data.join(" \n"));
 };
 
 const execute = async (interaction, client) => {

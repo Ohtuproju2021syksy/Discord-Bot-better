@@ -1,6 +1,7 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 const { updateGuide } = require("../../services/service");
+const { sendErrorEphemeral, sendEphemeral } = require("../../services/message");
 const { courseAdminRole } = require("../../../../config.json");
 
 const execute = async (interaction, client, Course) => {
@@ -14,15 +15,15 @@ const execute = async (interaction, client, Course) => {
     .map(role => role.name);
 
 
-  if (!courseRoles.length) return await interaction.reply({ content: `Error: Invalid course name: ${roleString}`, ephemeral: true });
-  if (!member.roles.cache.some((r) => courseRoles.includes(r.name))) return await interaction.reply({ content: `Error: You are not on a ${roleString} course.`, ephemeral: true });
+  if (!courseRoles.length) return await sendErrorEphemeral(interaction, `Invalid course name: ${roleString}`);
+  if (!member.roles.cache.some((r) => courseRoles.includes(r.name))) return await sendErrorEphemeral(interaction, `You are not on a ${roleString} course.`);
 
   await member.roles.cache
     .filter(role => courseRoles.includes(role.name))
     .map(async role => await member.roles.remove(role));
   await member.fetch(true);
 
-  await interaction.reply({ content: `You have been removed from the ${roleString} course.`, ephemeral: true });
+  await sendEphemeral(interaction, `You have been removed from the ${roleString} course.`);
   await updateGuide(client.guild, Course);
 };
 

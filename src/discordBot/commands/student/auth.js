@@ -1,10 +1,10 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
-const { sendEphemeral } = require("../utils");
+const { sendEphemeral } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
 
-const execute = async (interaction, client) => {
-  sendEphemeral(client, interaction, `${process.env.BACKEND_SERVER_URL}/authenticate_faculty`);
+const execute = async (interaction) => {
+  sendEphemeral(interaction, `${process.env.BACKEND_SERVER_URL}/authenticate_faculty`);
 };
 
 module.exports = {
