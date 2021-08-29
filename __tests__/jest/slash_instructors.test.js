@@ -11,8 +11,12 @@ const {
 
 const roleString = "test";
 defaultTeacherInteraction.options = { getString: jest.fn(() => roleString) };
-defaultStudentInteraction.options = { getString: jest.fn(() => roleString) };
 studentInteractionWithoutOptions.options = { getString: jest.fn(() => false) };
+defaultStudentInteraction.options = { getString: jest
+  .fn(() => false)
+  .mockImplementationOnce(() => roleString)
+  .mockImplementationOnce(() => roleString),
+};
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -46,7 +50,7 @@ describe("slash insctuctors command", () => {
 
   test("instructors command used with course admins with args", async () => {
     const client = defaultTeacherInteraction.client;
-    client.guild.roles.create({ name: `${roleString} ${courseAdminRole}`, members: [{ nickname: "teacher" }] });
+    client.guild.roles.create({ name: `${roleString} ${courseAdminRole}`, members: [{ displayName: "teacher" }] });
     const response = `Here are the instructors for ${roleString}: teacher`;
     await execute(defaultTeacherInteraction, client);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
@@ -66,9 +70,10 @@ describe("slash insctuctors command", () => {
 
   test("instructors command used with in course channel without args", async () => {
     const client = defaultStudentInteraction.client;
-    client.guild.roles.create({ name: `${roleString} ${courseAdminRole}`, members: [{ nickname: "teacher" }] });
+    client.guild.roles.create({ name: `${roleString} ${courseAdminRole}`, members: [{ displayName: "teacher" }] });
     const response = "Here are the instructors for test: teacher";
     await execute(defaultStudentInteraction, client);
+    expect(sendErrorEphemeral).toHaveBeenCalledTimes(0);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultStudentInteraction, response);
     client.guild.roles.init();

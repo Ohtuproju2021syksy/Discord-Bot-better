@@ -38,6 +38,7 @@ const client = {
       })),
     },
   },
+  emit: jest.fn(),
 };
 
 // const commandFolders = fs.readdirSync(commandsPath);

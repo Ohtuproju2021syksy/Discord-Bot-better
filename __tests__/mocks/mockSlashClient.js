@@ -79,13 +79,7 @@ for (const folder of slashCommandFolders) {
       client.commands.set(slashCommand.name, slashCommand);
     }
     else {
-      client.slashCommands.set(
-        slashCommand.name,
-        {
-          command: slashCommand,
-          file: `./${folder}/${file}`,
-        },
-      );
+      client.slashCommands.set(slashCommand.data.name, slashCommand);
     }
   }
 }

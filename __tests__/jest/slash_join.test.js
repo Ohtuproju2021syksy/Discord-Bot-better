@@ -8,7 +8,7 @@ jest.mock("../../src/discordBot/services/service");
 const { defaultTeacherInteraction, defaultStudentInteraction } = require("../mocks/mockInteraction");
 const roleString = "tester";
 defaultTeacherInteraction.options = { getString: jest.fn(() => roleString) };
-defaultStudentInteraction.options = { getString: jest.fn(() => roleString) };
+defaultStudentInteraction.options = { getString: jest.fn(() => "invalid") };
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -38,13 +38,13 @@ describe("slash join command", () => {
   });
 
   test("trying to join invalid course responds with correct ephemeral", async () => {
-    const response = `Invalid course name: ${roleString}`;
-    const client = defaultTeacherInteraction.client;
-    const member = client.guild.members.cache.get(defaultTeacherInteraction.member.user.id);
-    await execute(defaultTeacherInteraction, client);
+    const response = "Invalid course name: invalid";
+    const client = defaultStudentInteraction.client;
+    const member = client.guild.members.cache.get(defaultStudentInteraction.member.user.id);
+    await execute(defaultStudentInteraction, client);
     expect(member.roles.add).toHaveBeenCalledTimes(0);
     expect(sendErrorEphemeral).toHaveBeenCalledTimes(1);
-    expect(sendErrorEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
+    expect(sendErrorEphemeral).toHaveBeenCalledWith(defaultStudentInteraction, response);
     expect(updateGuide).toHaveBeenCalledTimes(0);
   });
 });

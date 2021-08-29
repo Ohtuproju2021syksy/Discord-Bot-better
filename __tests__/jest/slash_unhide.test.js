@@ -55,7 +55,7 @@ describe("slash hide command", () => {
     expect(createPrivateCategoryName).toHaveBeenCalledWith(courseName);
     expect(findChannelWithNameAndType).toHaveBeenCalledTimes(1);
     expect(msToMinutesAndSeconds).toHaveBeenCalledTimes(1);
-    expect(sendEphemeral).toHaveBeenCalledTimes(1);
+    expect(sendErrorEphemeral).toHaveBeenCalledTimes(1);
     expect(client.emit).toHaveBeenCalledTimes(0);
     expect(updateGuide).toHaveBeenCalledTimes(0);
   });

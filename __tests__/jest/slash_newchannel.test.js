@@ -61,7 +61,7 @@ describe("slash new channel command", () => {
     setMaxChannels(client);
     const response = "Maximum added text channel amount is 10";
     await execute(defaultTeacherInteraction, client);
-    expect(sendEphemeral).toHaveBeenCalledTimes(1);
-    expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
+    expect(sendErrorEphemeral).toHaveBeenCalledTimes(1);
+    expect(sendErrorEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
   });
 });

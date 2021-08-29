@@ -3,9 +3,9 @@ const { courseAdminRole, facultyRole } = require("../../config.json");
 const prefix = "/";
 
 const adminD = client.commands.map(c => c);
-const faculty = client.slashCommands.map(c => c.command).filter(command => command.roles).filter(command => command.role !== courseAdminRole);
-const courseAdmin = client.slashCommands.map(c => c.command).filter(command => command.roles === courseAdminRole);
-const studentD = client.slashCommands.map(c => c.command).filter(command => !command.roles && command.name !== "auth");
+const faculty = client.slashCommands.filter(command => command.roles).filter(command => !command.roles.includes(courseAdminRole));
+const courseAdmin = client.slashCommands.filter(command => command.roles).filter(command => command.roles.includes(courseAdminRole));
+const studentD = client.slashCommands.filter(command => !command.roles && command.name !== "auth");
 
 const teacherData = [];
 teacherData.push("Hi **teacher**!\n");
@@ -51,12 +51,11 @@ adminData.push(`\nYou can send \`${prefix}help [command name]\` to get info on a
 
 const studentJoinData = [];
 client.slashCommands
-  .map(c => c.command)
-  .filter(command => command.name === "join")
+  .filter(command => command.data.name === "join")
   .map(command => {
     studentJoinData.push("Hi **student**!\n");
-    studentJoinData.push(`Command **${command.name}** info:\n`);
-    studentJoinData.push(`**Name:** ${command.name}`);
+    studentJoinData.push(`Command **${command.data.name}** info:\n`);
+    studentJoinData.push(`**Name:** ${command.data.name}`);
     studentJoinData.push(`**Description:** ${command.description}`);
     studentJoinData.push(`**Usage:** ${command.usage}`);
   });
@@ -184,24 +183,13 @@ const defaultTeacherInteraction = {
 
 const defaultStudentInteraction = {
   client: client,
-  channelId: 1,
+  channelId: 2,
   member: {
     user: student,
     _roles: [1],
   },
   options: undefined,
   reply: jest.fn(),
-};
-
-const teacherInteractionHelp = {
-  client: client,
-  channelId: 1,
-  member: {
-    user: {
-      id: 1,
-    },
-  },
-  options: undefined,
 };
 
 const studentInteractionWithoutOptions = {
@@ -232,7 +220,6 @@ module.exports = {
   studentData,
   studentJoinData,
   studentInsData,
-  teacherInteractionHelp,
   studentInteractionWithoutOptions,
   defaultTeacherInteraction,
   defaultStudentInteraction,
