@@ -1,5 +1,4 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-
 const {
   handleCooldown,
   msToMinutesAndSeconds,
@@ -8,13 +7,6 @@ const { sendErrorEphemeral, sendEphemeral } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
 
 const used = new Map();
-
-/**
- *
- * @param {Object} channelObject
- * @param {Discord.GuildChannel} parent
- */
-
 
 const execute = async (interaction, client) => {
   const newTopic = interaction.options.getString("topic").trim();

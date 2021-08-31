@@ -1,5 +1,4 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-
 const {
   findOrCreateRoleWithName,
   createInvitation,
@@ -12,12 +11,6 @@ const {
   findCourseFromDbWithFullName } = require("../../services/service");
 const { sendErrorEphemeral, sendEphemeral } = require("../../services/message");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
-
-/**
- *
- * @param {Object} channelObject
- * @param {Discord.GuildChannel} parent
- */
 
 const getPermissionOverwrites = (guild, admin, student) => ([
   {

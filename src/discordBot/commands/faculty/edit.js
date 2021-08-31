@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-
-const { setCoursePositionABC,
+const {
+  setCoursePositionABC,
   findCategoryName,
   createCourseInvitationLink,
   findChannelWithNameAndType,
