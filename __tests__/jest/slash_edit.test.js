@@ -1,17 +1,10 @@
 const { execute } = require("../../src/discordBot/commands/faculty/edit");
 const { sendEphemeral, sendErrorEphemeral } = require("../../src/discordBot/services/message");
 const {
-  // setCoursePositionABC,
   findCategoryName,
-  // createCourseInvitationLink,
-  // findChannelWithNameAndType,
-  // updateGuide,
   msToMinutesAndSeconds,
-  // handleCooldown,
   trimCourseName,
-  findCourseFromDb,
-  // createCourseToDatabase
-} = require("../../src/discordBot/services/service");
+  findCourseFromDb } = require("../../src/discordBot/services/service");
 
 jest.mock("../../src/discordBot/services/message");
 jest.mock("../../src/discordBot/services/service");

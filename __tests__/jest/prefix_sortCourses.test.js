@@ -6,8 +6,8 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
-describe("prefix reload command", () => {
-  test("user with administrator role can reload commands", async () => {
+describe("prefix sort courses command", () => {
+  test("user with administrator role can sort commands manually", async () => {
     const client = messageInCommandsChannel.client;
     const channelA = { name: "📚 a", type: "GUILD_CATEGORY", edit: jest.fn(), position: 2 };
     const channelB = { name: "📚 b", type: "GUILD_CATEGORY", edit: jest.fn(), position: 1 };
@@ -19,7 +19,7 @@ describe("prefix reload command", () => {
     client.guild.channels.init();
   });
 
-  test("user without administrator role cannot reload commands", async () => {
+  test("user without administrator role cannot use sort command", async () => {
     const client = messageInCommandsChannel.client;
     messageInCommandsChannel.author = student;
     messageInCommandsChannel.member = student;

@@ -41,7 +41,6 @@ const client = {
   emit: jest.fn(),
 };
 
-// const commandFolders = fs.readdirSync(commandsPath);
 const commandFolders = fs.readdirSync(commandsPath, { withFileTypes: true })
   .filter(dirent => dirent.isDirectory())
   .map(dirent => dirent.name);
@@ -52,7 +51,6 @@ for (const folder of commandFolders) {
     client.commands.set(command.name, command);
   }
 }
-
 
 module.exports = {
   client,
