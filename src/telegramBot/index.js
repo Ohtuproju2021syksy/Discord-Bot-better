@@ -9,7 +9,6 @@ telegramClient.command("quit", (ctx) => {
   ctx.telegram.leaveChat(ctx.message.chat.id);
 });
 
-// Enable graceful stop
 process.once("SIGINT", () => telegramClient.stop("SIGINT"));
 process.once("SIGTERM", () => telegramClient.stop("SIGTERM"));
 
