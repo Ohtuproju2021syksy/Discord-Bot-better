@@ -10,7 +10,6 @@ const validDiscordChannel = async (courseName) => {
   return channel;
 };
 
-// Create user
 const createDiscordUser = async (ctx) => {
   const username = ctx.message.from.first_name || ctx.message.from.username;
   let url;
@@ -20,8 +19,6 @@ const createDiscordUser = async (ctx) => {
   return user;
 };
 
-
-// Send message methods
 const sendMessageToDiscord = async (message, channel) => {
   try {
     const webhooks = await channel.fetchWebhooks();
@@ -51,7 +48,6 @@ const sendMessageToDiscord = async (message, channel) => {
 
 const handleBridgeMessage = async (message, courseName, Course) => {
   if (!message.channel.parent) return;
-  // const channelName = message.channel.name;
 
   const group = await Course.findOne({ where: { name: String(courseName) } });
 
@@ -60,12 +56,7 @@ const handleBridgeMessage = async (message, courseName, Course) => {
   }
   if (message.author.bot) return;
 
-  const sender = message.member.nickname || message.author.username;
-
-  /* let channel = "";
-  const name = courseName.replace(/ /g, "-");
-  channel = channelName === `${name}_announcement` ? " announcement" : channel;
-  channel = channelName === `${name}_general` ? " general" : channel;*/
+  const sender = message.member.displayName;
 
   let msg;
   if (message.content.includes("<@!")) {
@@ -78,7 +69,6 @@ const handleBridgeMessage = async (message, courseName, Course) => {
     msg = message.content;
   }
 
-  // Handle content correctly
   const photo = message.attachments.first();
   const gif = message.embeds[0];
   if (photo) {
