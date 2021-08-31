@@ -20,6 +20,8 @@ This project implements a discord bot. Bot´s function is to aid students to fin
 
 
 ## Instructions
+Node 16.6.0 or newer is required, consult the official for more information [website](https://nodejs.org/).
+
 Clone repository to your computer.
 
 Install all dependencies `npm install`.
