@@ -70,4 +70,4 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ${{ secrets.DOCKER_TEST_URL }}
+          tags: discordbotsyksy/discordbot_test:latest
