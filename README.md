@@ -1,6 +1,6 @@
 # CS DISCORD BOT
 
-![Testing pipeline](https://github.com/CS-DISCORD-BOT/cs-discord-bot/actions/workflows/test.yml/badge.svg?branch=dev)[![codecov](https://codecov.io/gh/CS-DISCORD-BOT/cs-discord-bot/branch/dev/graph/badge.svg?token=qsZwyE4keT)](https://codecov.io/gh/CS-DISCORD-BOT/cs-discord-bot)[![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+![Testing pipeline](https://github.com/CS-DISCORD-BOT/cs-discord-bot/actions/workflows/test.yml/badge.svg?branch=dev)[![codecov](https://codecov.io/gh/Ohtuproju2021syksy/Discord-Bot-better/branch/main/graph/badge.svg?token=0SLYT3D8TB)](https://codecov.io/gh/Ohtuproju2021syksy/Discord-Bot-better)[![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 Helsinki University software production project, summer 2021
 
