@@ -105,6 +105,7 @@ const escapeChars = (content) => {
     .replace(/!/g, "\\!");
 };
 
+
 const validateContent = (content) => {
   const regexp = /^`((.|\n)*)`$/;
   if (!regexp.test(content)) content = escapeChars(content);
