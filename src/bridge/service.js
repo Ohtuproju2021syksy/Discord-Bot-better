@@ -84,6 +84,7 @@ const handleBridgeMessage = async (message, courseName, Course) => {
 
 const escapeChars = (content) => {
   return content
+    .replace(/\\/g, "\\\\")
     .replace(/_/g, "\\_")
     .replace(/\*/g, "\\*")
     .replace(/\[/g, "\\[")
