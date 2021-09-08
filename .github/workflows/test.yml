@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - dev
+      - v13
   pull_request:
     branches: [main]
     types: [opened, synchronize]
