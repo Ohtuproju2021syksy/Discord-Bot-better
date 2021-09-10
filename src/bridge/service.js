@@ -113,7 +113,7 @@ const validateContent = (content) => {
 };
 
 const sendMessageToTelegram = async (telegramId, content, sender) => {
-  sender = escapeChars(sender);
+  sender ? escapeChars(sender) : null;
   content = validateContent(content);
   sender ?
     await telegramClient.telegram.sendMessage(telegramId, `*${sender}:*\n ${content}`, { parse_mode: "MarkdownV2" }) :
