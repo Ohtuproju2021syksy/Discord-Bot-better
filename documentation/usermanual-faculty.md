@@ -124,4 +124,4 @@ Command | Explanation | Arguments
 
 ### Material
 
-[Source code for the Bot](https://github.com/CS-DISCORD-BOT/cs-discord-bot)
+[Source code for the Bot](https://github.com/Ohtuproju2021syksy/Discord-Bot-better)
