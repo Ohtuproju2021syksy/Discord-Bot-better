@@ -1,23 +1,7 @@
 # Project progress
 
-[Product backlog](https://helsinkifi-my.sharepoint.com/:x:/g/personal/azkantol_ad_helsinki_fi/EXotXTenqklFnjJfmTqnzMoB6UpvxAZ4OACvC3MywKMIjQ?e=o8bycQ&action=embedview&wdbipreview=true&wdHideSheetTabs=true&Item=ProductBacklog)
+[Product backlog](https://docs.google.com/spreadsheets/d/1-7SjZHukLLdFNGYe10m_jmK7YuD6-jElkBkUZ75h5b8/edit#gid=0)
 
-[Definition of Done](https://helsinkifi-my.sharepoint.com/:x:/g/personal/azkantol_ad_helsinki_fi/EXotXTenqklFnjJfmTqnzMoB6UpvxAZ4OACvC3MywKMIjQ?e=o8bycQ&action=embedview&wdbipreview=true&wdHideSheetTabs=true&Item=DoD)
+[Definition of Done](https://docs.google.com/spreadsheets/d/1-7SjZHukLLdFNGYe10m_jmK7YuD6-jElkBkUZ75h5b8/edit#gid=735283466)
 
-[Sprint 7 backlog](https://helsinkifi-my.sharepoint.com/:x:/g/personal/azkantol_ad_helsinki_fi/EXotXTenqklFnjJfmTqnzMoB6UpvxAZ4OACvC3MywKMIjQ?e=o8bycQ&action=embedview&wdbipreview=true&wdHideSheetTabs=true&Item=Sprint7)
-
-[Sprint 6 backlog](https://helsinkifi-my.sharepoint.com/:x:/g/personal/azkantol_ad_helsinki_fi/EXotXTenqklFnjJfmTqnzMoB6UpvxAZ4OACvC3MywKMIjQ?e=o8bycQ&action=embedview&wdbipreview=true&wdHideSheetTabs=true&Item=Sprint6)
-
-[Sprint 5 backlog](https://helsinkifi-my.sharepoint.com/:x:/g/personal/azkantol_ad_helsinki_fi/EXotXTenqklFnjJfmTqnzMoB6UpvxAZ4OACvC3MywKMIjQ?e=o8bycQ&action=embedview&wdbipreview=true&wdHideSheetTabs=true&Item=Sprint5)
-
-[Sprint 4 backlog](https://helsinkifi-my.sharepoint.com/:x:/g/personal/azkantol_ad_helsinki_fi/EXotXTenqklFnjJfmTqnzMoB6UpvxAZ4OACvC3MywKMIjQ?e=o8bycQ&action=embedview&wdbipreview=true&wdHideSheetTabs=true&Item=Sprint4)
-
-[Sprint 3 backlog](https://helsinkifi-my.sharepoint.com/:x:/g/personal/azkantol_ad_helsinki_fi/EXotXTenqklFnjJfmTqnzMoB6UpvxAZ4OACvC3MywKMIjQ?e=o8bycQ&action=embedview&wdbipreview=true&wdHideSheetTabs=true&Item=Sprint3)
-
-[Sprint 2 backlog](https://helsinkifi-my.sharepoint.com/:x:/g/personal/azkantol_ad_helsinki_fi/EXotXTenqklFnjJfmTqnzMoB6UpvxAZ4OACvC3MywKMIjQ?e=o8bycQ&action=embedview&wdbipreview=true&wdHideSheetTabs=true&Item=Sprint2)
-
-[Sprint 1 backlog](https://helsinkifi-my.sharepoint.com/:x:/g/personal/azkantol_ad_helsinki_fi/EXotXTenqklFnjJfmTqnzMoB6UpvxAZ4OACvC3MywKMIjQ?e=o8bycQ&action=embedview&wdbipreview=true&wdHideSheetTabs=true&Item=Sprint1)
-
-[Sprint 0 backlog](https://helsinkifi-my.sharepoint.com/:x:/g/personal/azkantol_ad_helsinki_fi/EXotXTenqklFnjJfmTqnzMoB6UpvxAZ4OACvC3MywKMIjQ?e=o8bycQ&action=embedview&wdbipreview=true&wdHideSheetTabs=true&Item=Sprint0)
-
-[Working hours](https://helsinkifi-my.sharepoint.com/:x:/g/personal/azkantol_ad_helsinki_fi/EXotXTenqklFnjJfmTqnzMoB6UpvxAZ4OACvC3MywKMIjQ?e=o8bycQ&action=embedview&wdbipreview=true&wdHideSheetTabs=true&Item=Hours)
+[Working hours](https://docs.google.com/spreadsheets/d/1-7SjZHukLLdFNGYe10m_jmK7YuD6-jElkBkUZ75h5b8/edit#gid=920938379)
