@@ -1,8 +1,8 @@
 # CS DISCORD BOT
 
-![Testing pipeline](https://github.com/CS-DISCORD-BOT/cs-discord-bot/actions/workflows/test.yml/badge.svg?branch=dev)[![codecov](https://codecov.io/gh/CS-DISCORD-BOT/cs-discord-bot/branch/dev/graph/badge.svg?token=qsZwyE4keT)](https://codecov.io/gh/CS-DISCORD-BOT/cs-discord-bot)[![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+![Testing pipeline](https://github.com/Ohtuproju2021syksy/Discord-Bot-better/actions/workflows/test.yml/badge.svg?branch=v13)[![codecov](https://codecov.io/gh/Ohtuproju2021syksy/Discord-Bot-better/branch/v13/graph/badge.svg?token=0SLYT3D8TB)](https://codecov.io/gh/Ohtuproju2021syksy/Discord-Bot-better)[![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-Helsinki University software production project, summer 2021
+Helsinki University software production project, fall 2021
 
 This project implements a discord bot. Bot´s function is to aid students to find the right course channels in discord, where they can ask for help and communicate with other students.
 
@@ -20,8 +20,6 @@ This project implements a discord bot. Bot´s function is to aid students to fin
 
 
 ## Instructions
-Node 16.6.0 or newer is required, more information can be found on the official [website](https://nodejs.org/).
-
 Clone repository to your computer.
 
 Install all dependencies `npm install`.
