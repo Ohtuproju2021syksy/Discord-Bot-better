@@ -12,19 +12,27 @@ const validDiscordChannel = async (courseName) => {
 
 const createDiscordUser = async (ctx) => {
   const username = ctx.message.from.first_name || ctx.message.from.username;
+  const userId = ctx.message.from.username || 'undefined';
   let url;
   const t = await telegramClient.telegram.getUserProfilePhotos(ctx.message.from.id);
   if (t.photos.length) url = await telegramClient.telegram.getFileLink(t.photos[0][0].file_id);
-  const user = { username: username, avatarUrl: url };
+  const user = { username: username, avatarUrl: url, userId: userId};
   return user;
 };
 
 const sendMessageToDiscord = async (message, channel) => {
   try {
+    if (message.content.text.length > 2000) {
+      console.log("Message is too long (over 2000 characters)");
+      return;
+    }
     const webhooks = await channel.fetchWebhooks();
     const webhook = webhooks.first();
-
     if (message.content.text) {
+      if (isMessageCryptoSpam(message)) {
+        console.log("Crypto spam detected, message blocked (Either too many keywords and/or userID has bot");
+        return;
+      }
       await webhook.send({
         content: message.content.text,
         username: message.user.username,
@@ -45,6 +53,27 @@ const sendMessageToDiscord = async (message, channel) => {
     console.error("Error trying to send a message: ", error);
   }
 };
+
+const isMessageCryptoSpam = (message) => {
+  
+  var keywords = ['crypto', 'krypto', 'btc', 'doge', 'btc', 'eth', 'musk', 'money', '$', 'usd', 'bitcoin', 'muskx.co', 'coin']
+  const keywordPoints = new Map(keywords.map(key => [key, null]));
+  let point;
+  const userId = message.user.userId.toLowerCase();
+  const textAsList = message.content.text.toLowerCase().split(" ");
+
+  userId.includes("bot") ? point = 2 : point = 0;
+  for (const word of textAsList) {
+    if (keywordPoints.has(word)) {
+      point++;
+      if (point == 3) return true;
+    }
+  }
+
+  return false;
+
+}
+
 
 const handleBridgeMessage = async (message, courseName, Course) => {
   if (!message.channel.parent) return;
