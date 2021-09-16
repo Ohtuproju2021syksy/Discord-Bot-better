@@ -1,5 +1,8 @@
 let discordClient;
 let telegramClient;
+const keywords = ['crypto', 'krypto', 'btc', 'doge', 'btc', 'eth', 'musk', 'money', '$', 'usd', 'bitcoin', 'muskx.co', 'coin'];
+const keywordPoints = new Map(keywords.map(key => [key, null]));
+
 
 const validDiscordChannel = async (courseName) => {
   const guild = await discordClient.guilds.fetch(process.env.GUILD_ID);
@@ -55,9 +58,7 @@ const sendMessageToDiscord = async (message, channel) => {
 };
 
 const isMessageCryptoSpam = (message) => {
-  
-  var keywords = ['crypto', 'krypto', 'btc', 'doge', 'btc', 'eth', 'musk', 'money', '$', 'usd', 'bitcoin', 'muskx.co', 'coin']
-  const keywordPoints = new Map(keywords.map(key => [key, null]));
+
   let point;
   const userId = message.user.userId.toLowerCase();
   const textAsList = message.content.text.toLowerCase().split(" ");
@@ -98,12 +99,14 @@ const handleBridgeMessage = async (message, courseName, Course) => {
     msg = message.content;
   }
 
-  const photo = message.attachments.first();
-  const gif = message.embeds[0];
-  if (photo) {
-    await sendPhotoToTelegram(group.telegramId, msg, sender, photo.url);
+  const media = message.attachments.first();
+  const gif = message.embeds[0]
+
+
+  if (media) {
+    await sendMediaToTelegram(group.telegramId, msg, sender, media);
   }
-  else if (gif) {
+  else if (gif != undefined && gif.type != undefined && gif.type == 'gifv') {
     await sendAnimationToTelegram(group.telegramId, sender, gif.video.url);
   }
   else {
@@ -149,11 +152,22 @@ const sendMessageToTelegram = async (telegramId, content, sender) => {
     await telegramClient.telegram.sendMessage(telegramId, `${content}`, { parse_mode: "MarkdownV2" });
 };
 
-const sendPhotoToTelegram = async (telegramId, info, sender, url) => {
+const sendMediaToTelegram = async (telegramId, info, sender, media) => {
   sender = escapeChars(sender);
   info = validateContent(info);
+  const url = media.url;
   const caption = `*${sender}:* ${info}`;
-  await telegramClient.telegram.sendPhoto(telegramId, { url }, { caption, parse_mode: "MarkdownV2" });
+
+  if (media.contentType.includes('video')) {
+    await telegramClient.telegram.sendVideo(telegramId, { url }, { caption, parse_mode: "MarkdownV2" });
+  } else if (media.contentType.includes('audio')) {
+    await telegramClient.telegram.sendAudio(telegramId, { url }, { caption, parse_mode: "MarkdownV2" });
+  } else if (media.contentType.includes('gif')) {
+    await telegramClient.telegram.sendAnimation(telegramId, { url }, { caption, parse_mode: "MarkdownV2" });
+  } else {
+    await telegramClient.telegram.sendPhoto(telegramId, { url }, { caption, parse_mode: "MarkdownV2" });
+  }
+
 };
 
 const sendAnimationToTelegram = async (telegramId, sender, url) => {
@@ -186,7 +200,7 @@ module.exports = {
   createDiscordUser,
   sendMessageToDiscord,
   sendMessageToTelegram,
-  sendPhotoToTelegram,
+  sendMediaToTelegram,
   sendAnimationToTelegram,
   handleBridgeMessage,
   getCourseName,
