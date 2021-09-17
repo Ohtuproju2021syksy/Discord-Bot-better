@@ -104,9 +104,9 @@ const handleBridgeMessage = async (message, courseName, Course) => {
 
   while (msg.includes('<@!')) {
     const userID = msg.match(/(?<=<@!).*?(?=>)/)[0];
-    let user = message.guild.members.cache.get(userID);
-    user ? user = user.user.username : user = "Jon Doe";
-    msg = msg.replace('<@!' + userID + '>', user);
+    let userName = message.guild.members.cache.get(userID);
+    userName ? userName = user.user.username : userName = "Jon Doe";
+    msg = msg.replace('<@!' + userID + '>', userName);
   }
 
   const media = message.attachments.first();
