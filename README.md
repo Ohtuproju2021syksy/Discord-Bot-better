@@ -29,7 +29,7 @@ Add `.env` file to root of the repository (same directory with `package.json`).
 Add following contents to `.env` file:
 ```
 PREFIX=!
-BOT_TOKEN=your-own-token
+DISCORD_BOT_TOKEN=your-own-token
 GUILD_ID=your-discord-server-id
 BOT_ID=id-of-your-bot
 CLIENT_SECRET=your-client-secret
@@ -43,7 +43,6 @@ POSTGRES_PASSWORD=your-postgres-password
 DB_HOST= (only if you are not using PostgreSQL locally)
 
 # Bridge
-DISCORD_BOT_TOKEN=discord-bridge-bot-token
 TELEGRAM_BOT_TOKEN=telegram-bridge-bot-token
 TG_BRIDGE_ENABLED=true
 ```

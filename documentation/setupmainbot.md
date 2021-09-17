@@ -27,7 +27,7 @@ Get your Bot token by clicking the "Copy" button.
 ![Bot token](./images/token.png)
 
 ```
-Add this token to `.env` file : BOT_TOKEN=your-own-token.
+Add this token to `.env` file : DISCORD_BOT_TOKEN=your-own-token.
 ```
 
 ## Connect your bot to your Discord server

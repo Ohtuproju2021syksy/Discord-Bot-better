@@ -3,7 +3,7 @@ const { Client, Intents } = require("discord.js");
 const fs = require("fs");
 const { Course } = require("../db/dbInit");
 
-const token = process.env.BOT_TOKEN;
+const token = process.env.DISCORD_BOT_TOKEN;
 const intents = [
   Intents.FLAGS.GUILDS,
   Intents.FLAGS.GUILD_MEMBERS,

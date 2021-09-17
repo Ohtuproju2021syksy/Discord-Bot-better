@@ -5,7 +5,7 @@ const guildId = process.env.GUILD_ID;
 const DISCORD_API = `https://discord.com/api/v${version}/guilds/${guildId}`;
 
 const authorization_type = "Bot";
-const authorization_token = process.env.BOT_TOKEN;
+const authorization_token = process.env.DISCORD_BOT_TOKEN;
 
 const getChannels = async () => {
   const response = await fetch(`${DISCORD_API}/channels`, {
