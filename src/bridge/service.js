@@ -26,14 +26,14 @@ const createDiscordUser = async (ctx) => {
 const sendMessageToDiscord = async (message, channel) => {
   try {
     if (message.content.text.length > 2000) {
-      console.log("Message is too long (over 2000 characters)");
+      console.log('Message is too long (over 2000 characters)');
       return;
     }
     const webhooks = await channel.fetchWebhooks();
     const webhook = webhooks.first();
     if (message.content.text) {
       if (isMessageCryptoSpam(message)) {
-        console.log("Crypto spam detected, message blocked (Either too many keywords and/or userID has bot");
+        console.log('Crypto spam detected, message blocked (Either too many keywords and/or userID has bot in it)');
         return;
       }
       await webhook.send({
@@ -87,16 +87,26 @@ const handleBridgeMessage = async (message, courseName, Course) => {
   if (message.author.bot) return;
 
   const sender = message.member.displayName;
+  let channel = ":";
 
-  let msg;
-  if (message.content.includes("<@!")) {
-    const userID = message.content.match(/(?<=<@!).*?(?=>)/)[0];
+  if (!message.channel.name.includes('general')) {
+    channel = ' on ' + message.channel.name.split("_")[1] + ' channel:\n';
+  }
+
+  let msg = message.content
+  
+  while (msg.includes('<#')) {
+    const channelID = msg.match(/(?<=<#).*?(?=>)/)[0]
+    let channelName = message.guild.channels.cache.get(channelID);
+    channelName ? channelName = channelName.name : channelName = "UnknownChannel";
+    msg = msg.replace('<#' + channelID + '>', "#" + channelName);
+  }
+
+  while (msg.includes('<@!')) {
+    const userID = msg.match(/(?<=<@!).*?(?=>)/)[0];
     let user = message.guild.members.cache.get(userID);
     user ? user = user.user.username : user = "Jon Doe";
-    msg = message.content.replace(/<.*>/, `${user}`);
-  }
-  else {
-    msg = message.content;
+    msg = msg.replace('<@!' + userID + '>', user);
   }
 
   const media = message.attachments.first();
@@ -104,13 +114,13 @@ const handleBridgeMessage = async (message, courseName, Course) => {
 
 
   if (media) {
-    await sendMediaToTelegram(group.telegramId, msg, sender, media);
+    await sendMediaToTelegram(group.telegramId, msg, sender, channel, media);
   }
   else if (gif != undefined && gif.type != undefined && gif.type == 'gifv') {
-    await sendAnimationToTelegram(group.telegramId, sender, gif.video.url);
+    await sendAnimationToTelegram(group.telegramId, sender, channel, gif.video.url);
   }
   else {
-    await sendMessageToTelegram(group.telegramId, msg, sender);
+    await sendMessageToTelegram(group.telegramId, msg, sender, channel);
   }
 };
 
@@ -144,20 +154,19 @@ const validateContent = (content) => {
   return content;
 };
 
-const sendMessageToTelegram = async (telegramId, content, sender) => {
+const sendMessageToTelegram = async (telegramId, content, sender, channel) => {
   sender ? escapeChars(sender) : null;
   content = validateContent(content);
   sender ?
-    await telegramClient.telegram.sendMessage(telegramId, `*${sender}:*\n ${content}`, { parse_mode: "MarkdownV2" }) :
+    await telegramClient.telegram.sendMessage(telegramId, `*${sender}*${channel}\n${content}`, { parse_mode: "MarkdownV2" }) :
     await telegramClient.telegram.sendMessage(telegramId, `${content}`, { parse_mode: "MarkdownV2" });
 };
 
-const sendMediaToTelegram = async (telegramId, info, sender, media) => {
+const sendMediaToTelegram = async (telegramId, info, sender, channel, media) => {
   sender = escapeChars(sender);
   info = validateContent(info);
   const url = media.url;
-  const caption = `*${sender}:* ${info}`;
-
+  const caption = `*${sender}*${channel} ${info}`;
   if (media.contentType.includes('video')) {
     await telegramClient.telegram.sendVideo(telegramId, { url }, { caption, parse_mode: "MarkdownV2" });
   } else if (media.contentType.includes('audio')) {
@@ -170,9 +179,9 @@ const sendMediaToTelegram = async (telegramId, info, sender, media) => {
 
 };
 
-const sendAnimationToTelegram = async (telegramId, sender, url) => {
+const sendAnimationToTelegram = async (telegramId, sender, channel, url) => {
   sender = escapeChars(sender);
-  const caption = `*${sender}*`;
+  const caption = `*${sender}*${channel}`;
   await telegramClient.telegram.sendAnimation(telegramId, { url }, { caption, parse_mode: "MarkdownV2" });
 };
 
