@@ -84,7 +84,7 @@ const handleBridgeMessage = async (message, courseName, Course) => {
   if (photo) {
     await sendPhotoToTelegram(group.telegramId, msg, sender, photo.url);
   }
-  else if (gif != undefined && gif.type != undefined && gif.type == 'gifv') {
+  else if (gif != undefined && gif.type != undefined && gif.type == "gifv") {
     await sendAnimationToTelegram(group.telegramId, sender, gif.video.url);
   }
   else {
