@@ -9,6 +9,8 @@ const createCategoryName = (courseString) => `📚 ${courseString}`;
 
 const createPrivateCategoryName = (courseString) => `🔒 ${courseString}`;
 
+const cooldownMap = new Map();
+
 /**
  * Expects role to be between parenthesis e.g., (role)
  * @param {String} string
@@ -157,9 +159,16 @@ const msToMinutesAndSeconds = (ms) => {
   return `${minutes}:${(seconds < 10 ? "0" : "")}${seconds}`;
 };
 
-const handleCooldown = (map, courseName, cooldown) => {
+const isOnCooldown = (courseName) => {
+  return cooldownMap.get(courseName);
+};
+
+const handleCooldown = (courseName, cooldown) => {
+  if (!cooldownMap.has(courseName)) {
+    cooldownMap.set(courseName, cooldown + Date.now());
+  }
   setTimeout(() => {
-    map.delete(courseName);
+    cooldownMap.delete(courseName);
   }, cooldown);
 };
 
@@ -268,7 +277,8 @@ const findCoursesFromDb = async (order, Course, state) => {
     attributes: ["code", "fullName", "name"],
     order: [order],
     where: filter[state],
-    raw: true });
+    raw: true,
+  });
 };
 
 const findCourseFromDbWithFullName = async (courseFullName, Course) => {
@@ -288,6 +298,7 @@ module.exports = {
   findChannelWithNameAndType,
   findChannelWithId,
   msToMinutesAndSeconds,
+  isOnCooldown,
   handleCooldown,
   createCourseInvitationLink,
   findOrCreateChannel,

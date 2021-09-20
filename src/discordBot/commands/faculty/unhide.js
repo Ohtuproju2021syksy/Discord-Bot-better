@@ -5,11 +5,10 @@ const {
   findChannelWithNameAndType,
   msToMinutesAndSeconds,
   handleCooldown,
+  isOnCooldown,
   setCourseToPublic } = require("../../services/service");
 const { sendErrorEphemeral, sendEphemeral } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
-
-const used = new Map();
 
 const execute = async (interaction, client, Course) => {
   const courseName = interaction.options.getString("course").toLowerCase().trim();
@@ -19,7 +18,7 @@ const execute = async (interaction, client, Course) => {
   if (!category) {
     return await sendErrorEphemeral(interaction, `Invalid course name: ${courseName} or the course is public already!`);
   }
-  const cooldown = used.get(courseName);
+  const cooldown = isOnCooldown(courseName);
   if (cooldown) {
     const timeRemaining = Math.floor(cooldown - Date.now());
     const time = msToMinutesAndSeconds(timeRemaining);
@@ -30,10 +29,9 @@ const execute = async (interaction, client, Course) => {
     await sendEphemeral(interaction, `This course ${courseName} is now public.`);
     await setCourseToPublic(courseName, Course);
     const cooldownTimeMs = 1000 * 60 * 15;
-    used.set(courseName, Date.now() + cooldownTimeMs);
-    handleCooldown(used, courseName, cooldownTimeMs);
     await client.emit("COURSES_CHANGED", Course);
     await updateGuide(client.guild, Course);
+    handleCooldown(courseName, cooldownTimeMs);
   }
 };
 

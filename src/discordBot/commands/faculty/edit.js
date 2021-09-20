@@ -7,14 +7,13 @@ const {
   updateGuide,
   msToMinutesAndSeconds,
   handleCooldown,
+  isOnCooldown,
   trimCourseName,
   findCourseFromDb,
   createCourseToDatabase } = require("../../services/service");
 const { sendErrorEphemeral, sendEphemeral } = require("../../services/message");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
 
-
-const used = new Map();
 
 const changeCourseNames = async (newValue, channel, category, guild) => {
   if (guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && (c.name === `📚 ${newValue}` || c.name === `🔒 ${newValue}`))) return;
@@ -79,7 +78,7 @@ const execute = async (interaction, client, Course) => {
     databaseValue = await findCourseFromDb(categoryName, Course);
   }
 
-  const cooldown = used.get(categoryName);
+  const cooldown = isOnCooldown(categoryName);
   if (cooldown) {
     const timeRemaining = Math.floor(cooldown - Date.now());
     const time = msToMinutesAndSeconds(timeRemaining);
@@ -130,14 +129,16 @@ const execute = async (interaction, client, Course) => {
   if ((choice === "code" && databaseValue.code === databaseValue.name) || choice === "nick") {
     const nameToCoolDown = trimCourseName(channel.parent, guild);
     const cooldownTimeMs = 1000 * 60 * 15;
-    used.set(nameToCoolDown, Date.now() + cooldownTimeMs);
-    handleCooldown(used, nameToCoolDown, cooldownTimeMs);
+    handleCooldown(nameToCoolDown, cooldownTimeMs);
   }
 
   await client.emit("COURSES_CHANGED", Course);
   await updateGuide(client.guild, Course);
 
-  return await sendEphemeral(interaction, "Course information has been changed");
+  await sendEphemeral(interaction, "Course information has been changed");
+  const nameToCoolDown = trimCourseName(channel.parent, guild);
+  const cooldownTimeMs = 1000 * 60 * 15;
+  handleCooldown(nameToCoolDown, cooldownTimeMs);
 };
 
 module.exports = {
