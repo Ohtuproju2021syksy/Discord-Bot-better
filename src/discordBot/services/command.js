@@ -57,7 +57,7 @@ const updateDynamicChoices = async (client, commandNames, Course) => {
 const setCommandPermissions = async (client) => {
   const loadedCommands = await client.guilds.cache.get(guildId)?.commands.fetch();
   const createCommandsWithPermission = loadedCommands.filter((command) => !command.defaultPermission);
-  const fullPermissions = createCommandsWithPermission.map((command) => {
+  let fullPermissions = createCommandsWithPermission.map((command) => {
     const commandObj = client.slashCommands.get(command.name);
     const perms = [];
     commandObj.roles
@@ -71,6 +71,20 @@ const setCommandPermissions = async (client) => {
       permissions: perms,
     };
   });
+
+  if (fullPermissions[0].permissions.length > 10) {
+    for (let i = 0, arrayLength = fullPermissions[0].permissions.length; i <= arrayLength;i += 10) {
+      const slicedList = fullPermissions[0].permissions.slice(i, i + 10);
+      fullPermissions.push(
+        {
+          id: fullPermissions[0].id,
+          permissions: slicedList,
+        },
+      );
+    }
+    fullPermissions = fullPermissions.splice(1, fullPermissions.length);
+  }
+
   await client.guilds.cache.get(guildId)?.commands.permissions.set({ fullPermissions });
   console.log("Successfully loaded all command permissions.");
 };

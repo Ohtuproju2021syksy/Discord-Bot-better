@@ -1,6 +1,7 @@
 let discordClient;
 let telegramClient;
-const keywords = ["crypto", "krypto", "btc", "doge", "btc", "eth", "musk", "money", "$", "usd", "bitcoin", "muskx.co", "coin"];
+const keywords = ["crypto", "krypto", "btc", "doge", "btc", "eth", "musk", "money", "$", "usd", "bitcoin", "muskx.co", "coin", "elonmusk", "prize", "еlonmusk", "btc"];
+const cyrillicPattern = /^\p{Script=Cyrillic}+$/u;
 const keywordPoints = new Map(keywords.map(key => [key, null]));
 
 
@@ -59,18 +60,28 @@ const sendMessageToDiscord = async (message, channel) => {
 
 const isMessageCryptoSpam = (message) => {
 
-  let point;
+  let point = 0;
   const userId = message.user.userId.toLowerCase();
-  const textAsList = message.content.text.toLowerCase().split(" ");
+  const textAsList = message.content.text.toLowerCase().split(/(?: |\n)+/);
 
-  userId.includes("bot") ? point = 2 : point = 0;
+
+  for (const c of message.content.text) {
+    if (cyrillicPattern.test(c)) {
+      point++;
+      break;
+    }
+  }
+
+
+  userId.includes("bot") ? point = point + 2 : point = point + 0;
+  message.content.text.includes("elonmusk") ? point++ : point = point + 0;
+  cyrillicPattern.test(message.content.text) ? point++ : point = point + 0;
   for (const word of textAsList) {
     if (keywordPoints.has(word)) {
       point++;
       if (point == 3) return true;
     }
   }
-
   return false;
 };
 
@@ -80,9 +91,10 @@ const handleBridgeMessage = async (message, courseName, Course) => {
 
   const group = await Course.findOne({ where: { name: String(courseName) } });
 
-  if (!group) {
+  if (!group || group.telegramId == null) {
     return;
   }
+
   if (message.author.bot) return;
 
   const sender = message.member.displayName;

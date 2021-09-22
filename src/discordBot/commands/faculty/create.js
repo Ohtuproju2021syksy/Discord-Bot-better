@@ -90,6 +90,12 @@ const execute = async (interaction, client, Course) => {
   else {
     courseName = interaction.options.getString("nick_name").toLowerCase().trim();
   }
+
+  const courseNameConcat = courseCode + " - " + courseFullName + " - " + courseName;
+  if (courseNameConcat.length >= 99) {
+    return await sendErrorEphemeral(interaction, "Course code, name and nickname are too long!");
+  }
+
   if (await findCourseFromDb(courseName, Course)) return await sendErrorEphemeral(interaction, "Course name must be unique.");
 
   const guild = client.guild;
