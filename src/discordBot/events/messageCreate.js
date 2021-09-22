@@ -1,7 +1,11 @@
 const prefix = process.env.PREFIX;
+const messageCounter = require("../../promMetrics/messageCounter");
 
 const execute = async (message, client, Course) => {
-  if (!message.content.startsWith(prefix) || message.channel.name !== "commands") return;
+  if (!message.content.startsWith(prefix) || message.channel.name !== "commands") {
+    messageCounter.inc({ channel: message.channel.name });
+    return;
+  }
 
   let args = message.content.slice(prefix.length).trim().split(/ +/);
   const commandName = args.shift().toLowerCase();
