@@ -7,7 +7,7 @@ const {
   updateGuide,
   msToMinutesAndSeconds,
   handleCooldown,
-  isOnCooldown,
+  checkCourseCooldown,
   trimCourseName,
   findCourseFromDb,
   createCourseToDatabase } = require("../../services/service");
@@ -78,7 +78,7 @@ const execute = async (interaction, client, Course) => {
     databaseValue = await findCourseFromDb(categoryName, Course);
   }
 
-  const cooldown = isOnCooldown(categoryName);
+  const cooldown = checkCourseCooldown(categoryName);
   if (cooldown) {
     const timeRemaining = Math.floor(cooldown - Date.now());
     const time = msToMinutesAndSeconds(timeRemaining);
@@ -126,19 +126,12 @@ const execute = async (interaction, client, Course) => {
     await setCoursePositionABC(guild, newCategoryName);
   }
 
-  if ((choice === "code" && databaseValue.code === databaseValue.name) || choice === "nick") {
-    const nameToCoolDown = trimCourseName(channel.parent, guild);
-    const cooldownTimeMs = 1000 * 60 * 15;
-    handleCooldown(nameToCoolDown, cooldownTimeMs);
-  }
-
   await client.emit("COURSES_CHANGED", Course);
   await updateGuide(client.guild, Course);
 
   await sendEphemeral(interaction, "Course information has been changed");
   const nameToCoolDown = trimCourseName(channel.parent, guild);
-  const cooldownTimeMs = 1000 * 60 * 15;
-  handleCooldown(nameToCoolDown, cooldownTimeMs);
+  handleCooldown(nameToCoolDown);
 };
 
 module.exports = {

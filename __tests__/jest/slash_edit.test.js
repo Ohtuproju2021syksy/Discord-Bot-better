@@ -31,30 +31,32 @@ findCourseFromDb
 
 
 const { defaultTeacherInteraction, defaultStudentInteraction } = require("../mocks/mockInteraction");
-defaultTeacherInteraction.options = { getString: jest
-  .fn((option) => {
-    const options = {
-      options: "code",
-      new_value: "test",
-    };
-    return options[option];
-  })
-  .mockImplementationOnce((option) => {
-    const options = {
-      options: "code",
-      new_value: "test",
-    };
-    return options[option];
-  }),
+defaultTeacherInteraction.options = {
+  getString: jest
+    .fn((option) => {
+      const options = {
+        options: "code",
+        new_value: "test",
+      };
+      return options[option];
+    })
+    .mockImplementationOnce((option) => {
+      const options = {
+        options: "code",
+        new_value: "test",
+      };
+      return options[option];
+    }),
 };
 
-defaultStudentInteraction.options = { getString: jest.fn((name) => {
-  const names = {
-    coursecode: "test",
-    full_name: "Long course name",
-  };
-  return names[name];
-}),
+defaultStudentInteraction.options = {
+  getString: jest.fn((name) => {
+    const names = {
+      coursecode: "test",
+      full_name: "Long course name",
+    };
+    return names[name];
+  }),
 };
 
 afterEach(() => {
@@ -62,7 +64,7 @@ afterEach(() => {
 });
 
 describe("slash edit command", () => {
-  test("if not course channel reponds with correct ephemeral", async () => {
+  test("if not course channel responds with correct ephemeral", async () => {
     const client = defaultTeacherInteraction.client;
     const response = "This is not a course category, can not execute the command";
     await execute(defaultTeacherInteraction, client);
@@ -79,7 +81,7 @@ describe("slash edit command", () => {
     expect(sendErrorEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
   });
 
-  test("edit with valid args reponds with correct ephemeral", async () => {
+  test("edit with valid args responds with correct ephemeral", async () => {
     const client = defaultTeacherInteraction.client;
     defaultTeacherInteraction.channelId = 2;
     const response = "Course information has been changed";

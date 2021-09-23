@@ -11,6 +11,8 @@ const createPrivateCategoryName = (courseString) => `🔒 ${courseString}`;
 
 const cooldownMap = new Map();
 
+const cooldownTimeMs = 1000 * 60 * 5;
+
 /**
  * Expects role to be between parenthesis e.g., (role)
  * @param {String} string
@@ -159,17 +161,17 @@ const msToMinutesAndSeconds = (ms) => {
   return `${minutes}:${(seconds < 10 ? "0" : "")}${seconds}`;
 };
 
-const isOnCooldown = (courseName) => {
+const checkCourseCooldown = (courseName) => {
   return cooldownMap.get(courseName);
 };
 
-const handleCooldown = (courseName, cooldown) => {
+const handleCooldown = (courseName) => {
   if (!cooldownMap.has(courseName)) {
-    cooldownMap.set(courseName, cooldown + Date.now());
+    cooldownMap.set(courseName, cooldownTimeMs + Date.now());
   }
   setTimeout(() => {
     cooldownMap.delete(courseName);
-  }, cooldown);
+  }, cooldownTimeMs);
 };
 
 const findOrCreateChannel = async (channelObject, guild) => {
@@ -298,7 +300,7 @@ module.exports = {
   findChannelWithNameAndType,
   findChannelWithId,
   msToMinutesAndSeconds,
-  isOnCooldown,
+  checkCourseCooldown,
   handleCooldown,
   createCourseInvitationLink,
   findOrCreateChannel,

@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const {
   handleCooldown,
-  isOnCooldown,
+  checkCourseCooldown,
   msToMinutesAndSeconds,
   trimCourseName } = require("../../services/service");
 const { sendErrorEphemeral, sendEphemeral } = require("../../services/message");
@@ -21,7 +21,7 @@ const execute = async (interaction, client) => {
   const channelAnnouncement = guild.channels.cache.find(c => c.parent === channel.parent && c.name.includes("_announcement"));
   const channelGeneral = guild.channels.cache.find(c => c.parent === channel.parent && c.name.includes("_general"));
 
-  const cooldown = isOnCooldown(categoryName);
+  const cooldown = checkCourseCooldown(categoryName);
   if (cooldown) {
     const timeRemaining = Math.floor(cooldown - Date.now());
     const time = msToMinutesAndSeconds(timeRemaining);
@@ -31,9 +31,8 @@ const execute = async (interaction, client) => {
   await channelAnnouncement.setTopic(newTopic);
   await channelGeneral.setTopic(newTopic);
 
-  const cooldownTimeMs = 1000 * 60 * 15;
   await sendEphemeral(interaction, "Channel topic has been changed");
-  handleCooldown(categoryName, cooldownTimeMs);
+  handleCooldown(categoryName);
 };
 
 module.exports = {
