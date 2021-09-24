@@ -57,7 +57,7 @@ const updateDynamicChoices = async (client, commandNames, Course) => {
 const setCommandPermissions = async (client) => {
   const loadedCommands = await client.guilds.cache.get(guildId)?.commands.fetch();
   const createCommandsWithPermission = loadedCommands.filter((command) => !command.defaultPermission);
-  let fullPermissions = createCommandsWithPermission.map((command) => {
+  const fullPermissions = createCommandsWithPermission.map((command) => {
     const commandObj = client.slashCommands.get(command.name);
     const perms = [];
     commandObj.roles
@@ -72,17 +72,21 @@ const setCommandPermissions = async (client) => {
     };
   });
 
-  if (fullPermissions[0].permissions.length > 10) {
-    for (let i = 0, arrayLength = fullPermissions[0].permissions.length; i <= arrayLength;i += 10) {
-      const slicedList = fullPermissions[0].permissions.slice(i, i + 10);
-      fullPermissions.push(
-        {
-          id: fullPermissions[0].id,
-          permissions: slicedList,
-        },
-      );
+  for (let fIndex = 0, fullLength = fullPermissions.length; fIndex < fullLength; fIndex++) {
+
+    if (fullPermissions[fIndex].permissions.length > 10) {
+
+      for (let pIndex = 0, permissionLength = fullPermissions[fIndex].permissions.length; pIndex <= permissionLength; pIndex += 10) {
+        const slicedList = fullPermissions[fIndex].permissions.slice(pIndex, pIndex + 10);
+        fullPermissions.push(
+          {
+            id: fullPermissions[fIndex].id,
+            permissions: slicedList,
+          },
+        );
+      }
+      fullPermissions.splice(fIndex, 1);
     }
-    fullPermissions = fullPermissions.splice(1, fullPermissions.length);
   }
 
   await client.guilds.cache.get(guildId)?.commands.permissions.set({ fullPermissions });

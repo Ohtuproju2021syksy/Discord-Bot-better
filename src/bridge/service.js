@@ -64,7 +64,6 @@ const isMessageCryptoSpam = (message) => {
   const userId = message.user.userId.toLowerCase();
   const textAsList = message.content.text.toLowerCase().split(/(?: |\n)+/);
 
-
   for (const c of message.content.text) {
     if (cyrillicPattern.test(c)) {
       point++;
@@ -72,16 +71,17 @@ const isMessageCryptoSpam = (message) => {
     }
   }
 
-
   userId.includes("bot") ? point = point + 2 : point = point + 0;
   message.content.text.includes("elonmusk") ? point++ : point = point + 0;
   cyrillicPattern.test(message.content.text) ? point++ : point = point + 0;
+  if (point == 3) return true;
   for (const word of textAsList) {
     if (keywordPoints.has(word)) {
       point++;
       if (point == 3) return true;
     }
   }
+
   return false;
 };
 
