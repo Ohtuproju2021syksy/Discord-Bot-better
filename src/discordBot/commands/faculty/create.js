@@ -84,13 +84,16 @@ const execute = async (interaction, client, Course) => {
   if (await findCourseFromDbWithFullName(courseFullName, Course)) return await sendErrorEphemeral(interaction, "Course fullname must be unique.");
 
   let courseName;
+  let errorMessage;
   if (!interaction.options.getString("nick_name")) {
     courseName = courseCode;
+    errorMessage = "Course code must be unique.";
   }
   else {
     courseName = interaction.options.getString("nick_name").trim();
+    errorMessage = "Course nick name must be unique.";
   }
-  if (await findCourseFromDb(courseName, Course)) return await sendErrorEphemeral(interaction, "Course name must be unique.");
+  if (await findCourseFromDb(courseName, Course)) return await sendErrorEphemeral(interaction, errorMessage);
 
   const guild = client.guild;
 

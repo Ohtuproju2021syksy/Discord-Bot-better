@@ -21,6 +21,7 @@ findCourseFromDbWithFullName
   .mockImplementationOnce(() => true);
 findCourseFromDb
   .mockImplementation(() => false)
+  .mockImplementationOnce(() => true)
   .mockImplementationOnce(() => true);
 
 const { defaultTeacherInteraction, defaultStudentInteraction } = require("../mocks/mockInteraction");
@@ -59,13 +60,22 @@ describe("slash create command", () => {
     expect(sendErrorEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
   });
 
-  test("course name must be unique", async () => {
+  test("course nick name must be unique", async () => {
     const client = defaultTeacherInteraction.client;
-    const response = "Course name must be unique.";
+    const response = "Course nick name must be unique.";
     await execute(defaultTeacherInteraction, client);
     expect(findCourseFromDbWithFullName).toHaveBeenCalledTimes(1);
     expect(sendErrorEphemeral).toHaveBeenCalledTimes(1);
     expect(sendErrorEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
+  });
+
+  test("course code must be unique when nickname not given", async () => {
+    const client = defaultStudentInteraction.client;
+    const response = "Course code must be unique.";
+    await execute(defaultStudentInteraction, client);
+    expect(findCourseFromDbWithFullName).toHaveBeenCalledTimes(1);
+    expect(sendErrorEphemeral).toHaveBeenCalledTimes(1);
+    expect(sendErrorEphemeral).toHaveBeenCalledWith(defaultStudentInteraction, response);
   });
 
   test("create course name without nick", async () => {

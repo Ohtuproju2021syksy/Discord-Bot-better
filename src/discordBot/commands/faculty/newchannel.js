@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { getRoleFromCategory, findOrCreateChannel } = require("../../services/service");
+const { getRoleFromCategory, findOrCreateChannel, findChannelWithNameAndType } = require("../../services/service");
 const { sendErrorEphemeral, sendEphemeral } = require("../../services/message");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
 
@@ -31,18 +31,22 @@ const execute = async (interaction, client) => {
   if (guild.channels.cache.filter(c => c.parent === channel.parent).size >= 13) {
     return await sendErrorEphemeral(interaction, "Maximum added text channel amount is 10");
   }
-  else {
-    const categoryName = channel.parent.name;
-    const category = channel.parent;
-    const courseName = getRoleFromCategory(categoryName);
-    const student = await guild.roles.cache.find((role) => role.name === courseName);
-    const admin = await guild.roles.cache.find((role) => role.name === `${courseName} ${courseAdminRole}`);
-    const channelObjects = getChannelObjects(guild, admin, student, courseName, channelName, category);
-    await Promise.all(channelObjects.map(
-      async channelObject => await findOrCreateChannel(channelObject, guild),
-    ));
-    await sendEphemeral(interaction, `Created new channel ${courseName}_${channelName}`);
+  const categoryName = channel.parent.name;
+  const courseName = getRoleFromCategory(categoryName);
+  if (findChannelWithNameAndType(`${courseName}_${channelName}`, "GUILD_TEXT", guild)) {
+    return await sendErrorEphemeral(interaction, "Channel with given name already exists");
   }
+
+  const category = channel.parent;
+  const student = await guild.roles.cache.find((role) => role.name === courseName);
+  const admin = await guild.roles.cache.find((role) => role.name === `${courseName} ${courseAdminRole}`);
+
+  const channelObjects = getChannelObjects(guild, admin, student, courseName, channelName, category);
+  await Promise.all(channelObjects.map(
+    async channelObject => await findOrCreateChannel(channelObject, guild),
+  ));
+  await sendEphemeral(interaction, `Created new channel ${courseName}_${channelName}`);
+
 };
 
 module.exports = {
