@@ -5,7 +5,7 @@ const { sendErrorEphemeral, sendEphemeral } = require("../../services/message");
 const execute = async (interaction, client, Course) => {
   const courses = await findCoursesFromDb("fullName", Course, false);
   const data = courses.map((c) => {
-    const fullname = c.fullName.charAt(0).toUpperCase() + c.fullName.slice(1);
+    const fullname = c.fullName;
     return `${fullname} - \`/join ${c.name}\``;
   });
   if (data.length === 0) await sendErrorEphemeral(interaction, "No courses available");
