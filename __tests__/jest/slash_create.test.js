@@ -24,23 +24,25 @@ findCourseFromDb
   .mockImplementationOnce(() => true);
 
 const { defaultTeacherInteraction, defaultStudentInteraction } = require("../mocks/mockInteraction");
-defaultTeacherInteraction.options = { getString: jest.fn((name) => {
-  const names = {
-    coursecode: "TKT-100",
-    full_name: "Long course name",
-    nick_name: "nick name",
-  };
-  return names[name];
-}),
+defaultTeacherInteraction.options = {
+  getString: jest.fn((name) => {
+    const names = {
+      coursecode: "TKT-100",
+      full_name: "Long course name",
+      nick_name: "nick name",
+    };
+    return names[name];
+  }),
 };
 
-defaultStudentInteraction.options = { getString: jest.fn((name) => {
-  const names = {
-    coursecode: "TKT-100",
-    full_name: "Long course name",
-  };
-  return names[name];
-}),
+defaultStudentInteraction.options = {
+  getString: jest.fn((name) => {
+    const names = {
+      coursecode: "TKT-100",
+      full_name: "Long course name",
+    };
+    return names[name];
+  }),
 };
 
 afterEach(() => {
@@ -68,12 +70,11 @@ describe("slash create command", () => {
 
   test("create course name without nick", async () => {
     const courseCode = "TKT-100";
-    const courseCodeLower = courseCode.toLowerCase().trim();
     const client = defaultStudentInteraction.client;
     await execute(defaultStudentInteraction, client);
     expect(findOrCreateRoleWithName).toHaveBeenCalledTimes(2);
-    expect(findOrCreateRoleWithName).toHaveBeenCalledWith(courseCodeLower, client.guild);
-    expect(findOrCreateRoleWithName).toHaveBeenCalledWith(`${courseCodeLower} ${courseAdminRole}`, client.guild);
+    expect(findOrCreateRoleWithName).toHaveBeenCalledWith(courseCode, client.guild);
+    expect(findOrCreateRoleWithName).toHaveBeenCalledWith(`${courseCode} ${courseAdminRole}`, client.guild);
   });
 
   test("find or create correct roles", async () => {

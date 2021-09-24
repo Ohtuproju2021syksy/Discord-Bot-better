@@ -4,12 +4,17 @@ const {
   findCategoryName,
   msToMinutesAndSeconds,
   trimCourseName,
-  findCourseFromDb } = require("../../src/discordBot/services/service");
+  findCourseFromDb,
+  checkCourseCooldown } = require("../../src/discordBot/services/service");
 
 jest.mock("../../src/discordBot/services/message");
 jest.mock("../../src/discordBot/services/service");
 
-const time = "14:59";
+afterEach(() => {
+  jest.clearAllMocks();
+});
+
+const time = "4:59";
 msToMinutesAndSeconds.mockImplementation(() => time);
 findCategoryName.mockImplementation((name) => `📚 ${name}`);
 trimCourseName.mockImplementation(() => "test");
@@ -90,7 +95,8 @@ describe("slash edit command", () => {
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
   });
 
-  test("edit with valid args reponds with correct ephemeral", async () => {
+  test("edit with valid args responds with correct ephemeral", async () => {
+    checkCourseCooldown.mockImplementation(() => time);
     const client = defaultTeacherInteraction.client;
     defaultTeacherInteraction.channelId = 2;
     const response = `Command cooldown [mm:ss]: you need to wait ${time}.`;
