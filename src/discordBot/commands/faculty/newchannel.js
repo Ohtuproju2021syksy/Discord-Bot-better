@@ -15,7 +15,7 @@ const getChannelObjects = (guild, admin, student, roleName, channelName, categor
 };
 
 const execute = async (interaction, client) => {
-  const channelName = interaction.options.getString("channel").toLowerCase().trim();
+  const channelName = interaction.options.getString("channel").trim();
 
   const guild = client.guild;
   const channel = guild.channels.cache.get(interaction.channelId);

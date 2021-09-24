@@ -11,7 +11,7 @@ const { sendErrorEphemeral, sendEphemeral } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
 
 const execute = async (interaction, client, Course) => {
-  const courseName = interaction.options.getString("course").toLowerCase().trim();
+  const courseName = interaction.options.getString("course").trim();
   const guild = client.guild;
   const courseString = createPrivateCategoryName(courseName);
   const category = findChannelWithNameAndType(courseString, "GUILD_CATEGORY", guild);

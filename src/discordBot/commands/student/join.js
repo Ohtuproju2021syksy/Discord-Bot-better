@@ -4,7 +4,7 @@ const { sendErrorEphemeral, sendEphemeral } = require("../../services/message");
 const { courseAdminRole } = require("../../../../config.json");
 
 const execute = async (interaction, client, Course) => {
-  const roleString = interaction.options.getString("course").toLowerCase().trim();
+  const roleString = interaction.options.getString("course").trim();
   const guild = client.guild;
   const member = guild.members.cache.get(interaction.member.user.id);
   const courseRole = guild.roles.cache.find(r => r.name === roleString);

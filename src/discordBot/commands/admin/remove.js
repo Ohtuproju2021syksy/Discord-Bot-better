@@ -8,7 +8,7 @@ const execute = async (message, args, Course) => {
     const guild = message.guild;
 
     const courseString = findCategoryName(courseName, guild);
-    const category = guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name === courseString);
+    const category = guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name.toLowerCase() === courseString.toLowerCase());
 
     if (!category) return message.reply(`Error: Invalid course name: ${courseName}.`);
     await Promise.all(guild.channels.cache
@@ -19,7 +19,7 @@ const execute = async (message, args, Course) => {
     await category.delete();
 
     await Promise.all(guild.roles.cache
-      .filter(r => (r.name === `${courseName} ${courseAdminRole}` || r.name === courseName))
+      .filter(r => (r.name === `${courseName} ${courseAdminRole}` || r.name.toLowerCase() === courseName.toLowerCase()))
       .map(async role => await role.delete()),
     );
 

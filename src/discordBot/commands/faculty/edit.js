@@ -10,13 +10,15 @@ const {
   checkCourseCooldown,
   trimCourseName,
   findCourseFromDb,
-  createCourseToDatabase } = require("../../services/service");
+  createCourseToDatabase,
+  findCourseFromDbWithFullName } = require("../../services/service");
 const { sendErrorEphemeral, sendEphemeral } = require("../../services/message");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
 
 
 const changeCourseNames = async (newValue, channel, category, guild) => {
-  if (guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && (c.name === `📚 ${newValue}` || c.name === `🔒 ${newValue}`))) return;
+  if (guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && (c.name.toLowerCase() === `📚 ${newValue.toLowerCase()}`
+    || c.name.toLowerCase() === `🔒 ${newValue.toLowerCase()}`))) return;
   if (category.name.includes("📚")) {
     await category.setName(`📚 ${newValue}`);
   }
@@ -57,17 +59,24 @@ const changeInvitationLink = async (channelAnnouncement, interaction) => {
 };
 
 const execute = async (interaction, client, Course) => {
-  const choice = interaction.options.getString("options").toLowerCase().trim();
-  const newValue = interaction.options.getString("new_value").toLowerCase().trim();
-
   const guild = client.guild;
   const channel = guild.channels.cache.get(interaction.channelId);
+  const categoryName = trimCourseName(channel.parent, guild);
+
+  const cooldown = checkCourseCooldown(categoryName);
+  if (cooldown) {
+    const timeRemaining = Math.floor(cooldown - Date.now());
+    const time = msToMinutesAndSeconds(timeRemaining);
+    return await sendErrorEphemeral(interaction, `Command cooldown [mm:ss]: you need to wait ${time}.`);
+  }
+
+  const choice = interaction.options.getString("options").toLowerCase().trim();
+  const newValue = interaction.options.getString("new_value").trim();
 
   if (!channel?.parent?.name?.startsWith("🔒") && !channel?.parent?.name?.startsWith("📚")) {
     return await sendErrorEphemeral(interaction, "This is not a course category, can not execute the command");
   }
 
-  const categoryName = trimCourseName(channel.parent, guild);
   const category = findChannelWithNameAndType(channel.parent.name, "GUILD_CATEGORY", guild);
   const channelAnnouncement = guild.channels.cache.find(c => c.parent === channel.parent && c.name.includes("_announcement"));
 
@@ -76,13 +85,6 @@ const execute = async (interaction, client, Course) => {
   if (!databaseValue) {
     databaseValue = await createCourseToDatabase("change me", categoryName, categoryName, Course);
     databaseValue = await findCourseFromDb(categoryName, Course);
-  }
-
-  const cooldown = checkCourseCooldown(categoryName);
-  if (cooldown) {
-    const timeRemaining = Math.floor(cooldown - Date.now());
-    const time = msToMinutesAndSeconds(timeRemaining);
-    return await sendErrorEphemeral(interaction, `Command cooldown [mm:ss]: you need to wait ${time}.`);
   }
 
   if (choice === "code") {
@@ -108,6 +110,7 @@ const execute = async (interaction, client, Course) => {
   }
 
   if (choice === "name") {
+    if (findCourseFromDbWithFullName(newValue, Course)) return await sendErrorEphemeral(interaction, "Course full name already exists");
     databaseValue.fullName = newValue;
     await databaseValue.save();
   }
