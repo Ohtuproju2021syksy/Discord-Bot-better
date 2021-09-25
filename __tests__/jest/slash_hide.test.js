@@ -5,11 +5,13 @@ const {
   updateGuide,
   findChannelWithNameAndType,
   msToMinutesAndSeconds,
-  setCourseToPrivate } = require("../../src/discordBot/services/service");
+  setCourseToPrivate,
+  checkCourseCooldown } = require("../../src/discordBot/services/service");
 
 jest.mock("../../src/discordBot/services/message");
 jest.mock("../../src/discordBot/services/service");
 
+const time = "4:59";
 createCategoryName.mockImplementation((name) => `📚 ${name}`);
 
 const { defaultTeacherInteraction } = require("../mocks/mockInteraction");
@@ -57,6 +59,7 @@ describe("slash hide command", () => {
 
   test("hide command with cooldown", async () => {
     findChannelWithNameAndType.mockImplementation((name) => { return { name: `📚 ${name}`, setName: jest.fn() }; });
+    checkCourseCooldown.mockImplementation(() => time);
     const client = defaultTeacherInteraction.client;
     await execute(defaultTeacherInteraction, client, Course);
     expect(createCategoryName).toHaveBeenCalledTimes(1);

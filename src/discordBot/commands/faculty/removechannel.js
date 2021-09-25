@@ -25,7 +25,7 @@ const execute = async (interaction, client) => {
 
   const guildName = guild.channels.cache.find(c => c.parent === channel.parent && c.name === deleteCourseName);
   if (!guildName) {
-    return await sendErrorEphemeral(interaction, "There is not added channel with given name.");
+    return await sendErrorEphemeral(interaction, "There is no added channel with given name.");
   }
 
   guild.channels.cache.find(c => c.parent === channel.parent && c.name === deleteCourseName).delete();

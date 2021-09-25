@@ -79,24 +79,27 @@ const getCategoryObject = (categoryName, permissionOverwrites) => ({
 });
 
 const execute = async (interaction, client, Course) => {
-  const courseCode = interaction.options.getString("coursecode").toLowerCase().trim();
-  const courseFullName = interaction.options.getString("full_name").toLowerCase().trim();
+  const courseCode = interaction.options.getString("coursecode").trim();
+  const courseFullName = interaction.options.getString("full_name").trim();
   if (await findCourseFromDbWithFullName(courseFullName, Course)) return await sendErrorEphemeral(interaction, "Course fullname must be unique.");
-
-  let courseName;
-  if (!interaction.options.getString("nick_name")) {
-    courseName = courseCode;
-  }
-  else {
-    courseName = interaction.options.getString("nick_name").toLowerCase().trim();
-  }
 
   const courseNameConcat = courseCode + " - " + courseFullName + " - " + courseName;
   if (courseNameConcat.length >= 99) {
     return await sendErrorEphemeral(interaction, "Course code, name and nickname are too long!");
   }
+  
+  let courseName;
+  let errorMessage;
+  if (!interaction.options.getString("nick_name")) {
+    courseName = courseCode;
+    errorMessage = "Course code must be unique.";
+  }
+  else {
+    courseName = interaction.options.getString("nick_name").trim();
+    errorMessage = "Course nick name must be unique.";
+  }
 
-  if (await findCourseFromDb(courseName, Course)) return await sendErrorEphemeral(interaction, "Course name must be unique.");
+  if (await findCourseFromDb(courseName, Course)) return await sendErrorEphemeral(interaction, errorMessage);
 
   const guild = client.guild;
 

@@ -47,7 +47,7 @@ describe("slash removechannel", () => {
 
   test("Invalid channel cannot be removed", async () => {
     const courseName = "invalid";
-    const response = "There is not added channel with given name.";
+    const response = "There is no added channel with given name.";
     defaultTeacherInteraction.options = { getString: jest.fn(() => courseName) };
     defaultTeacherInteraction.channelId = 3;
     const client = defaultTeacherInteraction.client;
