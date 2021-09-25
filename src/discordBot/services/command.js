@@ -86,6 +86,8 @@ const setCommandPermissions = async (client) => {
         );
       }
       fullPermissions.splice(fIndex, 1);
+      fIndex--;
+      fullLength--;
     }
   }
 
