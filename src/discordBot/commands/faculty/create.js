@@ -87,7 +87,7 @@ const execute = async (interaction, client, Course) => {
   if (courseNameConcat.length >= 99) {
     return await sendErrorEphemeral(interaction, "Course code, name and nickname are too long!");
   }
-  
+
   let courseName;
   let errorMessage;
   if (!interaction.options.getString("nick_name")) {
