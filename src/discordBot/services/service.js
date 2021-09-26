@@ -1,4 +1,4 @@
-const { sequelize } = require("../../db");
+const { Sequelize } = require("sequelize");
 
 require("dotenv").config();
 const GUIDE_CHANNEL_NAME = "guide";
@@ -240,7 +240,7 @@ const findAndUpdateInstructorRole = async (name, guild, courseAdminRole) => {
 const setCourseToPrivate = async (courseName, Course) => {
   const course = await Course.findOne({
     where:
-      { name: sequelize.where(sequelize.fn("LOWER", sequelize.col("name")), "LIKE", "%" + courseName.toLowerCase() + "%") },
+      { name: { [Sequelize.Op.iLike]: courseName } },
   });
   if (course) {
     course.private = true;
@@ -251,7 +251,7 @@ const setCourseToPrivate = async (courseName, Course) => {
 const setCourseToPublic = async (courseName, Course) => {
   const course = await Course.findOne({
     where:
-      { name: sequelize.where(sequelize.fn("LOWER", sequelize.col("name")), "LIKE", "%" + courseName.toLowerCase() + "%") },
+      { name: { [Sequelize.Op.iLike]: courseName } },
   });
   if (course) {
     course.private = false;
@@ -262,7 +262,7 @@ const setCourseToPublic = async (courseName, Course) => {
 const createCourseToDatabase = async (courseCode, courseFullName, courseName, Course) => {
   const alreadyinuse = await Course.findOne({
     where:
-      { name: sequelize.where(sequelize.fn("LOWER", sequelize.col("name")), "LIKE", "%" + courseName.toLowerCase() + "%") },
+      { name: { [Sequelize.Op.iLike]: courseName } },
   });
   if (!alreadyinuse) {
     await Course.create({ code: courseCode, fullName: courseFullName, name: courseName, private: false });
@@ -272,12 +272,12 @@ const createCourseToDatabase = async (courseCode, courseFullName, courseName, Co
 const removeCourseFromDb = async (courseName, Course) => {
   const course = await Course.findOne({
     where:
-      { name: sequelize.where(sequelize.fn("LOWER", sequelize.col("name")), "LIKE", "%" + courseName.toLowerCase() + "%") },
+      { name: { [Sequelize.Op.iLike]: courseName } },
   });
   if (course) {
     await Course.destroy({
       where:
-        { name: sequelize.where(sequelize.fn("LOWER", sequelize.col("name")), "LIKE", "%" + courseName.toLowerCase() + "%") },
+        { name: { [Sequelize.Op.iLike]: courseName } },
     });
   }
 };
@@ -285,7 +285,7 @@ const removeCourseFromDb = async (courseName, Course) => {
 const findCourseFromDb = async (courseName, Course) => {
   return await Course.findOne({
     where:
-      { name: sequelize.where(sequelize.fn("LOWER", sequelize.col("name")), "LIKE", "%" + courseName.toLowerCase() + "%") },
+      { name: { [Sequelize.Op.iLike]: courseName } },
   });
 };
 
@@ -306,7 +306,7 @@ const findCoursesFromDb = async (order, Course, state) => {
 const findCourseFromDbWithFullName = async (courseFullName, Course) => {
   return await Course.findOne({
     where: {
-      fullName: sequelize.where(sequelize.fn("LOWER", sequelize.col("fullName")), "LIKE", "%" + courseFullName.toLowerCase() + "%"),
+      fullName: { [Sequelize.Op.iLike]: courseFullName },
     },
   });
 };
