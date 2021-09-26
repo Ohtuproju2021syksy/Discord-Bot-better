@@ -1,5 +1,5 @@
 const { execute } = require("../../src/discordBot/commands/faculty/edit");
-const { sendEphemeral, sendErrorEphemeral } = require("../../src/discordBot/services/message");
+const { sendEphemeral, editErrorEphemeral, editEphemeral } = require("../../src/discordBot/services/message");
 const {
   findCategoryName,
   msToMinutesAndSeconds,
@@ -73,17 +73,21 @@ describe("slash edit command", () => {
     const client = defaultTeacherInteraction.client;
     const response = "This is not a course category, can not execute the command";
     await execute(defaultTeacherInteraction, client);
-    expect(sendErrorEphemeral).toHaveBeenCalledTimes(1);
-    expect(sendErrorEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
+    expect(sendEphemeral).toHaveBeenCalledTimes(1);
+    expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, "Editing...");
+    expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
+    expect(editErrorEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
   });
 
   test("if target channel name exists with correct ephemeral", async () => {
     const client = defaultTeacherInteraction.client;
     defaultTeacherInteraction.channelId = 2;
-    const response = "Course name already exists";
+    const response = "Course code already exists";
     await execute(defaultTeacherInteraction, client);
-    expect(sendErrorEphemeral).toHaveBeenCalledTimes(1);
-    expect(sendErrorEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
+    expect(sendEphemeral).toHaveBeenCalledTimes(1);
+    expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, "Editing...");
+    expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
+    expect(editErrorEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
   });
 
   test("edit with valid args responds with correct ephemeral", async () => {
@@ -92,7 +96,9 @@ describe("slash edit command", () => {
     const response = "Course information has been changed";
     await execute(defaultTeacherInteraction, client);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
-    expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
+    expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, "Editing...");
+    expect(editEphemeral).toHaveBeenCalledTimes(1);
+    expect(editEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
   });
 
   test("edit with valid args responds with correct ephemeral", async () => {
@@ -101,7 +107,9 @@ describe("slash edit command", () => {
     defaultTeacherInteraction.channelId = 2;
     const response = `Command cooldown [mm:ss]: you need to wait ${time}.`;
     await execute(defaultTeacherInteraction, client);
-    expect(sendErrorEphemeral).toHaveBeenCalledTimes(1);
-    expect(sendErrorEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
+    expect(sendEphemeral).toHaveBeenCalledTimes(1);
+    expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, "Editing...");
+    expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
+    expect(editErrorEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
   });
 });

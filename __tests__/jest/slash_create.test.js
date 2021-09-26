@@ -1,5 +1,5 @@
 const { execute } = require("../../src/discordBot/commands/faculty/create");
-const { sendEphemeral, sendErrorEphemeral } = require("../../src/discordBot/services/message");
+const { sendEphemeral, sendErrorEphemeral, editEphemeral } = require("../../src/discordBot/services/message");
 const {
   findCourseFromDb,
   findCourseFromDbWithFullName,
@@ -133,7 +133,9 @@ describe("slash create command", () => {
     const result = `Created course ${courseName}.`;
     await execute(defaultTeacherInteraction, client);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
-    expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, result);
+    expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, "Creating course...");
+    expect(editEphemeral).toHaveBeenCalledTimes(1);
+    expect(editEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, result);
   });
 
   test("update join/leave command list", async () => {
