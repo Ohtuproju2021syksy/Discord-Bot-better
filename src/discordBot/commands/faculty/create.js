@@ -9,7 +9,7 @@ const {
   createCourseToDatabase,
   findCourseFromDb,
   findCourseFromDbWithFullName } = require("../../services/service");
-const { sendErrorEphemeral, sendEphemeral } = require("../../services/message");
+const { sendErrorEphemeral, sendEphemeral, editEphemeral } = require("../../services/message");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
 
 const getPermissionOverwrites = (guild, admin, student) => ([
@@ -100,7 +100,7 @@ const execute = async (interaction, client, Course) => {
   }
 
   if (await findCourseFromDb(courseName, Course)) return await sendErrorEphemeral(interaction, errorMessage);
-
+  await sendEphemeral(interaction, "Creating course...");
   const guild = client.guild;
 
   const student = await findOrCreateRoleWithName(courseName, guild);
@@ -118,7 +118,7 @@ const execute = async (interaction, client, Course) => {
   await createCourseToDatabase(courseCode, courseFullName, courseName, Course);
   await setCoursePositionABC(guild, categoryName);
   await createInvitation(guild, courseName);
-  await sendEphemeral(interaction, `Created course ${courseName}.`);
+  await editEphemeral(interaction, `Created course ${courseName}.`);
   await client.emit("COURSES_CHANGED", Course);
   await updateGuide(client.guild, Course);
 };

@@ -12,7 +12,7 @@ const {
   findCourseFromDb,
   createCourseToDatabase,
   findCourseFromDbWithFullName } = require("../../services/service");
-const { sendErrorEphemeral, sendEphemeral } = require("../../services/message");
+const { sendEphemeral, editEphemeral, editErrorEphemeral } = require("../../services/message");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
 
 
@@ -59,6 +59,7 @@ const changeInvitationLink = async (channelAnnouncement, interaction) => {
 };
 
 const execute = async (interaction, client, Course) => {
+  await sendEphemeral(interaction, "Editing...");
   const guild = client.guild;
   const channel = guild.channels.cache.get(interaction.channelId);
   const categoryName = trimCourseName(channel.parent, guild);
@@ -67,14 +68,14 @@ const execute = async (interaction, client, Course) => {
   if (cooldown) {
     const timeRemaining = Math.floor(cooldown - Date.now());
     const time = msToMinutesAndSeconds(timeRemaining);
-    return await sendErrorEphemeral(interaction, `Command cooldown [mm:ss]: you need to wait ${time}.`);
+    return await editErrorEphemeral(interaction, `Command cooldown [mm:ss]: you need to wait ${time}.`);
   }
 
   const choice = interaction.options.getString("options").toLowerCase().trim();
   const newValue = interaction.options.getString("new_value").trim();
 
   if (!channel?.parent?.name?.startsWith("🔒") && !channel?.parent?.name?.startsWith("📚")) {
-    return await sendErrorEphemeral(interaction, "This is not a course category, can not execute the command");
+    return await editErrorEphemeral(interaction, "This is not a course category, can not execute the command");
   }
 
   const category = findChannelWithNameAndType(channel.parent.name, "GUILD_CATEGORY", guild);
@@ -90,7 +91,7 @@ const execute = async (interaction, client, Course) => {
   if (choice === "code") {
     if (databaseValue.code === databaseValue.name) {
       const change = await changeCourseNames(newValue, channel, category, guild);
-      if (!change) return await sendErrorEphemeral(interaction, "Course name already exists");
+      if (!change) return await editErrorEphemeral(interaction, "Course code already exists");
 
       databaseValue.code = newValue;
       databaseValue.name = newValue;
@@ -110,14 +111,14 @@ const execute = async (interaction, client, Course) => {
   }
 
   if (choice === "name") {
-    if (findCourseFromDbWithFullName(newValue, Course)) return await sendErrorEphemeral(interaction, "Course full name already exists");
+    if (findCourseFromDbWithFullName(newValue, Course)) return await editErrorEphemeral(interaction, "Course full name already exists");
     databaseValue.fullName = newValue;
     await databaseValue.save();
   }
 
   if (choice === "nick") {
     const change = await changeCourseNames(newValue, channel, category, guild);
-    if (!change) return await sendErrorEphemeral(interaction, "Course name already exists");
+    if (!change) return await editErrorEphemeral(interaction, "Course name already exists");
 
     databaseValue.name = newValue;
     await databaseValue.save();
@@ -132,7 +133,7 @@ const execute = async (interaction, client, Course) => {
   await client.emit("COURSES_CHANGED", Course);
   await updateGuide(client.guild, Course);
 
-  await sendEphemeral(interaction, "Course information has been changed");
+  await editEphemeral(interaction, "Course information has been changed");
   const nameToCoolDown = trimCourseName(channel.parent, guild);
   handleCooldown(nameToCoolDown);
 };
