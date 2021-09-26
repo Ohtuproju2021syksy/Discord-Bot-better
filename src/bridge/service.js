@@ -101,7 +101,7 @@ const handleBridgeMessage = async (message, courseName, Course) => {
   let channel = ":";
 
   if (!message.channel.name.includes("general")) {
-    channel = escapeChars(" on " + (message.channel.name.split(courseName)[1]).substring(1) + " channel:\n");
+    channel = escapeChars(" on " + (message.channel.name.split(courseName.replace(" ", "-"))[1]).substring(1) + " channel:\n");
   }
 
   let msg = message.content;
