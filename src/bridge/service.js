@@ -87,7 +87,7 @@ const isMessageCryptoSpam = (message) => {
 
 
 const handleBridgeMessage = async (message, courseName, Course) => {
-  if (!message.channel.parent) return;
+  if (!message.channel.parent || message.type === "CHANNEL_PINNED_MESSAGE") return;
 
   const group = await Course.findOne({ where: { name: String(courseName) } });
 
@@ -101,7 +101,7 @@ const handleBridgeMessage = async (message, courseName, Course) => {
   let channel = ":";
 
   if (!message.channel.name.includes("general")) {
-    channel = " on " + message.channel.name.split("_")[1] + " channel:\n";
+    channel = escapeChars(" on " + (message.channel.name.split(courseName)[1]).substring(1) + " channel:\n");
   }
 
   let msg = message.content;
@@ -178,7 +178,6 @@ const sendMediaToTelegram = async (telegramId, info, sender, channel, media) => 
   info = validateContent(info);
   const url = media.url;
   const caption = `*${sender}*${channel} ${info}`;
-  console.log(media.contentType);
   if (media.contentType.includes("video")) {
     await telegramClient.telegram.sendVideo(telegramId, { url }, { caption, parse_mode: "MarkdownV2" });
   }
@@ -189,7 +188,6 @@ const sendMediaToTelegram = async (telegramId, info, sender, channel, media) => 
     await telegramClient.telegram.sendAnimation(telegramId, { url }, { caption, parse_mode: "MarkdownV2" });
   }
   else if (media.contentType.includes("image") || media.contentType.includes("pdf")) {
-    console.log(media.contentType);
     await telegramClient.telegram.sendPhoto(telegramId, { url }, { caption, parse_mode: "MarkdownV2" });
   }
 
