@@ -2,6 +2,9 @@ const { client } = require("./mockSlashClient");
 
 const teacher = {
   nickname: "teacher",
+  user: {
+    id: 1,
+  },
   permissions: {
     has: jest.fn(() => true),
   },
@@ -17,6 +20,9 @@ const teacher = {
 
 const student = {
   nickname: "student",
+  user: {
+    id: 2,
+  },
   permissions: {
     has: jest.fn(() => false),
   },

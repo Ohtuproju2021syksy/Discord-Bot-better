@@ -9,7 +9,7 @@ const execute = async (message, client, Course) => {
   // Copypasted slash command
   if (client.slashCommands.has(commandName)) {
     const command = client.slashCommands.get(commandName);
-    if (commandName == "join" || commandName == "leave") {
+    if (commandName == "join") {
       const roleString = args.shift().toLowerCase().trim();
       if (!roleString) return;
       // Command execution handles permissions and whether the course is valid

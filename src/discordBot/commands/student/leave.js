@@ -5,7 +5,7 @@ const { courseAdminRole } = require("../../../../config.json");
 
 const execute = async (interaction, client, Course) => {
   let roleString = "";
-  
+
   if (interaction.options) {
     // Interaction was a slash command
     roleString = interaction.options.getString("course").toLowerCase().trim();

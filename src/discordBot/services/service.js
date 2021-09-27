@@ -204,7 +204,14 @@ const isACourseCategory = (channel) => {
 };
 
 const trimCourseName = (channel) => {
-  const trimmedName = channel.name.replace(emojiRegex, "").trim();
+  let trimmedName = "";
+  if (channel.name) {
+    trimmedName = channel.name.replace(emojiRegex, "").trim();
+  }
+  else {
+    trimmedName = channel.replace(emojiRegex, "").trim();
+  }
+
   return trimmedName;
 };
 
