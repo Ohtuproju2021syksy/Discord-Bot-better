@@ -9,7 +9,7 @@ const execute = async (interaction, client, Course) => {
 
   if (interaction.options) {
     // Interaction was a slash command
-    roleString = interaction.options.getString("course").toLowerCase().trim();
+    roleString = interaction.options.getString("course").trim();
     message = `You have been added to a ${roleString} course.`;
   }
   else {
