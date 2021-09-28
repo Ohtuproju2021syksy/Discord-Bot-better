@@ -8,7 +8,7 @@ const execute = async (interaction, client, Course) => {
 
   if (interaction.options) {
     // Interaction was a slash command
-    roleString = interaction.options.getString("course").toLowerCase().trim();
+    roleString = interaction.options.getString("course").trim();
   }
   else {
     // Command was copypasted or failed to register as an interaction

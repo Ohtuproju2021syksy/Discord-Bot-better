@@ -1,23 +1,27 @@
 const prefix = process.env.PREFIX;
 
 const execute = async (message, client, Course) => {
-  if ((!message.content.startsWith(prefix) || message.channel.name !== "commands") && !message.content.startsWith("/")) return;
+
   let args = message.content.slice(prefix.length).trim().split(/ +/);
   const commandName = args.shift().toLowerCase();
   args = args.map(arg => arg.toLowerCase().trim());
 
-  // Copypasted slash command
-  if (client.slashCommands.has(commandName)) {
-    const command = client.slashCommands.get(commandName);
-    if (commandName == "join") {
-      const roleString = args.shift().toLowerCase().trim();
-      if (!roleString) return;
-      // Command execution handles permissions and whether the course is valid
-      message.roleString = roleString;
-      command.execute(message, client, Course);
-      return;
+  if (message.content.startsWith("/")) {
+    // Copypasted slash command
+    if (client.slashCommands.has(commandName)) {
+      const command = client.slashCommands.get(commandName);
+      if (commandName == "join") {
+        const roleString = args.shift().toLowerCase().trim();
+        if (!roleString) return;
+        // Command execution handles permissions and whether the course is valid
+        message.roleString = roleString;
+        command.execute(message, client, Course);
+        return;
+      }
     }
   }
+
+  if (!message.content.startsWith(prefix) || message.channel.name !== "commands") return;
 
   // Prefix command
   if (!client.commands.has(commandName)) return;
