@@ -20,8 +20,8 @@ const {
 const createGuidePinnedMessage = async (guild) => {
   const rows = courses
     .map((course) => {
-      const code = course.code.toUpperCase();
-      const fullname = course.fullName.charAt(0).toUpperCase() + course.fullName.slice(1);
+      const code = course.code;
+      const fullname = course.fullName;
       const count = guild.roles.cache.find(
         (role) => role.name === course.name,
       )?.members.size;
@@ -154,7 +154,7 @@ describe("Service", () => {
   test("creating guide invitation call createInvite", async () => {
     const msg = { pin: jest.fn() };
     const invite = { code: 1 };
-    const guide = { name: "guide", type: "GUILD_TEXT", createInvite: jest.fn(() =>invite), send: jest.fn(() => msg) };
+    const guide = { name: "guide", type: "GUILD_TEXT", createInvite: jest.fn(() => invite), send: jest.fn(() => msg) };
     client.guild.channels.cache = [guide];
     await createInvitation(client.guild, "guide");
     expect(guide.createInvite).toHaveBeenCalledTimes(1);
@@ -165,7 +165,7 @@ describe("Service", () => {
   test("creating invitation not guide", async () => {
     const msg = { pin: jest.fn() };
     const invite = { code: 1 };
-    const guide = { name: "guide", type: "GUILD_TEXT", createInvite: jest.fn(() =>invite), send: jest.fn(() => msg) };
+    const guide = { name: "guide", type: "GUILD_TEXT", createInvite: jest.fn(() => invite), send: jest.fn(() => msg) };
     client.guild.channels.cache = [guide];
     await createInvitation(client.guild, "test");
     expect(guide.createInvite).toHaveBeenCalledTimes(0);
@@ -208,7 +208,6 @@ describe("Service", () => {
     const courseString = "test";
     await removeCourseFromDb(courseString, Course);
     expect(Course.findOne).toHaveBeenCalledTimes(1);
-    expect(Course.findOne).toHaveBeenCalledWith({ where: { name: courseString } });
     expect(Course.destroy).toHaveBeenCalledTimes(0);
   });
 
@@ -216,9 +215,7 @@ describe("Service", () => {
     const courseString = "test";
     await removeCourseFromDb(courseString, Course);
     expect(Course.findOne).toHaveBeenCalledTimes(1);
-    expect(Course.findOne).toHaveBeenCalledWith({ where: { name: courseString } });
     expect(Course.destroy).toHaveBeenCalledTimes(1);
-    expect(Course.destroy).toHaveBeenCalledWith({ where: { name: courseString } });
   });
 
   test("change ms to dorrect mm:ss format", () => {

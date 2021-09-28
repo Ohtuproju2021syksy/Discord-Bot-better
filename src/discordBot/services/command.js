@@ -71,6 +71,26 @@ const setCommandPermissions = async (client) => {
       permissions: perms,
     };
   });
+
+  for (let fIndex = 0, fullLength = fullPermissions.length; fIndex < fullLength; fIndex++) {
+
+    if (fullPermissions[fIndex].permissions.length > 10) {
+
+      for (let pIndex = 0, permissionLength = fullPermissions[fIndex].permissions.length; pIndex <= permissionLength; pIndex += 10) {
+        const slicedList = fullPermissions[fIndex].permissions.slice(pIndex, pIndex + 10);
+        fullPermissions.push(
+          {
+            id: fullPermissions[fIndex].id,
+            permissions: slicedList,
+          },
+        );
+      }
+      fullPermissions.splice(fIndex, 1);
+      fIndex--;
+      fullLength--;
+    }
+  }
+
   await client.guilds.cache.get(guildId)?.commands.permissions.set({ fullPermissions });
   console.log("Successfully loaded all command permissions.");
 };

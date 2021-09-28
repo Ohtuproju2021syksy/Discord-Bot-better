@@ -3,12 +3,13 @@ const { sendEphemeral, sendErrorEphemeral } = require("../../src/discordBot/serv
 const {
   trimCourseName,
   handleCooldown,
-  msToMinutesAndSeconds } = require("../../src/discordBot/services/service");
+  msToMinutesAndSeconds,
+  checkCourseCooldown } = require("../../src/discordBot/services/service");
 
 jest.mock("../../src/discordBot/services/message");
 jest.mock("../../src/discordBot/services/service");
 
-const time = "15:00";
+const time = "4:59";
 
 msToMinutesAndSeconds.mockImplementation(() => time);
 
@@ -51,6 +52,7 @@ describe("slash topic command", () => {
   });
 
   test("command has cooldown", async () => {
+    checkCourseCooldown.mockImplementation(() => time);
     const client = defaultTeacherInteraction.client;
     defaultTeacherInteraction.channelId = 2;
     const response = `Command cooldown [mm:ss]: you need to wait ${time}!`;

@@ -27,7 +27,7 @@ describe("courses slash command", () => {
   });
 
   test("responds correct list as ephemeral", async () => {
-    const result = "Test course - `/join test`";
+    const result = "test course - `/join test`";
     const client = defaultTeacherInteraction.client;
     await execute(defaultTeacherInteraction, client);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);

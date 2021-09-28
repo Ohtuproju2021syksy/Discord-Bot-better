@@ -22,8 +22,18 @@ const sendEphemeral = async (interaction, msg) => {
   await interaction.reply({ content: `${msg}`, ephemeral: true });
 };
 
+const editEphemeral = async (interaction, msg) => {
+  await interaction.editReply({ content: `${msg}`, ephemeral: true });
+};
+
+const editErrorEphemeral = async (interaction, msg) => {
+  await interaction.editReply({ content: `Error: ${msg}`, ephemeral: true });
+};
+
 module.exports = {
   sendErrorReport,
   sendErrorEphemeral,
   sendEphemeral,
+  editEphemeral,
+  editErrorEphemeral,
 };

@@ -1,5 +1,5 @@
 const { execute } = require("../../src/discordBot/commands/faculty/create");
-const { sendEphemeral, sendErrorEphemeral } = require("../../src/discordBot/services/message");
+const { sendEphemeral, sendErrorEphemeral, editEphemeral } = require("../../src/discordBot/services/message");
 const {
   findCourseFromDb,
   findCourseFromDbWithFullName,
@@ -21,26 +21,29 @@ findCourseFromDbWithFullName
   .mockImplementationOnce(() => true);
 findCourseFromDb
   .mockImplementation(() => false)
+  .mockImplementationOnce(() => true)
   .mockImplementationOnce(() => true);
 
 const { defaultTeacherInteraction, defaultStudentInteraction } = require("../mocks/mockInteraction");
-defaultTeacherInteraction.options = { getString: jest.fn((name) => {
-  const names = {
-    coursecode: "TKT-100",
-    full_name: "Long course name",
-    nick_name: "nick name",
-  };
-  return names[name];
-}),
+defaultTeacherInteraction.options = {
+  getString: jest.fn((name) => {
+    const names = {
+      coursecode: "TKT-100",
+      full_name: "Long course name",
+      nick_name: "nick name",
+    };
+    return names[name];
+  }),
 };
 
-defaultStudentInteraction.options = { getString: jest.fn((name) => {
-  const names = {
-    coursecode: "TKT-100",
-    full_name: "Long course name",
-  };
-  return names[name];
-}),
+defaultStudentInteraction.options = {
+  getString: jest.fn((name) => {
+    const names = {
+      coursecode: "TKT-100",
+      full_name: "Long course name",
+    };
+    return names[name];
+  }),
 };
 
 afterEach(() => {
@@ -57,23 +60,31 @@ describe("slash create command", () => {
     expect(sendErrorEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
   });
 
-  test("course name must be unique", async () => {
+  test("course nick name must be unique", async () => {
     const client = defaultTeacherInteraction.client;
-    const response = "Course name must be unique.";
+    const response = "Course nick name must be unique.";
     await execute(defaultTeacherInteraction, client);
     expect(findCourseFromDbWithFullName).toHaveBeenCalledTimes(1);
     expect(sendErrorEphemeral).toHaveBeenCalledTimes(1);
     expect(sendErrorEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
   });
 
+  test("course code must be unique when nickname not given", async () => {
+    const client = defaultStudentInteraction.client;
+    const response = "Course code must be unique.";
+    await execute(defaultStudentInteraction, client);
+    expect(findCourseFromDbWithFullName).toHaveBeenCalledTimes(1);
+    expect(sendErrorEphemeral).toHaveBeenCalledTimes(1);
+    expect(sendErrorEphemeral).toHaveBeenCalledWith(defaultStudentInteraction, response);
+  });
+
   test("create course name without nick", async () => {
     const courseCode = "TKT-100";
-    const courseCodeLower = courseCode.toLowerCase().trim();
     const client = defaultStudentInteraction.client;
     await execute(defaultStudentInteraction, client);
     expect(findOrCreateRoleWithName).toHaveBeenCalledTimes(2);
-    expect(findOrCreateRoleWithName).toHaveBeenCalledWith(courseCodeLower, client.guild);
-    expect(findOrCreateRoleWithName).toHaveBeenCalledWith(`${courseCodeLower} ${courseAdminRole}`, client.guild);
+    expect(findOrCreateRoleWithName).toHaveBeenCalledWith(courseCode, client.guild);
+    expect(findOrCreateRoleWithName).toHaveBeenCalledWith(`${courseCode} ${courseAdminRole}`, client.guild);
   });
 
   test("find or create correct roles", async () => {
@@ -122,7 +133,9 @@ describe("slash create command", () => {
     const result = `Created course ${courseName}.`;
     await execute(defaultTeacherInteraction, client);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
-    expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, result);
+    expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, "Creating course...");
+    expect(editEphemeral).toHaveBeenCalledTimes(1);
+    expect(editEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, result);
   });
 
   test("update join/leave command list", async () => {

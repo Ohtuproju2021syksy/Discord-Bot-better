@@ -1,6 +1,7 @@
 let discordClient;
 let telegramClient;
-const keywords = ["crypto", "krypto", "btc", "doge", "btc", "eth", "musk", "money", "$", "usd", "bitcoin", "muskx.co", "coin"];
+const keywords = ["crypto", "krypto", "btc", "doge", "btc", "eth", "musk", "money", "$", "usd", "bitcoin", "muskx.co", "coin", "elonmusk", "prize", "еlonmusk", "btc"];
+const cyrillicPattern = /^\p{Script=Cyrillic}+$/u;
 const keywordPoints = new Map(keywords.map(key => [key, null]));
 
 
@@ -59,11 +60,21 @@ const sendMessageToDiscord = async (message, channel) => {
 
 const isMessageCryptoSpam = (message) => {
 
-  let point;
+  let point = 0;
   const userId = message.user.userId.toLowerCase();
-  const textAsList = message.content.text.toLowerCase().split(" ");
+  const textAsList = message.content.text.toLowerCase().split(/(?: |\n)+/);
 
-  userId.includes("bot") ? point = 2 : point = 0;
+  for (const c of message.content.text) {
+    if (cyrillicPattern.test(c)) {
+      point++;
+      break;
+    }
+  }
+
+  userId.includes("bot") ? point = point + 2 : point = point + 0;
+  message.content.text.includes("elonmusk") ? point++ : point = point + 0;
+  cyrillicPattern.test(message.content.text) ? point++ : point = point + 0;
+  if (point == 3) return true;
   for (const word of textAsList) {
     if (keywordPoints.has(word)) {
       point++;
@@ -76,20 +87,21 @@ const isMessageCryptoSpam = (message) => {
 
 
 const handleBridgeMessage = async (message, courseName, Course) => {
-  if (!message.channel.parent) return;
+  if (!message.channel.parent || message.type === "CHANNEL_PINNED_MESSAGE") return;
 
   const group = await Course.findOne({ where: { name: String(courseName) } });
 
-  if (!group) {
+  if (!group || group.telegramId == null) {
     return;
   }
+
   if (message.author.bot) return;
 
   const sender = message.member.displayName;
   let channel = ":";
 
   if (!message.channel.name.includes("general")) {
-    channel = " on " + message.channel.name.split("_")[1] + " channel:\n";
+    channel = escapeChars(" on " + (message.channel.name.split(courseName.replace(" ", "-"))[1]).substring(1) + " channel:\n");
   }
 
   let msg = message.content;
@@ -166,7 +178,6 @@ const sendMediaToTelegram = async (telegramId, info, sender, channel, media) => 
   info = validateContent(info);
   const url = media.url;
   const caption = `*${sender}*${channel} ${info}`;
-  console.log(media.contentType);
   if (media.contentType.includes("video")) {
     await telegramClient.telegram.sendVideo(telegramId, { url }, { caption, parse_mode: "MarkdownV2" });
   }
@@ -177,7 +188,6 @@ const sendMediaToTelegram = async (telegramId, info, sender, channel, media) => 
     await telegramClient.telegram.sendAnimation(telegramId, { url }, { caption, parse_mode: "MarkdownV2" });
   }
   else if (media.contentType.includes("image") || media.contentType.includes("pdf")) {
-    console.log(media.contentType);
     await telegramClient.telegram.sendPhoto(telegramId, { url }, { caption, parse_mode: "MarkdownV2" });
   }
 

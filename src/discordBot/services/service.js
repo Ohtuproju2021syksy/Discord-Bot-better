@@ -1,3 +1,5 @@
+const { Sequelize } = require("sequelize");
+
 require("dotenv").config();
 const GUIDE_CHANNEL_NAME = "guide";
 
@@ -8,6 +10,10 @@ process.env.NODE_ENV === "production" ? invite_url = `${process.env.BACKEND_SERV
 const createCategoryName = (courseString) => `📚 ${courseString}`;
 
 const createPrivateCategoryName = (courseString) => `🔒 ${courseString}`;
+
+const cooldownMap = new Map();
+
+const cooldownTimeMs = 1000 * 60 * 5;
 
 /**
  * Expects role to be between parenthesis e.g., (role)
@@ -45,9 +51,9 @@ const updateGuideMessage = async (message, Course) => {
   const rows = courseData
     .map((course) => {
       const regExp = /[^0-9]*/;
-      const fullname = course.fullName.charAt(0).toUpperCase() + course.fullName.slice(1);
+      const fullname = course.fullName;
       const matches = regExp.exec(course.code)?.[0];
-      const code = matches ? matches.toUpperCase() + course.code.slice(matches.length) : course.code;
+      const code = matches ? matches + course.code.slice(matches.length) : course.code;
       const count = guild.roles.cache.find(
         (role) => role.name === course.name,
       )?.members.size;
@@ -101,12 +107,12 @@ const createInvitation = async (guild, args) => {
 
   name = createCategoryName(args);
   category = guild.channels.cache.find(
-    c => c.type === "GUILD_CATEGORY" && c.name === name,
+    c => c.type === "GUILD_CATEGORY" && c.name.toLowerCase() === name.toLowerCase(),
   );
   if (!category) {
     name = createPrivateCategoryName(args);
     category = guild.channels.cache.find(
-      c => c.type === "GUILD_CATEGORY" && c.name === name,
+      c => c.type === "GUILD_CATEGORY" && c.name.toLowerCase() === name.toLowerCase(),
     );
   }
   const course = guild.channels.cache.find(
@@ -129,8 +135,8 @@ const findCategoryName = (courseString, guild) => {
   const categorypublic = createCategoryName(courseString);
   const categoryprivate = createPrivateCategoryName(courseString);
   try {
-    const publicCourse = guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name === categorypublic);
-    const privateCourse = guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name === categoryprivate);
+    const publicCourse = guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name.toLowerCase() === categorypublic.toLowerCase());
+    const privateCourse = guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name.toLowerCase() === categoryprivate.toLowerCase());
     if (!publicCourse && privateCourse) {
       return categoryprivate;
     }
@@ -144,7 +150,7 @@ const findCategoryName = (courseString, guild) => {
 };
 
 const findChannelWithNameAndType = (name, type, guild) => {
-  return guild.channels.cache.find(c => c.type === type && c.name === name);
+  return guild.channels.cache.find(c => c.type === type && c.name.toLowerCase() === name.toLowerCase());
 };
 
 const findChannelWithId = (id, guild) => {
@@ -157,16 +163,23 @@ const msToMinutesAndSeconds = (ms) => {
   return `${minutes}:${(seconds < 10 ? "0" : "")}${seconds}`;
 };
 
-const handleCooldown = (map, courseName, cooldown) => {
+const checkCourseCooldown = (courseName) => {
+  return cooldownMap.get(courseName);
+};
+
+const handleCooldown = (courseName) => {
+  if (!cooldownMap.has(courseName)) {
+    cooldownMap.set(courseName, cooldownTimeMs + Date.now());
+  }
   setTimeout(() => {
-    map.delete(courseName);
-  }, cooldown);
+    cooldownMap.delete(courseName);
+  }, cooldownTimeMs);
 };
 
 const findOrCreateChannel = async (channelObject, guild) => {
   const { name, options } = channelObject;
   const alreadyExists = guild.channels.cache.find(
-    (c) => c.type === options.type && c.name === name);
+    (c) => c.type === options.type && c.name.toLowerCase() === name.toLowerCase());
   if (alreadyExists) return alreadyExists;
   return await guild.channels.create(name, options);
 };
@@ -181,7 +194,7 @@ const setCoursePositionABC = async (guild, courseString) => {
       return categoryName;
     }).sort((a, b) => a.localeCompare(b));
 
-  const category = guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name === courseString);
+  const category = guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name.toLowerCase() === courseString.toLowerCase());
   if (category) {
     await category.edit({ position: result.indexOf(courseString) + first });
   }
@@ -232,7 +245,10 @@ const findAndUpdateInstructorRole = async (name, guild, courseAdminRole) => {
 };
 
 const setCourseToPrivate = async (courseName, Course) => {
-  const course = await Course.findOne({ where: { name: courseName } });
+  const course = await Course.findOne({
+    where:
+      { name: { [Sequelize.Op.iLike]: courseName } },
+  });
   if (course) {
     course.private = true;
     await course.save();
@@ -240,7 +256,10 @@ const setCourseToPrivate = async (courseName, Course) => {
 };
 
 const setCourseToPublic = async (courseName, Course) => {
-  const course = await Course.findOne({ where: { name: courseName } });
+  const course = await Course.findOne({
+    where:
+      { name: { [Sequelize.Op.iLike]: courseName } },
+  });
   if (course) {
     course.private = false;
     await course.save();
@@ -248,21 +267,33 @@ const setCourseToPublic = async (courseName, Course) => {
 };
 
 const createCourseToDatabase = async (courseCode, courseFullName, courseName, Course) => {
-  const alreadyinuse = await Course.findOne({ where: { name: courseName } });
+  const alreadyinuse = await Course.findOne({
+    where:
+      { name: { [Sequelize.Op.iLike]: courseName } },
+  });
   if (!alreadyinuse) {
     await Course.create({ code: courseCode, fullName: courseFullName, name: courseName, private: false });
   }
 };
 
 const removeCourseFromDb = async (courseName, Course) => {
-  const course = await Course.findOne({ where: { name: courseName } });
+  const course = await Course.findOne({
+    where:
+      { name: { [Sequelize.Op.iLike]: courseName } },
+  });
   if (course) {
-    await Course.destroy({ where: { name: courseName } });
+    await Course.destroy({
+      where:
+        { name: { [Sequelize.Op.iLike]: courseName } },
+    });
   }
 };
 
 const findCourseFromDb = async (courseName, Course) => {
-  return await Course.findOne({ where: { name: courseName } });
+  return await Course.findOne({
+    where:
+      { name: { [Sequelize.Op.iLike]: courseName } },
+  });
 };
 
 const findCoursesFromDb = async (order, Course, state) => {
@@ -275,11 +306,16 @@ const findCoursesFromDb = async (order, Course, state) => {
     attributes: ["code", "fullName", "name"],
     order: [order],
     where: filter[state],
-    raw: true });
+    raw: true,
+  });
 };
 
 const findCourseFromDbWithFullName = async (courseFullName, Course) => {
-  return await Course.findOne({ where: { fullName: courseFullName } });
+  return await Course.findOne({
+    where: {
+      fullName: { [Sequelize.Op.iLike]: courseFullName },
+    },
+  });
 };
 
 
@@ -295,6 +331,7 @@ module.exports = {
   findChannelWithNameAndType,
   findChannelWithId,
   msToMinutesAndSeconds,
+  checkCourseCooldown,
   handleCooldown,
   createCourseInvitationLink,
   findOrCreateChannel,
