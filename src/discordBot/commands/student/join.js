@@ -2,6 +2,7 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 const { updateGuide } = require("../../services/service");
 const { sendErrorEphemeral, sendEphemeral } = require("../../services/message");
 const { courseAdminRole } = require("../../../../config.json");
+const joinedUsersCounter = require("../../../promMetrics/joinedUsersCounter");
 
 const execute = async (interaction, client, Course) => {
   const roleString = interaction.options.getString("course").trim();
@@ -18,6 +19,8 @@ const execute = async (interaction, client, Course) => {
   await member.roles.add(courseRole);
   await sendEphemeral(interaction, `You have been added to a ${roleString} course.`);
   await updateGuide(guild, Course);
+
+  joinedUsersCounter.inc({ course: roleString });
 };
 
 module.exports = {
