@@ -14,6 +14,13 @@ const sendErrorReport = async (interaction, client, error) => {
   await commandsChannel.send({ content: error });
 };
 
+const sendErrorReportNoInteraction = async (telegramId, member, channel, client, error) => {
+  const commandsChannel = client.guild.channels.cache.find((c) => validateChannel(c));
+  const msg = `**ERROR DETECTED!**\nMember: ${member}\nChannel: ${channel}`;
+  await commandsChannel.send({ content: msg });
+  await commandsChannel.send({ content: error });
+};
+
 const sendErrorEphemeral = async (interaction, msg) => {
   await interaction.reply({ content: `Error: ${msg}`, ephemeral: true });
 };
@@ -33,6 +40,7 @@ const editErrorEphemeral = async (interaction, msg) => {
 module.exports = {
   sendErrorReport,
   sendErrorEphemeral,
+  sendErrorReportNoInteraction,
   sendEphemeral,
   editEphemeral,
   editErrorEphemeral,
