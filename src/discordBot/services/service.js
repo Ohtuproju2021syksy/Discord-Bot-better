@@ -11,6 +11,8 @@ const createCategoryName = (courseString) => `📚 ${courseString}`;
 
 const createPrivateCategoryName = (courseString) => `🔒 ${courseString}`;
 
+const createLockedCategoryName = (courseString) => `🔐 ${courseString}`;
+
 const cooldownMap = new Map();
 
 const cooldownTimeMs = 1000 * 60 * 5;
@@ -259,6 +261,28 @@ const setCourseToPublic = async (courseName, Course) => {
   }
 };
 
+const setCourseToLocked = async (courseName, Course) => {
+  const course = await Course.findOne({
+    where:
+      { name: { [Sequelize.Op.iLike]: courseName } },
+  });
+  if (course) {
+    course.locked = true;
+    await course.save();
+  }
+};
+
+const setCourseToUnlocked = async (courseName, Course) => {
+  const course = await Course.findOne({
+    where:
+      { name: { [Sequelize.Op.iLike]: courseName } },
+  });
+  if (course) {
+    course.locked = false;
+    await course.save();
+  }
+};
+
 const createCourseToDatabase = async (courseCode, courseFullName, courseName, Course) => {
   const alreadyinuse = await Course.findOne({
     where:
@@ -315,6 +339,7 @@ const findCourseFromDbWithFullName = async (courseFullName, Course) => {
 module.exports = {
   createCategoryName,
   createPrivateCategoryName,
+  createLockedCategoryName,
   getRoleFromCategory,
   findOrCreateRoleWithName,
   updateGuideMessage,
@@ -336,6 +361,8 @@ module.exports = {
   findAndUpdateInstructorRole,
   setCourseToPrivate,
   setCourseToPublic,
+  setCourseToLocked,
+  setCourseToUnlocked,
   createCourseToDatabase,
   removeCourseFromDb,
   findCourseFromDb,

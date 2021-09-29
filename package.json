@@ -49,6 +49,7 @@
     "eslint-plugin-jest": "^24.3.6",
     "jest": "^27.0.1",
     "nodemon": "^2.0.4",
+    "sequelize-cli": "^6.2.0",
     "sequelize-mock": "^0.10.2",
     "supertest": "^6.1.3"
   }
