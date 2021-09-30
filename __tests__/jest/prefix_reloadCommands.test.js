@@ -1,7 +1,7 @@
 const { execute } = require("../../src/discordBot/commands/admin/reloadCommands");
-const { reloadCommands } = require("../../src/discordBot/commands/utils");
+const { setUpCommands } = require("../../src/discordBot/services/command");
 
-jest.mock("../../src/discordBot/commands/utils");
+jest.mock("../../src/discordBot/services/command");
 
 const { messageInCommandsChannel, student } = require("../mocks/mockMessages");
 
@@ -9,20 +9,21 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
+const Course = {};
+const args = [];
+
 describe("prefix reload command", () => {
   test("user with administrator role can reload commands", async () => {
-    const args = ["testcommand", "validCommand"];
     const client = messageInCommandsChannel.client;
-    await execute(messageInCommandsChannel, args);
-    expect(reloadCommands).toHaveBeenCalledTimes(1);
-    expect(reloadCommands).toHaveBeenCalledWith(client, args);
+    await execute(messageInCommandsChannel, args, Course);
+    expect(setUpCommands).toHaveBeenCalledTimes(1);
+    expect(setUpCommands).toHaveBeenCalledWith(client, Course);
   });
 
   test("user without administrator role cannot reload commands", async () => {
     messageInCommandsChannel.author = student;
     messageInCommandsChannel.member = student;
-    const args = ["testcommand", "validCommand"];
-    await execute(messageInCommandsChannel, args);
-    expect(reloadCommands).toHaveBeenCalledTimes(0);
+    await execute(messageInCommandsChannel, args, Course);
+    expect(setUpCommands).toHaveBeenCalledTimes(0);
   });
 });

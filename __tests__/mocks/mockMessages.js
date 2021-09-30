@@ -2,7 +2,12 @@ const { client } = require("./mockSlashClient");
 
 const teacher = {
   nickname: "teacher",
-  hasPermission: jest.fn(() => true),
+  user: {
+    id: 1,
+  },
+  permissions: {
+    has: jest.fn(() => true),
+  },
   roles: {
     cache: {
       find: () => true,
@@ -15,7 +20,12 @@ const teacher = {
 
 const student = {
   nickname: "student",
-  hasPermission: jest.fn(() => false),
+  user: {
+    id: 2,
+  },
+  permissions: {
+    has: jest.fn(() => false),
+  },
   roles: {
     cache: {
       find: () => false,
@@ -27,6 +37,7 @@ const student = {
 };
 
 const messageInGuideChannel = {
+  id: 1,
   client: client,
   guild: {
     roles: {
@@ -46,6 +57,7 @@ const messageInGuideChannel = {
 };
 
 const messageInCommandsChannel = {
+  id: 2,
   client: client,
   guild: {
     roles: {
@@ -61,12 +73,12 @@ const messageInCommandsChannel = {
           },
           parent: {
             name: "📚 test",
-            type: "category",
+            type: "GUILD_CATEGORY",
           },
         },
         {
           name: "📚 test",
-          type: "category",
+          type: "GUILD_CATEGORY",
           delete: jest.fn(),
         },
       ],

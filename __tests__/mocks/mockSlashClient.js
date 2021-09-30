@@ -17,6 +17,7 @@ const client = {
     },
     invites: {
       cache: [],
+      fetch: jest.fn(() => client.guild.invites.cache),
     },
     channels: {
       cache: new Discord.Collection(),
@@ -46,15 +47,14 @@ const client = {
       cache: new Discord.Collection(),
       create: jest.fn((data) => {
         client.guild.roles.cache.set(roleId, {
-          name: data.data.name,
-          members: data.data.members,
+          name: data.name,
+          members: data.members,
           delete: jest.fn(),
         }),
         roleId++;
       }),
       init: () => client.guild.roles.cache = new Discord.Collection(),
     },
-    fetchInvites: jest.fn(() => client.guild.invites.cache),
     members: {
       cache: new Discord.Collection(),
     },
@@ -79,13 +79,7 @@ for (const folder of slashCommandFolders) {
       client.commands.set(slashCommand.name, slashCommand);
     }
     else {
-      client.slashCommands.set(
-        slashCommand.name,
-        {
-          command: slashCommand,
-          file: `./${folder}/${file}`,
-        },
-      );
+      client.slashCommands.set(slashCommand.data.name, slashCommand);
     }
   }
 }

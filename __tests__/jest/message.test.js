@@ -1,64 +1,38 @@
-require("dotenv").config();
-const { execute } = require("../../src/discordBot/events/message");
-const sort = require("../../src/discordBot/commands/admin/sortCourses");
-const deleteCommand = require("../../src/discordBot/commands/admin/deleteCommand");
-const { messageInGuideChannel, messageInCommandsChannel, student } = require("../mocks/mockMessages");
+const {
+  sendErrorReport,
+  sendErrorEphemeral,
+  sendEphemeral } = require("../../src/discordBot/services/message");
 
-jest.mock("../../src/discordBot/commands/admin/sortCourses");
-jest.mock("../../src/discordBot/commands/admin/deleteCommand");
-
-const prefix = process.env.PREFIX;
+const { defaultAdminInteraction } = require("../mocks/mockInteraction");
 
 afterEach(() => {
   jest.clearAllMocks();
 });
 
-describe("prefix commands", () => {
-  test("commands cannot be used in guide channel", async () => {
-    messageInGuideChannel.content = `${prefix}sort`;
-    const client = messageInGuideChannel.client;
-    await execute(messageInGuideChannel, client);
-    expect(messageInGuideChannel.channel.send).toHaveBeenCalledTimes(0);
-    expect(messageInGuideChannel.react).toHaveBeenCalledTimes(0);
-    expect(messageInGuideChannel.reply).toHaveBeenCalledTimes(0);
+describe("message service", () => {
+  test("errors sent to commands channel", async () => {
+    const client = defaultAdminInteraction.client;
+    const commandChannel = client.guild.channels.cache.find((c) => c.name === "commands");
+    const channel = client.guild.channels.cache.get(defaultAdminInteraction.channelId);
+    const error = "faked error";
+    const msg = `**ERROR DETECTED!**\nMember: admin\nCommand: ${defaultAdminInteraction.commandName}\nChannel: ${channel.name}`;
+    await sendErrorReport(defaultAdminInteraction, client, error);
+    expect(commandChannel.send).toHaveBeenCalledTimes(2);
+    expect(commandChannel.send).toHaveBeenCalledWith({ content: msg });
+    expect(commandChannel.send).toHaveBeenCalledWith({ content: error });
   });
 
-  test("invalid command in commands channel does nothing", async () => {
-    messageInCommandsChannel.content = `${prefix}join test`;
-    const client = messageInCommandsChannel.client;
-    await execute(messageInCommandsChannel, client);
-    expect(messageInCommandsChannel.channel.send).toHaveBeenCalledTimes(0);
-    expect(messageInCommandsChannel.react).toHaveBeenCalledTimes(0);
-    expect(messageInCommandsChannel.reply).toHaveBeenCalledTimes(0);
+  test("error ephemeral", async () => {
+    const msg = "fake message";
+    await sendErrorEphemeral(defaultAdminInteraction, msg);
+    expect(defaultAdminInteraction.reply).toHaveBeenCalledTimes(1);
+    expect(defaultAdminInteraction.reply).toHaveBeenCalledWith({ content: `Error: ${msg}`, ephemeral: true });
   });
 
-  test("valid command in commands channel is executed", async () => {
-    messageInCommandsChannel.content = `${prefix}sort`;
-    const client = messageInCommandsChannel.client;
-    await execute(messageInCommandsChannel, client);
-    expect(sort.execute).toHaveBeenCalledTimes(1);
-  });
-
-  test("invalid use of command sends correct message", async () => {
-    messageInCommandsChannel.content = `${prefix}deletecommand`;
-    const response = `You didn't provide any arguments, ${messageInCommandsChannel.author}!`;
-    const client = messageInCommandsChannel.client;
-    await execute(messageInCommandsChannel, client);
-    expect(messageInCommandsChannel.channel.send).toHaveBeenCalledTimes(1);
-    expect(messageInCommandsChannel.channel.send).toHaveBeenCalledWith(response);
-    expect(messageInCommandsChannel.react).toHaveBeenCalledTimes(0);
-    expect(messageInCommandsChannel.reply).toHaveBeenCalledTimes(0);
-    expect(deleteCommand.execute).toHaveBeenCalledTimes(0);
-  });
-
-  test("if no command role do nothing", async () => {
-    messageInCommandsChannel.content = `${prefix}sort`;
-    const client = messageInCommandsChannel.client;
-    messageInCommandsChannel.author = student;
-    messageInCommandsChannel.member = student;
-    await execute(messageInCommandsChannel, client);
-    expect(messageInCommandsChannel.channel.send).toHaveBeenCalledTimes(0);
-    expect(messageInCommandsChannel.react).toHaveBeenCalledTimes(0);
-    expect(messageInCommandsChannel.reply).toHaveBeenCalledTimes(0);
+  test("ephemeral", async () => {
+    const msg = "fake message";
+    await sendEphemeral(defaultAdminInteraction, msg);
+    expect(defaultAdminInteraction.reply).toHaveBeenCalledTimes(1);
+    expect(defaultAdminInteraction.reply).toHaveBeenCalledWith({ content: `${msg}`, ephemeral: true });
   });
 });

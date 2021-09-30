@@ -23,7 +23,7 @@ describe("prefix updateinstructors command", () => {
     expect(findAndUpdateInstructorRole).toHaveBeenCalledTimes(0);
   });
 
-  test("if user has administrator permission update roles", async () => {
+  test("if user has administrator permission then update roles", async () => {
     messageInCommandsChannel.member = teacher;
     const client = messageInCommandsChannel.client;
     await execute(messageInCommandsChannel);

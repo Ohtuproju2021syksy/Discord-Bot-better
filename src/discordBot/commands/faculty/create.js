@@ -1,3 +1,4 @@
+const { SlashCommandBuilder } = require("@discordjs/builders");
 const {
   findOrCreateRoleWithName,
   createInvitation,
@@ -8,20 +9,8 @@ const {
   createCourseToDatabase,
   findCourseFromDb,
   findCourseFromDbWithFullName } = require("../../services/service");
-const { sendEphemeral } = require("../utils");
+const { sendErrorEphemeral, sendEphemeral, editEphemeral } = require("../../services/message");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
-
-/*
-const printCourses = async () => {
-  const courses = await Course.findAll();
-  console.log("All courses in db:", JSON.stringify(courses, null, 2));
-};
-*/
-/**
- *
- * @param {Object} channelObject
- * @param {Discord.GuildChannel} parent
- */
 
 const getPermissionOverwrites = (guild, admin, student) => ([
   {
@@ -48,7 +37,7 @@ const getChannelObjects = (guild, admin, student, roleName, category) => {
     {
       name: `${roleName}_announcement`,
       options: {
-        type: "text",
+        type: "GUILD_TEXT",
         description: "Messages from course admins",
         parent: category,
         permissionOverwrites: [
@@ -71,12 +60,12 @@ const getChannelObjects = (guild, admin, student, roleName, category) => {
     {
       name: `${roleName}_general`,
       parent: category,
-      options: { type: "text", parent: category, permissionOverwrites: [] },
+      options: { type: "GUILD_TEXT", parent: category, permissionOverwrites: [] },
     },
     {
       name: `${roleName}_voice`,
       parent: category,
-      options: { type: "voice", parent: category, permissionOverwrites: [] },
+      options: { type: "GUILD_VOICE", parent: category, permissionOverwrites: [] },
     },
   ];
 };
@@ -84,78 +73,75 @@ const getChannelObjects = (guild, admin, student, roleName, category) => {
 const getCategoryObject = (categoryName, permissionOverwrites) => ({
   name: categoryName,
   options: {
-    type: "category",
+    type: "GUILD_CATEGORY",
     permissionOverwrites,
   },
 });
 
 const execute = async (interaction, client, Course) => {
-  const courseCode = interaction.data.options[0].value.toLowerCase().trim();
-  const courseFullName = interaction.data.options[1].value.toLowerCase().trim();
-  if (await findCourseFromDbWithFullName(courseFullName, Course)) return sendEphemeral(client, interaction, "Error: Course fullname must be unique.");
+  const courseCode = interaction.options.getString("coursecode").trim();
+  const courseFullName = interaction.options.getString("full_name").trim();
+  if (await findCourseFromDbWithFullName(courseFullName, Course)) return await sendErrorEphemeral(interaction, "Course fullname must be unique.");
 
   let courseName;
-  if (!interaction.data.options[2]) {
+  let errorMessage;
+  if (!interaction.options.getString("nick_name")) {
     courseName = courseCode;
+    errorMessage = "Course code must be unique.";
   }
   else {
-    courseName = interaction.data.options[2].value.toLowerCase().trim();
+    courseName = interaction.options.getString("nick_name").trim();
+    errorMessage = "Course nick name must be unique.";
   }
-  if (await findCourseFromDb(courseName, Course)) return sendEphemeral(client, interaction, "Error: Course name must be unique.");
 
+  const courseNameConcat = courseCode + " - " + courseFullName + " - " + courseName;
+  if (courseNameConcat.length >= 99) {
+    return await sendErrorEphemeral(interaction, "Course code, name and nickname are too long!");
+  }
+
+  if (await findCourseFromDb(courseName, Course)) return await sendErrorEphemeral(interaction, errorMessage);
+  await sendEphemeral(interaction, "Creating course...");
   const guild = client.guild;
-  // Roles
+
   const student = await findOrCreateRoleWithName(courseName, guild);
   const admin = await findOrCreateRoleWithName(`${courseName} ${courseAdminRole}`, guild);
 
-  // Category
   const categoryName = findCategoryName(courseName, guild);
   const categoryObject = getCategoryObject(categoryName, getPermissionOverwrites(guild, admin, student));
   const category = await findOrCreateChannel(categoryObject, guild);
 
-  // Channels
   const channelObjects = getChannelObjects(guild, admin, student, courseName, category);
   await Promise.all(channelObjects.map(
     async channelObject => await findOrCreateChannel(channelObject, guild),
   ));
 
-  // Database
   await createCourseToDatabase(courseCode, courseFullName, courseName, Course);
-  // await printCourses();
   await setCoursePositionABC(guild, categoryName);
   await createInvitation(guild, courseName);
-  sendEphemeral(client, interaction, `Created course ${courseName}.`);
+  await editEphemeral(interaction, `Created course ${courseName}.`);
   await client.emit("COURSES_CHANGED", Course);
   await updateGuide(client.guild, Course);
 };
 
 module.exports = {
-  name: "create",
-  description: "Create a new course.",
-  usage: "/create [course name]",
-  args: true,
-  joinArgs: true,
-  guide: true,
-  role: facultyRole,
-  options: [
-    {
-      name: "coursecode",
-      description: "Course coursecode",
-      type: 3,
-      required: true,
-    },
-    {
-      name: "full_name",
-      description: "Course full name",
-      type: 3,
-      required: true,
-    },
-    {
-      name: "nick_name",
-      description: "Course nick name",
-      type: 3,
-      required: false,
-    },
-  ],
+  data: new SlashCommandBuilder()
+    .setName("create")
+    .setDescription("Create a new course.")
+    .setDefaultPermission(false)
+    .addStringOption(option =>
+      option.setName("coursecode")
+        .setDescription("Course coursecode")
+        .setRequired(true))
+    .addStringOption(option =>
+      option.setName("full_name")
+        .setDescription("Course full name")
+        .setRequired(true))
+    .addStringOption(option =>
+      option.setName("nick_name")
+        .setDescription("Course nick name")
+        .setRequired(false)),
   execute,
+  usage: "/create [course name]",
+  description: "Create a new course.",
+  roles: ["admin", facultyRole],
 };

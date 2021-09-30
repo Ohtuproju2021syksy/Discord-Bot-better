@@ -2,7 +2,7 @@ const { courseAdminRole } = require("../../../../config.json");
 const { findAllCourseNames, findAndUpdateInstructorRole } = require("../../services/service");
 
 const execute = async (message) => {
-  if (message.member.hasPermission("ADMINISTRATOR")) {
+  if (message.member.permissions.has("ADMINISTRATOR")) {
     const guild = message.client.guild;
     const courseNames = findAllCourseNames(guild);
 

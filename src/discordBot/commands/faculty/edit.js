@@ -1,21 +1,24 @@
-const { setCoursePositionABC,
+const { SlashCommandBuilder } = require("@discordjs/builders");
+const {
+  setCoursePositionABC,
   findCategoryName,
   createCourseInvitationLink,
   findChannelWithNameAndType,
   updateGuide,
   msToMinutesAndSeconds,
   handleCooldown,
+  checkCourseCooldown,
   trimCourseName,
   findCourseFromDb,
-  createCourseToDatabase } = require("../../services/service");
-const { sendEphemeral } = require("../utils");
+  createCourseToDatabase,
+  findCourseFromDbWithFullName } = require("../../services/service");
+const { sendEphemeral, editEphemeral, editErrorEphemeral } = require("../../services/message");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
 
 
-const used = new Map();
-
 const changeCourseNames = async (newValue, channel, category, guild) => {
-  if (guild.channels.cache.find(c => c.type === "category" && (c.name === `📚 ${newValue}` || c.name === `🔒 ${newValue}`))) return;
+  if (guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && (c.name.toLowerCase() === `📚 ${newValue.toLowerCase()}`
+    || c.name.toLowerCase() === `🔒 ${newValue.toLowerCase()}`))) return;
   if (category.name.includes("📚")) {
     await category.setName(`📚 ${newValue}`);
   }
@@ -48,7 +51,7 @@ const changeCourseRoles = async (categoryName, newValue, guild) => {
 
 const changeInvitationLink = async (channelAnnouncement, interaction) => {
   const pinnedMessages = await channelAnnouncement.messages.fetchPinned();
-  const invMessage = pinnedMessages.find(msg => msg.author.id === interaction.application_id && msg.content.includes("Invitation link for"));
+  const invMessage = pinnedMessages.find(msg => msg.author.id === interaction.applicationId && msg.content.includes("Invitation link for"));
   const courseName = channelAnnouncement.parent.name.replace(/([\uE000-\uF8FF]|\uD83C[\uDF00-\uDFFF]|\uD83D[\uDC00-\uDDFF])/g, "").trim();
 
   const updatedMsg = createCourseInvitationLink(courseName);
@@ -56,18 +59,26 @@ const changeInvitationLink = async (channelAnnouncement, interaction) => {
 };
 
 const execute = async (interaction, client, Course) => {
-  const choice = interaction.data.options[0].value;
-  const newValue = interaction.data.options[1].value.toLowerCase().trim();
-
+  await sendEphemeral(interaction, "Editing...");
   const guild = client.guild;
-  const channel = guild.channels.cache.get(interaction.channel_id);
+  const channel = guild.channels.cache.get(interaction.channelId);
+  const categoryName = trimCourseName(channel.parent, guild);
 
-  if (!channel?.parent?.name?.startsWith("🔒") && !channel?.parent?.name?.startsWith("📚")) {
-    return sendEphemeral(client, interaction, "This is not a course category, can not execute the command");
+  const cooldown = checkCourseCooldown(categoryName);
+  if (cooldown) {
+    const timeRemaining = Math.floor(cooldown - Date.now());
+    const time = msToMinutesAndSeconds(timeRemaining);
+    return await editErrorEphemeral(interaction, `Command cooldown [mm:ss]: you need to wait ${time}.`);
   }
 
-  const categoryName = trimCourseName(channel.parent, guild);
-  const category = findChannelWithNameAndType(channel.parent.name, "category", guild);
+  const choice = interaction.options.getString("options").toLowerCase().trim();
+  const newValue = interaction.options.getString("new_value").trim();
+
+  if (!channel?.parent?.name?.startsWith("🔒") && !channel?.parent?.name?.startsWith("📚")) {
+    return await editErrorEphemeral(interaction, "This is not a course category, can not execute the command");
+  }
+
+  const category = findChannelWithNameAndType(channel.parent.name, "GUILD_CATEGORY", guild);
   const channelAnnouncement = guild.channels.cache.find(c => c.parent === channel.parent && c.name.includes("_announcement"));
 
   let databaseValue = await findCourseFromDb(categoryName, Course);
@@ -77,17 +88,10 @@ const execute = async (interaction, client, Course) => {
     databaseValue = await findCourseFromDb(categoryName, Course);
   }
 
-  const cooldown = used.get(categoryName);
-  if (cooldown) {
-    const timeRemaining = Math.floor(cooldown - Date.now());
-    const time = msToMinutesAndSeconds(timeRemaining);
-    return sendEphemeral(client, interaction, `Command cooldown [mm:ss]: you need to wait ${time}.`);
-  }
-
   if (choice === "code") {
     if (databaseValue.code === databaseValue.name) {
       const change = await changeCourseNames(newValue, channel, category, guild);
-      if (!change) return sendEphemeral(client, interaction, "Course name already exists");
+      if (!change) return await editErrorEphemeral(interaction, "Course code already exists");
 
       databaseValue.code = newValue;
       databaseValue.name = newValue;
@@ -107,13 +111,14 @@ const execute = async (interaction, client, Course) => {
   }
 
   if (choice === "name") {
+    if (findCourseFromDbWithFullName(newValue, Course)) return await editErrorEphemeral(interaction, "Course full name already exists");
     databaseValue.fullName = newValue;
     await databaseValue.save();
   }
 
   if (choice === "nick") {
     const change = await changeCourseNames(newValue, channel, category, guild);
-    if (!change) return sendEphemeral(client, interaction, "Course name already exists");
+    if (!change) return await editErrorEphemeral(interaction, "Course name already exists");
 
     databaseValue.name = newValue;
     await databaseValue.save();
@@ -125,54 +130,32 @@ const execute = async (interaction, client, Course) => {
     await setCoursePositionABC(guild, newCategoryName);
   }
 
-  if ((choice === "code" && databaseValue.code === databaseValue.name) || choice === "nick") {
-    const nameToCoolDown = trimCourseName(channel.parent, guild);
-    const cooldownTimeMs = 1000 * 60 * 15;
-    used.set(nameToCoolDown, Date.now() + cooldownTimeMs);
-    handleCooldown(used, nameToCoolDown, cooldownTimeMs);
-  }
-
   await client.emit("COURSES_CHANGED", Course);
   await updateGuide(client.guild, Course);
 
-  return sendEphemeral(client, interaction, "Course information has been changed");
+  await editEphemeral(interaction, "Course information has been changed");
+  const nameToCoolDown = trimCourseName(channel.parent, guild);
+  handleCooldown(nameToCoolDown);
 };
 
 module.exports = {
-  name: "edit",
-  description: "Edit course code, name or nickname",
-  usage: "/edit [parameter]",
-  args: true,
-  joinArgs: true,
-  guide: true,
-  role: facultyRole,
-  options: [
-    {
-      name: "options",
-      description: "Edit current course",
-      type: 3,
-      required: true,
-      choices: [
-        {
-          name: "coursecode",
-          value: "code",
-        },
-        {
-          name: "full name",
-          value: "name",
-        },
-        {
-          name: "nickname",
-          value: "nick",
-        },
-      ],
-    },
-    {
-      name: "new_value",
-      description: "Give new value",
-      type: 3,
-      required: true,
-    },
-  ],
+  data: new SlashCommandBuilder()
+    .setName("edit")
+    .setDescription("Edit course code, name or nickname")
+    .setDefaultPermission(false)
+    .addStringOption(option =>
+      option.setName("options")
+        .setDescription("Edit current course")
+        .setRequired(true)
+        .addChoice("coursecode", "code")
+        .addChoice("full name", "name")
+        .addChoice("nickname", "nick"))
+    .addStringOption(option =>
+      option.setName("new_value")
+        .setDescription("Give new value")
+        .setRequired(true)),
   execute,
+  usage: "/edit [parameter]",
+  description: "Edit course code, name or nickname.*",
+  roles: ["admin", facultyRole],
 };

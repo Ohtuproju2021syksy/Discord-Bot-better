@@ -1,7 +1,7 @@
 const { createCourseInvitationLink } = require("../../services/service");
 
 const execute = async (message) => {
-  if (message.member.hasPermission("ADMINISTRATOR")) {
+  if (message.member.permissions.has("ADMINISTRATOR")) {
     const announcementChannels = message.guild.channels.cache.filter(c => c.name.includes("announcement"));
     announcementChannels.forEach(async aChannel => {
       const pinnedMessages = await aChannel.messages.fetchPinned();

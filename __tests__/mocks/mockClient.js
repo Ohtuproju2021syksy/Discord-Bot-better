@@ -12,11 +12,12 @@ const client = {
   guild: {
     invites: {
       cache: [],
+      fetch: jest.fn(() => client.guild.invites.cache),
     },
     channels: {
       cache: [],
       create: jest.fn((name) => client.guild.channels.cache.push({
-        name: name, type: "text",
+        name: name, type: "GUILD_TEXT",
         send: jest.fn((content) => { return { content: content, pin: jest.fn() }; }),
         lastPinTimestamp: null,
         createInvite: jest.fn(() => client.guild.invites.cache.push({
@@ -33,14 +34,13 @@ const client = {
     roles: {
       cache: [],
       create: jest.fn((data) => client.guild.roles.cache.push({
-        name: data.data.name,
+        name: data.name,
       })),
     },
-    fetchInvites: jest.fn(() => client.guild.invites.cache),
   },
+  emit: jest.fn(),
 };
 
-// const commandFolders = fs.readdirSync(commandsPath);
 const commandFolders = fs.readdirSync(commandsPath, { withFileTypes: true })
   .filter(dirent => dirent.isDirectory())
   .map(dirent => dirent.name);
@@ -51,7 +51,6 @@ for (const folder of commandFolders) {
     client.commands.set(command.name, command);
   }
 }
-
 
 module.exports = {
   client,

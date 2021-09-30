@@ -1,7 +1,7 @@
 const { deleteCommand } = require("../../services/service");
 
 const execute = async (message, args) => {
-  if (message.member.hasPermission("ADMINISTRATOR")) {
+  if (message.member.permissions.has("ADMINISTRATOR")) {
     const client = message.client;
     await deleteCommand(client, args[0]);
   }
@@ -10,7 +10,7 @@ const execute = async (message, args) => {
 module.exports = {
   prefix: true,
   name: "deletecommand",
-  description: "Delete a slash command",
+  description: "Delete a slash command.",
   role: "admin",
   usage: "!deletecommand [command name]",
   args: true,

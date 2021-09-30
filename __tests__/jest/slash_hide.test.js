@@ -1,18 +1,22 @@
 const { execute } = require("../../src/discordBot/commands/faculty/hide");
-const { sendEphemeral } = require("../../src/discordBot/commands/utils");
+const { sendErrorEphemeral, sendEphemeral } = require("../../src/discordBot/services/message");
 const {
   createCategoryName,
   updateGuide,
   findChannelWithNameAndType,
   msToMinutesAndSeconds,
-  setCourseToPrivate } = require("../../src/discordBot/services/service");
+  setCourseToPrivate,
+  checkCourseCooldown } = require("../../src/discordBot/services/service");
 
-jest.mock("../../src/discordBot/commands/utils");
+jest.mock("../../src/discordBot/services/message");
 jest.mock("../../src/discordBot/services/service");
 
+const time = "4:59";
 createCategoryName.mockImplementation((name) => `📚 ${name}`);
 
 const { defaultTeacherInteraction } = require("../mocks/mockInteraction");
+const courseName = "test";
+defaultTeacherInteraction.options = { getString: jest.fn(() => courseName) };
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -28,44 +32,41 @@ const Course = {
 
 describe("slash hide command", () => {
   test("hide command with invalid course name responds with correct ephemeral", async () => {
-    const courseName = "test";
-    defaultTeacherInteraction.data.options[0].value = courseName;
     const client = defaultTeacherInteraction.client;
+    const response = `Invalid course name: ${courseName} or the course is private already!`;
     await execute(defaultTeacherInteraction, client, Course);
     expect(createCategoryName).toHaveBeenCalledTimes(1);
     expect(createCategoryName).toHaveBeenCalledWith(courseName);
-    expect(sendEphemeral).toHaveBeenCalledTimes(1);
-    expect(sendEphemeral).toHaveBeenCalledWith(client, defaultTeacherInteraction, `Invalid course name: ${courseName} or the course is private already.`);
+    expect(sendErrorEphemeral).toHaveBeenCalledTimes(1);
+    expect(sendErrorEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
     expect(updateGuide).toHaveBeenCalledTimes(0);
   });
 
   test("hide command with valid course name responds with correct ephemeral", async () => {
-    const courseName = "test";
     findChannelWithNameAndType.mockImplementationOnce((name) => { return { name: `📚 ${name}`, setName: jest.fn() }; });
-    defaultTeacherInteraction.data.options[0].value = courseName;
     const client = defaultTeacherInteraction.client;
+    const response = `This course ${courseName} is now private.`;
     await execute(defaultTeacherInteraction, client, Course);
     expect(createCategoryName).toHaveBeenCalledTimes(1);
     expect(createCategoryName).toHaveBeenCalledWith(courseName);
     expect(findChannelWithNameAndType).toHaveBeenCalledTimes(1);
     expect(setCourseToPrivate).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
-    expect(sendEphemeral).toHaveBeenCalledWith(client, defaultTeacherInteraction, `This course ${courseName} is now private.`);
+    expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
     expect(client.emit).toHaveBeenCalledTimes(1);
     expect(updateGuide).toHaveBeenCalledTimes(1);
   });
 
   test("hide command with cooldown", async () => {
-    const courseName = "test";
     findChannelWithNameAndType.mockImplementation((name) => { return { name: `📚 ${name}`, setName: jest.fn() }; });
-    defaultTeacherInteraction.data.options[0].value = courseName;
+    checkCourseCooldown.mockImplementation(() => time);
     const client = defaultTeacherInteraction.client;
     await execute(defaultTeacherInteraction, client, Course);
     expect(createCategoryName).toHaveBeenCalledTimes(1);
     expect(createCategoryName).toHaveBeenCalledWith(courseName);
     expect(findChannelWithNameAndType).toHaveBeenCalledTimes(1);
     expect(msToMinutesAndSeconds).toHaveBeenCalledTimes(1);
-    expect(sendEphemeral).toHaveBeenCalledTimes(1);
+    expect(sendErrorEphemeral).toHaveBeenCalledTimes(1);
     expect(client.emit).toHaveBeenCalledTimes(0);
     expect(updateGuide).toHaveBeenCalledTimes(0);
   });

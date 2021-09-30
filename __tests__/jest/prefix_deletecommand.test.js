@@ -11,12 +11,11 @@ afterEach(() => {
 
 describe("prefix deletecommand command", () => {
   test("user with administrator role can delete command", async () => {
-    const commandToRemove = "testcommand";
     const args = ["testcommand"];
     const client = messageInCommandsChannel.client;
     await execute(messageInCommandsChannel, args);
     expect(deleteCommand).toHaveBeenCalledTimes(1);
-    expect(deleteCommand).toHaveBeenCalledWith(client, commandToRemove);
+    expect(deleteCommand).toHaveBeenCalledWith(client, args[0]);
   });
 
   test("user without administrator role cannot delete command", async () => {

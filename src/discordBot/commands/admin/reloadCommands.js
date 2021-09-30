@@ -1,17 +1,17 @@
-const { reloadCommands } = require("../utils");
+const { setUpCommands } = require("../../services/command");
 
-const execute = async (message, args) => {
-  if (message.member.hasPermission("ADMINISTRATOR")) {
-    reloadCommands(message.client, args);
+const execute = async (message, args, Course) => {
+  if (message.member.permissions.has("ADMINISTRATOR")) {
+    setUpCommands(message.client, Course);
   }
 };
 
 module.exports = {
   prefix: true,
   name: "reloadcommands",
-  description: "Reload slash commands",
+  description: "Reload slash commands.",
   role: "admin",
-  usage: "!reloadcommands [command names]",
-  args: true,
+  usage: "!reloadcommands",
+  args: false,
   execute,
 };

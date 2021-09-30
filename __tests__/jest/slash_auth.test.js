@@ -1,7 +1,7 @@
 const { execute } = require("../../src/discordBot/commands/student/auth");
-const { sendEphemeral } = require("../../src/discordBot/commands/utils");
+const { sendEphemeral } = require("../../src/discordBot/services/message");
 
-jest.mock("../../src/discordBot/commands/utils");
+jest.mock("../../src/discordBot/services/message");
 
 const { defaultTeacherInteraction } = require("../mocks/mockInteraction");
 
@@ -14,6 +14,6 @@ describe("slash auth command", () => {
     const client = defaultTeacherInteraction.client;
     await execute(defaultTeacherInteraction, client);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
-    expect(sendEphemeral).toHaveBeenCalledWith(client, defaultTeacherInteraction, `${process.env.BACKEND_SERVER_URL}/authenticate_faculty`);
+    expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, `${process.env.BACKEND_SERVER_URL}/authenticate_faculty`);
   });
 });

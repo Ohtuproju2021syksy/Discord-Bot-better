@@ -1,11 +1,11 @@
 const execute = async (message) => {
-  if (message.member.hasPermission("ADMINISTRATOR")) {
+  if (message.member.permissions.has("ADMINISTRATOR")) {
     const guild = message.client.guild;
 
     let first = 9999;
 
     const result = guild.channels.cache
-      .filter(c => c.type === "category" && c.name.startsWith("📚"))
+      .filter(c => c.type === "GUILD_CATEGORY" && c.name.startsWith("📚"))
       .map((c) => {
         const categoryName = c.name;
         if (first > c.position) first = c.position;
@@ -16,7 +16,7 @@ const execute = async (message) => {
 
     for (let index = 0; index < result.length; index++) {
       const courseString = result[index];
-      category = guild.channels.cache.find(c => c.type === "category" && c.name === courseString);
+      category = guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name === courseString);
       await category.edit({ position: index + first });
     }
   }
@@ -25,7 +25,7 @@ const execute = async (message) => {
 module.exports = {
   prefix: true,
   name: "sort",
-  description: "Sort courses to alphabetical order",
+  description: "Sort courses to alphabetical order.",
   role: "admin",
   usage: "!sort",
   args: false,

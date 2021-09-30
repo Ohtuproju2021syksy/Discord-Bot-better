@@ -1,56 +1,50 @@
+const { SlashCommandBuilder } = require("@discordjs/builders");
 const {
   updateGuide,
   createPrivateCategoryName,
   findChannelWithNameAndType,
   msToMinutesAndSeconds,
   handleCooldown,
+  checkCourseCooldown,
   setCourseToPublic } = require("../../services/service");
-const { sendEphemeral } = require("../utils");
+const { sendErrorEphemeral, sendEphemeral } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
 
-const used = new Map();
-
 const execute = async (interaction, client, Course) => {
-  const courseName = interaction.data.options[0].value.toLowerCase().trim();
+  const courseName = interaction.options.getString("course").trim();
   const guild = client.guild;
   const courseString = createPrivateCategoryName(courseName);
-  const category = findChannelWithNameAndType(courseString, "category", guild);
+  const category = findChannelWithNameAndType(courseString, "GUILD_CATEGORY", guild);
   if (!category) {
-    return sendEphemeral(client, interaction, `Invalid course name: ${courseName} or the course is public already.`);
+    return await sendErrorEphemeral(interaction, `Invalid course name: ${courseName} or the course is public already!`);
   }
-  const cooldown = used.get(courseName);
+  const cooldown = checkCourseCooldown(courseName);
   if (cooldown) {
     const timeRemaining = Math.floor(cooldown - Date.now());
     const time = msToMinutesAndSeconds(timeRemaining);
-    return sendEphemeral(client, interaction, `Command cooldown [mm:ss]: you need to wait ${time}.`);
+    return await sendErrorEphemeral(interaction, `Command cooldown [mm:ss]: you need to wait ${time}!`);
   }
   else {
     await category.setName(`📚 ${courseName}`);
-    sendEphemeral(client, interaction, `This course ${courseName} is now public.`);
+    await sendEphemeral(interaction, `This course ${courseName} is now public.`);
     await setCourseToPublic(courseName, Course);
-    const cooldownTimeMs = 1000 * 60 * 15;
-    used.set(courseName, Date.now() + cooldownTimeMs);
-    handleCooldown(used, courseName, cooldownTimeMs);
     await client.emit("COURSES_CHANGED", Course);
     await updateGuide(client.guild, Course);
+    handleCooldown(courseName);
   }
 };
 
 module.exports = {
-  name: "unhide",
-  description: "Unhide given course",
-  usage: "/unhide [course name]",
-  args: true,
-  joinArgs: true,
-  guide: true,
-  role: facultyRole,
-  options: [
-    {
-      name: "course",
-      description: "Unhide given course",
-      type: 3,
-      required: true,
-    },
-  ],
+  data: new SlashCommandBuilder()
+    .setName("unhide")
+    .setDescription("Unhide course")
+    .setDefaultPermission(false)
+    .addStringOption(option =>
+      option.setName("course")
+        .setDescription("Unhide given course")
+        .setRequired(true)),
   execute,
+  usage: "/unhide [course name]",
+  description: "Unhide course.",
+  roles: ["admin", facultyRole],
 };

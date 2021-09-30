@@ -28,9 +28,11 @@
   },
   "homepage": "https://github.com/CS-DISCORD-BOT/cs-discord-bot#readme",
   "dependencies": {
+    "@discordjs/builders": "^0.6.0",
+    "@discordjs/rest": "^0.1.1-canary.0",
     "connect-session-sequelize": "^7.1.1",
-    "discord-slash-commands-client": "^1.2.1",
-    "discord.js": "^12.5.3",
+    "discord-api-types": "^0.22.0",
+    "discord.js": "^13.1.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-session": "^1.17.2",
@@ -38,6 +40,7 @@
     "passport-discord": "^0.1.4",
     "pg": "^8.6.0",
     "pg-hstore": "^2.3.4",
+    "prom-client": "^14.0.0",
     "sequelize": "^6.6.2",
     "telegraf": "^4.4.0"
   },

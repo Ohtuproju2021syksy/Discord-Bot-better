@@ -1,7 +1,6 @@
 const { execute } = require("../../src/discordBot/commands/admin/remove");
 const { findCategoryName, updateGuide, removeCourseFromDb } = require("../../src/discordBot/services/service");
 
-jest.mock("../../src/discordBot/commands/utils");
 jest.mock("../../src/discordBot/services/service");
 
 findCategoryName

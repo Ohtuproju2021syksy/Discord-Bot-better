@@ -20,8 +20,8 @@ const {
 const createGuidePinnedMessage = async (guild) => {
   const rows = courses
     .map((course) => {
-      const code = course.code.toUpperCase();
-      const fullname = course.fullName.charAt(0).toUpperCase() + course.fullName.slice(1);
+      const code = course.code;
+      const fullname = course.fullName;
       const count = guild.roles.cache.find(
         (role) => role.name === course.name,
       )?.members.size;
@@ -117,29 +117,29 @@ describe("Service", () => {
   });
 
   test("dont find invalid channel with name and type", () => {
-    const channelFound = findChannelWithNameAndType("guide", "text", client.guild);
+    const channelFound = findChannelWithNameAndType("guide", "GUILD_TEXT", client.guild);
     expect(channelFound).toBeUndefined();
   });
 
   test("find valid channel with name and type", () => {
-    const channelObject = { name: "guide", options: { type: "text" } };
+    const channelObject = { name: "guide", options: { type: "GUILD_TEXT" } };
     client.guild.channels.create(channelObject.name, channelObject.options);
-    const channelFound = findChannelWithNameAndType("guide", "text", client.guild);
-    const result = { name: "guide", type: "text" };
+    const channelFound = findChannelWithNameAndType("guide", "GUILD_TEXT", client.guild);
+    const result = { name: "guide", type: "GUILD_TEXT" };
     expect(channelFound).toMatchObject(result);
   });
 
   test("find valid channel with id", () => {
-    const channel = { name: "guide", type: "text" };
+    const channel = { name: "guide", type: "GUILD_TEXT" };
     const channelFound = findChannelWithId(1, client.guild);
     expect(channelFound).toMatchObject(channel);
   });
 
   test("Update guide message", async () => {
     const role = { name: "test", members: [] };
-    const guide = { id: 1, name: "guide", type: "text", send: jest.fn(() => msg) };
-    const commands = { id: 2, name: "commands", type: "text", send: jest.fn(() => msg) };
-    const testCategory = { id: 3, name: "📚 test", type: "category", members: {} };
+    const guide = { id: 1, name: "guide", type: "GUILD_TEXT", send: jest.fn(() => msg) };
+    const commands = { id: 2, name: "commands", type: "GUILD_TEXT", send: jest.fn(() => msg) };
+    const testCategory = { id: 3, name: "📚 test", type: "GUILD_CATEGORY", members: {} };
     client.guild.invites.cache.push({ channel: { name: "guide", code: 1 } });
     client.guild.channels.cache = [guide, commands, testCategory];
     client.guild.roles.cache = [role];
@@ -154,7 +154,7 @@ describe("Service", () => {
   test("creating guide invitation call createInvite", async () => {
     const msg = { pin: jest.fn() };
     const invite = { code: 1 };
-    const guide = { name: "guide", type: "text", createInvite: jest.fn(() =>invite), send: jest.fn(() => msg) };
+    const guide = { name: "guide", type: "GUILD_TEXT", createInvite: jest.fn(() => invite), send: jest.fn(() => msg) };
     client.guild.channels.cache = [guide];
     await createInvitation(client.guild, "guide");
     expect(guide.createInvite).toHaveBeenCalledTimes(1);
@@ -165,7 +165,7 @@ describe("Service", () => {
   test("creating invitation not guide", async () => {
     const msg = { pin: jest.fn() };
     const invite = { code: 1 };
-    const guide = { name: "guide", type: "text", createInvite: jest.fn(() =>invite), send: jest.fn(() => msg) };
+    const guide = { name: "guide", type: "GUILD_TEXT", createInvite: jest.fn(() => invite), send: jest.fn(() => msg) };
     client.guild.channels.cache = [guide];
     await createInvitation(client.guild, "test");
     expect(guide.createInvite).toHaveBeenCalledTimes(0);
@@ -176,7 +176,7 @@ describe("Service", () => {
   test("find public category name", () => {
     const courseString = "test";
     const pubCategoryName = "📚 test";
-    const pubChan = { name: pubCategoryName, type: "category" };
+    const pubChan = { name: pubCategoryName, type: "GUILD_CATEGORY" };
     client.guild.channels.cache = [pubChan];
 
     const result = findCategoryName(courseString, client.guild);
@@ -187,7 +187,7 @@ describe("Service", () => {
   test("find private category name", () => {
     const courseString = "test";
     const privCategoryName = "🔒 test";
-    const privChan = { name: privCategoryName, type: "category" };
+    const privChan = { name: privCategoryName, type: "GUILD_CATEGORY" };
     client.guild.channels.cache = [privChan];
 
     const result = findCategoryName(courseString, client.guild);
@@ -208,7 +208,6 @@ describe("Service", () => {
     const courseString = "test";
     await removeCourseFromDb(courseString, Course);
     expect(Course.findOne).toHaveBeenCalledTimes(1);
-    expect(Course.findOne).toHaveBeenCalledWith({ where: { name: courseString } });
     expect(Course.destroy).toHaveBeenCalledTimes(0);
   });
 
@@ -216,9 +215,7 @@ describe("Service", () => {
     const courseString = "test";
     await removeCourseFromDb(courseString, Course);
     expect(Course.findOne).toHaveBeenCalledTimes(1);
-    expect(Course.findOne).toHaveBeenCalledWith({ where: { name: courseString } });
     expect(Course.destroy).toHaveBeenCalledTimes(1);
-    expect(Course.destroy).toHaveBeenCalledWith({ where: { name: courseString } });
   });
 
   test("change ms to dorrect mm:ss format", () => {
@@ -229,7 +226,7 @@ describe("Service", () => {
 
   test("create a new channel if it does not exist", async () => {
     client.guild.channels.init();
-    const channelObject = { name: "test", options: { type: "text" } };
+    const channelObject = { name: "test", options: { type: "GUILD_TEXT" } };
     const guild = client.guild;
     await findOrCreateChannel(channelObject, guild);
     expect(guild.channels.create).toHaveBeenCalledTimes(1);
@@ -237,7 +234,7 @@ describe("Service", () => {
   });
 
   test("Dont create a new channel if exists", async () => {
-    const channelObject = { name: "test", options: { type: "text" } };
+    const channelObject = { name: "test", options: { type: "GUILD_TEXT" } };
     const guild = client.guild;
     await findOrCreateChannel(channelObject, guild);
     expect(guild.channels.create).toHaveBeenCalledTimes(0);
@@ -245,7 +242,7 @@ describe("Service", () => {
 
   test("setCourse positions", async () => {
     client.guild.channels.init();
-    client.guild.channels.create("📚 testA", { type: "category" });
+    client.guild.channels.create("📚 testA", { type: "GUILD_CATEGORY" });
     const categoryA = client.guild.channels.cache.find(c => c.name === "📚 testA");
     setCoursePositionABC(client.guild, "📚 testA");
     expect(categoryA.edit).toHaveBeenCalledTimes(1);

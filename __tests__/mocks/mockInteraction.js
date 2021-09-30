@@ -3,57 +3,61 @@ const { courseAdminRole, facultyRole } = require("../../config.json");
 const prefix = "/";
 
 const adminD = client.commands.map(c => c);
-const faculty = client.slashCommands.map(c => c.command).filter(command => command.role).filter(command => command.role !== courseAdminRole);
-const courseAdmin = client.slashCommands.map(c => c.command).filter(command => command.role === courseAdminRole);
-const studentD = client.slashCommands.map(c => c.command).filter(command => !command.role && command.name !== "auth");
+const faculty = client.slashCommands.filter(command => command.roles).filter(command => !command.roles.includes(courseAdminRole));
+const courseAdmin = client.slashCommands.filter(command => command.roles).filter(command => command.roles.includes(courseAdminRole));
+const studentD = client.slashCommands.filter(command => !command.roles && command.name !== "auth");
 
 const teacherData = [];
 teacherData.push("Hi **teacher**!\n");
 teacherData.push("Here's a list of commands you can use:\n");
 teacherData.push(`Category: **${facultyRole}**`);
-teacherData.push(faculty.map(command => `**${prefix}${command.name}** - ${command.description}`).join("\n"));
+teacherData.push(faculty.map(command => `**${command.usage}** - ${command.description}`).join("\n"));
 teacherData.push("\n");
 teacherData.push(`Category: **${courseAdminRole}**`);
-teacherData.push(courseAdmin.map(command => `**${prefix}${command.name}** - ${command.description}`).join("\n"));
+teacherData.push(courseAdmin.map(command => `**${command.usage}** - ${command.description}`).join("\n"));
 teacherData.push("\n");
 teacherData.push("Category: **default**");
-teacherData.push(studentD.map(command => `**${prefix}${command.name}** - ${command.description}`).join("\n"));
+teacherData.push(studentD.map(command => `**${command.usage}** - ${command.description}`).join("\n"));
 teacherData.push("\n");
+teacherData.push("*Commands can be only in course channels");
 teacherData.push(`\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`);
 
 const studentData = [];
 studentData.push("Hi **student**!\n");
 studentData.push("Here's a list of commands you can use:\n");
 studentData.push("Category: **default**");
-studentData.push(studentD.map(command => `**${prefix}${command.name}** - ${command.description}`).join("\n"));
+studentData.push(studentD.map(command => `**${command.usage}** - ${command.description}`).join("\n"));
 studentData.push("\n");
+studentData.push("*Commands can be only in course channels");
 studentData.push(`\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`);
 
 const adminData = [];
 adminData.push("Hi **admin**!\n");
 adminData.push("Here's a list of commands you can use:\n");
 adminData.push("Category: **admin**");
-adminData.push(adminD.map((command) => `**!${command.name}** - ${command.description}`).join("\n"));
+adminData.push(adminD.map((command) => `**${command.usage}** - ${command.description}`).join("\n"));
 adminData.push("\n");
 adminData.push(`Category: **${facultyRole}**`);
-adminData.push(faculty.map(command => `**${prefix}${command.name}** - ${command.description}`).join("\n"));
+adminData.push(faculty.map(command => `**${command.usage}** - ${command.description}`).join("\n"));
 adminData.push("\n");
 adminData.push(`Category: **${courseAdminRole}**`);
-adminData.push(courseAdmin.map(command => `**${prefix}${command.name}** - ${command.description}`).join("\n"));
+adminData.push(courseAdmin.map(command => `**${command.usage}** - ${command.description}`).join("\n"));
 adminData.push("\n");
 adminData.push("Category: **default**");
-adminData.push(studentD.map(command => `**${prefix}${command.name}** - ${command.description}`).join("\n"));
+adminData.push(studentD.map(command => `**${command.usage}** - ${command.description}`).join("\n"));
 adminData.push("\n");
+adminData.push("*Commands can be only in course channels");
 adminData.push(`\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`);
 
-const teacherJoinData = [];
+const studentJoinData = [];
 client.slashCommands
-  .map(c => c.command)
-  .filter(command => command.name === "join")
+  .filter(command => command.data.name === "join")
   .map(command => {
-    teacherJoinData.push(`**Name:** ${command.name}`);
-    if (command.description) teacherJoinData.push(`**Description:** ${command.description}`);
-    if (command.usage) teacherJoinData.push(`**Usage:** ${command.usage}`);
+    studentJoinData.push("Hi **student**!\n");
+    studentJoinData.push(`Command **${command.data.name}** info:\n`);
+    studentJoinData.push(`**Name:** ${command.data.name}`);
+    studentJoinData.push(`**Description:** ${command.description}`);
+    studentJoinData.push(`**Usage:** ${command.usage}`);
   });
 
 const studentInsData = [];
@@ -109,28 +113,28 @@ const admin = {
 
 const guideChannel = {
   name: "guide",
-  type: "text",
+  type: "GUILD_TEXT",
   parent: undefined,
   delete: jest.fn(),
 };
 
 const testCatecory = {
   name: "📚 test",
-  type: "category",
+  type: "GUILD_CATEGORY",
   delete: jest.fn(),
 };
 
 const testChannel = {
   name: "test_test",
   parent: testCatecory,
-  type: "text",
+  type: "GUILD_TEXT",
   delete: jest.fn(),
 };
 
 const testChannelGeneral = {
   name: "test_general",
   parent: testCatecory,
-  type: "text",
+  type: "GUILD_TEXT",
   delete: jest.fn(),
   setTopic: jest.fn(),
 };
@@ -138,16 +142,24 @@ const testChannelGeneral = {
 const testChannelAccouncement = {
   name: "test_announcement",
   parent: testCatecory,
-  type: "text",
+  type: "GUILD_TEXT",
   delete: jest.fn(),
   setTopic: jest.fn(),
 };
 
 const chat = {
   name: "chat",
-  type: "text",
-  parent: { name: "general", type: "category" },
+  type: "GUILD_TEXT",
+  parent: { name: "general", type: "GUILD_TEXT" },
   delete: jest.fn(),
+  send: jest.fn(),
+};
+
+const commands = {
+  name: "commands",
+  type: "GUILD_TEXT",
+  delete: jest.fn(),
+  send: jest.fn(),
 };
 
 client.guild.members.cache.set(1, teacher);
@@ -158,6 +170,7 @@ client.guild.channels.cache.set(2, testChannel);
 client.guild.channels.cache.set(3, testChannelGeneral);
 client.guild.channels.cache.set(4, chat);
 client.guild.channels.cache.set(5, testChannelAccouncement);
+client.guild.channels.cache.set(6, commands);
 client.guild.roles.cache.set(1, { name: "test" });
 client.guild.roles.cache.set(2, { name: `${courseAdminRole}_test` });
 client.guild.roles.cache.set(3, { name: "admin" });
@@ -168,86 +181,57 @@ client.guild.members.cache.set(3, admin);
 
 const defaultTeacherInteraction = {
   client: client,
-  channel_id: 1,
+  channelId: 1,
   member: {
     user: teacher,
-    roles: [1, 3, 4],
+    _roles: [1, 3, 4],
   },
-  data: {
-    options: [
-      {
-        value: "",
-        command: {},
-      },
-      {
-        value: "",
-        command: {},
-      },
-    ],
-  },
+  options: undefined,
+  reply: jest.fn(),
 };
 
 const defaultStudentInteraction = {
   client: client,
-  channel_id: 1,
+  channelId: 2,
   member: {
     user: student,
-    roles: [],
+    _roles: [1],
   },
-  data: {
-    options: [{
-      value: "",
-      command: {},
-    }],
-  },
-};
-
-const teacherInteractionHelp = {
-  client: client,
-  channel_id: 1,
-  member: {
-    user: {
-      id: 1,
-    },
-  },
-  data: {
-    options: false,
-  },
+  options: undefined,
+  reply: jest.fn(),
 };
 
 const studentInteractionWithoutOptions = {
   client: client,
-  channel_id: 1,
+  channelId: 1,
   member: {
     user: {
       id: 2,
     },
   },
-  data: {
-    options: false,
-  },
+  options: undefined,
 };
 
 const defaultAdminInteraction = {
   client: client,
-  channel_id: 1,
+  channelId: 2,
   member: {
     user: {
       id: 3,
     },
+    _roles: [2, 3],
   },
-  data: {
-    options: false,
-  },
+  options: undefined,
+  commandName: "test",
+  reply: jest.fn(),
 };
 
 module.exports = {
   adminData,
   teacherData,
   studentData,
-  teacherJoinData,
+  studentJoinData,
   studentInsData,
-  teacherInteractionHelp,
   studentInteractionWithoutOptions,
   defaultTeacherInteraction,
   defaultStudentInteraction,

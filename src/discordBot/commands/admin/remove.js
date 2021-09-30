@@ -1,14 +1,21 @@
-const { updateGuide, findCategoryName, removeCourseFromDb } = require("../../services/service");
+const { updateGuide, findCategoryName, removeCourseFromDb, findCourseNickNameFromDbWithCourseCode } = require("../../services/service");
 const { courseAdminRole } = require("../../../../config.json");
 
 const execute = async (message, args, Course) => {
-  if (message.member.hasPermission("ADMINISTRATOR")) {
-    const courseName = args[0];
-
+  if (message.member.permissions.has("ADMINISTRATOR")) {
+    let courseName = args.join(" ");
     const guild = message.guild;
 
-    const courseString = findCategoryName(courseName, guild);
-    const category = guild.channels.cache.find(c => c.type === "category" && c.name === courseString);
+    let courseString = findCategoryName(courseName, guild);
+    let category = guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name.toLowerCase() === courseString.toLowerCase());
+    if (!category) {
+      const courseNickName = await findCourseNickNameFromDbWithCourseCode(courseName, Course);
+      if (courseNickName) {
+        courseName = String(courseNickName.dataValues.name);
+        courseString = findCategoryName(courseName, guild);
+        category = guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name.toLowerCase() === courseString.toLowerCase());
+      }
+    }
 
     if (!category) return message.reply(`Error: Invalid course name: ${courseName}.`);
     await Promise.all(guild.channels.cache
@@ -19,7 +26,7 @@ const execute = async (message, args, Course) => {
     await category.delete();
 
     await Promise.all(guild.roles.cache
-      .filter(r => (r.name === `${courseName} ${courseAdminRole}` || r.name === courseName))
+      .filter(r => (r.name === `${courseName} ${courseAdminRole}` || r.name.toLowerCase() === courseName.toLowerCase()))
       .map(async role => await role.delete()),
     );
 

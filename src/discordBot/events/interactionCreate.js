@@ -1,15 +1,20 @@
+const { sendErrorReport, sendErrorEphemeral } = require("../services/message");
+
 const execute = async (interaction, client, Course) => {
-  const commandName = interaction.data.name.toLowerCase();
+  if (!interaction.isCommand()) return;
+  const command = client.slashCommands.get(interaction.commandName);
+  if (!command) return;
   try {
-    await client.slashCommands.get(commandName).command.execute(interaction, client, Course);
+    await command.execute(interaction, client, Course);
   }
   catch (error) {
-    console.log(error);
+    console.error(error);
+    await sendErrorReport(interaction, client, error.toString());
+    await sendErrorEphemeral(interaction, "There was an error while executing this command - Error report sent to administrators!");
   }
 };
 
 module.exports = {
-  name: "INTERACTION_CREATE",
-  ws: true,
+  name: "interactionCreate",
   execute,
 };

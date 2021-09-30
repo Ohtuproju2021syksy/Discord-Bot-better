@@ -1,18 +1,16 @@
 const { execute } = require("../../src/discordBot/commands/admin/sortCourses");
 
-jest.mock("../../src/discordBot/commands/utils");
-
 const { messageInCommandsChannel, student } = require("../mocks/mockMessages");
 
 afterEach(() => {
   jest.clearAllMocks();
 });
 
-describe("prefix reload command", () => {
-  test("user with administrator role can reload commands", async () => {
+describe("prefix sort courses command", () => {
+  test("user with administrator role can sort commands manually", async () => {
     const client = messageInCommandsChannel.client;
-    const channelA = { name: "📚 a", type: "category", edit: jest.fn(), position: 2 };
-    const channelB = { name: "📚 b", type: "category", edit: jest.fn(), position: 1 };
+    const channelA = { name: "📚 a", type: "GUILD_CATEGORY", edit: jest.fn(), position: 2 };
+    const channelB = { name: "📚 b", type: "GUILD_CATEGORY", edit: jest.fn(), position: 1 };
     client.guild.channels.cache.set(1, channelB);
     client.guild.channels.cache.set(2, channelA);
     await execute(messageInCommandsChannel);
@@ -21,12 +19,12 @@ describe("prefix reload command", () => {
     client.guild.channels.init();
   });
 
-  test("user without administrator role cannot reload commands", async () => {
+  test("user without administrator role cannot use sort command", async () => {
     const client = messageInCommandsChannel.client;
     messageInCommandsChannel.author = student;
     messageInCommandsChannel.member = student;
-    const channelA = { name: "📚 a", type: "category", edit: jest.fn(), position: 2 };
-    const channelB = { name: "📚 b", type: "category", edit: jest.fn(), position: 1 };
+    const channelA = { name: "📚 a", type: "GUILD_CATEGORY", edit: jest.fn(), position: 2 };
+    const channelB = { name: "📚 b", type: "GUILD_CATEGORY", edit: jest.fn(), position: 1 };
     client.guild.channels.cache.set(1, channelB);
     client.guild.channels.cache.set(2, channelA);
     await execute(messageInCommandsChannel);
