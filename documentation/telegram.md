@@ -4,7 +4,7 @@
 
 Go to Telegram and search and join the channel **@botfather**. You can see all the commands byt typing _/start_.
 
-Next type _/newbot_ and press enter. Give your bot a name, it must end in `bot`. Your bot is now ready, and you should get this feedback:
+Next type _/newbot_ and press enter. Follow the instructions given by **@botfather**. When the bot is ready, you should get this feedback:
 
 ![Telegram token](./images/telegramtoken.png)
 
@@ -12,14 +12,13 @@ Copy your token to `TELEGRAM_BOT_TOKEN` .env. Put your token value inside quotat
 
 ## Add your bot to your channel
 
-Invite your bot to your Telegram channel. First go to your channel. From the right top corner choose three dots and from the drop-down menu choose _Add members_. Give your bot a name and press add.
+Invite your bot to your Telegram channel. First go to your channel. From the right top corner choose three dots and from the drop-down menu choose _Add members_. Search for your bot by its name, choose it and press _Add_.
 
 Give your bot admin role (choose channel member and give your bot admin rights). You need to have an admin role to do this change. Under _What can this admin do?_ mark all the showing rights off.
 
 ## Make the bridge
 
-On your telegram group that you want bridge to discord course `courseName` send command `/bridge <courseName>`.
-For example, to bridge telegram group `tkt-tito` to discord course `tito` use command `/bridge tito` in telegram group.
+To create a bridge between your Telegram channel and a Discourd course `courseName`, type `/bridge <courseName>` inside your Telegram channel. For example, to bridge your Telegram channel to the Discord course `tito`, type the following command in your Telegram channel: `/bridge tito`.
 
 Bot answers
 ```

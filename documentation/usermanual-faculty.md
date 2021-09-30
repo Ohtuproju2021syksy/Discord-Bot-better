@@ -86,9 +86,14 @@ Note that the channel name you give is the end part of the name. For example, in
 To remove added text channel use `/removechannel` command followed by the name of the text channel to be removed e.g., `/removechannel feedback` removes _wepa_feedback_. This command must also be used inside the course you want the channel to be removed. Note that announcements or general channels can not be removed.
 
 ## How to make course secret
-Once the course is created, it can be made hidden. This means joining the course channel is only possible via link. To make a secret course use the `/hide` command followed by the course name. e.g.,, `/hide wepa`. The secret courses can be identified by the lock emoji. 
+Once the course is created, it can be made hidden. This means joining the course channel is only possible via link. To make a secret course use the `/hide` command followed by the course name, e.g. `/hide wepa`. The secret courses can be identified by the lock emoji. 
 
-To make the course public again use the `/unhide` command followed by the course name. e.g., `/unhide wepa`. Public courses can be found with `/courses` command and with `/join` command, unlike secret courses.
+To make the course public again use the `/unhide` command followed by the course name, e.g. `/unhide wepa`. Public courses can be found with `/courses` command and with `/join` command, unlike secret courses.
+
+## How to lock course
+Once the course is created, it can be locked. This means that only instructors and faculty can write in the course channels. This can be used e.g. when a course exam is on and you don't want students to post their answers. To lock a course, use the `/lock` command followed by the course name, e.g. `/lock wepa`. The locked courses can be identified by the lock-and-key emoji.
+
+To make the course unlocked again use the `/unlock` command followed by the course name, e.g. `/unlock wepa`.
 
 ## How to add instructor to a course
 Students can use the `/instructors` command on a course and see all the instructors on that course. _Faculty_ members and the ones who already have the _course instructor_ role can give other users this course instructor role. The command is `/addinstructor` the value to give is the username you want to give the instructor role. Use this command inside the course you want the role to be.
