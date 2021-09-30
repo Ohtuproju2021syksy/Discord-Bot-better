@@ -27,7 +27,7 @@ const execute = async (interaction, client, Course) => {
   else {
     await category.setName(`📚 ${courseName}`);
     await sendEphemeral(interaction, `This course ${courseName} is now public.`);
-    await setCourseToUnlocked(courseName, Course);
+    await setCourseToUnlocked(courseName, Course, guild);
     await client.emit("COURSES_CHANGED", Course);
     await updateGuide(client.guild, Course);
     handleCooldown(courseName);

@@ -261,24 +261,30 @@ const setCourseToPublic = async (courseName, Course) => {
   }
 };
 
-const setCourseToLocked = async (courseName, Course) => {
+const setCourseToLocked = async (courseName, Course, guild) => {
   const course = await Course.findOne({
     where:
       { name: { [Sequelize.Op.iLike]: courseName } },
   });
   if (course) {
     course.locked = true;
+    const categoryName = createLockedCategoryName(courseName);
+    const category = findChannelWithNameAndType(categoryName, "GUILD_CATEGORY", guild);
+    category.permissionOverwrites.create(guild.roles.cache.find(r => r.name.toLowerCase() === courseName.toLowerCase()), { VIEW_CHANNEL: true, SEND_MESSAGES: false });
     await course.save();
   }
 };
 
-const setCourseToUnlocked = async (courseName, Course) => {
+const setCourseToUnlocked = async (courseName, Course, guild) => {
   const course = await Course.findOne({
     where:
       { name: { [Sequelize.Op.iLike]: courseName } },
   });
   if (course) {
     course.locked = false;
+    const categoryName = createLockedCategoryName(courseName);
+    const category = findChannelWithNameAndType(categoryName, "GUILD_CATEGORY", guild);
+    category.permissionOverwrites.create(guild.roles.cache.find(r => r.name.toLowerCase() === courseName.toLowerCase()), { VIEW_CHANNEL: true, SEND_MESSAGES: true });
     await course.save();
   }
 };

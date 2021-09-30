@@ -26,7 +26,7 @@ const execute = async (interaction, client, Course) => {
   }
   else {
     await category.setName(`🔐 ${courseName}`);
-    await setCourseToLocked(courseName, Course);
+    await setCourseToLocked(courseName, Course, guild);
     await sendEphemeral(interaction, `This course ${courseName} is now locked.`);
     await client.emit("COURSES_CHANGED", Course);
     await updateGuide(client.guild, Course);
