@@ -12,6 +12,14 @@ On the main view click "New Application button"
 
 Next give your Bot a name and click the "Create" button.
 
+Copy the `APPLICATION ID` by pressing the `Copy` button.
+
+![Bot ID](./images/botId.png)
+
+```
+Add this to `.env` file : BOT_ID=id-of-your-bot.
+```
+
 Go to the "Bot" tab and click "Add Bot" button on the right. Confirm the pop-up window by clicking "Yes, do it!"
 
 ![Add bot](./images/addbot.png)

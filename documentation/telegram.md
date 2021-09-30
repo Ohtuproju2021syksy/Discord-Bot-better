@@ -2,23 +2,24 @@
 
 ## Create your Telegram bot
 
-Go to Telegram and search and join the channel **@botfather**. You can see all the commands byt typing _/start_.
+Go to Telegram and search and join the channel **@botfather**. You can see all the commands byt typing  `/start`.
 
-Next type _/newbot_ and press enter. Give your bot a name, it must end in `bot`. Your bot is now ready, and you should get this feedback:
+Next type `/newbot` and press enter. Give your bot a name, it must end in `bot`. Your bot is now ready, and you should get this feedback:
 
 ![Telegram token](./images/telegramtoken.png)
 
 Copy your token to `TELEGRAM_BOT_TOKEN` .env. Put your token value inside quotation marks. Set `TG_BRIDGE_ENABLED=true`.
 
-## Add your bot to your channel
+## Add your bot to your group
 
-Invite your bot to your Telegram channel. First go to your channel. From the right top corner choose three dots and from the drop-down menu choose _Add members_. Give your bot a name and press add.
+Invite your bot to your Telegram group. First go to your group. From the right top corner choose three dots and from the drop-down menu choose `Add members`. Search for your bot by its name and press add.
 
-Give your bot admin role (choose channel member and give your bot admin rights). You need to have an admin role to do this change. Under _What can this admin do?_ mark all the showing rights off.
+Give your bot admin role (you need to have an admin role to do this). From the three dots, choose `Manage group`. Choose `Administrators` and then `Add administrator`. 
+From there, choose your bot. Under `What can this admin do?` mark all the rights off (some rights are locked to on, these are necessary).
 
 ## Make the bridge
 
-On your telegram group that you want bridge to discord course `courseName` send command `/bridge <courseName>`.
+On your telegram channel that you want to bridge to discord course `courseName` send command `/bridge <courseName>`.
 For example, to bridge telegram group `tkt-tito` to discord course `tito` use command `/bridge tito` in telegram group.
 
 Bot answers
