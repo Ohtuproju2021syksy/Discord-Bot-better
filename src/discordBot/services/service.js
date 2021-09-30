@@ -318,6 +318,14 @@ const findCourseFromDbWithFullName = async (courseFullName, Course) => {
   });
 };
 
+const findCourseNickNameFromDbWithCourseCode = async (courseName, Course) => {
+  return await Course.findOne({
+    where: {
+      code: { [Sequelize.Op.iLike]: courseName },
+    },
+  });
+};
+
 
 module.exports = {
   createCategoryName,
@@ -348,4 +356,5 @@ module.exports = {
   findCourseFromDb,
   findCourseFromDbWithFullName,
   findCoursesFromDb,
+  findCourseNickNameFromDbWithCourseCode,
 };
