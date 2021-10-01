@@ -2,9 +2,12 @@ const { execute } = require("../../src/discordBot/commands/student/join");
 const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../src/discordBot/services/message");
 const { updateGuide, findCourseFromDb } = require("../../src/discordBot/services/service");
 const { messageInCommandsChannel, student } = require("../mocks/mockMessages");
+const joinedUsersCounter = require("../../src/promMetrics/joinedUsersCounter");
 
 jest.mock("../../src/discordBot/services/message");
 jest.mock("../../src/discordBot/services/service");
+
+const counterSpy = jest.spyOn(joinedUsersCounter, "inc");
 
 const { defaultTeacherInteraction, defaultStudentInteraction } = require("../mocks/mockInteraction");
 const roleString = "tester";
@@ -32,6 +35,8 @@ describe("slash join command", () => {
     expect(editEphemeral).toHaveBeenCalledTimes(1);
     expect(editEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, `You have been added to a ${roleString} course.`);
     expect(updateGuide).toHaveBeenCalledTimes(1);
+    expect(counterSpy).toHaveBeenCalledTimes(1);
+    expect(counterSpy).toHaveBeenCalledWith({ course: roleString });
   });
 
   test("join to course twice, role added only ones and second time responds with correct ephemeral", async () => {
@@ -70,6 +75,9 @@ describe("slash join command", () => {
     expect(member.roles.add).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(updateGuide).toHaveBeenCalledTimes(1);
+    expect(counterSpy).toHaveBeenCalledTimes(1);
+    const joinedCourse = messageInCommandsChannel.roleString;
+    expect(counterSpy).toHaveBeenCalledWith({ course: joinedCourse });
   });
 
   test("invalid course name copypasted returns error", async () => {
@@ -82,5 +90,6 @@ describe("slash join command", () => {
     expect(member.roles.add).toHaveBeenCalledTimes(0);
     expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
     expect(updateGuide).toHaveBeenCalledTimes(0);
+    expect(counterSpy).toHaveBeenCalledTimes(0);
   });
 });

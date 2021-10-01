@@ -54,4 +54,9 @@ describe("Endpoint urls", () => {
       .set({ employeenumber: 1 })
       .expect(400);
   });
+
+  test("prometheus endpoint exists", async () => {
+    const res = await api.get("/metrics").expect(200);
+    expect(res.text).toContain("joined_users_total");
+  });
 });
