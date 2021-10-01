@@ -8,7 +8,7 @@ const {
 const { editErrorEphemeral, sendEphemeral, editEphemeral } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
 
-const execute = async (interaction, client, Course) => {
+const execute = async (interaction, client, models) => {
   await sendEphemeral(interaction, "Fetching status...");
   const guild = client.guild;
   const channel = guild.channels.cache.get(interaction.channelId);
@@ -18,7 +18,7 @@ const execute = async (interaction, client, Course) => {
   }
 
   const categoryName = trimCourseName(channel.parent, guild);
-  const course = await findCourseFromDb(categoryName, Course);
+  const course = await findCourseFromDb(categoryName, models.Course);
 
   const courseRole = getRoleFromCategory(categoryName);
   const instructorRole = `${courseRole} instructor`;

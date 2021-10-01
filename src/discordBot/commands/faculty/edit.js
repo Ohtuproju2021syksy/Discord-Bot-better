@@ -58,7 +58,7 @@ const changeInvitationLink = async (channelAnnouncement, interaction) => {
   await invMessage.edit(updatedMsg);
 };
 
-const execute = async (interaction, client, Course) => {
+const execute = async (interaction, client, models) => {
   await sendEphemeral(interaction, "Editing...");
   const guild = client.guild;
   const channel = guild.channels.cache.get(interaction.channelId);
@@ -81,11 +81,11 @@ const execute = async (interaction, client, Course) => {
   const category = findChannelWithNameAndType(channel.parent.name, "GUILD_CATEGORY", guild);
   const channelAnnouncement = guild.channels.cache.find(c => c.parent === channel.parent && c.name.includes("_announcement"));
 
-  let databaseValue = await findCourseFromDb(categoryName, Course);
+  let databaseValue = await findCourseFromDb(categoryName, models.Course);
 
   if (!databaseValue) {
-    databaseValue = await createCourseToDatabase("change me", categoryName, categoryName, Course);
-    databaseValue = await findCourseFromDb(categoryName, Course);
+    databaseValue = await createCourseToDatabase("change me", categoryName, categoryName, models.Course);
+    databaseValue = await findCourseFromDb(categoryName, models.Course);
   }
 
   if (choice === "code") {
@@ -111,7 +111,7 @@ const execute = async (interaction, client, Course) => {
   }
 
   if (choice === "name") {
-    if (findCourseFromDbWithFullName(newValue, Course)) return await editErrorEphemeral(interaction, "Course full name already exists");
+    if (findCourseFromDbWithFullName(newValue, models.Course)) return await editErrorEphemeral(interaction, "Course full name already exists");
     databaseValue.fullName = newValue;
     await databaseValue.save();
   }
@@ -130,8 +130,8 @@ const execute = async (interaction, client, Course) => {
     await setCoursePositionABC(guild, newCategoryName);
   }
 
-  await client.emit("COURSES_CHANGED", Course);
-  await updateGuide(client.guild, Course);
+  await client.emit("COURSES_CHANGED", models.Course);
+  await updateGuide(client.guild, models.Course);
 
   await editEphemeral(interaction, "Course information has been changed");
   const nameToCoolDown = trimCourseName(channel.parent, guild);

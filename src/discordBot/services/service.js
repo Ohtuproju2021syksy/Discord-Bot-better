@@ -326,6 +326,14 @@ const findCourseNickNameFromDbWithCourseCode = async (courseName, Course) => {
   });
 };
 
+const findChannelFromDb = async (channelId, Channel) => {
+  return await Channel.findOne({
+    where: {
+      id: channelId,
+    },
+  });
+};
+
 
 module.exports = {
   createCategoryName,
@@ -357,4 +365,5 @@ module.exports = {
   findCourseFromDbWithFullName,
   findCoursesFromDb,
   findCourseNickNameFromDbWithCourseCode,
+  findChannelFromDb,
 };

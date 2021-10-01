@@ -18,4 +18,4 @@ const Channel = require("./models/Channel")(sequelize, Sequelize.DataTypes);
 
 sequelize.sync();
 
-module.exports = { Course, sequelize };
+module.exports = { Course, Channel, sequelize };

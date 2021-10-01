@@ -1,6 +1,6 @@
 const prefix = process.env.PREFIX;
 
-const execute = async (message, client, Course) => {
+const execute = async (message, client, models) => {
 
   let args = message.content.slice(prefix.length).trim().split(/ +/);
   const commandName = args.shift().toLowerCase();
@@ -15,7 +15,7 @@ const execute = async (message, client, Course) => {
         if (!roleString) return;
         // Command execution handles permissions and whether the course is valid
         message.roleString = roleString;
-        command.execute(message, client, Course);
+        command.execute(message, client, models.Course);
         return;
       }
     }
@@ -31,12 +31,12 @@ const execute = async (message, client, Course) => {
     return message.channel.send({ content: `You didn't provide any arguments, ${message.author}!`, reply: { messageReference: message.id } });
   }
   try {
-    await command.execute(message, args, Course);
-    if (command.emit) await client.emit("COURSES_CHANGED", Course);
+    await command.execute(message, args, models.Course);
+    if (command.emit) await client.emit("COURSES_CHANGED", models.Course);
     await message.react("✅");
   }
   catch (error) {
-    // console.error(error);
+    console.error(error);
     await message.react("❌");
   }
 };

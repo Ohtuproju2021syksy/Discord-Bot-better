@@ -10,7 +10,7 @@ const {
 const { sendEphemeral, editErrorEphemeral, editEphemeral } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
 
-const execute = async (interaction, client, Course) => {
+const execute = async (interaction, client, models) => {
   await sendEphemeral(interaction, "Hiding course...");
   const courseName = interaction.options.getString("course").trim();
   const guild = client.guild;
@@ -27,10 +27,10 @@ const execute = async (interaction, client, Course) => {
   }
   else {
     await category.setName(`🔒 ${courseName}`);
-    await setCourseToPrivate(courseName, Course);
+    await setCourseToPrivate(courseName, models.Course);
     await editEphemeral(interaction, `This course ${courseName} is now private.`);
-    await client.emit("COURSES_CHANGED", Course);
-    await updateGuide(client.guild, Course);
+    await client.emit("COURSES_CHANGED", models.Course);
+    await updateGuide(client.guild, models.Course);
     handleCooldown(courseName);
   }
 };

@@ -4,7 +4,7 @@ const { updateGuide, findCourseFromDb } = require("../../services/service");
 const { courseAdminRole } = require("../../../../config.json");
 const joinedUsersCounter = require("../../../promMetrics/joinedUsersCounter");
 
-const execute = async (interaction, client, Course) => {
+const execute = async (interaction, client, models) => {
   await sendEphemeral(interaction, "Joining course...");
   let roleString = "";
   let message = "";
@@ -17,7 +17,7 @@ const execute = async (interaction, client, Course) => {
   else {
     // Command was copypasted or failed to register as an interaction
     roleString = interaction.roleString;
-    const course = await findCourseFromDb(roleString, Course);
+    const course = await findCourseFromDb(roleString, models.Course);
     if (!course) {
       return await editErrorEphemeral(interaction, `Hey! I couldn't find a course with name ${roleString}, try typing /join and I'll offer you a helpful list of courses to select from.`);
     }
@@ -42,7 +42,7 @@ const execute = async (interaction, client, Course) => {
 
   await member.roles.add(courseRole);
   await editEphemeral(interaction, message);
-  await updateGuide(guild, Course);
+  await updateGuide(guild, models.Course);
 
   joinedUsersCounter.inc({ course: roleString });
 };
