@@ -5,7 +5,16 @@ const { courseAdminRole } = require("../../../../config.json");
 
 const execute = async (interaction, client, Course) => {
   await sendEphemeral(interaction, "Leaving course...");
-  const roleString = interaction.options.getString("course").trim();
+  let roleString = "";
+
+  if (interaction.options) {
+    // Interaction was a slash command
+    roleString = interaction.options.getString("course").trim();
+  }
+  else {
+    // Command was copypasted or failed to register as an interaction
+    roleString = interaction.roleString;
+  }
 
   const guild = client.guild;
 

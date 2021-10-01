@@ -9,14 +9,15 @@
 
 [Setup for the Telegram bridge](./telegram.md)
 
+## Charts
+[Program structure](./charts.md)
+
 ## Workflow
 [Workflow practices](./workflow.md)
 
 ## Course info
 
 [Course requirements](https://github.com/HY-TKTL/TKT20007-Ohjelmistotuotantoprojekti#kurssin-vaatimuksia) in Finnish
-
-## References
 
 ## Programming help
 [Discord.js Guide](https://discordjs.guide/)

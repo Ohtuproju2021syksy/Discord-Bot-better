@@ -1,6 +1,7 @@
 const { execute } = require("../../src/discordBot/commands/student/join");
 const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../src/discordBot/services/message");
-const { updateGuide } = require("../../src/discordBot/services/service");
+const { updateGuide, findCourseFromDb } = require("../../src/discordBot/services/service");
+const { messageInCommandsChannel, student } = require("../mocks/mockMessages");
 
 jest.mock("../../src/discordBot/services/message");
 jest.mock("../../src/discordBot/services/service");
@@ -8,6 +9,10 @@ jest.mock("../../src/discordBot/services/service");
 const { defaultTeacherInteraction, defaultStudentInteraction } = require("../mocks/mockInteraction");
 const roleString = "tester";
 const initialResponse = "Joining course...";
+
+const course = { name: "tester", fullName: "test course", code: "101", private: false };
+findCourseFromDb.mockImplementation((role) => role === course.name ? course : undefined);
+
 defaultTeacherInteraction.options = { getString: jest.fn(() => roleString) };
 defaultStudentInteraction.options = { getString: jest.fn(() => "invalid") };
 
@@ -52,6 +57,30 @@ describe("slash join command", () => {
     expect(sendEphemeral).toHaveBeenCalledWith(defaultStudentInteraction, initialResponse);
     expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
     expect(editErrorEphemeral).toHaveBeenCalledWith(defaultStudentInteraction, response);
+    expect(updateGuide).toHaveBeenCalledTimes(0);
+  });
+
+  test("copypasted join command works", async () => {
+    messageInCommandsChannel.content = "/join test";
+    messageInCommandsChannel.member = student;
+    const client = messageInCommandsChannel.client;
+    messageInCommandsChannel.roleString = "tester";
+    const member = client.guild.members.cache.get(messageInCommandsChannel.member.user.id);
+    await execute(messageInCommandsChannel, client);
+    expect(member.roles.add).toHaveBeenCalledTimes(1);
+    expect(sendEphemeral).toHaveBeenCalledTimes(1);
+    expect(updateGuide).toHaveBeenCalledTimes(1);
+  });
+
+  test("invalid course name copypasted returns error", async () => {
+    messageInCommandsChannel.content = "/join invalid";
+    messageInCommandsChannel.member = student;
+    const client = messageInCommandsChannel.client;
+    messageInCommandsChannel.roleString = "invalid";
+    const member = client.guild.members.cache.get(messageInCommandsChannel.member.user.id);
+    await execute(messageInCommandsChannel, client);
+    expect(member.roles.add).toHaveBeenCalledTimes(0);
+    expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
     expect(updateGuide).toHaveBeenCalledTimes(0);
   });
 });

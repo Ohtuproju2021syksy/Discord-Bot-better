@@ -217,7 +217,14 @@ const isACourseCategory = (channel) => {
 };
 
 const trimCourseName = (channel) => {
-  const trimmedName = channel.name.replace(emojiRegex, "").trim();
+  let trimmedName = "";
+  if (channel.name) {
+    trimmedName = channel.name.replace(emojiRegex, "").trim();
+  }
+  else {
+    trimmedName = channel.replace(emojiRegex, "").trim();
+  }
+
   return trimmedName;
 };
 
@@ -311,6 +318,14 @@ const findCourseFromDbWithFullName = async (courseFullName, Course) => {
   });
 };
 
+const findCourseNickNameFromDbWithCourseCode = async (courseName, Course) => {
+  return await Course.findOne({
+    where: {
+      code: { [Sequelize.Op.iLike]: courseName },
+    },
+  });
+};
+
 
 module.exports = {
   createCategoryName,
@@ -341,4 +356,5 @@ module.exports = {
   findCourseFromDb,
   findCourseFromDbWithFullName,
   findCoursesFromDb,
+  findCourseNickNameFromDbWithCourseCode,
 };
