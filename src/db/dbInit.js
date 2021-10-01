@@ -14,6 +14,7 @@ const sequelize = new Sequelize("postgres", username, password, {
 });
 
 const Course = require("./models/Course")(sequelize, Sequelize.DataTypes);
+const Channel = require("./models/Channel")(sequelize, Sequelize.DataTypes);
 
 sequelize.sync();
 
