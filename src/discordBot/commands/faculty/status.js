@@ -5,15 +5,16 @@ const {
   trimCourseName,
   findCourseFromDb,
 } = require("../../services/service");
-const { sendErrorEphemeral, sendEphemeral } = require("../../services/message");
+const { editErrorEphemeral, sendEphemeral, editEphemeral } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
 
 const execute = async (interaction, client, Course) => {
+  await sendEphemeral(interaction, "Fetching status...");
   const guild = client.guild;
   const channel = guild.channels.cache.get(interaction.channelId);
 
   if (!channel?.parent?.name?.startsWith("🔒") && !channel?.parent?.name?.startsWith("📚")) {
-    return await sendErrorEphemeral(interaction, "This is not a course category, can not execute the command!");
+    return await editErrorEphemeral(interaction, "This is not a course category, can not execute the command!");
   }
 
   const categoryName = trimCourseName(channel.parent, guild);
@@ -34,7 +35,7 @@ const execute = async (interaction, client, Course) => {
     "No instructors";
 
 
-  return sendEphemeral(interaction, `
+  return await editEphemeral(interaction, `
 Course: ${course.name}
 Fullname: ${course.fullName}
 Code: ${course.code}

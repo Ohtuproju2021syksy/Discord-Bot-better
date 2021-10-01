@@ -1,5 +1,5 @@
 const { execute } = require("../../src/discordBot/commands/faculty/status");
-const { sendEphemeral, sendErrorEphemeral } = require("../../src/discordBot/services/message");
+const { sendEphemeral, editErrorEphemeral, editEphemeral } = require("../../src/discordBot/services/message");
 const {
   getRoleFromCategory,
   createCourseInvitationLink,
@@ -11,6 +11,7 @@ jest.mock("../../src/discordBot/services/service");
 
 const course = { name: "test", fullName: "test course", code: "101", private: false };
 const url = "mockUrl";
+const initialResponse = "Fetching status...";
 
 findCourseFromDb.mockImplementation(() => course);
 
@@ -40,8 +41,10 @@ describe("slash status command", () => {
     const client = defaultTeacherInteraction.client;
     const response = "This is not a course category, can not execute the command!";
     await execute(defaultTeacherInteraction, client);
-    expect(sendErrorEphemeral).toHaveBeenCalledTimes(1);
-    expect(sendErrorEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
+    expect(sendEphemeral).toHaveBeenCalledTimes(1);
+    expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
+    expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
+    expect(editErrorEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
   });
 
   test("used in course channels", async () => {
@@ -54,6 +57,8 @@ describe("slash status command", () => {
     expect(getRoleFromCategory).toHaveBeenCalledTimes(1);
     expect(createCourseInvitationLink).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
-    expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
+    expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
+    expect(editEphemeral).toHaveBeenCalledTimes(1);
+    expect(editEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
   });
 });
