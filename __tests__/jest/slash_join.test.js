@@ -1,5 +1,5 @@
 const { execute } = require("../../src/discordBot/commands/student/join");
-const { sendErrorEphemeral, sendEphemeral } = require("../../src/discordBot/services/message");
+const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../src/discordBot/services/message");
 const { updateGuide } = require("../../src/discordBot/services/service");
 
 jest.mock("../../src/discordBot/services/message");
@@ -7,6 +7,7 @@ jest.mock("../../src/discordBot/services/service");
 
 const { defaultTeacherInteraction, defaultStudentInteraction } = require("../mocks/mockInteraction");
 const roleString = "tester";
+const initialResponse = "Joining course...";
 defaultTeacherInteraction.options = { getString: jest.fn(() => roleString) };
 defaultStudentInteraction.options = { getString: jest.fn(() => "invalid") };
 
@@ -22,7 +23,9 @@ describe("slash join command", () => {
     await execute(defaultTeacherInteraction, client);
     expect(member.roles.add).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
-    expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, `You have been added to a ${roleString} course.`);
+    expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
+    expect(editEphemeral).toHaveBeenCalledTimes(1);
+    expect(editEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, `You have been added to a ${roleString} course.`);
     expect(updateGuide).toHaveBeenCalledTimes(1);
   });
 
@@ -32,8 +35,10 @@ describe("slash join command", () => {
     member.roles.cache.push({ name: "tester" });
     await execute(defaultTeacherInteraction, client);
     expect(member.roles.add).toHaveBeenCalledTimes(0);
-    expect(sendErrorEphemeral).toHaveBeenCalledTimes(1);
-    expect(sendErrorEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, `You are already on a ${roleString} course.`);
+    expect(sendEphemeral).toHaveBeenCalledTimes(1);
+    expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
+    expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
+    expect(editErrorEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, `You are already on a ${roleString} course.`);
     expect(updateGuide).toHaveBeenCalledTimes(0);
   });
 
@@ -43,8 +48,10 @@ describe("slash join command", () => {
     const member = client.guild.members.cache.get(defaultStudentInteraction.member.user.id);
     await execute(defaultStudentInteraction, client);
     expect(member.roles.add).toHaveBeenCalledTimes(0);
-    expect(sendErrorEphemeral).toHaveBeenCalledTimes(1);
-    expect(sendErrorEphemeral).toHaveBeenCalledWith(defaultStudentInteraction, response);
+    expect(sendEphemeral).toHaveBeenCalledTimes(1);
+    expect(sendEphemeral).toHaveBeenCalledWith(defaultStudentInteraction, initialResponse);
+    expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
+    expect(editErrorEphemeral).toHaveBeenCalledWith(defaultStudentInteraction, response);
     expect(updateGuide).toHaveBeenCalledTimes(0);
   });
 });

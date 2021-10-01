@@ -1,11 +1,12 @@
 const { execute } = require("../../src/discordBot/commands/student/courses");
-const { sendErrorEphemeral, sendEphemeral } = require("../../src/discordBot/services/message");
+const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../src/discordBot/services/message");
 const { findCoursesFromDb } = require("../../src/discordBot/services/service");
 
 jest.mock("../../src/discordBot/services/message");
 jest.mock("../../src/discordBot/services/service");
 
 const course = [{ code: "tkt test", fullName: "test course", name: "test" }];
+const initialResponse = "Fetching courses...";
 
 findCoursesFromDb
   .mockImplementation(() => course)
@@ -22,8 +23,10 @@ describe("courses slash command", () => {
     const result = "No courses available";
     const client = defaultTeacherInteraction.client;
     await execute(defaultTeacherInteraction, client);
-    expect(sendErrorEphemeral).toHaveBeenCalledTimes(1);
-    expect(sendErrorEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, result);
+    expect(sendEphemeral).toHaveBeenCalledTimes(1);
+    expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
+    expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
+    expect(editErrorEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, result);
   });
 
   test("responds correct list as ephemeral", async () => {
@@ -31,6 +34,8 @@ describe("courses slash command", () => {
     const client = defaultTeacherInteraction.client;
     await execute(defaultTeacherInteraction, client);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
-    expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, result);
+    expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
+    expect(editEphemeral).toHaveBeenCalledTimes(1);
+    expect(editEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, result);
   });
 });

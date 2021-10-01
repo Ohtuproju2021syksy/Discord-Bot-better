@@ -1,9 +1,10 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { updateGuide } = require("../../services/service");
-const { sendErrorEphemeral, sendEphemeral } = require("../../services/message");
+const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../services/message");
 const { courseAdminRole } = require("../../../../config.json");
 
 const execute = async (interaction, client, Course) => {
+  await sendEphemeral(interaction, "Joining course...");
   const roleString = interaction.options.getString("course").trim();
   const guild = client.guild;
   const member = guild.members.cache.get(interaction.member.user.id);
@@ -12,11 +13,11 @@ const execute = async (interaction, client, Course) => {
     .filter(r => (r.name === `${roleString} ${courseAdminRole}` || r.name === `${roleString}`))
     .map(r => r.name);
 
-  if (!courseRoles.length) return await sendErrorEphemeral(interaction, `Invalid course name: ${roleString}`);
-  if (member.roles.cache.some(r => courseRoles.includes(r.name))) return await sendErrorEphemeral(interaction, `You are already on a ${roleString} course.`);
+  if (!courseRoles.length) return await editErrorEphemeral(interaction, `Invalid course name: ${roleString}`);
+  if (member.roles.cache.some(r => courseRoles.includes(r.name))) return await editErrorEphemeral(interaction, `You are already on a ${roleString} course.`);
 
   await member.roles.add(courseRole);
-  await sendEphemeral(interaction, `You have been added to a ${roleString} course.`);
+  await editEphemeral(interaction, `You have been added to a ${roleString} course.`);
   await updateGuide(guild, Course);
 };
 

@@ -1,35 +1,36 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { getRoleFromCategory } = require("../../services/service");
-const { sendErrorEphemeral, sendEphemeral } = require("../../services/message");
+const { sendEphemeral, editEphemeral, editErrorEphemeral } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
 
 const execute = async (interaction, client) => {
+  await sendEphemeral(interaction, "Removing text channel...");
   const deleteName = interaction.options.getString("channel").toLowerCase().trim().replace(/ /g, "-");
   const guild = client.guild;
   const channel = guild.channels.cache.get(interaction.channelId);
 
   if (!channel.parent) {
-    return await sendErrorEphemeral(interaction, "This command can be used only in course channels");
+    return await editErrorEphemeral(interaction, "This command can be used only in course channels");
   }
 
   if (!channel.parent.name.startsWith("🔒") && !channel.parent.name.startsWith("📚")) {
-    return await sendErrorEphemeral(interaction, "This command can be used only in course channels");
+    return await editErrorEphemeral(interaction, "This command can be used only in course channels");
   }
 
   const categoryName = getRoleFromCategory(channel.parent.name).replace(/ /g, "-");
   const deleteCourseName = `${categoryName}_${deleteName}`;
 
   if (deleteName === "general" || deleteName === "announcement" || deleteName === "voice") {
-    return await sendErrorEphemeral(interaction, "Original channels can not be removed.");
+    return await editErrorEphemeral(interaction, "Original channels can not be removed.");
   }
 
   const guildName = guild.channels.cache.find(c => c.parent === channel.parent && c.name === deleteCourseName);
   if (!guildName) {
-    return await sendErrorEphemeral(interaction, "There is no added channel with given name.");
+    return await editErrorEphemeral(interaction, "There is no added channel with given name.");
   }
 
   guild.channels.cache.find(c => c.parent === channel.parent && c.name === deleteCourseName).delete();
-  return await sendEphemeral(interaction, `${deleteName} removed!`);
+  return await editEphemeral(interaction, `${deleteName} removed!`);
 };
 
 module.exports = {

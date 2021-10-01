@@ -1,5 +1,5 @@
 const { execute } = require("../../src/discordBot/commands/faculty/hide");
-const { sendErrorEphemeral, sendEphemeral } = require("../../src/discordBot/services/message");
+const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../src/discordBot/services/message");
 const {
   createCategoryName,
   updateGuide,
@@ -12,6 +12,7 @@ jest.mock("../../src/discordBot/services/message");
 jest.mock("../../src/discordBot/services/service");
 
 const time = "4:59";
+const initialResponse = "Hiding course...";
 createCategoryName.mockImplementation((name) => `📚 ${name}`);
 
 const { defaultTeacherInteraction } = require("../mocks/mockInteraction");
@@ -37,8 +38,10 @@ describe("slash hide command", () => {
     await execute(defaultTeacherInteraction, client, Course);
     expect(createCategoryName).toHaveBeenCalledTimes(1);
     expect(createCategoryName).toHaveBeenCalledWith(courseName);
-    expect(sendErrorEphemeral).toHaveBeenCalledTimes(1);
-    expect(sendErrorEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
+    expect(sendEphemeral).toHaveBeenCalledTimes(1);
+    expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
+    expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
+    expect(editErrorEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
     expect(updateGuide).toHaveBeenCalledTimes(0);
   });
 
@@ -52,7 +55,9 @@ describe("slash hide command", () => {
     expect(findChannelWithNameAndType).toHaveBeenCalledTimes(1);
     expect(setCourseToPrivate).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
-    expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
+    expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
+    expect(editEphemeral).toHaveBeenCalledTimes(1);
+    expect(editEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
     expect(client.emit).toHaveBeenCalledTimes(1);
     expect(updateGuide).toHaveBeenCalledTimes(1);
   });
@@ -66,7 +71,9 @@ describe("slash hide command", () => {
     expect(createCategoryName).toHaveBeenCalledWith(courseName);
     expect(findChannelWithNameAndType).toHaveBeenCalledTimes(1);
     expect(msToMinutesAndSeconds).toHaveBeenCalledTimes(1);
-    expect(sendErrorEphemeral).toHaveBeenCalledTimes(1);
+    expect(sendEphemeral).toHaveBeenCalledTimes(1);
+    expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
+    expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
     expect(client.emit).toHaveBeenCalledTimes(0);
     expect(updateGuide).toHaveBeenCalledTimes(0);
   });
