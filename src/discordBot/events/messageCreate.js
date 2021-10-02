@@ -1,3 +1,4 @@
+const { sendReplyMessage } = require("../services/message")
 const prefix = process.env.PREFIX;
 
 const execute = async (message, client, Course) => {
@@ -20,7 +21,7 @@ const execute = async (message, client, Course) => {
       }
     } else {
       //Unknown command
-      return message.channel.send({ content: `Sorry, I didn't quite catch what you meant. You can type **/help** to view a helpful *(pun intended)* list of commands!`, reply: { messageReference: message.id } });
+      return sendReplyMessage(message, `Sorry, I didn't quite catch what you meant. You can type **/help** to view a helpful *(pun intended)* list of commands!`);
     }
   }
 
