@@ -4,17 +4,18 @@ const {
   checkCourseCooldown,
   msToMinutesAndSeconds,
   trimCourseName } = require("../../services/service");
-const { sendErrorEphemeral, sendEphemeral } = require("../../services/message");
+const { editErrorEphemeral, sendEphemeral, editEphemeral } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
 
 const execute = async (interaction, client) => {
+  await sendEphemeral(interaction, "Editing topic...");
   const newTopic = interaction.options.getString("topic").trim();
 
   const guild = client.guild;
   const channel = guild.channels.cache.get(interaction.channelId);
 
   if (!channel?.parent?.name?.startsWith("🔒") && !channel?.parent?.name?.startsWith("📚")) {
-    return await sendErrorEphemeral(interaction, "This is not a course category, can not execute the command!");
+    return await editErrorEphemeral(interaction, "This is not a course category, can not execute the command!");
   }
 
   const categoryName = trimCourseName(channel.parent, guild);
@@ -25,13 +26,13 @@ const execute = async (interaction, client) => {
   if (cooldown) {
     const timeRemaining = Math.floor(cooldown - Date.now());
     const time = msToMinutesAndSeconds(timeRemaining);
-    return await sendErrorEphemeral(interaction, `Command cooldown [mm:ss]: you need to wait ${time}!`);
+    return await editErrorEphemeral(interaction, `Command cooldown [mm:ss]: you need to wait ${time}!`);
   }
 
   await channelAnnouncement.setTopic(newTopic);
   await channelGeneral.setTopic(newTopic);
 
-  await sendEphemeral(interaction, "Channel topic has been changed");
+  await editEphemeral(interaction, "Channel topic has been changed");
   handleCooldown(categoryName);
 };
 

@@ -12,6 +12,6 @@ module.exports = {
   description: "Reload slash commands.",
   role: "admin",
   usage: "!reloadcommands",
-  args: true,
+  args: false,
   execute,
 };

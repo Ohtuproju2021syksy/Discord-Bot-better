@@ -1,9 +1,11 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { updateGuide, findCategoryName, findCourseFromDb } = require("../../services/service");
-const { sendErrorEphemeral, sendEphemeral } = require("../../services/message");
+const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../services/message");
+const { updateGuide, findCourseFromDb } = require("../../services/service");
 const { courseAdminRole } = require("../../../../config.json");
+const joinedUsersCounter = require("../../../promMetrics/joinedUsersCounter");
 
 const execute = async (interaction, client, Course) => {
+  await sendEphemeral(interaction, "Joining course...");
   let roleString = "";
   let message = "";
 
@@ -17,7 +19,7 @@ const execute = async (interaction, client, Course) => {
     roleString = interaction.roleString;
     const course = await findCourseFromDb(roleString, Course);
     if (!course) {
-      return await sendErrorEphemeral(interaction, `Hey! I couldn't find a course with name ${roleString}, try typing /join and I'll offer you a helpful list of courses to select from.`);
+      return await editErrorEphemeral(interaction, `Hey! I couldn't find a course with name ${roleString}, try typing /join and I'll offer you a helpful list of courses to select from.`);
     }
     const fullName = course.fullName;
     message = `Hey there! I tried my best to send you to the right place! ${fullName}, right? \n You can also try writing /join and I'll offer you a helpful list of courses to click from!`;
@@ -32,15 +34,17 @@ const execute = async (interaction, client, Course) => {
     .map(r => r.name);
 
   if (!courseRoles.length) {
-    return await sendErrorEphemeral(interaction, `Invalid course name: ${roleString}`);
+    return await editErrorEphemeral(interaction, `Invalid course name: ${roleString}`);
   }
   if (member.roles.cache.some(r => courseRoles.includes(r.name))) {
-    return await sendErrorEphemeral(interaction, `You are already on a ${roleString} course.`);
+    return await editErrorEphemeral(interaction, `You are already on a ${roleString} course.`);
   }
 
   await member.roles.add(courseRole);
-  await sendEphemeral(interaction, message);
+  await editEphemeral(interaction, message);
   await updateGuide(guild, Course);
+
+  joinedUsersCounter.inc({ course: roleString });
 };
 
 module.exports = {

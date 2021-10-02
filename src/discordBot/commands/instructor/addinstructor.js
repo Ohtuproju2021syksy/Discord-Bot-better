@@ -1,9 +1,10 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { isACourseCategory, trimCourseName } = require("../../services/service");
-const { sendErrorEphemeral, sendEphemeral } = require("../../services/message");
+const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../services/message");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
 
 const execute = async (interaction, client) => {
+  await sendEphemeral(interaction, "Adding instructor...");
   const guild = client.guild;
   const channel = guild.channels.cache.get(interaction.channelId);
   const roleName = channel.parent ? trimCourseName(channel.parent) : "";
@@ -16,16 +17,16 @@ const execute = async (interaction, client) => {
   });
 
   if (!hasPermission) {
-    return sendErrorEphemeral(interaction, "You don't have the permission to use this command!");
+    return editErrorEphemeral(interaction, "You don't have the permission to use this command!");
   }
   if (!channel.parent || !isACourseCategory(channel.parent)) {
-    return sendErrorEphemeral(interaction, "Command must be used in a course channel!");
+    return editErrorEphemeral(interaction, "Command must be used in a course channel!");
   }
 
   const instructorRole = guild.roles.cache.find(r => r.name === `${roleName} ${courseAdminRole}`);
   const memberToPromote = guild.members.cache.get(interaction.options.getUser("user").id);
   memberToPromote.roles.add(instructorRole);
-  return sendEphemeral(interaction, `Gave role '${instructorRole.name}' to ${memberToPromote.displayName}.`);
+  return await editEphemeral(interaction, `Gave role '${instructorRole.name}' to ${memberToPromote.displayName}.`);
 };
 
 module.exports = {

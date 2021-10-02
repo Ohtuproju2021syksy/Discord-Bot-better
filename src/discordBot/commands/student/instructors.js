@@ -1,9 +1,10 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { getRoleFromCategory } = require("../../services/service");
-const { sendErrorEphemeral, sendEphemeral } = require("../../services/message");
+const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../services/message");
 const { courseAdminRole } = require("../../../../config.json");
 
 const execute = async (interaction, client) => {
+  await sendEphemeral(interaction, "Fetching instructors...");
   const guild = client.guild;
 
   let roleString;
@@ -13,7 +14,7 @@ const execute = async (interaction, client) => {
   else {
     const category = guild.channels.cache.get(interaction.channelId).parent;
     if (!category) {
-      return await sendErrorEphemeral(interaction, "Provide course name as argument or use the command in course channel.");
+      return await editErrorEphemeral(interaction, "Provide course name as argument or use the command in course channel.");
     }
     else {
       roleString = getRoleFromCategory(category.name);
@@ -21,14 +22,14 @@ const execute = async (interaction, client) => {
   }
 
   const instructorRole = guild.roles.cache.find(r => r.name === `${roleString} ${courseAdminRole}`);
-  if (!instructorRole) return await sendErrorEphemeral(interaction, `No instructors for ${roleString}`);
+  if (!instructorRole) return await editErrorEphemeral(interaction, `No instructors for ${roleString}`);
 
   const adminsString = instructorRole.members
     .map(member => member.displayName)
     .join(", ");
-  if (!adminsString) return await sendErrorEphemeral(interaction, `No instructors for ${roleString}`);
+  if (!adminsString) return await editErrorEphemeral(interaction, `No instructors for ${roleString}`);
 
-  await sendEphemeral(interaction, `Here are the instructors for ${roleString}: ${adminsString}`);
+  await editEphemeral(interaction, `Here are the instructors for ${roleString}: ${adminsString}`);
 };
 
 module.exports = {

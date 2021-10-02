@@ -1,15 +1,16 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { findCoursesFromDb } = require("../../services/service");
-const { sendErrorEphemeral, sendEphemeral } = require("../../services/message");
+const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../services/message");
 
 const execute = async (interaction, client, Course) => {
+  await sendEphemeral(interaction, "Fetching courses...");
   const courses = await findCoursesFromDb("fullName", Course, false);
   const data = courses.map((c) => {
     const fullname = c.fullName;
     return `${fullname} - \`/join ${c.name}\``;
   });
-  if (data.length === 0) await sendErrorEphemeral(interaction, "No courses available");
-  else sendEphemeral(interaction, data.join(" \n"));
+  if (data.length === 0) await editErrorEphemeral(interaction, "No courses available");
+  else await editEphemeral(interaction, data.join(" \n"));
 };
 
 module.exports = {
