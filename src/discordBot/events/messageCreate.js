@@ -18,6 +18,9 @@ const execute = async (message, client, Course) => {
         command.execute(message, client, Course);
         return;
       }
+    } else {
+      //Unknown command
+      return message.channel.send({ content: `Sorry, I didn't quite catch what you meant. You can type **/help** to view a helpful *(pun intended)* list of commands!`, reply: { messageReference: message.id } });
     }
   }
 
