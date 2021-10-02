@@ -3,6 +3,7 @@ const { execute } = require("../../src/discordBot/events/messageCreate");
 const sort = require("../../src/discordBot/commands/admin/sortCourses");
 const deleteCommand = require("../../src/discordBot/commands/admin/deleteCommand");
 const removeCommand = require("../../src/discordBot/commands/admin/remove");
+const { sendReplyMessage } = require("../../src/discordBot/services/message");
 const { findCourseFromDb } = require("../../src/discordBot/services/service");
 const { messageInGuideChannel, messageInCommandsChannel, student, teacher } = require("../mocks/mockMessages");
 
@@ -99,15 +100,13 @@ describe("prefix commands", () => {
 describe("Unknown slash commands", () => {
   test("unknown slash command is met with correct response", async () => {
     messageInCommandsChannel.content = '/unvalidCommand';
-    const msg = `Sorry, I didn't quite catch what you meant. You can type **/help** to view a helpful *(pun intended)* list of commands!`;
-    const response = { content: msg, reply: { messageReference: messageInCommandsChannel.id } };
     const client = messageInCommandsChannel.client;
     messageInCommandsChannel.author = student;
     messageInCommandsChannel.member = student;
     await execute(messageInCommandsChannel, client);
-    expect(messageInCommandsChannel.channel.send).toHaveBeenCalledTimes(1);
-    expect(messageInCommandsChannel.channel.send).toHaveBeenCalledWith(response);
+    expect(messageInCommandsChannel.channel.send).toHaveBeenCalledTimes(0);
     expect(messageInCommandsChannel.react).toHaveBeenCalledTimes(0);
     expect(messageInCommandsChannel.reply).toHaveBeenCalledTimes(0);
+    expect(sendReplyMessage).toHaveBeenCalledTimes(1);
   });
 });
