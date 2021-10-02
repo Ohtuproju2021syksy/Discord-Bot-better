@@ -99,7 +99,7 @@ describe("prefix commands", () => {
 
 describe("Unknown slash commands", () => {
   test("unknown slash command is met with correct response", async () => {
-    messageInCommandsChannel.content = '/unvalidCommand';
+    messageInCommandsChannel.content = "/unvalidCommand";
     const client = messageInCommandsChannel.client;
     messageInCommandsChannel.author = student;
     messageInCommandsChannel.member = student;

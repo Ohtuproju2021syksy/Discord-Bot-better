@@ -39,7 +39,7 @@ const editErrorEphemeral = async (interaction, msg) => {
 
 const sendReplyMessage = async (interaction, msg) => {
   await interaction.reply({ content: `${msg}` });
-}
+};
 
 module.exports = {
   sendErrorReport,

@@ -36,14 +36,16 @@ const execute = async (interaction, client, Course) => {
   if (!courseRoles.length) {
     if (interaction.options) {
       return await editErrorEphemeral(interaction, `Invalid course name: ${roleString}`);
-    } else {
+    }
+    else {
       return await sendReplyMessage(interaction, `Invalid course name: ${roleString}`);
     }
   }
   if (member.roles.cache.some(r => courseRoles.includes(r.name))) {
     if (interaction.options) {
       return await editErrorEphemeral(interaction, `You are already on a ${roleString} course.`);
-    } else {
+    }
+    else {
       return await sendReplyMessage(interaction, `You are already on a ${roleString} course.`);
     }
   }
@@ -51,7 +53,8 @@ const execute = async (interaction, client, Course) => {
   await member.roles.add(courseRole);
   if (interaction.options) {
     await editEphemeral(interaction, message);
-  } else {
+  }
+  else {
     await sendReplyMessage(interaction, message);
   }
   await updateGuide(guild, Course);

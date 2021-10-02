@@ -1,4 +1,4 @@
-const { sendReplyMessage } = require("../services/message")
+const { sendReplyMessage } = require("../services/message");
 const prefix = process.env.PREFIX;
 
 const execute = async (message, client, Course) => {
@@ -19,9 +19,10 @@ const execute = async (message, client, Course) => {
         command.execute(message, client, Course);
         return;
       }
-    } else {
-      //Unknown command
-      return sendReplyMessage(message, `Sorry, I didn't quite catch what you meant. You can type **/help** to view a helpful *(pun intended)* list of commands!`);
+    }
+    else {
+      // Unknown command
+      return sendReplyMessage(message, "Sorry, I didn't quite catch what you meant. You can type **/help** to view a helpful *(pun intended)* list of commands!");
     }
   }
 
