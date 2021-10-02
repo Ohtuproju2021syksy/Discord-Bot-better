@@ -5,20 +5,20 @@ const { facultyRole } = require("../../../../config.json");
 
 const execute = async (interaction, client, models) => {
   await sendEphemeral(interaction, "Blocking the bridge to Telegram...");
-  
+
   const channel = findChannelFromDb(interaction.channelId, models.Channel);
-  
+
   if (!channel) {
-    return await editErrorEphemeral(interaction, `Error: command can only be performed on course channels!`);
+    return await editErrorEphemeral(interaction, "Error: command can only be performed on course channels!");
   }
-  
+
   if (!channel.bridged) {
-    return await editErrorEphemeral(interaction, `The bridge is already blocked.`);
+    return await editErrorEphemeral(interaction, "The bridge is already blocked.");
   }
 
   channel.bridged = false;
   await channel.save();
-  await editEphemeral(interaction, `The bridge between this channel and Telegram is now blocked.`);
+  await editEphemeral(interaction, "The bridge between this channel and Telegram is now blocked.");
 };
 
 module.exports = {

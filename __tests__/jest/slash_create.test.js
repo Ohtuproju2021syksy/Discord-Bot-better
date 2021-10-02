@@ -10,9 +10,11 @@ const {
   createInvitation,
   updateGuide } = require("../../src/discordBot/services/service");
 const { courseAdminRole } = require("../../config.json");
+const models = require("../../src/db/dbInit");
 
 jest.mock("../../src/discordBot/services/message");
 jest.mock("../../src/discordBot/services/service");
+jest.mock("../../src/db/dbInit");
 
 findOrCreateRoleWithName.mockImplementation((name) => { return { id: Math.floor(Math.random() * 10) + 5, name: name }; });
 findCategoryName.mockImplementation((name) => `📚 ${name}`);
@@ -54,7 +56,7 @@ describe("slash create command", () => {
   test("course name must be unique", async () => {
     const client = defaultTeacherInteraction.client;
     const response = "Course fullname must be unique.";
-    await execute(defaultTeacherInteraction, client);
+    await execute(defaultTeacherInteraction, client, models);
     expect(findCourseFromDbWithFullName).toHaveBeenCalledTimes(1);
     expect(sendErrorEphemeral).toHaveBeenCalledTimes(1);
     expect(sendErrorEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
@@ -63,7 +65,7 @@ describe("slash create command", () => {
   test("course nick name must be unique", async () => {
     const client = defaultTeacherInteraction.client;
     const response = "Course nick name must be unique.";
-    await execute(defaultTeacherInteraction, client);
+    await execute(defaultTeacherInteraction, client, models);
     expect(findCourseFromDbWithFullName).toHaveBeenCalledTimes(1);
     expect(sendErrorEphemeral).toHaveBeenCalledTimes(1);
     expect(sendErrorEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
@@ -72,7 +74,7 @@ describe("slash create command", () => {
   test("course code must be unique when nickname not given", async () => {
     const client = defaultStudentInteraction.client;
     const response = "Course code must be unique.";
-    await execute(defaultStudentInteraction, client);
+    await execute(defaultStudentInteraction, client, models);
     expect(findCourseFromDbWithFullName).toHaveBeenCalledTimes(1);
     expect(sendErrorEphemeral).toHaveBeenCalledTimes(1);
     expect(sendErrorEphemeral).toHaveBeenCalledWith(defaultStudentInteraction, response);
@@ -81,7 +83,7 @@ describe("slash create command", () => {
   test("create course name without nick", async () => {
     const courseCode = "TKT-100";
     const client = defaultStudentInteraction.client;
-    await execute(defaultStudentInteraction, client);
+    await execute(defaultStudentInteraction, client, models);
     expect(findOrCreateRoleWithName).toHaveBeenCalledTimes(2);
     expect(findOrCreateRoleWithName).toHaveBeenCalledWith(courseCode, client.guild);
     expect(findOrCreateRoleWithName).toHaveBeenCalledWith(`${courseCode} ${courseAdminRole}`, client.guild);
@@ -90,7 +92,7 @@ describe("slash create command", () => {
   test("find or create correct roles", async () => {
     const courseName = "nick name";
     const client = defaultTeacherInteraction.client;
-    await execute(defaultTeacherInteraction, client);
+    await execute(defaultTeacherInteraction, client, models);
     expect(findOrCreateRoleWithName).toHaveBeenCalledTimes(2);
     expect(findOrCreateRoleWithName).toHaveBeenCalledWith(courseName, client.guild);
     expect(findOrCreateRoleWithName).toHaveBeenCalledWith(`${courseName} ${courseAdminRole}`, client.guild);
@@ -99,14 +101,14 @@ describe("slash create command", () => {
   test("find category name", async () => {
     const courseName = "nick name";
     const client = defaultTeacherInteraction.client;
-    await execute(defaultTeacherInteraction, client);
+    await execute(defaultTeacherInteraction, client, models);
     expect(findCategoryName).toHaveBeenCalledTimes(1);
     expect(findCategoryName).toHaveBeenCalledWith(courseName, client.guild);
   });
 
   test("create channels: category, announcement, general and voice ", async () => {
     const client = defaultTeacherInteraction.client;
-    await execute(defaultTeacherInteraction, client);
+    await execute(defaultTeacherInteraction, client, models);
     expect(findOrCreateChannel).toHaveBeenCalledTimes(4);
   });
 
@@ -114,7 +116,7 @@ describe("slash create command", () => {
     const courseName = "nick name";
     const client = defaultTeacherInteraction.client;
     const categoryName = `📚 ${courseName}`;
-    await execute(defaultTeacherInteraction, client);
+    await execute(defaultTeacherInteraction, client, models);
     expect(setCoursePositionABC).toHaveBeenCalledTimes(1);
     expect(setCoursePositionABC).toHaveBeenCalledWith(client.guild, categoryName);
   });
@@ -122,7 +124,7 @@ describe("slash create command", () => {
   test("create invitation", async () => {
     const courseName = "nick name";
     const client = defaultTeacherInteraction.client;
-    await execute(defaultTeacherInteraction, client);
+    await execute(defaultTeacherInteraction, client, models);
     expect(createInvitation).toHaveBeenCalledTimes(1);
     expect(createInvitation).toHaveBeenCalledWith(client.guild, courseName);
   });
@@ -131,7 +133,7 @@ describe("slash create command", () => {
     const courseName = "nick name";
     const client = defaultTeacherInteraction.client;
     const result = `Created course ${courseName}.`;
-    await execute(defaultTeacherInteraction, client);
+    await execute(defaultTeacherInteraction, client, models);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, "Creating course...");
     expect(editEphemeral).toHaveBeenCalledTimes(1);
@@ -140,15 +142,15 @@ describe("slash create command", () => {
 
   test("update join/leave command list", async () => {
     const client = defaultTeacherInteraction.client;
-    await execute(defaultTeacherInteraction, client);
+    await execute(defaultTeacherInteraction, client, models);
     expect(client.emit).toHaveBeenCalledTimes(1);
   });
 
   test("update guide", async () => {
-    const Course = {};
+    const course = models.Course;
     const client = defaultTeacherInteraction.client;
-    await execute(defaultTeacherInteraction, client, Course);
+    await execute(defaultTeacherInteraction, client, course);
     expect(updateGuide).toHaveBeenCalledTimes(1);
-    expect(updateGuide).toHaveBeenCalledWith(client.guild, Course);
+    expect(updateGuide).toHaveBeenCalledWith(client.guild, undefined);
   });
 });

@@ -3,9 +3,11 @@ const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../src/
 const { updateGuide, findCourseFromDb } = require("../../src/discordBot/services/service");
 const { messageInCommandsChannel, student } = require("../mocks/mockMessages");
 const joinedUsersCounter = require("../../src/promMetrics/joinedUsersCounter");
+const models = require("../../src/db/dbInit");
 
 jest.mock("../../src/discordBot/services/message");
 jest.mock("../../src/discordBot/services/service");
+jest.mock("../../src/db/dbInit");
 
 const counterSpy = jest.spyOn(joinedUsersCounter, "inc");
 
@@ -28,7 +30,7 @@ describe("slash join command", () => {
     const client = defaultTeacherInteraction.client;
     client.guild.roles.create({ name: roleString });
     const member = client.guild.members.cache.get(defaultTeacherInteraction.member.user.id);
-    await execute(defaultTeacherInteraction, client);
+    await execute(defaultTeacherInteraction, client, models);
     expect(member.roles.add).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
@@ -43,7 +45,7 @@ describe("slash join command", () => {
     const client = defaultTeacherInteraction.client;
     const member = client.guild.members.cache.get(defaultTeacherInteraction.member.user.id);
     member.roles.cache.push({ name: "tester" });
-    await execute(defaultTeacherInteraction, client);
+    await execute(defaultTeacherInteraction, client, models);
     expect(member.roles.add).toHaveBeenCalledTimes(0);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
@@ -56,7 +58,7 @@ describe("slash join command", () => {
     const response = "Invalid course name: invalid";
     const client = defaultStudentInteraction.client;
     const member = client.guild.members.cache.get(defaultStudentInteraction.member.user.id);
-    await execute(defaultStudentInteraction, client);
+    await execute(defaultStudentInteraction, client, models);
     expect(member.roles.add).toHaveBeenCalledTimes(0);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultStudentInteraction, initialResponse);
@@ -71,7 +73,7 @@ describe("slash join command", () => {
     const client = messageInCommandsChannel.client;
     messageInCommandsChannel.roleString = "tester";
     const member = client.guild.members.cache.get(messageInCommandsChannel.member.user.id);
-    await execute(messageInCommandsChannel, client);
+    await execute(messageInCommandsChannel, client, models);
     expect(member.roles.add).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(updateGuide).toHaveBeenCalledTimes(1);
@@ -86,7 +88,7 @@ describe("slash join command", () => {
     const client = messageInCommandsChannel.client;
     messageInCommandsChannel.roleString = "invalid";
     const member = client.guild.members.cache.get(messageInCommandsChannel.member.user.id);
-    await execute(messageInCommandsChannel, client);
+    await execute(messageInCommandsChannel, client, models);
     expect(member.roles.add).toHaveBeenCalledTimes(0);
     expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
     expect(updateGuide).toHaveBeenCalledTimes(0);
