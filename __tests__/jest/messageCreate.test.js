@@ -95,3 +95,19 @@ describe("prefix commands", () => {
     expect(client.emit).toHaveBeenCalledTimes(1);
   });
 });
+
+describe("Unknown slash commands", () => {
+  test("unknown slash command is met with correct response", async () => {
+    messageInCommandsChannel.content = '/unvalidCommand';
+    const msg = `Sorry, I didn't quite catch what you meant. You can type **/help** to view a helpful *(pun intended)* list of commands!`;
+    const response = { content: msg, reply: { messageReference: messageInCommandsChannel.id } };
+    const client = messageInCommandsChannel.client;
+    messageInCommandsChannel.author = student;
+    messageInCommandsChannel.member = student;
+    await execute(messageInCommandsChannel, client);
+    expect(messageInCommandsChannel.channel.send).toHaveBeenCalledTimes(1);
+    expect(messageInCommandsChannel.channel.send).toHaveBeenCalledWith(response);
+    expect(messageInCommandsChannel.react).toHaveBeenCalledTimes(0);
+    expect(messageInCommandsChannel.reply).toHaveBeenCalledTimes(0);
+  });
+});
