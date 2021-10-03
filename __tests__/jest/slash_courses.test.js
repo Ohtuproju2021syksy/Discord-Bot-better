@@ -1,7 +1,7 @@
 const { execute } = require("../../src/discordBot/commands/student/courses");
 const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../src/discordBot/services/message");
 const { findCoursesFromDb } = require("../../src/discordBot/services/service");
-const models = require("../../src/db/dbInit");
+const models = require("../mocks/mockModels");
 
 jest.mock("../../src/discordBot/services/message");
 jest.mock("../../src/discordBot/services/service");

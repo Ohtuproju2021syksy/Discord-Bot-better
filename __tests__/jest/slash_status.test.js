@@ -5,11 +5,10 @@ const {
   createCourseInvitationLink,
   trimCourseName,
   findCourseFromDb } = require("../../src/discordBot/services/service");
-const models = require("../../src/db/dbInit");
+const models = require("../mocks/mockModels");
 
 jest.mock("../../src/discordBot/services/message");
 jest.mock("../../src/discordBot/services/service");
-jest.mock("../../src/db/dbInit");
 
 
 const course = { name: "test", fullName: "test course", code: "101", private: false };

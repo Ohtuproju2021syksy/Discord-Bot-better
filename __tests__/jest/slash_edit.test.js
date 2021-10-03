@@ -6,11 +6,10 @@ const {
   trimCourseName,
   findCourseFromDb,
   checkCourseCooldown } = require("../../src/discordBot/services/service");
-const models = require("../../src/db/dbInit");
+const models = require("../mocks/mockModels");
 
 jest.mock("../../src/discordBot/services/message");
 jest.mock("../../src/discordBot/services/service");
-jest.mock("../../src/db/dbInit");
 
 afterEach(() => {
   jest.clearAllMocks();

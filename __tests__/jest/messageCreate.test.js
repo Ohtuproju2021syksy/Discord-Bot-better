@@ -5,14 +5,13 @@ const deleteCommand = require("../../src/discordBot/commands/admin/deleteCommand
 const removeCommand = require("../../src/discordBot/commands/admin/remove");
 const { findCourseFromDb } = require("../../src/discordBot/services/service");
 const { messageInGuideChannel, messageInCommandsChannel, student, teacher } = require("../mocks/mockMessages");
-const models = require("../../src/db/dbInit");
+const models = require("../mocks/mockModels");
 
 jest.mock("../../src/discordBot/commands/admin/sortCourses");
 jest.mock("../../src/discordBot/commands/admin/deleteCommand");
 jest.mock("../../src/discordBot/commands/admin/remove");
 jest.mock("../../src/discordBot/services/message");
 jest.mock("../../src/discordBot/services/service");
-jest.mock("../../src/db/dbInit");
 
 const prefix = process.env.PREFIX;
 
@@ -21,10 +20,6 @@ findCourseFromDb.mockImplementation(() => course);
 
 afterEach(() => {
   jest.clearAllMocks();
-});
-
-afterAll(async () => {
-  await models.sequelize.close();
 });
 
 describe("prefix commands", () => {

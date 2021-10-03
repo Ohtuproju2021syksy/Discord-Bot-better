@@ -10,11 +10,10 @@ const {
   createInvitation,
   updateGuide } = require("../../src/discordBot/services/service");
 const { courseAdminRole } = require("../../config.json");
-const models = require("../../src/db/dbInit");
+const models = require("../mocks/mockModels");
 
 jest.mock("../../src/discordBot/services/message");
 jest.mock("../../src/discordBot/services/service");
-jest.mock("../../src/db/dbInit");
 
 findOrCreateRoleWithName.mockImplementation((name) => { return { id: Math.floor(Math.random() * 10) + 5, name: name }; });
 findCategoryName.mockImplementation((name) => `📚 ${name}`);

@@ -1,11 +1,10 @@
 const { execute } = require("../../src/discordBot/commands/student/leave");
 const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../src/discordBot/services/message");
 const { updateGuide } = require("../../src/discordBot/services/service");
-const models = require("../../src/db/dbInit");
+const models = require("../mocks/mockModels");
 
 jest.mock("../../src/discordBot/services/message");
 jest.mock("../../src/discordBot/services/service");
-jest.mock("../../src/db/dbInit");
 
 const { defaultTeacherInteraction } = require("../mocks/mockInteraction");
 const roleString = "testing";

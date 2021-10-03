@@ -3,11 +3,10 @@ const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../src/
 const { updateGuide, findCourseFromDb } = require("../../src/discordBot/services/service");
 const { messageInCommandsChannel, student } = require("../mocks/mockMessages");
 const joinedUsersCounter = require("../../src/promMetrics/joinedUsersCounter");
-const models = require("../../src/db/dbInit");
+const models = require("../mocks/mockModels");
 
 jest.mock("../../src/discordBot/services/message");
 jest.mock("../../src/discordBot/services/service");
-jest.mock("../../src/db/dbInit");
 
 const counterSpy = jest.spyOn(joinedUsersCounter, "inc");
 
