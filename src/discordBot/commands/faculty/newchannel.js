@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { getRoleFromCategory, findOrCreateChannel, findChannelWithNameAndType } = require("../../services/service");
+const { getRoleFromCategory, findOrCreateChannel, findChannelWithNameAndType, createChannelToDb } = require("../../services/service");
 const { sendEphemeral, editEphemeral, editErrorEphemeral } = require("../../services/message");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
 
@@ -14,7 +14,7 @@ const getChannelObjects = (guild, admin, student, roleName, channelName, categor
   ];
 };
 
-const execute = async (interaction, client) => {
+const execute = async (interaction, client, models) => {
   await sendEphemeral(interaction, "Creating text channel...");
   const channelName = interaction.options.getString("channel").trim();
 
@@ -46,6 +46,10 @@ const execute = async (interaction, client) => {
   await Promise.all(channelObjects.map(
     async channelObject => await findOrCreateChannel(channelObject, guild),
   ));
+
+  const newChannel = findChannelWithNameAndType(`${courseName}_${channelName}`, "GUILD_TEXT", guild);
+  const topic = channel.topic ? channel.topic : null;
+  await createChannelToDb(newChannel.id, channel.parentId, channelName, topic, models.Channel);
   await editEphemeral(interaction, `Created new channel ${courseName}_${channelName}`);
 
 };

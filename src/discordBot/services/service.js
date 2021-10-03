@@ -334,6 +334,10 @@ const findChannelFromDb = async (channelId, Channel) => {
   });
 };
 
+const createChannelToDb = async (channelId, courseId, channelName, topic, Channel) => {
+  await Channel.create({ id: channelId, courseId: courseId, name: channelName, topic: topic, bridged: true });
+};
+
 
 module.exports = {
   createCategoryName,
@@ -366,4 +370,5 @@ module.exports = {
   findCoursesFromDb,
   findCourseNickNameFromDbWithCourseCode,
   findChannelFromDb,
+  createChannelToDb,
 };
