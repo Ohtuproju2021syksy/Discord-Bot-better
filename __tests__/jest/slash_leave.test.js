@@ -11,7 +11,6 @@ const roleString = "testing";
 defaultTeacherInteraction.options = { getString: jest.fn(() => roleString) };
 const initialResponse = "Leaving course...";
 
-
 afterEach(() => {
   jest.clearAllMocks();
 });

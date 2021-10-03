@@ -146,10 +146,9 @@ describe("slash create command", () => {
   });
 
   test("update guide", async () => {
-    const course = models.Course;
     const client = defaultTeacherInteraction.client;
-    await execute(defaultTeacherInteraction, client, course);
+    await execute(defaultTeacherInteraction, client, models);
     expect(updateGuide).toHaveBeenCalledTimes(1);
-    expect(updateGuide).toHaveBeenCalledWith(client.guild, undefined);
+    expect(updateGuide).toHaveBeenCalledWith(client.guild, models.Course);
   });
 });
