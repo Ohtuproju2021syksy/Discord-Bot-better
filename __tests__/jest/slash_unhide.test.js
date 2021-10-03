@@ -7,6 +7,7 @@ const {
   msToMinutesAndSeconds,
   setCourseToPublic,
   checkCourseCooldown } = require("../../src/discordBot/services/service");
+const models = require("../mocks/mockModels");
 
 jest.mock("../../src/discordBot/services/message");
 jest.mock("../../src/discordBot/services/service");
@@ -19,6 +20,7 @@ const { defaultTeacherInteraction } = require("../mocks/mockInteraction");
 const courseName = "test";
 defaultTeacherInteraction.options = { getString: jest.fn(() => courseName) };
 
+
 afterEach(() => {
   jest.clearAllMocks();
 });
@@ -27,7 +29,7 @@ describe("slash unhide command", () => {
   test("unhide command with invalid course name responds with correct ephemeral", async () => {
     const client = defaultTeacherInteraction.client;
     const response = `Invalid course name: ${courseName} or the course is public already!`;
-    await execute(defaultTeacherInteraction, client);
+    await execute(defaultTeacherInteraction, client, models);
     expect(createPrivateCategoryName).toHaveBeenCalledTimes(1);
     expect(createPrivateCategoryName).toHaveBeenCalledWith(courseName);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
@@ -41,7 +43,7 @@ describe("slash unhide command", () => {
     findChannelWithNameAndType.mockImplementationOnce((name) => { return { name: `📚 ${name}`, setName: jest.fn() }; });
     const client = defaultTeacherInteraction.client;
     const response = `This course ${courseName} is now public.`;
-    await execute(defaultTeacherInteraction, client);
+    await execute(defaultTeacherInteraction, client, models);
     expect(createPrivateCategoryName).toHaveBeenCalledTimes(1);
     expect(createPrivateCategoryName).toHaveBeenCalledWith(courseName);
     expect(findChannelWithNameAndType).toHaveBeenCalledTimes(1);

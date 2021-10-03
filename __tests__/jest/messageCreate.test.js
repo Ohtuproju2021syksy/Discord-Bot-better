@@ -5,6 +5,7 @@ const deleteCommand = require("../../src/discordBot/commands/admin/deleteCommand
 const removeCommand = require("../../src/discordBot/commands/admin/remove");
 const { findCourseFromDb } = require("../../src/discordBot/services/service");
 const { messageInGuideChannel, messageInCommandsChannel, student, teacher } = require("../mocks/mockMessages");
+const models = require("../mocks/mockModels");
 
 jest.mock("../../src/discordBot/commands/admin/sortCourses");
 jest.mock("../../src/discordBot/commands/admin/deleteCommand");
@@ -43,7 +44,7 @@ describe("prefix commands", () => {
   test("copypasted join command is executed", async () => {
     messageInCommandsChannel.content = "/join test";
     const client = messageInCommandsChannel.client;
-    await execute(messageInCommandsChannel, client);
+    await execute(messageInCommandsChannel, client, models);
     expect(findCourseFromDb).toHaveBeenCalledTimes(1);
     expect(messageInCommandsChannel.channel.send).toHaveBeenCalledTimes(0);
     expect(messageInCommandsChannel.react).toHaveBeenCalledTimes(0);
@@ -53,7 +54,7 @@ describe("prefix commands", () => {
   test("valid command in commands channel is executed", async () => {
     messageInCommandsChannel.content = `${prefix}sort`;
     const client = messageInCommandsChannel.client;
-    await execute(messageInCommandsChannel, client);
+    await execute(messageInCommandsChannel, client, models);
     expect(sort.execute).toHaveBeenCalledTimes(1);
   });
 
@@ -86,7 +87,7 @@ describe("prefix commands", () => {
     const client = messageInCommandsChannel.client;
     messageInCommandsChannel.author = teacher;
     messageInCommandsChannel.member = teacher;
-    await execute(messageInCommandsChannel, client);
+    await execute(messageInCommandsChannel, client, models);
     expect(messageInCommandsChannel.channel.send).toHaveBeenCalledTimes(0);
     expect(messageInCommandsChannel.reply).toHaveBeenCalledTimes(0);
     expect(removeCommand.execute).toHaveBeenCalledTimes(1);

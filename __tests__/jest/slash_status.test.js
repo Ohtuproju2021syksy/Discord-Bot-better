@@ -5,9 +5,11 @@ const {
   createCourseInvitationLink,
   trimCourseName,
   findCourseFromDb } = require("../../src/discordBot/services/service");
+const models = require("../mocks/mockModels");
 
 jest.mock("../../src/discordBot/services/message");
 jest.mock("../../src/discordBot/services/service");
+
 
 const course = { name: "test", fullName: "test course", code: "101", private: false };
 const url = "mockUrl";
@@ -40,7 +42,7 @@ describe("slash status command", () => {
   test("used outside course channels", async () => {
     const client = defaultTeacherInteraction.client;
     const response = "This is not a course category, can not execute the command!";
-    await execute(defaultTeacherInteraction, client);
+    await execute(defaultTeacherInteraction, client, models);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
     expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
@@ -51,7 +53,7 @@ describe("slash status command", () => {
     const client = defaultTeacherInteraction.client;
     defaultTeacherInteraction.channelId = 2;
     const response = createResponse();
-    await execute(defaultTeacherInteraction, client);
+    await execute(defaultTeacherInteraction, client, models);
     expect(trimCourseName).toHaveBeenCalledTimes(1);
     expect(findCourseFromDb).toHaveBeenCalledTimes(1);
     expect(getRoleFromCategory).toHaveBeenCalledTimes(1);
