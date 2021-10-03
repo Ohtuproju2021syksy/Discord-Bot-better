@@ -1,16 +1,16 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../services/message");
+const { editEphemeral, editErrorEphemeral, sendEphemeral, sendReplyMessage } = require("../../services/message");
 const { updateGuide, findCourseFromDb } = require("../../services/service");
 const { courseAdminRole } = require("../../../../config.json");
 const joinedUsersCounter = require("../../../promMetrics/joinedUsersCounter");
 
 const execute = async (interaction, client, Course) => {
-  await sendEphemeral(interaction, "Joining course...");
   let roleString = "";
   let message = "";
 
   if (interaction.options) {
     // Interaction was a slash command
+    await sendEphemeral(interaction, "Joining course...");
     roleString = interaction.options.getString("course").trim();
     message = `You have been added to a ${roleString} course.`;
   }
@@ -19,7 +19,7 @@ const execute = async (interaction, client, Course) => {
     roleString = interaction.roleString;
     const course = await findCourseFromDb(roleString, Course);
     if (!course) {
-      return await editErrorEphemeral(interaction, `Hey! I couldn't find a course with name ${roleString}, try typing /join and I'll offer you a helpful list of courses to select from.`);
+      return await sendReplyMessage(interaction, `Hey! I couldn't find a course with name ${roleString}, try typing /join and I'll offer you a helpful list of courses to select from.`);
     }
     const fullName = course.fullName;
     message = `Hey there! I tried my best to send you to the right place! ${fullName}, right? \n You can also try writing /join and I'll offer you a helpful list of courses to click from!`;
@@ -34,14 +34,29 @@ const execute = async (interaction, client, Course) => {
     .map(r => r.name);
 
   if (!courseRoles.length) {
-    return await editErrorEphemeral(interaction, `Invalid course name: ${roleString}`);
+    if (interaction.options) {
+      return await editErrorEphemeral(interaction, `Invalid course name: ${roleString}`);
+    }
+    else {
+      return await sendReplyMessage(interaction, `Invalid course name: ${roleString}`);
+    }
   }
   if (member.roles.cache.some(r => courseRoles.includes(r.name))) {
-    return await editErrorEphemeral(interaction, `You are already on a ${roleString} course.`);
+    if (interaction.options) {
+      return await editErrorEphemeral(interaction, `You are already on a ${roleString} course.`);
+    }
+    else {
+      return await sendReplyMessage(interaction, `You are already on a ${roleString} course.`);
+    }
   }
 
   await member.roles.add(courseRole);
-  await editEphemeral(interaction, message);
+  if (interaction.options) {
+    await editEphemeral(interaction, message);
+  }
+  else {
+    await sendReplyMessage(interaction, message);
+  }
   await updateGuide(guild, Course);
 
   joinedUsersCounter.inc({ course: roleString });
