@@ -11,6 +11,8 @@ const createCategoryName = (courseString) => `📚 ${courseString}`;
 
 const createPrivateCategoryName = (courseString) => `🔒 ${courseString}`;
 
+const createLockedCategoryName = (courseString) => `🔐 ${courseString}`;
+
 const cooldownMap = new Map();
 
 const cooldownTimeMs = 1000 * 60 * 5;
@@ -266,6 +268,35 @@ const setCourseToPublic = async (courseName, Course) => {
   }
 };
 
+const setCourseToLocked = async (courseName, Course, guild) => {
+  const course = await Course.findOne({
+    where:
+      { name: { [Sequelize.Op.iLike]: courseName } },
+  });
+  if (course) {
+    course.locked = true;
+    const categoryName = createLockedCategoryName(courseName);
+    const category = findChannelWithNameAndType(categoryName, "GUILD_CATEGORY", guild);
+    category.permissionOverwrites.create(guild.roles.cache.find(r => r.name.toLowerCase() === courseName.toLowerCase()), { VIEW_CHANNEL: true, SEND_MESSAGES: false });
+    category.permissionOverwrites.create(guild.roles.cache.find(r => r.name === "faculty"), { SEND_MESSAGES: true });
+    await course.save();
+  }
+};
+
+const setCourseToUnlocked = async (courseName, Course, guild) => {
+  const course = await Course.findOne({
+    where:
+      { name: { [Sequelize.Op.iLike]: courseName } },
+  });
+  if (course) {
+    course.locked = false;
+    const categoryName = createCategoryName(courseName);
+    const category = findChannelWithNameAndType(categoryName, "GUILD_CATEGORY", guild);
+    category.permissionOverwrites.create(guild.roles.cache.find(r => r.name.toLowerCase() === courseName.toLowerCase()), { VIEW_CHANNEL: true, SEND_MESSAGES: true });
+    await course.save();
+  }
+};
+
 const createCourseToDatabase = async (courseCode, courseFullName, courseName, Course) => {
   const alreadyinuse = await Course.findOne({
     where:
@@ -330,6 +361,7 @@ const findCourseNickNameFromDbWithCourseCode = async (courseName, Course) => {
 module.exports = {
   createCategoryName,
   createPrivateCategoryName,
+  createLockedCategoryName,
   getRoleFromCategory,
   findOrCreateRoleWithName,
   updateGuideMessage,
@@ -351,6 +383,8 @@ module.exports = {
   findAndUpdateInstructorRole,
   setCourseToPrivate,
   setCourseToPublic,
+  setCourseToLocked,
+  setCourseToUnlocked,
   createCourseToDatabase,
   removeCourseFromDb,
   findCourseFromDb,

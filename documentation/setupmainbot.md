@@ -2,7 +2,7 @@
 
 ## Create your bot
 
-Before you can create a Discord bot, you need to creat yourself Discord account and server. If you don´t have it yet, see instructions over [here](./discordserver.md). If you already have the the account and server, login to your account.
+Before you can create a Discord bot, you need to create yourself a Discord account and a server. If you haven't done so yet, see instructions over [here](./discordserver.md). If you already have the the account and server, login to your account.
 
 Next go to the [developers application page](https://discord.com/developers/applications) and follow these instructions.
 

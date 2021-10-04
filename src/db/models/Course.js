@@ -25,6 +25,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
       unique: false,
     },
+    locked: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+      unique: false,
+    },
   }, {
     timestamps: false,
     freezeTableName: true,
