@@ -40,6 +40,7 @@
     "passport-discord": "^0.1.4",
     "pg": "^8.6.0",
     "pg-hstore": "^2.3.4",
+    "prom-client": "^14.0.0",
     "sequelize": "^6.6.2",
     "telegraf": "^4.4.0"
   },

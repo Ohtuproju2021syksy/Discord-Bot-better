@@ -1,5 +1,5 @@
 const { execute } = require("../../src/discordBot/commands/instructor/addinstructor");
-const { sendErrorEphemeral, sendEphemeral } = require("../../src/discordBot/services/message");
+const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../src/discordBot/services/message");
 const { isACourseCategory, trimCourseName } = require("../../src/discordBot/services/service");
 const { courseAdminRole } = require("../../config.json");
 
@@ -12,6 +12,8 @@ trimCourseName.mockImplementation(() => "test");
 const { defaultTeacherInteraction, defaultStudentInteraction, defaultAdminInteraction } = require("../mocks/mockInteraction");
 defaultAdminInteraction.options = { getUser: jest.fn(() => { return { id: 3 }; }) };
 
+const initialResponse = "Adding instructor...";
+
 afterEach(() => {
   jest.clearAllMocks();
 });
@@ -21,16 +23,20 @@ describe("slash add instructor command", () => {
     const client = defaultStudentInteraction.client;
     const response = "You don't have the permission to use this command!";
     await execute(defaultStudentInteraction, client);
-    expect(sendErrorEphemeral).toHaveBeenCalledTimes(1);
-    expect(sendErrorEphemeral).toHaveBeenCalledWith(defaultStudentInteraction, response);
+    expect(sendEphemeral).toHaveBeenCalledTimes(1);
+    expect(sendEphemeral).toHaveBeenCalledWith(defaultStudentInteraction, initialResponse);
+    expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
+    expect(editErrorEphemeral).toHaveBeenCalledWith(defaultStudentInteraction, response);
   });
 
   test("command must be used in course channel", async () => {
     const client = defaultTeacherInteraction.client;
     const response = "Command must be used in a course channel!";
     await execute(defaultTeacherInteraction, client);
-    expect(sendErrorEphemeral).toHaveBeenCalledTimes(1);
-    expect(sendErrorEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
+    expect(sendEphemeral).toHaveBeenCalledTimes(1);
+    expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
+    expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
+    expect(editErrorEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
   });
 
   test("instructor role can be given", async () => {
@@ -42,6 +48,8 @@ describe("slash add instructor command", () => {
     await execute(defaultAdminInteraction, client);
     expect(admin.roles.add).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
-    expect(sendEphemeral).toHaveBeenCalledWith(defaultAdminInteraction, response);
+    expect(sendEphemeral).toHaveBeenCalledWith(defaultAdminInteraction, initialResponse);
+    expect(editEphemeral).toHaveBeenCalledTimes(1);
+    expect(editEphemeral).toHaveBeenCalledWith(defaultAdminInteraction, response);
   });
 });

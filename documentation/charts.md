@@ -1,0 +1,1 @@
+![Create server](./images/architecture.png)

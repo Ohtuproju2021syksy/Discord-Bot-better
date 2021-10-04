@@ -83,6 +83,8 @@ The `/create` command automatically creates three sub-channels for the course. T
 
 Note that the channel name you give is the end part of the name. For example, in the picture new channel will be created with name _wepa_feedback_.
 
+**Note also that if the course is bridged to telegram, messages from every channel will be bridged to telegram but messages from telegram are bridged only to general.**
+
 To remove added text channel use `/removechannel` command followed by the name of the text channel to be removed e.g., `/removechannel feedback` removes _wepa_feedback_. This command must also be used inside the course you want the channel to be removed. Note that announcements or general channels can not be removed.
 
 ## How to make course secret
@@ -126,7 +128,7 @@ Command | Explanation | Arguments
 [/removechannel](./commands/removechannel.md) | Remove given text channel inside a course, e.g., /removechannel feedback. | :heavy_check_mark:
 [/topic](./commands/topic.md) | Make given in course , e.g., /topic A new topic. | :heavy_check_mark:
 [/unhide](./commands/unhide.md) | Make given course public, e.g., /unhide weba. | :heavy_check_mark:
-
+[/status](./commands/status.md) | Used in course channel returns general info about the course | :heavy_check_mark:
 ### Material
 
 [Source code for the Bot](https://github.com/Ohtuproju2021syksy/Discord-Bot-better)

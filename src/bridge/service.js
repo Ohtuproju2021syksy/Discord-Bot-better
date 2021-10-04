@@ -1,3 +1,4 @@
+const { sendErrorReportNoInteraction } = require("../discordBot/services/message");
 let discordClient;
 let telegramClient;
 const keywords = ["crypto", "krypto", "btc", "doge", "btc", "eth", "musk", "money", "$", "usd", "bitcoin", "muskx.co", "coin", "elonmusk", "prize", "еlonmusk", "btc"];
@@ -52,6 +53,24 @@ const sendMessageToDiscord = async (message, channel) => {
         files: [message.content.photo.url],
       });
     }
+
+    if (message.content.audio) {
+      await webhook.send({
+        content: message.content.audio.caption,
+        username: message.user.username,
+        avatarURL: message.user.avatarUrl,
+        files: [message.content.audio.url],
+      });
+    }
+
+    if (message.content.video) {
+      await webhook.send({
+        content: message.content.video.caption,
+        username: message.user.username,
+        avatarURL: message.user.avatarUrl,
+        files: [message.content.video.url],
+      });
+    }
   }
   catch (error) {
     console.error("Error trying to send a message: ", error);
@@ -101,7 +120,7 @@ const handleBridgeMessage = async (message, courseName, Course) => {
   let channel = ":";
 
   if (!message.channel.name.includes("general")) {
-    channel = escapeChars(" on " + (message.channel.name.split(courseName)[1]).substring(1) + " channel:\n");
+    channel = escapeChars(" on " + (message.channel.name.split(courseName.replace(" ", "-"))[1]).substring(1) + " channel:\n");
   }
 
   let msg = message.content;
@@ -116,22 +135,25 @@ const handleBridgeMessage = async (message, courseName, Course) => {
   while (msg.includes("<@!")) {
     const userID = msg.match(/(?<=<@!).*?(?=>)/)[0];
     let userName = message.guild.members.cache.get(userID);
-    userName ? userName = userName.user.name : userName = "Jon Doe";
+    userName ? userName = userName.user.username : userName = "Jon Doe";
     msg = msg.replace("<@!" + userID + ">", userName);
   }
 
   const media = message.attachments.first();
   const gif = message.embeds[0];
-
-
-  if (media) {
-    await sendMediaToTelegram(group.telegramId, msg, sender, channel, media);
+  try {
+    if (media) {
+      await sendMediaToTelegram(group.telegramId, msg, sender, channel, media);
+    }
+    else if (gif != undefined && gif.type != undefined && gif.type == "gifv") {
+      await sendAnimationToTelegram(group.telegramId, sender, channel, gif.video.url);
+    }
+    else {
+      await sendMessageToTelegram(group.telegramId, msg, sender, channel);
+    }
   }
-  else if (gif != undefined && gif.type != undefined && gif.type == "gifv") {
-    await sendAnimationToTelegram(group.telegramId, sender, channel, gif.video.url);
-  }
-  else {
-    await sendMessageToTelegram(group.telegramId, msg, sender, channel);
+  catch (error) {
+    return await sendErrorReportNoInteraction(group.telegramId, message.member, message.channel.name, discordClient, error.toString());
   }
 };
 
@@ -168,9 +190,14 @@ const validateContent = (content) => {
 const sendMessageToTelegram = async (telegramId, content, sender, channel) => {
   sender ? escapeChars(sender) : null;
   content = validateContent(content);
-  sender ?
-    await telegramClient.telegram.sendMessage(telegramId, `*${sender}*${channel}\n${content}`, { parse_mode: "MarkdownV2" }) :
-    await telegramClient.telegram.sendMessage(telegramId, `${content}`, { parse_mode: "MarkdownV2" });
+  try {
+    sender ?
+      await telegramClient.telegram.sendMessage(telegramId, `*${sender}*${channel}\n${content}`, { parse_mode: "MarkdownV2" }) :
+      await telegramClient.telegram.sendMessage(telegramId, `${content}`, { parse_mode: "MarkdownV2" });
+  }
+  catch (error) {
+    return error;
+  }
 };
 
 const sendMediaToTelegram = async (telegramId, info, sender, channel, media) => {
@@ -178,25 +205,38 @@ const sendMediaToTelegram = async (telegramId, info, sender, channel, media) => 
   info = validateContent(info);
   const url = media.url;
   const caption = `*${sender}*${channel} ${info}`;
-  if (media.contentType.includes("video")) {
-    await telegramClient.telegram.sendVideo(telegramId, { url }, { caption, parse_mode: "MarkdownV2" });
+  const filename = `${media.name}`;
+  try {
+    if (media.contentType.includes("video")) {
+      await telegramClient.telegram.sendVideo(telegramId, { url, filename: filename }, { caption, parse_mode: "MarkdownV2" });
+    }
+    else if (media.contentType.includes("audio")) {
+      await telegramClient.telegram.sendAudio(telegramId, { url, filename: filename }, { caption, parse_mode: "MarkdownV2" });
+    }
+    else if (media.contentType.includes("gif")) {
+      await telegramClient.telegram.sendAnimation(telegramId, { url }, { caption, parse_mode: "MarkdownV2" });
+    }
+    else if (media.contentType.includes("image")) {
+      await telegramClient.telegram.sendPhoto(telegramId, { url }, { caption, parse_mode: "MarkdownV2" });
+    }
+    else if (media.contentType.includes("application") || media.contentType.includes("text/plain")) {
+      await telegramClient.telegram.sendDocument(telegramId, { url, filename: filename }, { caption, parse_mode: "MarkdownV2" });
+    }
   }
-  else if (media.contentType.includes("audio")) {
-    await telegramClient.telegram.sendAudio(telegramId, { url }, { caption, parse_mode: "MarkdownV2" });
+  catch (error) {
+    return error;
   }
-  else if (media.contentType.includes("gif")) {
-    await telegramClient.telegram.sendAnimation(telegramId, { url }, { caption, parse_mode: "MarkdownV2" });
-  }
-  else if (media.contentType.includes("image") || media.contentType.includes("pdf")) {
-    await telegramClient.telegram.sendPhoto(telegramId, { url }, { caption, parse_mode: "MarkdownV2" });
-  }
-
 };
 
 const sendAnimationToTelegram = async (telegramId, sender, channel, url) => {
   sender = escapeChars(sender);
   const caption = `*${sender}*${channel}`;
-  await telegramClient.telegram.sendAnimation(telegramId, { url }, { caption, parse_mode: "MarkdownV2" });
+  try {
+    await telegramClient.telegram.sendAnimation(telegramId, { url }, { caption, parse_mode: "MarkdownV2" });
+  }
+  catch (error) {
+    return error;
+  }
 };
 
 const getCourseName = (categoryName) => {

@@ -1,5 +1,5 @@
 const { execute } = require("../../src/discordBot/commands/student/instructors");
-const { sendEphemeral, sendErrorEphemeral } = require("../../src/discordBot/services/message");
+const { sendEphemeral, editEphemeral, editErrorEphemeral } = require("../../src/discordBot/services/message");
 const { courseAdminRole } = require("../../config.json");
 
 jest.mock("../../src/discordBot/services/message");
@@ -10,12 +10,14 @@ const {
   defaultStudentInteraction } = require("../mocks/mockInteraction");
 
 const roleString = "test";
+const initialResponse = "Fetching instructors...";
 defaultTeacherInteraction.options = { getString: jest.fn(() => roleString) };
 studentInteractionWithoutOptions.options = { getString: jest.fn(() => false) };
-defaultStudentInteraction.options = { getString: jest
-  .fn(() => false)
-  .mockImplementationOnce(() => roleString)
-  .mockImplementationOnce(() => roleString),
+defaultStudentInteraction.options = {
+  getString: jest
+    .fn(() => false)
+    .mockImplementationOnce(() => roleString)
+    .mockImplementationOnce(() => roleString),
 };
 
 afterEach(() => {
@@ -27,8 +29,10 @@ describe("slash insctuctors command", () => {
     const client = studentInteractionWithoutOptions.client;
     const response = "Provide course name as argument or use the command in course channel.";
     await execute(studentInteractionWithoutOptions, client);
-    expect(sendErrorEphemeral).toHaveBeenCalledTimes(1);
-    expect(sendErrorEphemeral).toHaveBeenCalledWith(studentInteractionWithoutOptions, response);
+    expect(sendEphemeral).toHaveBeenCalledTimes(1);
+    expect(sendEphemeral).toHaveBeenCalledWith(studentInteractionWithoutOptions, initialResponse);
+    expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
+    expect(editErrorEphemeral).toHaveBeenCalledWith(studentInteractionWithoutOptions, response);
   });
 
   test("instructors command used without args in course channels", async () => {
@@ -36,16 +40,20 @@ describe("slash insctuctors command", () => {
     studentInteractionWithoutOptions.channelId = 2;
     const response = `No instructors for ${roleString}`;
     await execute(studentInteractionWithoutOptions, client);
-    expect(sendErrorEphemeral).toHaveBeenCalledTimes(1);
-    expect(sendErrorEphemeral).toHaveBeenCalledWith(studentInteractionWithoutOptions, response);
+    expect(sendEphemeral).toHaveBeenCalledTimes(1);
+    expect(sendEphemeral).toHaveBeenCalledWith(studentInteractionWithoutOptions, initialResponse);
+    expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
+    expect(editErrorEphemeral).toHaveBeenCalledWith(studentInteractionWithoutOptions, response);
   });
 
   test("instructors command used without course admins", async () => {
     const client = defaultStudentInteraction.client;
     const response = `No instructors for ${roleString}`;
     await execute(defaultStudentInteraction, client);
-    expect(sendErrorEphemeral).toHaveBeenCalledTimes(1);
-    expect(sendErrorEphemeral).toHaveBeenCalledWith(defaultStudentInteraction, response);
+    expect(sendEphemeral).toHaveBeenCalledTimes(1);
+    expect(sendEphemeral).toHaveBeenCalledWith(defaultStudentInteraction, initialResponse);
+    expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
+    expect(editErrorEphemeral).toHaveBeenCalledWith(defaultStudentInteraction, response);
   });
 
   test("instructors command used with course admins with args", async () => {
@@ -54,7 +62,9 @@ describe("slash insctuctors command", () => {
     const response = `Here are the instructors for ${roleString}: teacher`;
     await execute(defaultTeacherInteraction, client);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
-    expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
+    expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
+    expect(editEphemeral).toHaveBeenCalledTimes(1);
+    expect(editEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
     client.guild.roles.init();
   });
 
@@ -63,8 +73,10 @@ describe("slash insctuctors command", () => {
     client.guild.roles.create({ name: `${roleString} ${courseAdminRole}`, members: [] });
     const response = `No instructors for ${roleString}`;
     await execute(defaultTeacherInteraction, client);
-    expect(sendErrorEphemeral).toHaveBeenCalledTimes(1);
-    expect(sendErrorEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
+    expect(sendEphemeral).toHaveBeenCalledTimes(1);
+    expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
+    expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
+    expect(editErrorEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
     client.guild.roles.init();
   });
 
@@ -73,9 +85,11 @@ describe("slash insctuctors command", () => {
     client.guild.roles.create({ name: `${roleString} ${courseAdminRole}`, members: [{ displayName: "teacher" }] });
     const response = "Here are the instructors for test: teacher";
     await execute(defaultStudentInteraction, client);
-    expect(sendErrorEphemeral).toHaveBeenCalledTimes(0);
+    expect(editErrorEphemeral).toHaveBeenCalledTimes(0);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
-    expect(sendEphemeral).toHaveBeenCalledWith(defaultStudentInteraction, response);
+    expect(sendEphemeral).toHaveBeenCalledWith(defaultStudentInteraction, initialResponse);
+    expect(editEphemeral).toHaveBeenCalledTimes(1);
+    expect(editEphemeral).toHaveBeenCalledWith(defaultStudentInteraction, response);
     client.guild.roles.init();
   });
 });
