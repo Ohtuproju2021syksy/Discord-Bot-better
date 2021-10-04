@@ -5,6 +5,7 @@ const execute = async (client, Course) => {
   client.guild = await client.guilds.fetch(process.env.GUILD_ID);
   await initializeApplicationContext(client, Course);
   await setUpCommands(client, Course);
+  client.guild.members.fetch();
   console.log(`${client.user.tag} initialized!`);
 };
 
