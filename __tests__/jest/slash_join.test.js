@@ -33,7 +33,7 @@ describe("slash join command", () => {
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
     expect(editEphemeral).toHaveBeenCalledTimes(1);
-    expect(editEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, `You have been added to a ${roleString} course.`);
+    expect(editEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, `You have been added to the ${roleString} course.`);
     expect(updateGuide).toHaveBeenCalledTimes(1);
     expect(counterSpy).toHaveBeenCalledTimes(1);
     expect(counterSpy).toHaveBeenCalledWith({ course: roleString });
@@ -48,7 +48,7 @@ describe("slash join command", () => {
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
     expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
-    expect(editErrorEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, `You are already on a ${roleString} course.`);
+    expect(editErrorEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, `You are already on the ${roleString} course.`);
     expect(updateGuide).toHaveBeenCalledTimes(0);
   });
 

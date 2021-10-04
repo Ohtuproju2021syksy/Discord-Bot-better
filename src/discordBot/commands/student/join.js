@@ -12,7 +12,7 @@ const execute = async (interaction, client, Course) => {
     // Interaction was a slash command
     await sendEphemeral(interaction, "Joining course...");
     roleString = interaction.options.getString("course").trim();
-    message = `You have been added to a ${roleString} course.`;
+    message = `You have been added to the ${roleString} course.`;
   }
   else {
     // Command was copypasted or failed to register as an interaction
@@ -43,10 +43,10 @@ const execute = async (interaction, client, Course) => {
   }
   if (member.roles.cache.some(r => courseRoles.includes(r.name))) {
     if (interaction.options) {
-      return await editErrorEphemeral(interaction, `You are already on a ${roleString} course.`);
+      return await editErrorEphemeral(interaction, `You are already on the ${roleString} course.`);
     }
     else {
-      return await sendReplyMessage(interaction, `You are already on a ${roleString} course.`);
+      return await sendReplyMessage(interaction, `You are already on the ${roleString} course.`);
     }
   }
 
