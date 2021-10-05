@@ -56,7 +56,7 @@ const updateDynamicChoices = async (client, commandNames, Course) => {
 
 const setCommandPermissions = async (client) => {
   const loadedCommands = await client.guilds.cache.get(guildId)?.commands.fetch();
-  const createCommandsWithPermission = loadedCommands.filter((command) => !command.defaultPermission);
+  const createCommandsWithPermission = loadedCommands.filter((command) => !command.defaultPermission && client.slashCommands.has(command.name));
   const fullPermissions = createCommandsWithPermission.map((command) => {
     const commandObj = client.slashCommands.get(command.name);
     const perms = [];
