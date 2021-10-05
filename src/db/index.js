@@ -1,13 +1,30 @@
 const { sequelize } = require("./dbInit");
 
-try {
-  sequelize.authenticate();
-  console.log("Database connection has been established successfully.");
+const DB_CONNECTION_RETRY_LIMIT = 10;
+
+const testConnection = async () => {
+  await sequelize.authenticate();
 }
-catch (error) {
-  console.error("Unable to connect to the database:", error);
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
+const connectToDatabase = async (attempt = 0) => {
+  try {
+    await testConnection();
+  } catch (err) {
+    if (attempt === DB_CONNECTION_RETRY_LIMIT) {
+      console.log(`Connection to database failed after ${attempt} attempts`);
+      process.exit(1);
+    }
+    console.log(
+      `Connection to database failed! Attempt ${attempt} of ${DB_CONNECTION_RETRY_LIMIT}`,
+    );
+    await sleep(5000);
+    connectToDatabase(attempt + 1);
+  }
 }
 
 module.exports = {
   sequelize,
+  connectToDatabase,
 };

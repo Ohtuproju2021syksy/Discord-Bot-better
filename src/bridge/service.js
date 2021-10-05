@@ -31,7 +31,7 @@ const sendMessageToDiscord = async (message, channel) => {
       console.log("Message is too long (over 2000 characters)");
       return;
     }
-    if (message.content.text[0] === "/") {
+    if (message.content.text && message.content.text[0] === "/") {
       return;
     }
     const webhooks = await channel.fetchWebhooks();
