@@ -1,13 +1,15 @@
 const { execute } = require("../../src/discordBot/commands/faculty/newchannel");
 const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../src/discordBot/services/message");
-const { getRoleFromCategory } = require("../../src/discordBot/services/service");
+const { getRoleFromCategory, findCourseFromDb } = require("../../src/discordBot/services/service");
 
+const models = require("../mocks/mockModels");
 jest.mock("../../src/discordBot/services/message");
 jest.mock("../../src/discordBot/services/service");
 
 getRoleFromCategory.mockImplementation((name) => name.replace("📚", "").trim());
 
 const { defaultTeacherInteraction } = require("../mocks/mockInteraction");
+findCourseFromDb.mockImplementation((courseName) => ({ courseName: courseName, id: 1 }));
 const courseName = "test";
 const channelName = "rules";
 const initialResponse = "Creating text channel...";
@@ -33,7 +35,7 @@ describe("slash new channel command", () => {
   test("Cannot use command if channel has no parent", async () => {
     const client = defaultTeacherInteraction.client;
     const response = "Course not found, can not create new channel.";
-    await execute(defaultTeacherInteraction, client);
+    await execute(defaultTeacherInteraction, client, models);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
     expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
@@ -44,7 +46,7 @@ describe("slash new channel command", () => {
     const client = defaultTeacherInteraction.client;
     defaultTeacherInteraction.channelId = 4;
     const response = "This is not a course category, can not create new channel.";
-    await execute(defaultTeacherInteraction, client);
+    await execute(defaultTeacherInteraction, client, models);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
     expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
@@ -55,7 +57,7 @@ describe("slash new channel command", () => {
     const client = defaultTeacherInteraction.client;
     defaultTeacherInteraction.channelId = 2;
     const response = `Created new channel ${courseName}_${channelName}`;
-    await execute(defaultTeacherInteraction, client);
+    await execute(defaultTeacherInteraction, client, models);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
     expect(editEphemeral).toHaveBeenCalledTimes(1);
@@ -67,7 +69,7 @@ describe("slash new channel command", () => {
     defaultTeacherInteraction.channelId = 2;
     setMaxChannels(client);
     const response = "Maximum added text channel amount is 10";
-    await execute(defaultTeacherInteraction, client);
+    await execute(defaultTeacherInteraction, client, models);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
     expect(editErrorEphemeral).toHaveBeenCalledTimes(1);

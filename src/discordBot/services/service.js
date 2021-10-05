@@ -334,6 +334,29 @@ const findChannelFromDb = async (channelId, Channel) => {
   });
 };
 
+const createChannelToDatabase = async (courseId, channelName, Channel) => {
+  const alreadyinuse = await Channel.findOne({
+    where:
+      { name: { [Sequelize.Op.iLike]: channelName } },
+  });
+  if (!alreadyinuse) {
+    await Channel.create({ name: channelName, courseId: courseId });
+  }
+};
+
+const removeChannelFromDb = async (channelName, Channel) => {
+  const channel = await Channel.findOne({
+    where:
+      { name: { [Sequelize.Op.iLike]: channelName } },
+  });
+  if (channel) {
+    await Channel.destroy({
+      where:
+        { name: { [Sequelize.Op.iLike]: channelName } },
+    });
+  }
+};
+
 
 module.exports = {
   createCategoryName,
@@ -366,4 +389,6 @@ module.exports = {
   findCoursesFromDb,
   findCourseNickNameFromDbWithCourseCode,
   findChannelFromDb,
+  createChannelToDatabase,
+  removeChannelFromDb,
 };

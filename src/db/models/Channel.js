@@ -1,12 +1,7 @@
 module.exports = (sequelize, DataTypes) => {
   return sequelize.define("channel", {
-    id: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      primaryKey: true,
-    },
     courseId: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allowNull: false,
       unique: false,
     },
