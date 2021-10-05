@@ -11,7 +11,8 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const connectToDatabase = async (attempt = 0) => {
   try {
     await testConnection();
-  } catch (err) {
+  } 
+  catch (err) {
     if (attempt === DB_CONNECTION_RETRY_LIMIT) {
       console.log(`Connection to database failed after ${attempt} attempts`);
       return process.exit(1);
@@ -24,7 +25,7 @@ const connectToDatabase = async (attempt = 0) => {
   }
   sequelize.sync();
   return null;
-}
+};
 
 module.exports = {
   sequelize,
