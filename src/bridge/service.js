@@ -188,12 +188,7 @@ const validateContent = (content) => {
 };
 
 const sendMessageToTelegram = async (telegramId, content, sender, channel) => {
-  if (content == "lock") {
-    lockTelegramCourse(telegramId);
-  }
-  else if (content == "unlock") {
-    unlockTelegramCourse(telegramId);
-  }
+
   sender ? escapeChars(sender) : null;
   content = validateContent(content);
   try {
