@@ -11,7 +11,7 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const connectToDatabase = async (attempt = 0) => {
   try {
     await testConnection();
-  } 
+  }
   catch (err) {
     if (attempt === DB_CONNECTION_RETRY_LIMIT) {
       console.log(`Connection to database failed after ${attempt} attempts`);
