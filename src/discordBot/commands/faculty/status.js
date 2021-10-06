@@ -4,6 +4,7 @@ const {
   createCourseInvitationLink,
   trimCourseName,
   findCourseFromDb,
+  findChannelsByCourse,
 } = require("../../services/service");
 const { editErrorEphemeral, sendEphemeral, editEphemeral } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
@@ -33,7 +34,16 @@ const execute = async (interaction, client, models) => {
   const instructorMessage = (instructors && instructors.length) ?
     `${instructors.join(", ")}` :
     "No instructors";
-
+  
+  const channels = await findChannelsByCourse(course.id, models.Channel)
+  
+  const blockedChannels = channels
+    .filter(channel => !channel.bridged)
+    .map(channel => channel.name);
+  
+  const blockedChannelMessage = (blockedChannels && blockedChannels.length) ?
+    `${blockedChannels.join(", ")}` :
+    "No blocked channels";
 
   return await editEphemeral(interaction, `
 Course: ${course.name}
@@ -41,6 +51,7 @@ Fullname: ${course.fullName}
 Code: ${course.code}
 Hidden: ${course.private}
 Invitation Link: ${createCourseInvitationLink(course.name)}
+Bridge blocked on channels: ${blockedChannelMessage}
 
 Instructors: ${instructorMessage}
 Members: ${count}

@@ -1,23 +1,24 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { findChannelFromDb } = require("../../services/service");
+const { findChannelFromDbByName } = require("../../services/service");
 const { sendEphemeral, editErrorEphemeral, editEphemeral } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
 
 const execute = async (interaction, client, models) => {
   await sendEphemeral(interaction, "Blocking the bridge to Telegram...");
+  
+  const channel = client.guild.channels.cache.get(interaction.channelId);
+  const channelInstance = await findChannelFromDbByName(channel.name, models.Channel);
 
-  const channel = findChannelFromDb(interaction.channelId, models.Channel);
-
-  if (!channel) {
+  if (!channelInstance) {
     return await editErrorEphemeral(interaction, "Error: command can only be performed on course channels!");
   }
 
-  if (!channel.bridged) {
+  if (!channelInstance.bridged) {
     return await editErrorEphemeral(interaction, "The bridge is already blocked.");
   }
 
-  channel.bridged = false;
-  await channel.save();
+  channelInstance.bridged = false;
+  await channelInstance.save();
   await editEphemeral(interaction, "The bridge between this channel and Telegram is now blocked.");
 };
 

@@ -326,10 +326,10 @@ const findCourseNickNameFromDbWithCourseCode = async (courseName, Course) => {
   });
 };
 
-const findChannelFromDb = async (channelId, Channel) => {
+const findChannelFromDbByName = async (channelName, Channel) => {
   return await Channel.findOne({
     where: {
-      id: channelId,
+      name: channelName,
     },
   });
 };
@@ -356,6 +356,14 @@ const removeChannelFromDb = async (channelName, Channel) => {
     });
   }
 };
+
+const findChannelsByCourse = async (id, Channel) => {
+  return await Channel.findAll({
+    where: {
+      courseId: id 
+    }
+  })
+}
 
 
 module.exports = {
@@ -388,7 +396,8 @@ module.exports = {
   findCourseFromDbWithFullName,
   findCoursesFromDb,
   findCourseNickNameFromDbWithCourseCode,
-  findChannelFromDb,
+  findChannelFromDbByName,
   createChannelToDatabase,
   removeChannelFromDb,
+  findChannelsByCourse,
 };
