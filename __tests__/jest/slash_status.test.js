@@ -4,7 +4,8 @@ const {
   getRoleFromCategory,
   createCourseInvitationLink,
   trimCourseName,
-  findCourseFromDb } = require("../../src/discordBot/services/service");
+  findCourseFromDb,
+  findChannelsByCourse } = require("../../src/discordBot/services/service");
 const models = require("../mocks/mockModels");
 
 jest.mock("../../src/discordBot/services/message");
@@ -12,10 +13,12 @@ jest.mock("../../src/discordBot/services/service");
 
 
 const course = { name: "test", fullName: "test course", code: "101", private: false };
+const channel = { courseId: 1, name: "test_channel", topic: "test", bridged: true };
 const url = "mockUrl";
 const initialResponse = "Fetching status...";
 
 findCourseFromDb.mockImplementation(() => course);
+findChannelsByCourse.mockImplementation(() => [channel]);
 
 createCourseInvitationLink.mockImplementation(() => url);
 
@@ -28,6 +31,7 @@ Fullname: ${course.fullName}
 Code: ${course.code}
 Hidden: ${course.private}
 Invitation Link: ${url}
+Bridge blocked on channels: No blocked channels
 
 Instructors: No instructors
 Members: undefined
