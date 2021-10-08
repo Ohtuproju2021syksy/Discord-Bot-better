@@ -13,7 +13,6 @@ const initialResponse = "Removing text channel...";
 
 jest.mock("../../src/discordBot/services/service");
 getRoleFromCategory.mockImplementation((name) => name.replace("📚", "").trim());
-removeChannelFromDb.mockImplementation(() => null);
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -79,6 +78,8 @@ describe("slash removechannel", () => {
     defaultTeacherInteraction.channelId = 3;
     const client = defaultTeacherInteraction.client;
     await execute(defaultTeacherInteraction, client, models);
+    expect(removeChannelFromDb).toHaveBeenCalledTimes(1);
+    expect(removeChannelFromDb).toHaveBeenCalledWith(`${courseName}_${courseName}`, models.Channel);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
     expect(editEphemeral).toHaveBeenCalledTimes(1);
