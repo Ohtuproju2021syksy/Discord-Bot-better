@@ -31,7 +31,13 @@ const execute = async (message, client, models) => {
     return message.channel.send({ content: `You didn't provide any arguments, ${message.author}!`, reply: { messageReference: message.id } });
   }
   try {
-    await command.execute(message, args, models.Course);
+    if (commandName == "updatedatabase") {
+      await command.execute(message, args, models);
+    }
+    else {
+      await command.execute(message, args, models.Course);
+    }
+
     if (command.emit) await client.emit("COURSES_CHANGED", models.Course);
     await message.react("✅");
   }

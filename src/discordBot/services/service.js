@@ -303,7 +303,7 @@ const findCoursesFromDb = async (order, Course, state) => {
     undefined: {},
   };
   return await Course.findAll({
-    attributes: ["code", "fullName", "name"],
+    attributes: ["code", "fullName", "name", "id"],
     order: [order],
     where: filter[state],
     raw: true,
@@ -360,10 +360,10 @@ const removeChannelFromDb = async (channelName, Channel) => {
 const findChannelsByCourse = async (id, Channel) => {
   return await Channel.findAll({
     where: {
-      courseId: id 
-    }
-  })
-}
+      courseId: id,
+    },
+  });
+};
 
 
 module.exports = {
