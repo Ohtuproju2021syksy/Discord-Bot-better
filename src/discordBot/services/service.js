@@ -360,10 +360,10 @@ const removeChannelFromDb = async (channelName, Channel) => {
 const findChannelsByCourse = async (id, Channel) => {
   return await Channel.findAll({
     where: {
-      courseId: id 
-    }
-  })
-}
+      courseId: id,
+    },
+  });
+};
 
 
 module.exports = {
