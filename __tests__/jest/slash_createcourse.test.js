@@ -1,4 +1,4 @@
-const { execute } = require("../../src/discordBot/commands/faculty/create");
+const { execute } = require("../../src/discordBot/commands/faculty/createcourse");
 const { sendEphemeral, sendErrorEphemeral, editEphemeral } = require("../../src/discordBot/services/message");
 const {
   findCourseFromDb,

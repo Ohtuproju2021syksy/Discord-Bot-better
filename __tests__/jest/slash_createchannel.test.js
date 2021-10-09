@@ -1,4 +1,4 @@
-const { execute } = require("../../src/discordBot/commands/faculty/newchannel");
+const { execute } = require("../../src/discordBot/commands/faculty/createchannel");
 const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../src/discordBot/services/message");
 const { getRoleFromCategory } = require("../../src/discordBot/services/service");
 

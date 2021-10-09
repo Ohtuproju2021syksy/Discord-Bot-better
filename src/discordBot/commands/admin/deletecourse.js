@@ -37,9 +37,9 @@ const execute = async (message, args, Course) => {
 
 module.exports = {
   prefix: true,
-  name: "remove",
+  name: "deletecourse",
   description: "Delete course.",
-  usage: "!remove [course name]",
+  usage: "!deletecourse [course name]",
   role: "admin",
   emit: true,
   execute,

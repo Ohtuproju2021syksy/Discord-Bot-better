@@ -1,4 +1,4 @@
-const { execute } = require("../../src/discordBot/commands/faculty/hide");
+const { execute } = require("../../src/discordBot/commands/faculty/hidecourse");
 const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../src/discordBot/services/message");
 const {
   createCategoryName,
