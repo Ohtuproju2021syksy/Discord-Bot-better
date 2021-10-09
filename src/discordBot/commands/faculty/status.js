@@ -34,13 +34,13 @@ const execute = async (interaction, client, models) => {
   const instructorMessage = (instructors && instructors.length) ?
     `${instructors.join(", ")}` :
     "No instructors";
-  
-  const channels = await findChannelsByCourse(course.id, models.Channel)
-  
+
+  const channels = await findChannelsByCourse(course.id, models.Channel);
+
   const blockedChannels = channels
-    .filter(channel => !channel.bridged)
-    .map(channel => channel.name);
-  
+    .filter(c => !c.bridged)
+    .map(c => c.name);
+
   const blockedChannelMessage = (blockedChannels && blockedChannels.length) ?
     `${blockedChannels.join(", ")}` :
     "No blocked channels";
