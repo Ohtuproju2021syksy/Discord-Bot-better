@@ -5,12 +5,12 @@ const { facultyRole } = require("../../../../config.json");
 
 const execute = async (interaction, client, models) => {
   await sendEphemeral(interaction, "Blocking the bridge to Telegram...");
-  
+
   const channel = client.guild.channels.cache.get(interaction.channelId);
   const channelInstance = await findChannelFromDbByName(channel.name, models.Channel);
 
   if (!channelInstance) {
-    return await editErrorEphemeral(interaction, "Error: command can only be performed on course channels!");
+    return await editErrorEphemeral(interaction, "command can only be performed on course channels!");
   }
 
   if (!channelInstance.bridged) {

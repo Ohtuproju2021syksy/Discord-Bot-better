@@ -1,6 +1,6 @@
 const { execute } = require("../../src/discordBot/commands/faculty/newchannel");
 const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../src/discordBot/services/message");
-const { getRoleFromCategory, findCourseFromDb } = require("../../src/discordBot/services/service");
+const { getRoleFromCategory, findCourseFromDb, createChannelToDatabase } = require("../../src/discordBot/services/service");
 
 const models = require("../mocks/mockModels");
 jest.mock("../../src/discordBot/services/message");
@@ -58,6 +58,9 @@ describe("slash new channel command", () => {
     defaultTeacherInteraction.channelId = 2;
     const response = `Created new channel ${courseName}_${channelName}`;
     await execute(defaultTeacherInteraction, client, models);
+    expect(findCourseFromDb).toHaveBeenCalledTimes(1);
+    expect(createChannelToDatabase).toHaveBeenCalledTimes(1);
+    expect(createChannelToDatabase).toHaveBeenCalledWith(1, `${courseName}_${channelName}`, models.Channel);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
     expect(editEphemeral).toHaveBeenCalledTimes(1);
