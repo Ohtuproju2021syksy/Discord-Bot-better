@@ -303,7 +303,7 @@ const findCoursesFromDb = async (order, Course, state) => {
     undefined: {},
   };
   return await Course.findAll({
-    attributes: ["code", "fullName", "name", "id"],
+    attributes: ["code", "fullName", "name"],
     order: [order],
     where: filter[state],
     raw: true,
