@@ -17,7 +17,7 @@ const execute = async (interaction, client, Course) => {
   const guild = client.guild;
   const category = getLockedCourse(courseName, guild);
   if (!category) {
-    return await editErrorEphemeral(interaction, `Invalid course name: ${courseName} or the course is public already!`);
+    return await editErrorEphemeral(interaction, `Invalid course name: ${courseName} or the course is unlocked already!`);
   }
   const cooldown = checkCourseCooldown(courseName);
   if (cooldown) {
@@ -36,7 +36,7 @@ const execute = async (interaction, client, Course) => {
     await setCourseToUnlocked(courseName, Course, guild);
     await client.emit("COURSES_CHANGED", Course);
     await updateGuide(client.guild, Course);
-    await editEphemeral(interaction, `This course ${courseName} is now public.`);
+    await editEphemeral(interaction, `This course ${courseName} is now unlocked.`);
     handleCooldown(courseName);
   }
 };

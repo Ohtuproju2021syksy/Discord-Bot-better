@@ -32,7 +32,7 @@ afterEach(() => {
 describe("slash unlock command", () => {
   test("unlock command with invalid course name responds with correct ephemeral", async () => {
     const client = defaultTeacherInteraction.client;
-    const response = `Invalid course name: ${courseName} or the course is public already!`;
+    const response = `Invalid course name: ${courseName} or the course is unlocked already!`;
     await execute(defaultTeacherInteraction, client, Course);
     expect(getLockedCourse).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
@@ -45,7 +45,7 @@ describe("slash unlock command", () => {
   test("unlock command with valid course name responds with correct ephemeral", async () => {
     getLockedCourse.mockImplementationOnce((name) => { return { name: `📚 ${name}`, setName: jest.fn() }; });
     const client = defaultTeacherInteraction.client;
-    const response = `This course ${courseName} is now public.`;
+    const response = `This course ${courseName} is now unlocked.`;
     await execute(defaultTeacherInteraction, client, Course);
     expect(getLockedCourse).toHaveBeenCalledTimes(1);
     expect(setCourseToUnlocked).toHaveBeenCalledTimes(1);
