@@ -12,7 +12,7 @@ const execute = async (interaction, client, models) => {
   }
 
   const channelInstance = await findChannelFromDbByName(channel.name, models.Channel);
-  
+
   if (!channelInstance) {
     return await editErrorEphemeral(interaction, "command can't be performed on default course channels!");
   }
