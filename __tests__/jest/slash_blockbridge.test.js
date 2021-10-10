@@ -12,7 +12,6 @@ const channelModelInstanceMock = { save: jest.fn(), bridged: true };
 
 findChannelFromDbByName
   .mockImplementation(() => ({ bridged: false }))
-  .mockImplementationOnce(() => null)
   .mockImplementationOnce(() => channelModelInstanceMock);
 
 afterEach(() => {
@@ -22,9 +21,9 @@ afterEach(() => {
 describe("slash blockbridge command", () => {
   test("Cannot use command on non-course channels", async () => {
     const client = defaultTeacherInteraction.client;
-    const response = "command can only be performed on course channels!";
+    const response = "This is not a course category, can not execute the command!";
     await execute(defaultTeacherInteraction, client, models);
-    expect(findChannelFromDbByName).toHaveBeenCalledTimes(1);
+    expect(findChannelFromDbByName).toHaveBeenCalledTimes(0);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initalResponse);
     expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
@@ -33,6 +32,7 @@ describe("slash blockbridge command", () => {
 
   test("Correct channel can be blocked", async () => {
     const client = defaultTeacherInteraction.client;
+    defaultTeacherInteraction.channelId = 3;
     const response = "The bridge between this channel and Telegram is now blocked.";
     await execute(defaultTeacherInteraction, client, models);
     expect(findChannelFromDbByName).toHaveBeenCalledTimes(1);
@@ -44,6 +44,7 @@ describe("slash blockbridge command", () => {
 
   test("Blocking a channel that is already blocked responds with correct error ephemeral", async () => {
     const client = defaultTeacherInteraction.client;
+    defaultTeacherInteraction.channelId = 3;
     const response = "The bridge is already blocked.";
     await execute(defaultTeacherInteraction, client, models);
     expect(findChannelFromDbByName).toHaveBeenCalledTimes(1);
