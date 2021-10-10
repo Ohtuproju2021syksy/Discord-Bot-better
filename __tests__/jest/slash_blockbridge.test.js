@@ -17,7 +17,7 @@ findChannelFromDbByName
 
 findCourseFromDb.mockImplementation(() => ({ telegramId: 1 }));
 
-  afterEach(() => {
+afterEach(() => {
   jest.clearAllMocks();
 });
 
