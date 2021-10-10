@@ -7,10 +7,14 @@ const execute = async (interaction, client, models) => {
   await sendEphemeral(interaction, "Blocking the bridge to Telegram...");
 
   const channel = client.guild.channels.cache.get(interaction.channelId);
-  const channelInstance = await findChannelFromDbByName(channel.name, models.Channel);
+  if (!channel?.parent?.name?.startsWith("🔒") && !channel?.parent?.name?.startsWith("📚")) {
+    return await editErrorEphemeral(interaction, "This is not a course category, can not execute the command!");
+  }
 
+  const channelInstance = await findChannelFromDbByName(channel.name, models.Channel);
+  
   if (!channelInstance) {
-    return await editErrorEphemeral(interaction, "command can only be performed on course channels!");
+    return await editErrorEphemeral(interaction, "command can't be performed on default course channels!");
   }
 
   if (!channelInstance.bridged) {
