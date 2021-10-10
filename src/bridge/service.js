@@ -31,6 +31,9 @@ const sendMessageToDiscord = async (message, channel) => {
       console.log("Message is too long (over 2000 characters)");
       return;
     }
+    if (message.content.text && message.content.text[0] === "/") {
+      return;
+    }
     const webhooks = await channel.fetchWebhooks();
     const webhook = webhooks.first();
     if (message.content.text) {
@@ -124,6 +127,7 @@ const handleBridgeMessage = async (message, courseName, Course) => {
   }
 
   let msg = message.content;
+  if (msg[0] === "/") return;
 
   while (msg.includes("<#")) {
     const channelID = msg.match(/(?<=<#).*?(?=>)/)[0];

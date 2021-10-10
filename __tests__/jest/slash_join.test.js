@@ -1,5 +1,5 @@
 const { execute } = require("../../src/discordBot/commands/student/join");
-const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../src/discordBot/services/message");
+const { editEphemeral, editErrorEphemeral, sendEphemeral, sendReplyMessage } = require("../../src/discordBot/services/message");
 const { updateGuide, findCourseFromDb } = require("../../src/discordBot/services/service");
 const { messageInCommandsChannel, student } = require("../mocks/mockMessages");
 const joinedUsersCounter = require("../../src/promMetrics/joinedUsersCounter");
@@ -33,7 +33,7 @@ describe("slash join command", () => {
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
     expect(editEphemeral).toHaveBeenCalledTimes(1);
-    expect(editEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, `You have been added to a ${roleString} course.`);
+    expect(editEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, `You have been added to the ${roleString} course.`);
     expect(updateGuide).toHaveBeenCalledTimes(1);
     expect(counterSpy).toHaveBeenCalledTimes(1);
     expect(counterSpy).toHaveBeenCalledWith({ course: roleString });
@@ -48,7 +48,7 @@ describe("slash join command", () => {
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
     expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
-    expect(editErrorEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, `You are already on a ${roleString} course.`);
+    expect(editErrorEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, `You are already on the ${roleString} course.`);
     expect(updateGuide).toHaveBeenCalledTimes(0);
   });
 
@@ -73,7 +73,7 @@ describe("slash join command", () => {
     const member = client.guild.members.cache.get(messageInCommandsChannel.member.user.id);
     await execute(messageInCommandsChannel, client);
     expect(member.roles.add).toHaveBeenCalledTimes(1);
-    expect(sendEphemeral).toHaveBeenCalledTimes(1);
+    expect(sendReplyMessage).toHaveBeenCalledTimes(1);
     expect(updateGuide).toHaveBeenCalledTimes(1);
     expect(counterSpy).toHaveBeenCalledTimes(1);
     const joinedCourse = messageInCommandsChannel.roleString;
@@ -88,7 +88,7 @@ describe("slash join command", () => {
     const member = client.guild.members.cache.get(messageInCommandsChannel.member.user.id);
     await execute(messageInCommandsChannel, client);
     expect(member.roles.add).toHaveBeenCalledTimes(0);
-    expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
+    expect(sendReplyMessage).toHaveBeenCalledTimes(1);
     expect(updateGuide).toHaveBeenCalledTimes(0);
     expect(counterSpy).toHaveBeenCalledTimes(0);
   });

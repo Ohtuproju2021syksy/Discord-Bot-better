@@ -15,6 +15,4 @@ const sequelize = new Sequelize("postgres", username, password, {
 
 const Course = require("./models/Course")(sequelize, Sequelize.DataTypes);
 
-sequelize.sync();
-
 module.exports = { Course, sequelize };
