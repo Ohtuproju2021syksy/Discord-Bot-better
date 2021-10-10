@@ -7,7 +7,7 @@ const execute = async (interaction, client, models) => {
   await sendEphemeral(interaction, "Opening the bridge to Telegram...");
 
   const channel = client.guild.channels.cache.get(interaction.channelId);
-  if (!channel?.parent?.name?.startsWith("🔒") && !channel?.parent?.name?.startsWith("📚")) {
+  if (!channel?.parent?.name?.startsWith("🔐") && !channel?.parent?.name?.startsWith("📚") && !channel?.parent?.name?.startsWith("👻")) {
     return await editErrorEphemeral(interaction, "This is not a course category, can not execute the command!");
   }
 
