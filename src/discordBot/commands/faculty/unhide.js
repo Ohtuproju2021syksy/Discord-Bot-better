@@ -1,12 +1,12 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const {
   updateGuide,
-  createPrivateCategoryName,
-  findChannelWithNameAndType,
   msToMinutesAndSeconds,
   handleCooldown,
   checkCourseCooldown,
-  setCourseToPublic } = require("../../services/service");
+  setCourseToPublic,
+  getHiddenCourse,
+  getLockedCourse } = require("../../services/service");
 const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
 
@@ -14,8 +14,7 @@ const execute = async (interaction, client, Course) => {
   await sendEphemeral(interaction, "Unhiding course...");
   const courseName = interaction.options.getString("course").trim();
   const guild = client.guild;
-  const courseString = createPrivateCategoryName(courseName);
-  const category = findChannelWithNameAndType(courseString, "GUILD_CATEGORY", guild);
+  const category = getHiddenCourse(courseName, guild);
   if (!category) {
     return await editErrorEphemeral(interaction, `Invalid course name: ${courseName} or the course is public already!`);
   }
@@ -26,7 +25,12 @@ const execute = async (interaction, client, Course) => {
     return await editErrorEphemeral(interaction, `Command cooldown [mm:ss]: you need to wait ${time}!`);
   }
   else {
-    await category.setName(`📚 ${courseName}`);
+    if (getLockedCourse(courseName, guild)) {
+      await category.setName(`📚🔐 ${courseName}`);
+    }
+    else {
+      await category.setName(`📚 ${courseName}`);
+    }
     await editEphemeral(interaction, `This course ${courseName} is now public.`);
     await setCourseToPublic(courseName, Course);
     await client.emit("COURSES_CHANGED", Course);

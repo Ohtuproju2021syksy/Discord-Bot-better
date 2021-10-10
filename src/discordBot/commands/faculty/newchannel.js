@@ -25,7 +25,7 @@ const execute = async (interaction, client) => {
     return await editErrorEphemeral(interaction, "Course not found, can not create new channel.");
   }
 
-  if (!channel.parent.name.startsWith("🔒") && !channel.parent.name.startsWith("📚")) {
+  if (!channel?.parent?.name?.startsWith("🔐") && !channel?.parent?.name?.startsWith("📚") && !channel?.parent?.name?.startsWith("👻")) {
     return await editErrorEphemeral(interaction, "This is not a course category, can not create new channel.");
   }
 

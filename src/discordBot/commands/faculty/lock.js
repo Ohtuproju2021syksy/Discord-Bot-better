@@ -1,12 +1,12 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const {
   updateGuide,
-  createCategoryName,
-  findChannelWithNameAndType,
   msToMinutesAndSeconds,
   handleCooldown,
   checkCourseCooldown,
-  setCourseToLocked } = require("../../services/service");
+  setCourseToLocked,
+  getHiddenCourse,
+  getUnlockedCourse } = require("../../services/service");
 const { sendEphemeral, editEphemeral, editErrorEphemeral } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
 const { lockTelegramCourse } = require("../../../bridge/service");
@@ -15,8 +15,7 @@ const execute = async (interaction, client, Course) => {
   await sendEphemeral(interaction, "Locking course...");
   const courseName = interaction.options.getString("course").trim();
   const guild = client.guild;
-  const courseString = createCategoryName(courseName);
-  const category = findChannelWithNameAndType(courseString, "GUILD_CATEGORY", guild);
+  const category = getUnlockedCourse(courseName, guild);
   if (!category) {
     return await editErrorEphemeral(interaction, `Invalid course name: ${courseName} or the course is locked already!`);
   }
@@ -27,7 +26,12 @@ const execute = async (interaction, client, Course) => {
     return await editErrorEphemeral(interaction, `Command cooldown [mm:ss]: you need to wait ${time}!`);
   }
   else {
-    await category.setName(`🔐 ${courseName}`);
+    if (getHiddenCourse(courseName, guild)) {
+      await category.setName(`👻🔐 ${courseName}`);
+    }
+    else {
+      await category.setName(`📚🔐 ${courseName}`);
+    }
     await setCourseToLocked(courseName, Course, guild);
     await lockTelegramCourse(Course, courseName);
     await client.emit("COURSES_CHANGED", Course);

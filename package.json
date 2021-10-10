@@ -42,7 +42,8 @@
     "pg-hstore": "^2.3.4",
     "prom-client": "^14.0.0",
     "sequelize": "^6.6.2",
-    "telegraf": "^4.4.0"
+    "telegraf": "^4.4.0",
+    "umzug": "^2.3.0"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
