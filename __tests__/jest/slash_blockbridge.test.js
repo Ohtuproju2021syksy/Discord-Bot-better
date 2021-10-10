@@ -1,6 +1,6 @@
 const { execute } = require("../../src/discordBot/commands/faculty/blockbridge");
 const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../src/discordBot/services/message");
-const { findChannelFromDbByName } = require("../../src/discordBot/services/service");
+const { findChannelFromDbByName, findCourseFromDb } = require("../../src/discordBot/services/service");
 
 const models = require("../mocks/mockModels");
 jest.mock("../../src/discordBot/services/message");
@@ -12,9 +12,12 @@ const channelModelInstanceMock = { save: jest.fn(), bridged: true };
 
 findChannelFromDbByName
   .mockImplementation(() => ({ bridged: false }))
+  .mockImplementationOnce(() => null)
   .mockImplementationOnce(() => channelModelInstanceMock);
 
-afterEach(() => {
+findCourseFromDb.mockImplementation(() => ({ telegramId: 1 }));
+
+  afterEach(() => {
   jest.clearAllMocks();
 });
 
@@ -24,6 +27,18 @@ describe("slash blockbridge command", () => {
     const response = "This is not a course category, can not execute the command!";
     await execute(defaultTeacherInteraction, client, models);
     expect(findChannelFromDbByName).toHaveBeenCalledTimes(0);
+    expect(sendEphemeral).toHaveBeenCalledTimes(1);
+    expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initalResponse);
+    expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
+    expect(editErrorEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
+  });
+
+  test("Cannot use command on default course channels", async () => {
+    const client = defaultTeacherInteraction.client;
+    defaultTeacherInteraction.channelId = 3;
+    const response = "command can't be performed on default course channels!";
+    await execute(defaultTeacherInteraction, client, models);
+    expect(findChannelFromDbByName).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initalResponse);
     expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
