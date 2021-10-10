@@ -4,19 +4,20 @@ const {
   msToMinutesAndSeconds,
   handleCooldown,
   checkCourseCooldown,
-  setCourseToPrivate,
-  getPublicCourse,
+  setCourseToUnlocked,
+  getHiddenCourse,
   getLockedCourse } = require("../../services/service");
-const { sendEphemeral, editErrorEphemeral, editEphemeral } = require("../../services/message");
+const { sendEphemeral, editEphemeral, editErrorEphemeral } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
+const { unlockTelegramCourse } = require("../../../bridge/service");
 
 const execute = async (interaction, client, Course) => {
-  await sendEphemeral(interaction, "Hiding course...");
+  await sendEphemeral(interaction, "Unlocking course...");
   const courseName = interaction.options.getString("course").trim();
   const guild = client.guild;
-  const category = getPublicCourse(courseName, guild);
+  const category = getLockedCourse(courseName, guild);
   if (!category) {
-    return await editErrorEphemeral(interaction, `Invalid course name: ${courseName} or the course is private already!`);
+    return await editErrorEphemeral(interaction, `Invalid course name: ${courseName} or the course is unlocked already!`);
   }
   const cooldown = checkCourseCooldown(courseName);
   if (cooldown) {
@@ -25,31 +26,32 @@ const execute = async (interaction, client, Course) => {
     return await editErrorEphemeral(interaction, `Command cooldown [mm:ss]: you need to wait ${time}!`);
   }
   else {
-    if (getLockedCourse(courseName, guild)) {
-      await category.setName(`👻🔐 ${courseName}`);
-    }
-    else {
+    if (getHiddenCourse(courseName, guild)) {
       await category.setName(`👻 ${courseName}`);
     }
-    await setCourseToPrivate(courseName, Course);
-    await editEphemeral(interaction, `This course ${courseName} is now private.`);
+    else {
+      await category.setName(`📚 ${courseName}`);
+    }
+    await unlockTelegramCourse(Course, courseName);
+    await setCourseToUnlocked(courseName, Course, guild);
     await client.emit("COURSES_CHANGED", Course);
     await updateGuide(client.guild, Course);
+    await editEphemeral(interaction, `This course ${courseName} is now unlocked.`);
     handleCooldown(courseName);
   }
 };
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("hide")
-    .setDescription("Hide given course")
+    .setName("unlock")
+    .setDescription("Unlock course")
     .setDefaultPermission(false)
     .addStringOption(option =>
       option.setName("course")
-        .setDescription("Hide given course")
+        .setDescription("Unlock given course")
         .setRequired(true)),
   execute,
-  usage: "/hide [course name]",
-  description: "Hide given course.",
+  usage: "/unlock [course name]",
+  description: "Unlock course.",
   roles: ["admin", facultyRole],
 };

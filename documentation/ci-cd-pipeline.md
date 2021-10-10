@@ -11,5 +11,5 @@ Generally, all code changes are made to dev branch with the exception of certain
 
 Deployment requires pull request from dev to main, pass the Testing pipeline workflow and be approved by one reviewer. After merging workflows run on main branch and a new version of production docker image is pushed to DockerHub.
 
-In case something unwanted gets deployed, the bot can be reverted to an older version by simply re-running [a publish workflow](https://github.com/CS-DISCORD-BOT/cs-discord-bot/actions/workflows/publish.yml) of the desired version.
+In case something unwanted gets deployed, the bot can be reverted to an older version by simply re-running [a publish workflow](https://github.com/Ohtuproju2021syksy/Discord-Bot-better/actions/workflows/publish.yml) of the desired version.
 

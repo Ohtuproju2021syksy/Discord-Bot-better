@@ -1,4 +1,5 @@
 const { sequelize } = require("./dbInit");
+const Umzug = require("umzug");
 
 const DB_CONNECTION_RETRY_LIMIT = 10;
 
@@ -6,11 +7,31 @@ const testConnection = async () => {
   await sequelize.authenticate();
 };
 
+const runMigrations = async () => {
+  const migrator = new Umzug({
+    storage: "sequelize",
+    storageOptions: {
+      sequelize,
+      tableName: "migrations",
+    },
+    migrations: {
+      params: [sequelize.getQueryInterface()],
+      path: `${process.cwd()}/src/db/migrations`,
+      pattern: /\.js$/,
+    },
+  });
+  const migrations = await migrator.up();
+  console.log("Ran the following migrations: ", {
+    files: migrations.map((mig) => mig.file),
+  });
+};
+
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const connectToDatabase = async (attempt = 0) => {
   try {
     await testConnection();
+    await runMigrations();
   }
   catch (err) {
     if (attempt === DB_CONNECTION_RETRY_LIMIT) {

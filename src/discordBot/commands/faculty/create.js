@@ -71,7 +71,7 @@ const getChannelObjects = (guild, admin, student, roleName, category) => {
 };
 
 const getCategoryObject = (categoryName, permissionOverwrites) => ({
-  name: categoryName,
+  name: `📚 ${categoryName}`,
   options: {
     type: "GUILD_CATEGORY",
     permissionOverwrites,

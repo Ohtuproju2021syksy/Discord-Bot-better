@@ -13,7 +13,7 @@ const {
   msToMinutesAndSeconds,
   findOrCreateChannel,
   setCoursePositionABC,
-  isACourseCategory,
+  isCourseCategory,
   trimCourseName,
   findAllCourseNames } = require("../../src/discordBot/services/service");
 
@@ -82,7 +82,7 @@ describe("Service", () => {
 
   test("Get private category name from course name", () => {
     const courseString = "test";
-    const privateCategoryName = "🔒 test";
+    const privateCategoryName = "👻 test";
     const result = createPrivateCategoryName(courseString);
     expect(result).toBe(privateCategoryName);
   });
@@ -96,7 +96,7 @@ describe("Service", () => {
 
   test("Get course name from privateCategory name", () => {
     const courseString = "test";
-    const privateCategoryName = "🔒 test";
+    const privateCategoryName = "👻 test";
     const result = getRoleFromCategory(privateCategoryName);
     expect(result).toBe(courseString);
   });
@@ -251,14 +251,14 @@ describe("Service", () => {
   test("valid private category is course category", async () => {
     const privateCategoryName = "🔒 test";
     const channel = { name: privateCategoryName };
-    const result = isACourseCategory(channel);
+    const result = isCourseCategory(channel);
     expect(result).toBe(true);
   });
 
   test("channel without emoji is not course category", async () => {
     const privateCategoryName = "test";
     const channel = { name: privateCategoryName };
-    const result = isACourseCategory(channel);
+    const result = isCourseCategory(channel);
     expect(result).toBe(false);
   });
 
