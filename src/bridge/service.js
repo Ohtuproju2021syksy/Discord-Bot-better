@@ -31,6 +31,9 @@ const sendMessageToDiscord = async (message, channel) => {
       console.log("Message is too long (over 2000 characters)");
       return;
     }
+    if (message.content.text && message.content.text[0] === "/") {
+      return;
+    }
     const webhooks = await channel.fetchWebhooks();
     const webhook = webhooks.first();
     if (message.content.text) {
@@ -124,6 +127,7 @@ const handleBridgeMessage = async (message, courseName, Course) => {
   }
 
   let msg = message.content;
+  if (msg[0] === "/") return;
 
   while (msg.includes("<#")) {
     const channelID = msg.match(/(?<=<#).*?(?=>)/)[0];
@@ -188,6 +192,7 @@ const validateContent = (content) => {
 };
 
 const sendMessageToTelegram = async (telegramId, content, sender, channel) => {
+
   sender ? escapeChars(sender) : null;
   content = validateContent(content);
   try {
@@ -252,6 +257,52 @@ const getCourseName = (categoryName) => {
   return matches?.[1] || cleaned;
 };
 
+const lockTelegramCourse = async (Course, courseName) => {
+  const group = await Course.findOne({ where: { name: String(courseName) } });
+  if (!group || group.telegramId == null) {
+    return;
+  }
+  const telegramId = group.telegramId;
+  const permissions = {
+    "can_send_messages" : false,
+    "can_send_media_messages": false,
+    "can_send_polls": false,
+    "can_send_other_messages": false,
+    "can_add_web_page_previews": false,
+    "can_invite_users": false,
+  };
+  try {
+    await telegramClient.telegram.setChatPermissions(telegramId, permissions);
+    await sendMessageToTelegram(group.telegramId, "This chat has been locked", null, "");
+  }
+  catch (error) {
+    return error;
+  }
+};
+
+const unlockTelegramCourse = async (Course, courseName) => {
+  const group = await Course.findOne({ where: { name: String(courseName) } });
+  if (!group || group.telegramId == null) {
+    return;
+  }
+  const telegramId = group.telegramId;
+  try {
+    const permissions = {
+      "can_send_messages" : true,
+      "can_send_media_messages": true,
+      "can_send_polls": true,
+      "can_send_other_messages": true,
+      "can_add_web_page_previews": true,
+      "can_invite_users": true,
+    };
+    await telegramClient.telegram.setChatPermissions(telegramId, permissions);
+    await sendMessageToTelegram(group.telegramId, "This chat has been unlocked", null, "");
+  }
+  catch (error) {
+    return error;
+  }
+};
+
 const initService = (dclient, tClient) => {
   discordClient = dclient;
   telegramClient = tClient;
@@ -267,4 +318,6 @@ module.exports = {
   sendAnimationToTelegram,
   handleBridgeMessage,
   getCourseName,
+  lockTelegramCourse,
+  unlockTelegramCourse,
 };

@@ -3,6 +3,7 @@ const { execute } = require("../../src/discordBot/events/messageCreate");
 const sort = require("../../src/discordBot/commands/admin/sortCourses");
 const deleteCommand = require("../../src/discordBot/commands/admin/deleteCommand");
 const removeCommand = require("../../src/discordBot/commands/admin/remove");
+const { sendReplyMessage } = require("../../src/discordBot/services/message");
 const { findCourseFromDb } = require("../../src/discordBot/services/service");
 const { messageInGuideChannel, messageInCommandsChannel, student, teacher } = require("../mocks/mockMessages");
 const models = require("../mocks/mockModels");
@@ -94,5 +95,19 @@ describe("prefix commands", () => {
     expect(messageInCommandsChannel.react).toHaveBeenCalledTimes(1);
     expect(messageInCommandsChannel.react).toHaveBeenCalledWith("✅");
     expect(client.emit).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("Unknown slash commands", () => {
+  test("unknown slash command is met with correct response", async () => {
+    messageInCommandsChannel.content = "/unvalidCommand";
+    const client = messageInCommandsChannel.client;
+    messageInCommandsChannel.author = student;
+    messageInCommandsChannel.member = student;
+    await execute(messageInCommandsChannel, client);
+    expect(messageInCommandsChannel.channel.send).toHaveBeenCalledTimes(0);
+    expect(messageInCommandsChannel.react).toHaveBeenCalledTimes(0);
+    expect(messageInCommandsChannel.reply).toHaveBeenCalledTimes(0);
+    expect(sendReplyMessage).toHaveBeenCalledTimes(1);
   });
 });

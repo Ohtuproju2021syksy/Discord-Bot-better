@@ -1,3 +1,4 @@
+const { sendReplyMessage } = require("../services/message");
 const prefix = process.env.PREFIX;
 
 const execute = async (message, client, models) => {
@@ -18,6 +19,10 @@ const execute = async (message, client, models) => {
         command.execute(message, client, models.Course);
         return;
       }
+    }
+    else {
+      // Unknown command
+      return sendReplyMessage(message, "Sorry, I didn't quite catch what you meant. You can type **/help** to view a helpful *(pun intended)* list of commands!");
     }
   }
 

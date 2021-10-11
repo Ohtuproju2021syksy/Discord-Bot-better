@@ -1,34 +1,40 @@
-const { execute } = require("../../src/discordBot/commands/faculty/unhide");
+const { execute } = require("../../src/discordBot/commands/faculty/unlock");
 const { sendEphemeral, editErrorEphemeral, editEphemeral } = require("../../src/discordBot/services/message");
 const {
   updateGuide,
+  getLockedCourse,
   msToMinutesAndSeconds,
-  setCourseToPublic,
-  checkCourseCooldown,
-  getHiddenCourse } = require("../../src/discordBot/services/service");
+  setCourseToUnlocked,
+  checkCourseCooldown } = require("../../src/discordBot/services/service");
 
 jest.mock("../../src/discordBot/services/message");
 jest.mock("../../src/discordBot/services/service");
 
 
+const Course = {
+  create: jest.fn(),
+  findOne: jest
+    .fn(() => true)
+    .mockImplementationOnce(() => false),
+  destroy: jest.fn(),
+};
+
 const time = "4:59";
-const initialResponse = "Unhiding course...";
+const initialResponse = "Unlocking course...";
 const { defaultTeacherInteraction } = require("../mocks/mockInteraction");
 const courseName = "test";
 defaultTeacherInteraction.options = { getString: jest.fn(() => courseName) };
-
 
 afterEach(() => {
   jest.clearAllMocks();
 });
 
-describe("slash unhide command", () => {
-  test("unhide command with invalid course name responds with correct ephemeral", async () => {
+describe("slash unlock command", () => {
+  test("unlock command with invalid course name responds with correct ephemeral", async () => {
     const client = defaultTeacherInteraction.client;
-    const response = `Invalid course name: ${courseName} or the course is public already!`;
-    await execute(defaultTeacherInteraction, client);
-    expect(getHiddenCourse).toHaveBeenCalledTimes(1);
-
+    const response = `Invalid course name: ${courseName} or the course is unlocked already!`;
+    await execute(defaultTeacherInteraction, client, Course);
+    expect(getLockedCourse).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
     expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
@@ -36,13 +42,13 @@ describe("slash unhide command", () => {
     expect(updateGuide).toHaveBeenCalledTimes(0);
   });
 
-  test("unhide command with valid course name responds with correct ephemeral", async () => {
-    getHiddenCourse.mockImplementationOnce((name) => { return { name: `👻 ${name}`, setName: jest.fn() }; });
+  test("unlock command with valid course name responds with correct ephemeral", async () => {
+    getLockedCourse.mockImplementationOnce((name) => { return { name: `📚 ${name}`, setName: jest.fn() }; });
     const client = defaultTeacherInteraction.client;
-    const response = `This course ${courseName} is now public.`;
-    await execute(defaultTeacherInteraction, client);
-    expect(getHiddenCourse).toHaveBeenCalledTimes(1);
-    expect(setCourseToPublic).toHaveBeenCalledTimes(1);
+    const response = `This course ${courseName} is now unlocked.`;
+    await execute(defaultTeacherInteraction, client, Course);
+    expect(getLockedCourse).toHaveBeenCalledTimes(1);
+    expect(setCourseToUnlocked).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
     expect(editEphemeral).toHaveBeenCalledTimes(1);
@@ -51,12 +57,12 @@ describe("slash unhide command", () => {
     expect(updateGuide).toHaveBeenCalledTimes(1);
   });
 
-  test("unhide command with cooldown", async () => {
-    getHiddenCourse.mockImplementation((name) => { return { name: `👻 ${name}`, setName: jest.fn() }; });
+  test("unlock command with cooldown", async () => {
+    getLockedCourse.mockImplementation((name) => { return { name: `📚 ${name}`, setName: jest.fn() }; });
     checkCourseCooldown.mockImplementation(() => time);
     const client = defaultTeacherInteraction.client;
-    await execute(defaultTeacherInteraction, client);
-    expect(getHiddenCourse).toHaveBeenCalledTimes(1);
+    await execute(defaultTeacherInteraction, client, Course);
+    expect(getLockedCourse).toHaveBeenCalledTimes(1);
     expect(msToMinutesAndSeconds).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);

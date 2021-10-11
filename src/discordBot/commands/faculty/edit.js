@@ -17,8 +17,7 @@ const { courseAdminRole, facultyRole } = require("../../../../config.json");
 
 
 const changeCourseNames = async (newValue, channel, category, guild) => {
-  if (guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && (c.name.toLowerCase() === `📚 ${newValue.toLowerCase()}`
-    || c.name.toLowerCase() === `🔒 ${newValue.toLowerCase()}`))) return;
+  if (guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name.toLowerCase().includes(newValue.toLowerCase()))) return;
   if (category.name.includes("📚")) {
     await category.setName(`📚 ${newValue}`);
   }
@@ -74,7 +73,7 @@ const execute = async (interaction, client, models) => {
   const choice = interaction.options.getString("options").toLowerCase().trim();
   const newValue = interaction.options.getString("new_value").trim();
 
-  if (!channel?.parent?.name?.startsWith("🔒") && !channel?.parent?.name?.startsWith("📚")) {
+  if (!channel?.parent?.name?.startsWith("🔐") && !channel?.parent?.name?.startsWith("📚") && !channel?.parent?.name?.startsWith("👻")) {
     return await editErrorEphemeral(interaction, "This is not a course category, can not execute the command");
   }
 

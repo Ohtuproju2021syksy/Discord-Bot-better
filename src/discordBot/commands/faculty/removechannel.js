@@ -11,11 +11,7 @@ const execute = async (interaction, client, models) => {
   const guild = client.guild;
   const channel = guild.channels.cache.get(interaction.channelId);
 
-  if (!channel.parent) {
-    return await editErrorEphemeral(interaction, "This command can be used only in course channels");
-  }
-
-  if (!channel.parent.name.startsWith("🔒") && !channel.parent.name.startsWith("📚")) {
+  if (!channel?.parent?.name?.startsWith("🔐") && !channel?.parent?.name?.startsWith("📚") && !channel?.parent?.name?.startsWith("👻")) {
     return await editErrorEphemeral(interaction, "This command can be used only in course channels");
   }
 
