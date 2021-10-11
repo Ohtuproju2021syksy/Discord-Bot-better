@@ -22,11 +22,19 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
+const Course = {
+  create: jest.fn(),
+  findOne: jest
+    .fn(() => true)
+    .mockImplementationOnce(() => false),
+  destroy: jest.fn(),
+};
+
 describe("slash unhide command", () => {
   test("unhide command with invalid course name responds with correct ephemeral", async () => {
     const client = defaultTeacherInteraction.client;
     const response = `Invalid course name: ${courseName} or the course is public already!`;
-    await execute(defaultTeacherInteraction, client);
+    await execute(defaultTeacherInteraction, client, Course);
     expect(getHiddenCourse).toHaveBeenCalledTimes(1);
 
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
@@ -40,7 +48,7 @@ describe("slash unhide command", () => {
     getHiddenCourse.mockImplementationOnce((name) => { return { name: `👻 ${name}`, setName: jest.fn() }; });
     const client = defaultTeacherInteraction.client;
     const response = `This course ${courseName} is now public.`;
-    await execute(defaultTeacherInteraction, client);
+    await execute(defaultTeacherInteraction, client, Course);
     expect(getHiddenCourse).toHaveBeenCalledTimes(1);
     expect(setCourseToPublic).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
@@ -55,7 +63,7 @@ describe("slash unhide command", () => {
     getHiddenCourse.mockImplementation((name) => { return { name: `👻 ${name}`, setName: jest.fn() }; });
     checkCourseCooldown.mockImplementation(() => time);
     const client = defaultTeacherInteraction.client;
-    await execute(defaultTeacherInteraction, client);
+    await execute(defaultTeacherInteraction, client, Course);
     expect(getHiddenCourse).toHaveBeenCalledTimes(1);
     expect(msToMinutesAndSeconds).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);

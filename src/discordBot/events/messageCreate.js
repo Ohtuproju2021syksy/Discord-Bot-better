@@ -16,7 +16,7 @@ const execute = async (message, client, models) => {
         if (!roleString) return;
         // Command execution handles permissions and whether the course is valid
         message.roleString = roleString;
-        command.execute(message, client, models.Course);
+        command.execute(message, client, models);
         return;
       }
     }
@@ -40,10 +40,10 @@ const execute = async (message, client, models) => {
       await command.execute(message, args, models);
     }
     else {
-      await command.execute(message, args, models.Course);
+      await command.execute(message, args, models);
     }
 
-    if (command.emit) await client.emit("COURSES_CHANGED", models.Course);
+    if (command.emit) await client.emit("COURSES_CHANGED", models);
     await message.react("✅");
   }
   catch (error) {

@@ -10,12 +10,14 @@ afterEach(() => {
 });
 
 const Course = {};
+const Channel = {};
+const models = { Course, Channel };
 const args = [];
 
 describe("prefix reload command", () => {
   test("user with administrator role can reload commands", async () => {
     const client = messageInCommandsChannel.client;
-    await execute(messageInCommandsChannel, args, Course);
+    await execute(messageInCommandsChannel, args, models);
     expect(setUpCommands).toHaveBeenCalledTimes(1);
     expect(setUpCommands).toHaveBeenCalledWith(client, Course);
   });
@@ -23,7 +25,7 @@ describe("prefix reload command", () => {
   test("user without administrator role cannot reload commands", async () => {
     messageInCommandsChannel.author = student;
     messageInCommandsChannel.member = student;
-    await execute(messageInCommandsChannel, args, Course);
+    await execute(messageInCommandsChannel, args, models);
     expect(setUpCommands).toHaveBeenCalledTimes(0);
   });
 });

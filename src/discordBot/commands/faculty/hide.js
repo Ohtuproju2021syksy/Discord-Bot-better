@@ -31,7 +31,7 @@ const execute = async (interaction, client, models) => {
     else {
       await category.setName(`👻 ${courseName}`);
     }
-    await setCourseToPrivate(courseName, Course);
+    await setCourseToPrivate(courseName, models.Course);
     await editEphemeral(interaction, `This course ${courseName} is now private.`);
     await client.emit("COURSES_CHANGED", models.Course);
     await updateGuide(client.guild, models.Course);

@@ -11,7 +11,7 @@ const { sendEphemeral, editEphemeral, editErrorEphemeral } = require("../../serv
 const { facultyRole } = require("../../../../config.json");
 const { unlockTelegramCourse } = require("../../../bridge/service");
 
-const execute = async (interaction, client, Course) => {
+const execute = async (interaction, client, models) => {
   await sendEphemeral(interaction, "Unlocking course...");
   const courseName = interaction.options.getString("course").trim();
   const guild = client.guild;
@@ -32,10 +32,10 @@ const execute = async (interaction, client, Course) => {
     else {
       await category.setName(`📚 ${courseName}`);
     }
-    await unlockTelegramCourse(Course, courseName);
-    await setCourseToUnlocked(courseName, Course, guild);
-    await client.emit("COURSES_CHANGED", Course);
-    await updateGuide(client.guild, Course);
+    await unlockTelegramCourse(models.Course, courseName);
+    await setCourseToUnlocked(courseName, models.Course, guild);
+    await client.emit("COURSES_CHANGED", models.Course);
+    await updateGuide(client.guild, models.Course);
     await editEphemeral(interaction, `This course ${courseName} is now unlocked.`);
     handleCooldown(courseName);
   }

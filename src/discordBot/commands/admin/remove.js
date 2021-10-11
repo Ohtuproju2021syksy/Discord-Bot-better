@@ -1,7 +1,7 @@
 const { updateGuide, findCategoryName, removeCourseFromDb, findCourseNickNameFromDbWithCourseCode } = require("../../services/service");
 const { courseAdminRole } = require("../../../../config.json");
 
-const execute = async (message, args, Course) => {
+const execute = async (message, args, models) => {
   if (message.member.permissions.has("ADMINISTRATOR")) {
     let courseName = args.join(" ");
     const guild = message.guild;
@@ -9,7 +9,7 @@ const execute = async (message, args, Course) => {
     let courseString = findCategoryName(courseName, guild);
     let category = guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name.toLowerCase() === courseString.toLowerCase());
     if (!category) {
-      const courseNickName = await findCourseNickNameFromDbWithCourseCode(courseName, Course);
+      const courseNickName = await findCourseNickNameFromDbWithCourseCode(courseName, models.Course);
       if (courseNickName) {
         courseName = String(courseNickName.dataValues.name);
         courseString = findCategoryName(courseName, guild);
@@ -30,8 +30,8 @@ const execute = async (message, args, Course) => {
       .map(async role => await role.delete()),
     );
 
-    await removeCourseFromDb(courseName, Course);
-    await updateGuide(guild, Course);
+    await removeCourseFromDb(courseName, models.Course);
+    await updateGuide(guild, models.Course);
   }
 };
 

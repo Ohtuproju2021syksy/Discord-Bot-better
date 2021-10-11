@@ -1,8 +1,8 @@
 const { setUpCommands } = require("../../services/command");
 
-const execute = async (message, args, Course) => {
+const execute = async (message, args, models) => {
   if (message.member.permissions.has("ADMINISTRATOR")) {
-    setUpCommands(message.client, Course);
+    setUpCommands(message.client, models.Course);
   }
 };
 

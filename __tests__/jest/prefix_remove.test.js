@@ -14,11 +14,19 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
+const Course = {
+  create: jest.fn(),
+  findOne: jest
+    .fn(() => true)
+    .mockImplementationOnce(() => false),
+  destroy: jest.fn(),
+};
+
 describe("prefix remove", () => {
   test("Only administrator can use remove command", async () => {
     messageInCommandsChannel.member = student;
     const courseName = "test";
-    await execute(messageInCommandsChannel, [courseName]);
+    await execute(messageInCommandsChannel, [courseName], Course);
     expect(findCategoryName).toHaveBeenCalledTimes(0);
     expect(messageInCommandsChannel.reply).toHaveBeenCalledTimes(0);
     expect(removeCourseFromDb).toHaveBeenCalledTimes(0);
@@ -29,7 +37,7 @@ describe("prefix remove", () => {
     messageInCommandsChannel.member = teacher;
     const courseName = "test";
     const response = `Error: Invalid course name: ${courseName}.`;
-    await execute(messageInCommandsChannel, [courseName]);
+    await execute(messageInCommandsChannel, [courseName], Course);
     expect(findCategoryName).toHaveBeenCalledTimes(1);
     expect(messageInCommandsChannel.reply).toHaveBeenCalledTimes(1);
     expect(messageInCommandsChannel.reply).toHaveBeenCalledWith(response);
@@ -38,7 +46,7 @@ describe("prefix remove", () => {
   test("remove command with valid course name responds correct ephemeral", async () => {
     messageInCommandsChannel.member = teacher;
     const courseName = "test";
-    await execute(messageInCommandsChannel, [courseName]);
+    await execute(messageInCommandsChannel, [courseName], Course);
     expect(findCategoryName).toHaveBeenCalledTimes(1);
     expect(removeCourseFromDb).toHaveBeenCalledTimes(1);
     expect(updateGuide).toHaveBeenCalledTimes(1);
