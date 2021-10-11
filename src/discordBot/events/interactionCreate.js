@@ -1,11 +1,11 @@
 const { sendErrorReport, sendErrorEphemeral } = require("../services/message");
 
-const execute = async (interaction, client, Course) => {
+const execute = async (interaction, client, models) => {
   if (!interaction.isCommand()) return;
   const command = client.slashCommands.get(interaction.commandName);
   if (!command) return;
   try {
-    await command.execute(interaction, client, Course);
+    await command.execute(interaction, client, models);
   }
   catch (error) {
     console.error(error);

@@ -1,13 +1,18 @@
 const { execute } = require("../../src/discordBot/commands/faculty/removechannel");
 const { sendEphemeral, editEphemeral, editErrorEphemeral } = require("../../src/discordBot/services/message");
+const {
+  removeChannelFromDb, getRoleFromCategory } = require("../../src/discordBot/services/service");
 
 jest.mock("../../src/discordBot/services/message");
 
+const models = require("../mocks/mockModels");
 const { defaultTeacherInteraction } = require("../mocks/mockInteraction");
 defaultTeacherInteraction.options = { getString: jest.fn((name) => name) };
 
 const initialResponse = "Removing text channel...";
 
+jest.mock("../../src/discordBot/services/service");
+getRoleFromCategory.mockImplementation((name) => name.replace("📚", "").trim());
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -19,7 +24,7 @@ describe("slash removechannel", () => {
     const response = "This command can be used only in course channels";
     defaultTeacherInteraction.options = { getString: jest.fn(() => courseName) };
     const client = defaultTeacherInteraction.client;
-    await execute(defaultTeacherInteraction, client);
+    await execute(defaultTeacherInteraction, client, models);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
     expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
@@ -33,7 +38,7 @@ describe("slash removechannel", () => {
     defaultTeacherInteraction.channelId = 4;
     const client = defaultTeacherInteraction.client;
     client.guild.channels.create("notcourse", "GUILD_CATEGORY");
-    await execute(defaultTeacherInteraction, client);
+    await execute(defaultTeacherInteraction, client, models);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
     expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
@@ -46,7 +51,7 @@ describe("slash removechannel", () => {
     defaultTeacherInteraction.options = { getString: jest.fn(() => courseName) };
     defaultTeacherInteraction.channelId = 3;
     const client = defaultTeacherInteraction.client;
-    await execute(defaultTeacherInteraction, client);
+    await execute(defaultTeacherInteraction, client, models);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
     expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
@@ -59,7 +64,7 @@ describe("slash removechannel", () => {
     defaultTeacherInteraction.options = { getString: jest.fn(() => courseName) };
     defaultTeacherInteraction.channelId = 3;
     const client = defaultTeacherInteraction.client;
-    await execute(defaultTeacherInteraction, client);
+    await execute(defaultTeacherInteraction, client, models);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
     expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
@@ -72,7 +77,9 @@ describe("slash removechannel", () => {
     defaultTeacherInteraction.options = { getString: jest.fn(() => courseName) };
     defaultTeacherInteraction.channelId = 3;
     const client = defaultTeacherInteraction.client;
-    await execute(defaultTeacherInteraction, client);
+    await execute(defaultTeacherInteraction, client, models);
+    expect(removeChannelFromDb).toHaveBeenCalledTimes(1);
+    expect(removeChannelFromDb).toHaveBeenCalledWith(`${courseName}_${courseName}`, models.Channel);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
     expect(editEphemeral).toHaveBeenCalledTimes(1);

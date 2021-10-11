@@ -78,10 +78,10 @@ const getCategoryObject = (categoryName, permissionOverwrites) => ({
   },
 });
 
-const execute = async (interaction, client, Course) => {
+const execute = async (interaction, client, models) => {
   const courseCode = interaction.options.getString("coursecode").trim();
   const courseFullName = interaction.options.getString("full_name").trim();
-  if (await findCourseFromDbWithFullName(courseFullName, Course)) return await sendErrorEphemeral(interaction, "Course fullname must be unique.");
+  if (await findCourseFromDbWithFullName(courseFullName, models.Course)) return await sendErrorEphemeral(interaction, "Course fullname must be unique.");
 
   let courseName;
   let errorMessage;
@@ -99,7 +99,7 @@ const execute = async (interaction, client, Course) => {
     return await sendErrorEphemeral(interaction, "Course code, name and nickname are too long!");
   }
 
-  if (await findCourseFromDb(courseName, Course)) return await sendErrorEphemeral(interaction, errorMessage);
+  if (await findCourseFromDb(courseName, models.Course)) return await sendErrorEphemeral(interaction, errorMessage);
   await sendEphemeral(interaction, "Creating course...");
   const guild = client.guild;
 
@@ -115,12 +115,12 @@ const execute = async (interaction, client, Course) => {
     async channelObject => await findOrCreateChannel(channelObject, guild),
   ));
 
-  await createCourseToDatabase(courseCode, courseFullName, courseName, Course);
+  await createCourseToDatabase(courseCode, courseFullName, courseName, models.Course);
   await setCoursePositionABC(guild, categoryName);
   await createInvitation(guild, courseName);
   await editEphemeral(interaction, `Created course ${courseName}.`);
-  await client.emit("COURSES_CHANGED", Course);
-  await updateGuide(client.guild, Course);
+  await client.emit("COURSES_CHANGED", models.Course);
+  await updateGuide(client.guild, models.Course);
 };
 
 module.exports = {

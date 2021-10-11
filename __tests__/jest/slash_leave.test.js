@@ -1,6 +1,7 @@
 const { execute } = require("../../src/discordBot/commands/student/leave");
 const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../src/discordBot/services/message");
 const { updateGuide } = require("../../src/discordBot/services/service");
+const models = require("../mocks/mockModels");
 
 jest.mock("../../src/discordBot/services/message");
 jest.mock("../../src/discordBot/services/service");
@@ -18,7 +19,7 @@ describe("slash leave command", () => {
   test("invalid course name responds with correct ephemeral", async () => {
     const client = defaultTeacherInteraction.client;
     const response = `Invalid course name: ${roleString}`;
-    await execute(defaultTeacherInteraction, client);
+    await execute(defaultTeacherInteraction, client, models);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
     expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
@@ -29,7 +30,7 @@ describe("slash leave command", () => {
     const client = defaultTeacherInteraction.client;
     client.guild.roles.create({ name: roleString });
     const response = `You are not on a ${roleString} course.`;
-    await execute(defaultTeacherInteraction, client);
+    await execute(defaultTeacherInteraction, client, models);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
     expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
@@ -42,7 +43,7 @@ describe("slash leave command", () => {
     const memberRolesLengthAtStart = member.roles.cache.length;
     const response = `You have been removed from the ${roleString} course.`;
     await member.roles.add(roleString);
-    await execute(defaultTeacherInteraction, client);
+    await execute(defaultTeacherInteraction, client, models);
     expect(member.roles.remove).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);

@@ -1,10 +1,12 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { getRoleFromCategory } = require("../../services/service");
+const { getRoleFromCategory, removeChannelFromDb } = require("../../services/service");
 const { sendEphemeral, editEphemeral, editErrorEphemeral } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
 
-const execute = async (interaction, client) => {
+const execute = async (interaction, client, models) => {
   await sendEphemeral(interaction, "Removing text channel...");
+
+  const channelModel = models.Channel;
   const deleteName = interaction.options.getString("channel").toLowerCase().trim().replace(/ /g, "-");
   const guild = client.guild;
   const channel = guild.channels.cache.get(interaction.channelId);
@@ -14,18 +16,19 @@ const execute = async (interaction, client) => {
   }
 
   const categoryName = getRoleFromCategory(channel.parent.name).replace(/ /g, "-");
-  const deleteCourseName = `${categoryName}_${deleteName}`;
+  const deleteChannelName = `${categoryName}_${deleteName}`;
 
   if (deleteName === "general" || deleteName === "announcement" || deleteName === "voice") {
     return await editErrorEphemeral(interaction, "Original channels can not be removed.");
   }
 
-  const guildName = guild.channels.cache.find(c => c.parent === channel.parent && c.name === deleteCourseName);
+  const guildName = guild.channels.cache.find(c => c.parent === channel.parent && c.name === deleteChannelName);
   if (!guildName) {
     return await editErrorEphemeral(interaction, "There is no added channel with given name.");
   }
 
-  guild.channels.cache.find(c => c.parent === channel.parent && c.name === deleteCourseName).delete();
+  guild.channels.cache.find(c => c.parent === channel.parent && c.name === deleteChannelName).delete();
+  await removeChannelFromDb(deleteChannelName, channelModel);
   return await editEphemeral(interaction, `${deleteName} removed!`);
 };
 

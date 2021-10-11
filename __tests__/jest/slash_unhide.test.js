@@ -17,6 +17,7 @@ const { defaultTeacherInteraction } = require("../mocks/mockInteraction");
 const courseName = "test";
 defaultTeacherInteraction.options = { getString: jest.fn(() => courseName) };
 
+
 afterEach(() => {
   jest.clearAllMocks();
 });
@@ -27,6 +28,7 @@ describe("slash unhide command", () => {
     const response = `Invalid course name: ${courseName} or the course is public already!`;
     await execute(defaultTeacherInteraction, client);
     expect(getHiddenCourse).toHaveBeenCalledTimes(1);
+
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
     expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
