@@ -10,11 +10,13 @@ Command | Description | Example
 
 Command | Description | Example
 --- |--- | ---
+`/blockbridge` | Blocks bridge in a Discord text channel. Must be used inside a course and in a non-default text channel. | `/block`
 `/create` | Create a given course channel | `/create ohpe ohjelmoinnin perusteet`
 `/hide` | Make the given course private, disabling joining with `/join` | `/hide ohpe`
 `/lock` | Lock the given course, disabling messaging by regular users | `/lock ohpe`
 `/newchannel` | Add a text channel for the course. Must be used inside a course. | `/newchannel questions`
 `/removechannel` | Remove a text channel from the course. Must be used inside a course. | `/removechannel questions`
+`/unblockbridge` | Unblocks bridge in a Discord text channel. Must be used inside a course and in a non-default text channel. | `/unblock`
 `/unhide` | Make the given course public, enabling joining with `/join`. | `/unhide ohpe`
 `/unlock` | Unlock the given course, enabling messaging by regular users. | `/unlock ohpe`
 

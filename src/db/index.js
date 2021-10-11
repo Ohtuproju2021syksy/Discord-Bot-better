@@ -31,7 +31,13 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const connectToDatabase = async (attempt = 0) => {
   try {
     await testConnection();
-    await runMigrations();
+    console.log("Connected to database");
+    try {
+      await runMigrations();
+    }
+    catch (err) {
+      console.log("Failed to run migrations: \n " + err);
+    }
   }
   catch (err) {
     if (attempt === DB_CONNECTION_RETRY_LIMIT) {

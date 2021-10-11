@@ -4,6 +4,7 @@ let telegramClient;
 const keywords = ["crypto", "krypto", "btc", "doge", "btc", "eth", "musk", "money", "$", "usd", "bitcoin", "muskx.co", "coin", "elonmusk", "prize", "еlonmusk", "btc"];
 const cyrillicPattern = /^\p{Script=Cyrillic}+$/u;
 const keywordPoints = new Map(keywords.map(key => [key, null]));
+const { findCourseFromDb } = require("../discordBot/services/service");
 
 
 const validDiscordChannel = async (courseName) => {
@@ -258,7 +259,7 @@ const getCourseName = (categoryName) => {
 };
 
 const lockTelegramCourse = async (Course, courseName) => {
-  const group = await Course.findOne({ where: { name: String(courseName) } });
+  const group = await findCourseFromDb(courseName, Course);
   if (!group || group.telegramId == null) {
     return;
   }
@@ -276,12 +277,13 @@ const lockTelegramCourse = async (Course, courseName) => {
     await sendMessageToTelegram(group.telegramId, "This chat has been locked", null, "");
   }
   catch (error) {
+    console.log("Error " + error);
     return error;
   }
 };
 
 const unlockTelegramCourse = async (Course, courseName) => {
-  const group = await Course.findOne({ where: { name: String(courseName) } });
+  const group = await findCourseFromDb(courseName, Course);
   if (!group || group.telegramId == null) {
     return;
   }

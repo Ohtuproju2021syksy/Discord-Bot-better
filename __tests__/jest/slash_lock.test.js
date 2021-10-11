@@ -7,6 +7,9 @@ const {
   checkCourseCooldown,
   getUnlockedCourse } = require("../../src/discordBot/services/service");
 
+const { lockTelegramCourse } = require("../../src/bridge/service");
+
+jest.mock("../../src/bridge/service");
 jest.mock("../../src/discordBot/services/message");
 jest.mock("../../src/discordBot/services/service");
 
@@ -49,6 +52,7 @@ describe("slash lock command", () => {
     await execute(defaultTeacherInteraction, client, Course);
     expect(getUnlockedCourse).toHaveBeenCalledTimes(1);
     expect(setCourseToLocked).toHaveBeenCalledTimes(1);
+    expect(lockTelegramCourse).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
     expect(editEphemeral).toHaveBeenCalledTimes(1);

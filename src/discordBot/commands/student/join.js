@@ -5,7 +5,6 @@ const { courseAdminRole } = require("../../../../config.json");
 const joinedUsersCounter = require("../../../promMetrics/joinedUsersCounter");
 
 const execute = async (interaction, client, models) => {
-  await sendEphemeral(interaction, "Joining course...");
   let roleString = "";
   let message = "";
 
@@ -58,7 +57,7 @@ const execute = async (interaction, client, models) => {
   else {
     await sendReplyMessage(interaction, message);
   }
-  await updateGuide(guild, Course);
+  await updateGuide(guild, models.Course);
   joinedUsersCounter.inc({ course: roleString });
 };
 
