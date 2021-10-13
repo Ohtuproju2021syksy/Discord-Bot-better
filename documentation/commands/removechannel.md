@@ -4,5 +4,5 @@
 - :heavy_check_mark: Reply with an ephemeral message - is only visible to the user of the interaction.
 - :heavy_check_mark: Response includes the interaction status.
 - :heavy_check_mark: Needs argument: channel name.
-- :x: Can remove any course channel: default channel cannot be removed with this command.
+- :x: Can remove any course channel: default channels cannot be removed with this command.
 - :x: All members can use this command.

@@ -5,6 +5,7 @@
 The Discord group (course channel) is for peer support for students. We recommend that you use the group with either browser-based version of Discord or Discord application (desktop app or mobile app).
 
 ### Create your Discord account
+
 Create yourself a Discord account. You can do this on [Discord Website](https://discord.com/). If you already have the account, you can login [here](https://discord.com/login).
 
 If you’re on a desktop or mobile device, you can directly open the Discord app on your device (You can learn more information on downloading the app [here](https://support.discord.com/hc/en-us/articles/360033931551)).
@@ -83,17 +84,17 @@ The `/create` command automatically creates three sub-channels for the course. T
 
 Note that the channel name you give is the end part of the name. For example, in the picture new channel will be created with name _wepa_feedback_.
 
-**Note also that if the course is bridged to telegram, messages from every channel will be bridged to telegram but messages from telegram are bridged only to general.**
+**Note also that if the course is bridged to telegram, messages from every channel will be bridged to telegram but messages from telegram are bridged only to general. If you want to disable bridge on a non-default text channel, use the command `block` on that channel.**
 
 To remove added text channel use `/removechannel` command followed by the name of the text channel to be removed e.g., `/removechannel feedback` removes _wepa_feedback_. This command must also be used inside the course you want the channel to be removed. Note that announcements or general channels can not be removed.
 
 ## How to make course secret
-Once the course is created, it can be made hidden. This means joining the course channel is only possible via link. To make a secret course use the `/hide` command followed by the course name, e.g. `/hide wepa`. The secret courses can be identified by the lock emoji. 
+Once the course is created, it can be made hidden. This means joining the course channel is only possible via link. To make a secret course use the `/hide` command followed by the course name, e.g. `/hide wepa`. The secret courses can be identified by the lock-and-key emoji. 
 
 To make the course public again use the `/unhide` command followed by the course name, e.g. `/unhide wepa`. Public courses can be found with `/courses` command and with `/join` command, unlike secret courses.
 
 ## How to lock course
-Once the course is created, it can be locked. This means that only instructors and faculty can write in the course channels. This can be used e.g. when a course exam is on and you don't want students to post their answers. To lock a course, use the `/lock` command followed by the course name, e.g. `/lock wepa`. The locked courses can be identified by the lock-and-key emoji.
+Once the course is created, it can be locked. This means that only instructors and faculty can write in the course channels. This can be used e.g. when a course exam is on and you don't want students to post their answers. To lock a course, use the `/lock` command followed by the course name, e.g. `/lock wepa`. The locked courses can be identified by the ghost emoji.
 
 To make the course unlocked again use the `/unlock` command followed by the course name, e.g. `/unlock wepa`.
 
@@ -110,12 +111,19 @@ The `/topic` command allows you to create or edit the information in announcemen
 
 ![edit](./images/edit.png)
 
+## Blocking the bridge
+
+The `/block` command disables the Discord-Telegram bridge on the text channel the command was given in. This can be used to e.g. prevent messages on an off-topic channel from being bridged to Telegram side. To disable the bridge on a text channel, write the command `/block` on that channel. Note that default channels, i.e. general and announcement, can't be blocked.
+
+To enable the bridge on a channel, write the command `/unblock` on that channel.
+
 ### List of commands
 
 Command | Explanation | Arguments
 --------|-------------|----------:
 [/addinstructor](./commands/addinstructor.md) | Give instructor role to another user, e.g., /addinstructor @username. | :heavy_check_mark:
 [/auth](./commands/auth.md) | Returns the URL from which the faculty role can be obtained. | :x:
+[/block](./commands/block.md) | Block the bridge in the text channel the commands was run in. Messages from that channel won't be bridged to Telegram. | :x:
 [/courses](./commands/courses.md) | Returns a list of all courses. | :x:
 [/create](./commands/create.md) | Create a new course | :heavy_check_mark:
 [/edit](./commands/edit.md) | Edit course information, options; coursecode, full name, nickname | :heavy_check_mark:
@@ -127,6 +135,7 @@ Command | Explanation | Arguments
 [/newchannel](./commands/newchannel.md) | Create new text channel inside a course, e.g., /newchannel feedback. | :heavy_check_mark:
 [/removechannel](./commands/removechannel.md) | Remove given text channel inside a course, e.g., /removechannel feedback. | :heavy_check_mark:
 [/topic](./commands/topic.md) | Make given in course , e.g., /topic A new topic. | :heavy_check_mark:
+[/unblock](./commands/unblock.md) | Unlock the bridge in the text channel the commands was run in. Messages from that channel will be bridged to Telegram. | :x:
 [/unhide](./commands/unhide.md) | Make given course public, e.g., /unhide weba. | :heavy_check_mark:
 [/status](./commands/status.md) | Used in course channel returns general info about the course | :heavy_check_mark:
 ### Material
