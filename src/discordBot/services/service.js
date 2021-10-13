@@ -278,6 +278,7 @@ const setCourseToLocked = async (courseName, Course, guild) => {
     const categoryName = createLockedCategoryName(courseName);
     const category = findChannelWithNameAndType(categoryName, "GUILD_CATEGORY", guild);
     category.permissionOverwrites.create(guild.roles.cache.find(r => r.name.toLowerCase() === courseName.toLowerCase()), { VIEW_CHANNEL: true, SEND_MESSAGES: false });
+    category.permissionOverwrites.create(guild.roles.cache.find(r => r.name.toLowerCase() === `${courseName.toLowerCase()} instructor`), { VIEW_CHANNEL: true, SEND_MESSAGES: true });
     category.permissionOverwrites.create(guild.roles.cache.find(r => r.name === "faculty"), { SEND_MESSAGES: true });
     await course.save();
   }
