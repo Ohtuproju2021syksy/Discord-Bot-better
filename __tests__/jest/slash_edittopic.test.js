@@ -1,4 +1,4 @@
-const { execute } = require("../../src/discordBot/commands/faculty/topic");
+const { execute } = require("../../src/discordBot/commands/faculty/edittopic");
 const { sendEphemeral, editErrorEphemeral, editEphemeral } = require("../../src/discordBot/services/message");
 const {
   trimCourseName,
@@ -22,7 +22,7 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
-describe("slash topic command", () => {
+describe("slash edittopic command", () => {
   test("command must be used in course channels", async () => {
     const client = defaultTeacherInteraction.client;
     defaultTeacherInteraction.channelId = 4;

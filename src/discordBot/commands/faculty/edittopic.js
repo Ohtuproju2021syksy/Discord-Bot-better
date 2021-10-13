@@ -38,7 +38,7 @@ const execute = async (interaction, client) => {
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("topic")
+    .setName("edittopic")
     .setDescription("Add or update course channel topics.")
     .setDefaultPermission(false)
     .addStringOption(option =>
@@ -46,7 +46,7 @@ module.exports = {
         .setDescription("Topic text")
         .setRequired(true)),
   execute,
-  usage: "/topic [new topic]",
+  usage: "/edittopic [new topic]",
   description: "Add or update course channel topics.*",
   roles: ["admin", facultyRole],
 };
