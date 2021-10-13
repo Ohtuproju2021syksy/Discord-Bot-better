@@ -97,6 +97,11 @@ Once the course is created, it can be locked. This means that only instructors a
 
 To make the course unlocked again use the `/unlock` command followed by the course name, e.g. `/unlock wepa`.
 
+## How to block and unblock the bridge to Telegram on a specific channel
+Users with faculty rights can block the bridge between a certain course channel and Telegram. This can be used e.g. on off-topic course channels where there's a lot of discussion that could flood the Telegram chat with messages not directly related to the course. Only non-default channels, that is channels which were created individually with /createchannel after the course was created, can be blocked. To block the bridge, use command /blockbridge in the channel you wish to use it on. You can check in which channels the bridge is blocked with the command /status. 
+
+To make the bridge unblocked, just use the command /unblock in the channel you wish to unblock.
+
 ## How to add instructor to a course
 Students can use the `/instructors` command on a course and see all the instructors on that course. _Faculty_ members and the ones who already have the _course instructor_ role can give other users this course instructor role. The command is `/addinstructor` the value to give is the username you want to give the instructor role. Use this command inside the course you want the role to be.
 
@@ -116,6 +121,7 @@ Command | Explanation | Arguments
 --------|-------------|----------:
 [/addinstructor](./commands/addinstructor.md) | Give instructor role to another user, e.g., /addinstructor @username. | :heavy_check_mark:
 [/auth](./commands/auth.md) | Returns the URL from which the faculty role can be obtained. | :x:
+[/blockbridge](./commands/block.md) | Blocks the bridge between Telegram and the (non-default) course channel it is used in. | :x:
 [/courses](./commands/courses.md) | Returns a list of all courses. | :x:
 [/create](./commands/create.md) | Create a new course | :heavy_check_mark:
 [/edit](./commands/edit.md) | Edit course information, options; coursecode, full name, nickname | :heavy_check_mark:
@@ -126,9 +132,11 @@ Command | Explanation | Arguments
 [/leave](./commands/leave.md) | Remove you from the course given, e.g., /leave ohpe. | :heavy_check_mark:
 [/newchannel](./commands/newchannel.md) | Create new text channel inside a course, e.g., /newchannel feedback. | :heavy_check_mark:
 [/removechannel](./commands/removechannel.md) | Remove given text channel inside a course, e.g., /removechannel feedback. | :heavy_check_mark:
+[/status](./commands/status.md) | Used in course channel returns general info about the course | :x:
 [/topic](./commands/topic.md) | Make given in course , e.g., /topic A new topic. | :heavy_check_mark:
+[/unblockbridge](./commands/unblock.md) | Unblocks the bridge between Telegram and the (non-default) course channel it is used in. | :x:
 [/unhide](./commands/unhide.md) | Make given course public, e.g., /unhide weba. | :heavy_check_mark:
-[/status](./commands/status.md) | Used in course channel returns general info about the course | :heavy_check_mark:
+
 ### Material
 
 [Source code for the Bot](https://github.com/Ohtuproju2021syksy/Discord-Bot-better)
