@@ -1,7 +1,7 @@
 require("dotenv").config();
-const { execute } = require("../../src/discordBot/events/messageCreate");
+const { execute } = require("../../src/discordBot/events/messagecreate");
 const sort = require("../../src/discordBot/commands/admin/sortcourses");
-const deleteCommand = require("../../src/discordBot/commands/admin/deleteCommand");
+const deleteCommand = require("../../src/discordBot/commands/admin/deletecommand");
 const deletecourse = require("../../src/discordBot/commands/admin/deletecourse");
 const { sendReplyMessage } = require("../../src/discordBot/services/message");
 const { findCourseFromDb } = require("../../src/discordBot/services/service");
