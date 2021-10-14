@@ -5,6 +5,7 @@
 - :heavy_check_mark: Response includes the interaction status.
 - :heavy_check_mark: Needs argument: course_name.
 - :heavy_check_mark: This command has cooldown (course specific).
+
 - :x: All members can use this command.
 
 Note: User can join a hidden course by invitation only.

@@ -4,10 +4,11 @@
 - :heavy_check_mark: Reply with an ephemeral message - is only visible to the user of the interaction.
 - :heavy_check_mark: Response includes the interaction status.
 - :heavy_check_mark: Needs arguments.
+
 - :x: All members can use this command.
 
-Argument | Optional | Logic
+Argument | Optional | Info
 ---------|----------|------ 
 Code | :x: | 
 Fullname | :x: |
-nick | :heavy_check_mark: | If no nickname is given, the code is a nickname.
+nick | :heavy_check_mark: | If no nickname is given, the code is used as the nickname.
