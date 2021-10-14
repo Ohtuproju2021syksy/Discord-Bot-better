@@ -1,4 +1,4 @@
-const { execute } = require("../../src/discordBot/commands/admin/remove");
+const { execute } = require("../../src/discordBot/commands/admin/deletecourse");
 const { findCategoryName, updateGuide, removeCourseFromDb } = require("../../src/discordBot/services/service");
 
 jest.mock("../../src/discordBot/services/service");

@@ -57,15 +57,15 @@ const execute = async (interaction, client, models) => {
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("newchannel")
-    .setDescription("Create new text channel to course.")
+    .setName("createchannel")
+    .setDescription("Create a new text channel to course.")
     .setDefaultPermission(false)
     .addStringOption(option =>
       option.setName("channel")
-        .setDescription("Create new text channel")
+        .setDescription("Create a new text channel")
         .setRequired(true)),
   execute,
-  usage: "/newchannel [channel name]",
-  description: "Create new text channel to course.*",
+  usage: "/createchannel [channel name]",
+  description: "Create a new text channel to course.*",
   roles: ["admin", facultyRole],
 };

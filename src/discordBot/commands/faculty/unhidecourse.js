@@ -4,19 +4,19 @@ const {
   msToMinutesAndSeconds,
   handleCooldown,
   checkCourseCooldown,
-  setCourseToPrivate,
-  getPublicCourse,
+  setCourseToPublic,
+  getHiddenCourse,
   getLockedCourse } = require("../../services/service");
-const { sendEphemeral, editErrorEphemeral, editEphemeral } = require("../../services/message");
+const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
 
 const execute = async (interaction, client, models) => {
-  await sendEphemeral(interaction, "Hiding course...");
+  await sendEphemeral(interaction, "Unhiding course...");
   const courseName = interaction.options.getString("course").trim();
   const guild = client.guild;
-  const category = getPublicCourse(courseName, guild);
+  const category = getHiddenCourse(courseName, guild);
   if (!category) {
-    return await editErrorEphemeral(interaction, `Invalid course name: ${courseName} or the course is private already!`);
+    return await editErrorEphemeral(interaction, `Invalid course name: ${courseName} or the course is public already!`);
   }
   const cooldown = checkCourseCooldown(courseName);
   if (cooldown) {
@@ -26,13 +26,13 @@ const execute = async (interaction, client, models) => {
   }
   else {
     if (getLockedCourse(courseName, guild)) {
-      await category.setName(`👻🔐 ${courseName}`);
+      await category.setName(`📚🔐 ${courseName}`);
     }
     else {
-      await category.setName(`👻 ${courseName}`);
+      await category.setName(`📚 ${courseName}`);
     }
-    await setCourseToPrivate(courseName, models.Course);
-    await editEphemeral(interaction, `This course ${courseName} is now private.`);
+    await editEphemeral(interaction, `This course ${courseName} is now public.`);
+    await setCourseToPublic(courseName, models.Course);
     await client.emit("COURSES_CHANGED", models.Course);
     await updateGuide(client.guild, models.Course);
     handleCooldown(courseName);
@@ -41,15 +41,15 @@ const execute = async (interaction, client, models) => {
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("hide")
-    .setDescription("Hide given course")
+    .setName("unhidecourse")
+    .setDescription("Unhide course")
     .setDefaultPermission(false)
     .addStringOption(option =>
       option.setName("course")
-        .setDescription("Hide given course")
+        .setDescription("Unhide given course")
         .setRequired(true)),
   execute,
-  usage: "/hide [course name]",
-  description: "Hide given course.",
+  usage: "/unhidecourse [course name]",
+  description: "Unhide course.",
   roles: ["admin", facultyRole],
 };

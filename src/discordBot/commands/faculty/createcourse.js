@@ -125,7 +125,7 @@ const execute = async (interaction, client, models) => {
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("create")
+    .setName("createcourse")
     .setDescription("Create a new course.")
     .setDefaultPermission(false)
     .addStringOption(option =>
@@ -141,7 +141,7 @@ module.exports = {
         .setDescription("Course nick name")
         .setRequired(false)),
   execute,
-  usage: "/create [course name]",
+  usage: "/createcourse [course name]",
   description: "Create a new course.",
   roles: ["admin", facultyRole],
 };

@@ -1,4 +1,4 @@
-const { execute } = require("../../src/discordBot/commands/faculty/unhide");
+const { execute } = require("../../src/discordBot/commands/faculty/unhidecourse");
 const { sendEphemeral, editErrorEphemeral, editEphemeral } = require("../../src/discordBot/services/message");
 const {
   updateGuide,

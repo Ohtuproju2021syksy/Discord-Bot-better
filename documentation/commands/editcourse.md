@@ -1,4 +1,4 @@
-## /edit
+## /editcourse
 
 - :heavy_check_mark: Can be used only in the course channel.
 - :heavy_check_mark: Reply with an ephemeral message - is only visible to the user of the interaction.
