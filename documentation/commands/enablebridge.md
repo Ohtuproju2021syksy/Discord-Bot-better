@@ -1,4 +1,4 @@
-## /unblock
+## /enablebridge
 
 - :heavy_check_mark: Must be used in a non-default text channel.
 - :heavy_check_mark: Reply with an ephemeral message - is only visible to the user of the interaction.
