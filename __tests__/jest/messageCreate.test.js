@@ -1,16 +1,16 @@
 require("dotenv").config();
-const { execute } = require("../../src/discordBot/events/messageCreate");
-const sort = require("../../src/discordBot/commands/admin/sortCourses");
-const deleteCommand = require("../../src/discordBot/commands/admin/deleteCommand");
-const removeCommand = require("../../src/discordBot/commands/admin/remove");
+const { execute } = require("../../src/discordBot/events/messagecreate");
+const sort = require("../../src/discordBot/commands/admin/sortcourses");
+const deletecommand = require("../../src/discordBot/commands/admin/deletecommand");
+const deletecourse = require("../../src/discordBot/commands/admin/deletecourse");
 const { sendReplyMessage } = require("../../src/discordBot/services/message");
 const { findCourseFromDb } = require("../../src/discordBot/services/service");
 const { messageInGuideChannel, messageInCommandsChannel, student, teacher } = require("../mocks/mockMessages");
 const models = require("../mocks/mockModels");
 
-jest.mock("../../src/discordBot/commands/admin/sortCourses");
-jest.mock("../../src/discordBot/commands/admin/deleteCommand");
-jest.mock("../../src/discordBot/commands/admin/remove");
+jest.mock("../../src/discordBot/commands/admin/sortcourses");
+jest.mock("../../src/discordBot/commands/admin/deletecommand");
+jest.mock("../../src/discordBot/commands/admin/deletecourse");
 jest.mock("../../src/discordBot/services/message");
 jest.mock("../../src/discordBot/services/service");
 
@@ -69,7 +69,7 @@ describe("prefix commands", () => {
     expect(messageInCommandsChannel.channel.send).toHaveBeenCalledWith(response);
     expect(messageInCommandsChannel.react).toHaveBeenCalledTimes(0);
     expect(messageInCommandsChannel.reply).toHaveBeenCalledTimes(0);
-    expect(deleteCommand.execute).toHaveBeenCalledTimes(0);
+    expect(deletecommand.execute).toHaveBeenCalledTimes(0);
   });
 
   test("if no command role do nothing", async () => {
@@ -84,14 +84,14 @@ describe("prefix commands", () => {
   });
 
   test("if command has emit parameter call client emit", async () => {
-    messageInCommandsChannel.content = `${prefix}remove test`;
+    messageInCommandsChannel.content = `${prefix}deletecourse test`;
     const client = messageInCommandsChannel.client;
     messageInCommandsChannel.author = teacher;
     messageInCommandsChannel.member = teacher;
     await execute(messageInCommandsChannel, client, models);
     expect(messageInCommandsChannel.channel.send).toHaveBeenCalledTimes(0);
     expect(messageInCommandsChannel.reply).toHaveBeenCalledTimes(0);
-    expect(removeCommand.execute).toHaveBeenCalledTimes(1);
+    expect(deletecourse.execute).toHaveBeenCalledTimes(1);
     expect(messageInCommandsChannel.react).toHaveBeenCalledTimes(1);
     expect(messageInCommandsChannel.react).toHaveBeenCalledWith("✅");
     expect(client.emit).toHaveBeenCalledTimes(1);

@@ -1,4 +1,4 @@
-const { createChannelToDatabase, findCourseFromDb } = require("../../services/service");
+const { createChannelToDatabase, findCourseFromDb, trimCourseName } = require("../../services/service");
 
 const execute = async (message, args, models) => {
   if (message.member.permissions.has("ADMINISTRATOR")) {
@@ -11,7 +11,7 @@ const execute = async (message, args, models) => {
 
     for (const channel in channelsAsArray) {
       const currentChannel = channelsAsArray[channel];
-      const courseIdentifier = currentChannel.name.split("_")[0];
+      const courseIdentifier = trimCourseName(currentChannel.parent);
       const course = await findCourseFromDb(courseIdentifier, models.Course);
       await createChannelToDatabase(course.id, currentChannel.name, models.Channel);
     }

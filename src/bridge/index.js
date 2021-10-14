@@ -1,5 +1,5 @@
-const { initService, handleBridgeMessage, getCourseName } = require("./service");
-const { findChannelFromDbByName } = require("../discordBot/services/service");
+const { initService, handleBridgeMessage } = require("./service");
+const { findChannelFromDbByName, getRoleFromCategory } = require("../discordBot/services/service");
 const models = require("../db/dbInit");
 
 const startBridge = async (discordClient, telegramClient) => {
@@ -12,7 +12,7 @@ const startBridge = async (discordClient, telegramClient) => {
     if (channel && !channel.bridged) {
       return;
     }
-    const courseName = getCourseName(message.channel.parent.name);
+    const courseName = getRoleFromCategory(message.channel.parent.name);
     return await handleBridgeMessage(message, courseName, models.Course);
   });
   console.log("Bridge started");

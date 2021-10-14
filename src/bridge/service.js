@@ -246,19 +246,6 @@ const sendAnimationToTelegram = async (telegramId, sender, channel, url) => {
   }
 };
 
-const getCourseName = (categoryName) => {
-  let cleaned = null;
-  if (categoryName.includes("📚")) {
-    cleaned = categoryName.replace("📚", "").trim();
-  }
-  else {
-    cleaned = categoryName.replace("🔒", "").trim();
-  }
-  const regExp = /\(([^)]+)\)/;
-  const matches = regExp.exec(cleaned);
-  return matches?.[1] || cleaned;
-};
-
 const lockTelegramCourse = async (Course, courseName) => {
   const group = await findCourseFromDb(courseName, Course);
   if (!group || group.telegramId == null) {
@@ -320,7 +307,6 @@ module.exports = {
   sendMediaToTelegram,
   sendAnimationToTelegram,
   handleBridgeMessage,
-  getCourseName,
   lockTelegramCourse,
   unlockTelegramCourse,
 };

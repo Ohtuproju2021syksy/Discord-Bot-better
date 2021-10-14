@@ -15,7 +15,7 @@ const execute = async (message) => {
 module.exports = {
   prefix: true,
   name: "updateinstructors",
-  description: "Update course admin roles.",
+  description: "Update course instructor roles.",
   role: "admin",
   usage: "!updateinstructors",
   args: false,

@@ -204,7 +204,7 @@ const setCoursePositionABC = async (guild, courseString) => {
   }
 };
 
-const deleteCommand = async (client, commandToDeleteName) => {
+const deletecommand = async (client, commandToDeleteName) => {
   client.api.applications(client.user.id).guilds(process.env.GUILD_ID).commands.get().then(commands => {
     commands.forEach(async command => {
       if (command.name === commandToDeleteName) {
@@ -415,7 +415,7 @@ module.exports = {
   createCourseInvitationLink,
   findOrCreateChannel,
   setCoursePositionABC,
-  deleteCommand,
+  deletecommand,
   isCourseCategory,
   trimCourseName,
   findAllCourseNames,

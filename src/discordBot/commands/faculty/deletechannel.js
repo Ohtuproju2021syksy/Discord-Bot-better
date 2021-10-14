@@ -4,8 +4,7 @@ const { sendEphemeral, editEphemeral, editErrorEphemeral } = require("../../serv
 const { facultyRole } = require("../../../../config.json");
 
 const execute = async (interaction, client, models) => {
-  await sendEphemeral(interaction, "Removing text channel...");
-
+  await sendEphemeral(interaction, "Deleting text channel...");
   const channelModel = models.Channel;
   const deleteName = interaction.options.getString("channel").toLowerCase().trim().replace(/ /g, "-");
   const guild = client.guild;
@@ -19,7 +18,7 @@ const execute = async (interaction, client, models) => {
   const deleteChannelName = `${categoryName}_${deleteName}`;
 
   if (deleteName === "general" || deleteName === "announcement" || deleteName === "voice") {
-    return await editErrorEphemeral(interaction, "Original channels can not be removed.");
+    return await editErrorEphemeral(interaction, "Original channels can not be deleted.");
   }
 
   const guildName = guild.channels.cache.find(c => c.parent === channel.parent && c.name === deleteChannelName);
@@ -29,20 +28,20 @@ const execute = async (interaction, client, models) => {
 
   guild.channels.cache.find(c => c.parent === channel.parent && c.name === deleteChannelName).delete();
   await removeChannelFromDb(deleteChannelName, channelModel);
-  return await editEphemeral(interaction, `${deleteName} removed!`);
+  return await editEphemeral(interaction, `${deleteName} deleted!`);
 };
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("removechannel")
-    .setDescription("Remove given text channel from course.")
+    .setName("deletechannel")
+    .setDescription("Delete given text channel from course.")
     .setDefaultPermission(false)
     .addStringOption(option =>
       option.setName("channel")
-        .setDescription("Remove given text channel")
+        .setDescription("Delete given text channel")
         .setRequired(true)),
   execute,
-  usage: "/removechannel [channel name]",
-  description: "Remove given text channel from course.*",
+  usage: "/deletechannel [channel name]",
+  description: "Delete given text channel from course.*",
   roles: ["admin", facultyRole],
 };

@@ -1,4 +1,4 @@
-const { execute } = require("../../src/discordBot/commands/admin/updateInvLinks");
+const { execute } = require("../../src/discordBot/commands/admin/updateinvlinks");
 const { createCourseInvitationLink } = require("../../src/discordBot/services/service");
 
 jest.mock("../../src/discordBot/services/service");
@@ -10,7 +10,7 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
-describe("prefix updateInvLinks command", () => {
+describe("prefix updateinvlinks command", () => {
   test("if user does not have administrator permission do nothing", async () => {
     messageInCommandsChannel.member = student;
     await execute(messageInCommandsChannel);

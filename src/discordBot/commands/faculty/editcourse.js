@@ -34,6 +34,7 @@ const changeCourseNames = async (newValue, channel, category, guild) => {
   return true;
 };
 
+
 const changeCourseRoles = async (categoryName, newValue, guild) => {
   await Promise.all(guild.roles.cache
     .filter(r => (r.name === `${categoryName} ${courseAdminRole}` || r.name === categoryName))
@@ -139,7 +140,7 @@ const execute = async (interaction, client, models) => {
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("edit")
+    .setName("editcourse")
     .setDescription("Edit course code, name or nickname")
     .setDefaultPermission(false)
     .addStringOption(option =>
@@ -154,7 +155,7 @@ module.exports = {
         .setDescription("Give new value")
         .setRequired(true)),
   execute,
-  usage: "/edit [parameter]",
+  usage: "/editcourse [parameter]",
   description: "Edit course code, name or nickname.*",
   roles: ["admin", facultyRole],
 };
