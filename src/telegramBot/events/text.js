@@ -34,7 +34,7 @@ const execute = async (ctx, message, telegramClient, Course) => {
 
     const discordUser = await createDiscordUser(ctx);
     const msg = { user: discordUser, content: { text: `Bridge created: Discord course ${discordCourseName} <--> Telegram course ${telegramCourseName}` } };
-    await sendMessageToDiscord(msg, channel);
+    await sendMessageToDiscord(ctx, msg, channel);
     await sendMessageToTelegram(id, `Bridge created: Discord course ${discordCourseName} <--> Telegram course ${telegramCourseName}`);
     if (databaseValue.locked) {
       lockTelegramCourse(Course, discordCourseName);
@@ -70,7 +70,7 @@ const execute = async (ctx, message, telegramClient, Course) => {
 
     const channel = await validDiscordChannel(courseName);
     if (!channel) return;
-    await sendMessageToDiscord(msg, channel);
+    await sendMessageToDiscord(ctx, msg, channel);
   }
 };
 

@@ -26,7 +26,7 @@ const createDiscordUser = async (ctx) => {
   return user;
 };
 
-const sendMessageToDiscord = async (message, channel) => {
+const sendMessageToDiscord = async (ctx, message, channel) => {
   try {
     if (message.content.text && message.content.text.length > 2000) {
       console.log("Message is too long (over 2000 characters)");
@@ -39,7 +39,8 @@ const sendMessageToDiscord = async (message, channel) => {
     const webhook = webhooks.first();
     if (message.content.text) {
       if (isMessageCryptoSpam(message)) {
-        console.log("Crypto spam detected, message blocked (Either too many keywords and/or userID has bot in it)");
+        console.log("Crypto spam detected, message deleted (Either too many keywords and/or userID has bot in it)");
+        ctx.deleteMessage();
         return;
       }
       await webhook.send({
