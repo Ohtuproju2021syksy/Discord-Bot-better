@@ -3,17 +3,18 @@
 ### Admin commands
 
 ```
-/remove         Remove course channel given, e.g., /remove ohpe
+/deletecourse        Remove course channel given, e.g., /deletecourse ohpe
 ```
 
 ### Faculty commands
 
 ```
-/create         Creates course channel given, e.g., /create ohpe
-/hide           Makes the course private, disabling joining with /join, e.g., /hide ohpe
-/newchannel     Adds a text channel for the course, e.g., /newchannel ohpe-questions
-/removechannel  Removes an added channel from the course, e.g., /removechannel ohpe-questions
-/unhide         Unhides a hidden course, making it public again, e.g., /unhide ohpe
+/createcourse         Creates course channel given, e.g., /create ohpe
+/hidecourse           Makes the course private, disabling joining with /join, e.g., /hide ohpe
+/createchannel     Adds a text channel for the course, e.g., /newchannel ohpe-questions
+/deletechannel  Removes an added channel from the course, e.g., /removechannel ohpe-questions
+/unhidecourse         Unhides a hidden course, making it public again, e.g., /unhide ohpe  
+/editcourse  Change the name, code or nickname of a already existing course, e.g. /editcourse coursecode TKT10001
 ```
 
 ### Faculty commands

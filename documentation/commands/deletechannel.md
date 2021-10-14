@@ -1,4 +1,4 @@
-## /removechannel
+## /deletechannel
 
 - :heavy_check_mark: Can be used only in course channels. Channel to remove and where command is used must have same parent (same course).
 - :heavy_check_mark: Reply with an ephemeral message - is only visible to the user of the interaction.

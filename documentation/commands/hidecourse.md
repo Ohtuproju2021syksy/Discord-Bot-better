@@ -1,4 +1,4 @@
-## /hide
+## /hidecourse
 
 - :heavy_check_mark: Can be used in every channel.
 - :heavy_check_mark: Reply with an ephemeral message - is only visible to the user of the interaction.
