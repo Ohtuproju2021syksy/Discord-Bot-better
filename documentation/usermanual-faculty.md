@@ -35,7 +35,7 @@ To be able to use all the faculty commands, you need to authenticate yourself. U
 
 ### Creating a new course
 
-You can create new course with command `/create`. Give the command and after that give the _course code_, course´s _full name_ and course´s _nickname_. Nickname is optional and if not given then the coursecode will be also course´s nickname. **Note** that nickname is the value that is used as course´s name that users see on the Discord´s left column. So, we prefer that you give course a short nickname because it is more readable on Discord for the users. **Note** also that nickname is unique value.
+You can create new course with command `/createcourse`. Give the command and after that give the _course code_, course´s _full name_ and course´s _nickname_. Nickname is optional and if not given then the coursecode will be also course´s nickname. **Note** that nickname is the value that is used as course´s name that users see on the Discord´s left column. So, we prefer that you give course a short nickname because it is more readable on Discord for the users. **Note** also that nickname is unique value.
 
 #### Multilingual course name
 
@@ -77,7 +77,7 @@ Note that only one Telegram group can be connected to only one Discord course.
 
 ### How to create more text channels
 
-The `/create` command automatically creates three sub-channels for the course. The sub-channels are: announcements (text channel), general (text channel) and one voice channel. To create more text channels for a course go inside the wanted course. Inside this course use `/newchannel` command followed by the desired text channel name to create new text channel.
+The `/createcourse` command automatically creates three sub-channels for the course. The sub-channels are: announcements (text channel), general (text channel) and one voice channel. To create more text channels for a course go inside the wanted course. Inside this course use `/createhannel` command followed by the desired text channel name to create new text channel.
 
 ![newchannel](./images/newchannel.png)
 
@@ -85,19 +85,19 @@ Note that the channel name you give is the end part of the name. For example, in
 
 **Note also that if the course is bridged to telegram, messages from every channel will be bridged to telegram but messages from telegram are bridged only to general.**
 
-To remove added text channel use `/removechannel` command followed by the name of the text channel to be removed e.g., `/removechannel feedback` removes _wepa_feedback_. This command must also be used inside the course you want the channel to be removed. Note that announcements or general channels can not be removed.
+To remove added text channel use `/removechannel` command followed by the name of the text channel to be removed e.g., `/deletechannel feedback` removes _wepa_feedback_. This command must also be used inside the course you want the channel to be removed. Note that announcements or general channels can not be removed.
 
 ## How to make course secret
-Once the course is created, it can be made hidden. This means joining the course channel is only possible via link. To make a secret course use the `/hide` command followed by the course name. e.g.,, `/hide wepa`. The secret courses can be identified by the lock emoji. 
+Once the course is created, it can be made hidden. This means joining the course channel is only possible via link. To make a secret course use the `/hidecourse` command followed by the course name. e.g.,, `/hidecourse wepa`. The secret courses can be identified by the lock emoji. 
 
-To make the course public again use the `/unhide` command followed by the course name. e.g., `/unhide wepa`. Public courses can be found with `/courses` command and with `/join` command, unlike secret courses.
+To make the course public again use the `/unhidecourse` command followed by the course name. e.g., `/unhidecourse wepa`. Public courses can be found with `/courses` command and with `/join` command, unlike secret courses.
 
 ## How to add instructor to a course
 Students can use the `/instructors` command on a course and see all the instructors on that course. _Faculty_ members and the ones who already have the _course instructor_ role can give other users this course instructor role. The command is `/addinstructor` the value to give is the username you want to give the instructor role. Use this command inside the course you want the role to be.
 
 ## How to edit course name information
 
-The `/edit` command allows you to edit the information for the course you are in. You can change the _course code_, _full name_ and _nickname_. If you change the value users see on the Discord´s left column, this value is either the course code or nickname depending on which values the course is based on, you have 15 minutes cooldown until you can use the command again.
+The `/editcourse` command allows you to edit the information for the course you are in. You can change the _course code_, _full name_ and _nickname_. If you change the value users see on the Discord´s left column, this value is either the course code or nickname depending on which values the course is based on, you have 15 minutes cooldown until you can use the command again.
 
 ## How to create or edit course channel topics
 
@@ -112,17 +112,17 @@ Command | Explanation | Arguments
 [/addinstructor](./commands/addinstructor.md) | Give instructor role to another user, e.g., /addinstructor @username. | :heavy_check_mark:
 [/auth](./commands/auth.md) | Returns the URL from which the faculty role can be obtained. | :x:
 [/courses](./commands/courses.md) | Returns a list of all courses. | :x:
-[/create](./commands/create.md) | Create a new course | :heavy_check_mark:
-[/edit](./commands/edit.md) | Edit course information, options; coursecode, full name, nickname | :heavy_check_mark:
+[/createcourse](./commands/createcourse.md) | Create a new course | :heavy_check_mark:
+[/editcourse](./commands/editcourse.md) | Edit course information, options; coursecode, full name, nickname | :heavy_check_mark:
 [/help](./commands/help.md) | Returns a list of commands with info or info about a specific command. | :o:
-[/hide](./commands/hide.md)| Make given course private, e.g., /hide weba. | :heavy_check_mark:
+[/hidecourse](./commands/hidecourse.md)| Make given course private, e.g., /hidecourse weba. | :heavy_check_mark:
 [/instructors](./commands/instructors.md) | Used in course channel returns a list of course instructors. Can be used anywhere when a parameter is given. | :o:
 [/join](./commands/join.md) | Joins you into the course given, e.g., /join ohpe. | :heavy_check_mark:
 [/leave](./commands/leave.md) | Remove you from the course given, e.g., /leave ohpe. | :heavy_check_mark:
-[/newchannel](./commands/newchannel.md) | Create new text channel inside a course, e.g., /newchannel feedback. | :heavy_check_mark:
-[/removechannel](./commands/removechannel.md) | Remove given text channel inside a course, e.g., /removechannel feedback. | :heavy_check_mark:
+[/createchannel](./commands/createchannel.md) | Create new text channel inside a course, e.g., /createchannel feedback. | :heavy_check_mark:
+[/deletechannel](./commands/deletechannel.md) | Remove given text channel inside a course, e.g., /deletechannel feedback. | :heavy_check_mark:
 [/topic](./commands/topic.md) | Make given in course , e.g., /topic A new topic. | :heavy_check_mark:
-[/unhide](./commands/unhide.md) | Make given course public, e.g., /unhide weba. | :heavy_check_mark:
+[/unhidecourse](./commands/unhidecourse.md) | Make given course public, e.g., /unhidecourse weba. | :heavy_check_mark:
 [/status](./commands/status.md) | Used in course channel returns general info about the course | :heavy_check_mark:
 ### Material
 
