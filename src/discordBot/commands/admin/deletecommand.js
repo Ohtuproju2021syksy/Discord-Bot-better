@@ -1,9 +1,9 @@
-const { deleteCommand } = require("../../services/service");
+const { deletecommand } = require("../../services/service");
 
 const execute = async (message, args) => {
   if (message.member.permissions.has("ADMINISTRATOR")) {
     const client = message.client;
-    await deleteCommand(client, args[0]);
+    await deletecommand(client, args[0]);
   }
 };
 

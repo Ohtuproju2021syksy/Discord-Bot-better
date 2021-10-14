@@ -10,7 +10,7 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
-describe("prefix updateInvLinks command", () => {
+describe("prefix updateinvlinks command", () => {
   test("if user does not have administrator permission do nothing", async () => {
     messageInCommandsChannel.member = student;
     await execute(messageInCommandsChannel);
