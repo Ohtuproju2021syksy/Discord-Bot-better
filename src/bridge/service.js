@@ -97,6 +97,7 @@ const isMessageCryptoSpam = (message) => {
 
   userId.includes("bot") ? point = point + 2 : point = point + 0;
   message.content.text.includes("elonmusk") ? point++ : point = point + 0;
+  message.content.text.includes("t.me/joinchat/") ? point = point + 2 : point = point + 0;
   cyrillicPattern.test(message.content.text) ? point++ : point = point + 0;
   if (point == 3) return true;
   for (const word of textAsList) {
