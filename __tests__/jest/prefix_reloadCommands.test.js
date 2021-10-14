@@ -1,4 +1,4 @@
-const { execute } = require("../../src/discordBot/commands/admin/reloadCommands");
+const { execute } = require("../../src/discordBot/commands/admin/reloadcommands");
 const { setUpCommands } = require("../../src/discordBot/services/command");
 
 jest.mock("../../src/discordBot/services/command");

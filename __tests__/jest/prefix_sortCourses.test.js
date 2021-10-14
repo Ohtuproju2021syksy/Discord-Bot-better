@@ -1,4 +1,4 @@
-const { execute } = require("../../src/discordBot/commands/admin/sortCourses");
+const { execute } = require("../../src/discordBot/commands/admin/sortcourses");
 
 const { messageInCommandsChannel, student } = require("../mocks/mockMessages");
 
