@@ -28,15 +28,13 @@ We have created an assistant Bot that helps you. Here are instructions on how yo
 
 Commands can be used by typing to the bottom area `/` and after that the command you want to use. You can see all the available commands on the list that opens after typing `/` (shows on white text) or using the command `/help`.
 
-![commands](./images/commands.png)
-
 ### Authentication
 
 To be able to use all the faculty commands, you need to authenticate yourself. Use command `/auth` and you receive an authentication link. Click the link and go through the verfication steps. Now you have the faculty role and you can use all the commands.
 
 ### Creating a new course
 
-You can create new course with command `/createcourse`. Give the command and after that give the _course code_, course´s _full name_ and course´s _nickname_. Nickname is optional and if not given then the coursecode will be also course´s nickname. **Note** that nickname is the value that is used as course´s name that users see on the Discord´s left column. So, we prefer that you give course a short nickname because it is more readable on Discord for the users. **Note** also that nickname is unique value.
+You can create new course with command `/createcourse`. Give the command and after that give the _course code_, course´s _full name_ and course´s _nickname_. Nickname is optional and if not given then the coursecode will be also course´s nickname. **Note** that nickname is the value that is used as course´s name that users see on the Discord´s left column. So, we prefer that you give your course a short nickname because it is more readable on Discord for the users. **Note** also that nickname is a unique value.
 
 #### Multilingual course name
 
@@ -45,8 +43,6 @@ If your course has multilingual course name, enter all the information in the _f
 #### Open university course
 
 If your course is an open university course, use the abbreviation **MOOC** in the _full name_ field next to your course name.
-
-![create](./images/create.png)
 
 After the course is created there is the invitation link for the course on the course´s guide channel. Share this on the needed platforms, so the students can join this channel. Another option for joining is using the `/join` command.
 
@@ -80,11 +76,9 @@ Note that only one Telegram group can be connected to only one Discord course.
 
 The `/createcourse` command automatically creates three sub-channels for the course. The sub-channels are: announcements (text channel), general (text channel) and one voice channel. To create more text channels for a course go inside the wanted course. Inside this course use `/createhannel` command followed by the desired text channel name to create new text channel.
 
-![newchannel](./images/newchannel.png)
-
 Note that the channel name you give is the end part of the name. For example, in the picture new channel will be created with name _wepa_feedback_.
 
-**Note also that if the course is bridged to telegram, messages from every channel will be bridged to telegram but messages from telegram are bridged only to general. If you want to disable bridge on a non-default text channel, use the command `block` on that channel.**
+**Note also that if the course is bridged to telegram, messages from every channel will be bridged to telegram but messages from telegram are bridged only to general. If you want to disable bridge on a non-default text channel, use the command `/disablebridge` on that channel.**
 
 To remove added text channel use `/removechannel` command followed by the name of the text channel to be removed e.g., `/deletechannel feedback` removes _wepa_feedback_. This command must also be used inside the course you want the channel to be removed. Note that announcements or general channels can not be removed.
 
@@ -107,15 +101,13 @@ The `/editcourse` command allows you to edit the information for the course you 
 
 ## How to create or edit course channel topics
 
-The `/topic` command allows you to create or edit the information in announcement and general channels topic field. You can use this to customize channel appearance.
+The `/edittopic` command allows you to create or edit the information in announcement and general channels topic field. You can use this to customize channel appearance.
 
-![edit](./images/edit.png)
+## Disabling the bridge on a text channel
 
-## Blocking the bridge
+Users with faculty rights can disable the bridge between a certain course channel and Telegram. This can be used e.g. on off-topic course channels where there's a lot of discussion that could flood the Telegram chat with messages not directly related to the course. Note that the bridge can be disabled only on non-default channels, that is channels which were created individually with `/createchannel` after the course was created. You can check in which channels the bridge is disabled with the command `/status`. 
 
-The `/block` command disables the Discord-Telegram bridge on the text channel the command was given in. This can be used to e.g. prevent messages on an off-topic channel from being bridged to Telegram side. To disable the bridge on a text channel, write the command `/block` on that channel. Note that default channels, i.e. general and announcement, can't be blocked.
-
-To enable the bridge on a channel, write the command `/unblock` on that channel.
+To enable the bridge on a channel, write the command `/enablebridge` on that channel.
 
 ### List of commands
 
@@ -123,25 +115,23 @@ Command | Explanation | Arguments
 --------|-------------|----------:
 [/addinstructor](./commands/addinstructor.md) | Give instructor role to another user, e.g., /addinstructor @username. | :heavy_check_mark:
 [/auth](./commands/auth.md) | Returns the URL from which the faculty role can be obtained. | :x:
-[/block](./commands/block.md) | Block the bridge in the text channel the commands was run in. Messages from that channel won't be bridged to Telegram. | :x:
 [/courses](./commands/courses.md) | Returns a list of all courses. | :x:
+[/createchannel](./commands/createchannel.md) | Create new text channel inside a course, e.g., /createchannel feedback. | :heavy_check_mark:
 [/createcourse](./commands/createcourse.md) | Create a new course | :heavy_check_mark:
+[/deletechannel](./commands/deletechannel.md) | Remove given text channel inside a course, e.g., /deletechannel feedback. | :heavy_check_mark:
+[/disablebridge](./commands/disablebridge.md) | Disable the bridge between Telegram and the (non-default) course channel it is used in. | :x:
+[/enablebridge](./commands/enablebridge.md) | Enable the bridge between Telegram and the (non-default) course channel it is used in. | :x:
 [/editcourse](./commands/editcourse.md) | Edit course information, options; coursecode, full name, nickname | :heavy_check_mark:
+[/edittopic](./commands/edittopic.md) | Edit topic, must be used in course , e.g., /topic A new topic. | :heavy_check_mark:
 [/help](./commands/help.md) | Returns a list of commands with info or info about a specific command. | :o:
 [/hidecourse](./commands/hidecourse.md)| Make given course private, e.g., /hidecourse weba. | :heavy_check_mark:
 [/instructors](./commands/instructors.md) | Used in course channel returns a list of course instructors. Can be used anywhere when a parameter is given. | :o:
 [/join](./commands/join.md) | Joins you into the course given, e.g., /join ohpe. | :heavy_check_mark:
 [/leave](./commands/leave.md) | Remove you from the course given, e.g., /leave ohpe. | :heavy_check_mark:
-[/createchannel](./commands/createchannel.md) | Create new text channel inside a course, e.g., /createchannel feedback. | :heavy_check_mark:
-[/deletechannel](./commands/deletechannel.md) | Remove given text channel inside a course, e.g., /deletechannel feedback. | :heavy_check_mark:
-[/topic](./commands/topic.md) | Make given in course , e.g., /topic A new topic. | :heavy_check_mark:
-<<<<<<< HEAD
-[/unblock](./commands/unblock.md) | Unlock the bridge in the text channel the commands was run in. Messages from that channel will be bridged to Telegram. | :x:
-[/unhide](./commands/unhide.md) | Make given course public, e.g., /unhide weba. | :heavy_check_mark:
-=======
-[/unhidecourse](./commands/unhidecourse.md) | Make given course public, e.g., /unhidecourse weba. | :heavy_check_mark:
->>>>>>> e282c66829019ce1c0d5b584b1570d662603dce9
+[/removechannel](./commands/removechannel.md) | Remove given text channel inside a course, e.g., /removechannel feedback. | :heavy_check_mark:
 [/status](./commands/status.md) | Used in course channel returns general info about the course | :heavy_check_mark:
+[/unhidecourse](./commands/unhidecourse.md) | Make given course public, e.g., /unhidecourse weba. | :heavy_check_mark:
+
 ### Material
 
 [Source code for the Bot](https://github.com/Ohtuproju2021syksy/Discord-Bot-better)
