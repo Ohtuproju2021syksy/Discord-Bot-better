@@ -146,6 +146,13 @@ const handleBridgeMessage = async (message, courseName, Course) => {
     msg = msg.replace("<@!" + userID + ">", userName);
   }
 
+  while (msg.includes("<@&")) {
+    const roleID = msg.match(/(?<=<@&).*?(?=>)/)[0];
+    let roleName = message.guild.roles.cache.get(roleID);
+    roleName ? roleName = roleName.name : roleName = "Unknown Role";
+    msg = msg.replace("<@&" + roleID + ">", roleName);
+  }
+
   const media = message.attachments.first();
   const gif = message.embeds[0];
   try {

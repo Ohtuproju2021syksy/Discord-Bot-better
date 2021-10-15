@@ -22,11 +22,37 @@ const execute = async (interaction, client) => {
   }
 
   const instructorRole = guild.roles.cache.find(r => r.name === `${roleString} ${courseAdminRole}`);
+
   if (!instructorRole) return await editErrorEphemeral(interaction, `No instructors for ${roleString}`);
 
-  const adminsString = instructorRole.members
-    .map(member => member.displayName)
-    .join(", ");
+  let adminsString = "";
+  instructorRole.members.forEach(m => {
+    const member = guild.members.cache.get(m.user.id);
+    if (member.roles.cache.some(r => r.name === "faculty")) {
+      if (adminsString === "") {
+        adminsString = "<@" + member.user.id + ">";
+      }
+      else {
+        adminsString = ", " + "<@" + member.user.id + ">";
+      }
+
+    }
+  });
+
+  instructorRole.members.forEach(m => {
+    const member = guild.members.cache.get(m.user.id);
+    if (!member.roles.cache.some(r => r.name === "faculty")) {
+      if (adminsString === "") {
+        adminsString = "<@" + member.user.id + ">";
+      }
+      else {
+        adminsString = adminsString + ", " + "<@" + member.user.id + ">";
+      }
+
+    }
+  });
+
+
   if (!adminsString) return await editErrorEphemeral(interaction, `No instructors for ${roleString}`);
 
   await editEphemeral(interaction, `Here are the instructors for ${roleString}: ${adminsString}`);
