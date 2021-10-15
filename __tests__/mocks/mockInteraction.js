@@ -81,6 +81,9 @@ const teacher = {
   },
   fetch: jest.fn(),
   displayName: "teacher",
+  user: {
+    id: 1,
+  },
 };
 
 const student = {
