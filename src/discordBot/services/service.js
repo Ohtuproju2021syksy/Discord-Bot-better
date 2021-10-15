@@ -34,26 +34,6 @@ const cooldownMap = new Map();
 const cooldownTimeMs = 1000 * 60 * 5;
 
 /**
- * Expects role to be between parenthesis e.g., (role)
- * @param {String} string
- */
-const getRoleFromCategory = (categoryName) => {
-  let cleaned = null;
-  if (categoryName.includes("📚")) {
-    cleaned = categoryName.replace("📚", "").trim();
-  }
-  else {
-    cleaned = categoryName.replace("👻", "").trim();
-  }
-  if (cleaned.includes("🔐")) {
-    cleaned = cleaned.replace("🔐", "").trim();
-  }
-  const regExp = /\(([^)]+)\)/;
-  const matches = regExp.exec(cleaned);
-  return matches?.[1] || cleaned;
-};
-
-/**
  *
  * @param {String} name
  */
@@ -220,13 +200,13 @@ const isCourseCategory = (channel) => {
   return emojiRegex.test(channel.name);
 };
 
-const trimCourseName = (channel) => {
+const getCourseNameFromCategory = (category) => {
   let trimmedName = "";
-  if (channel.name) {
-    trimmedName = channel.name.replace(emojiRegex, "").trim();
+  if (category.name) {
+    trimmedName = category.name.replace(emojiRegex, "").trim();
   }
   else {
-    trimmedName = channel.replace(emojiRegex, "").trim();
+    trimmedName = category.replace(emojiRegex, "").trim();
   }
 
   return trimmedName;
@@ -237,7 +217,7 @@ const findAllCourseNames = (guild) => {
 
   guild.channels.cache.forEach(channel => {
     if (isCourseCategory(channel)) {
-      courseNames.push(trimCourseName(channel));
+      courseNames.push(getCourseNameFromCategory(channel));
     }
   });
   return courseNames;
@@ -401,7 +381,6 @@ module.exports = {
   createCategoryName,
   createPrivateCategoryName,
   createLockedCategoryName,
-  getRoleFromCategory,
   findOrCreateRoleWithName,
   updateGuideMessage,
   updateGuide,
@@ -417,7 +396,7 @@ module.exports = {
   setCoursePositionABC,
   deletecommand,
   isCourseCategory,
-  trimCourseName,
+  getCourseNameFromCategory,
   findAllCourseNames,
   findAndUpdateInstructorRole,
   setCourseToPrivate,

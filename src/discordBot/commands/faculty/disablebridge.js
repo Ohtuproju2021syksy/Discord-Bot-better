@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { findChannelFromDbByName, findCourseFromDb, trimCourseName } = require("../../services/service");
+const { findChannelFromDbByName, findCourseFromDb, getCourseNameFromCategory } = require("../../services/service");
 const { sendEphemeral, editErrorEphemeral, editEphemeral } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
 
@@ -24,7 +24,7 @@ const execute = async (interaction, client, models) => {
   channelInstance.bridged = false;
   await channelInstance.save();
 
-  const courseInstance = await findCourseFromDb(trimCourseName(channel.parent.name), models.Course);
+  const courseInstance = await findCourseFromDb(getCourseNameFromCategory(channel.parent.name), models.Course);
   const response = courseInstance.telegramId ? "The bridge between this channel and Telegram is now disabled." : "The bridge on this channel is now disabled and messages won't be sent to Telegram if this course is bridged in the future.";
   await editEphemeral(interaction, response);
 };

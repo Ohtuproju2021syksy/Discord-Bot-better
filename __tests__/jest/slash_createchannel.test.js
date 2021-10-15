@@ -1,12 +1,12 @@
 const { execute } = require("../../src/discordBot/commands/faculty/createchannel");
 const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../src/discordBot/services/message");
-const { getRoleFromCategory, findCourseFromDb, createChannelToDatabase } = require("../../src/discordBot/services/service");
+const { findCourseFromDb, createChannelToDatabase, getCourseNameFromCategory } = require("../../src/discordBot/services/service");
 
 const models = require("../mocks/mockModels");
 jest.mock("../../src/discordBot/services/message");
 jest.mock("../../src/discordBot/services/service");
 
-getRoleFromCategory.mockImplementation((name) => name.replace("📚", "").trim());
+getCourseNameFromCategory.mockImplementation((name) => name.replace("📚", "").trim());
 
 const { defaultTeacherInteraction } = require("../mocks/mockInteraction");
 findCourseFromDb.mockImplementation((courseName) => ({ courseName: courseName, id: 1 }));

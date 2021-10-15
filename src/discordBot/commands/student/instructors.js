@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { getRoleFromCategory } = require("../../services/service");
+const { getCourseNameFromCategory } = require("../../services/service");
 const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../services/message");
 const { courseAdminRole } = require("../../../../config.json");
 
@@ -17,7 +17,7 @@ const execute = async (interaction, client) => {
       return await editErrorEphemeral(interaction, "Provide course name as argument or use the command in course channel.");
     }
     else {
-      roleString = getRoleFromCategory(category.name);
+      roleString = getCourseNameFromCategory(category.name);
     }
   }
 

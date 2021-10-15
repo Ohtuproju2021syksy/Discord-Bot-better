@@ -1,7 +1,6 @@
 const {
   createCategoryName,
   createPrivateCategoryName,
-  getRoleFromCategory,
   findOrCreateRoleWithName,
   updateGuideMessage,
   createInvitation,
@@ -14,7 +13,7 @@ const {
   findOrCreateChannel,
   setCoursePositionABC,
   isCourseCategory,
-  trimCourseName,
+  getCourseNameFromCategory,
   findAllCourseNames } = require("../../src/discordBot/services/service");
 
 const createGuidePinnedMessage = async (guild) => {
@@ -90,14 +89,14 @@ describe("Service", () => {
   test("Get course name from category name", () => {
     const courseString = "test";
     const categoryName = "📚 test";
-    const result = getRoleFromCategory(categoryName);
+    const result = getCourseNameFromCategory(categoryName);
     expect(result).toBe(courseString);
   });
 
   test("Get course name from privateCategory name", () => {
     const courseString = "test";
     const privateCategoryName = "👻 test";
-    const result = getRoleFromCategory(privateCategoryName);
+    const result = getCourseNameFromCategory(privateCategoryName);
     expect(result).toBe(courseString);
   });
 
@@ -266,7 +265,7 @@ describe("Service", () => {
     const category = "test";
     const privateCategoryName = "📚 test";
     const channel = { name: privateCategoryName };
-    const result = trimCourseName(channel);
+    const result = getCourseNameFromCategory(channel);
     expect(result).toBe(category);
   });
 
@@ -274,7 +273,7 @@ describe("Service", () => {
     const category = "test";
     const privateCategoryName = "🔒 test";
     const channel = { name: privateCategoryName };
-    const result = trimCourseName(channel);
+    const result = getCourseNameFromCategory(channel);
     expect(result).toBe(category);
   });
 

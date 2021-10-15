@@ -1,9 +1,8 @@
 const { execute } = require("../../src/discordBot/commands/faculty/status");
 const { sendEphemeral, editErrorEphemeral, editEphemeral } = require("../../src/discordBot/services/message");
 const {
-  getRoleFromCategory,
+  getCourseNameFromCategory,
   createCourseInvitationLink,
-  trimCourseName,
   findCourseFromDb,
   findChannelsByCourse } = require("../../src/discordBot/services/service");
 const models = require("../mocks/mockModels");
@@ -58,9 +57,8 @@ describe("slash status command", () => {
     defaultTeacherInteraction.channelId = 2;
     const response = createResponse();
     await execute(defaultTeacherInteraction, client, models);
-    expect(trimCourseName).toHaveBeenCalledTimes(1);
+    expect(getCourseNameFromCategory).toHaveBeenCalledTimes(1);
     expect(findCourseFromDb).toHaveBeenCalledTimes(1);
-    expect(getRoleFromCategory).toHaveBeenCalledTimes(1);
     expect(createCourseInvitationLink).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);

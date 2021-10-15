@@ -8,7 +8,7 @@ const {
   msToMinutesAndSeconds,
   handleCooldown,
   checkCourseCooldown,
-  trimCourseName,
+  getCourseNameFromCategory,
   findCourseFromDb,
   createCourseToDatabase,
   findCourseFromDbWithFullName } = require("../../services/service");
@@ -62,7 +62,7 @@ const execute = async (interaction, client, models) => {
   await sendEphemeral(interaction, "Editing...");
   const guild = client.guild;
   const channel = guild.channels.cache.get(interaction.channelId);
-  const categoryName = trimCourseName(channel.parent, guild);
+  const categoryName = getCourseNameFromCategory(channel.parent, guild);
 
   const cooldown = checkCourseCooldown(categoryName);
   if (cooldown) {
@@ -134,7 +134,7 @@ const execute = async (interaction, client, models) => {
   await updateGuide(client.guild, models.Course);
 
   await editEphemeral(interaction, "Course information has been changed");
-  const nameToCoolDown = trimCourseName(channel.parent, guild);
+  const nameToCoolDown = getCourseNameFromCategory(channel.parent, guild);
   handleCooldown(nameToCoolDown);
 };
 

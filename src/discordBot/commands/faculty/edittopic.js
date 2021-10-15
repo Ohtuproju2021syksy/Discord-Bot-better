@@ -3,7 +3,7 @@ const {
   handleCooldown,
   checkCourseCooldown,
   msToMinutesAndSeconds,
-  trimCourseName } = require("../../services/service");
+  getCourseNameFromCategory } = require("../../services/service");
 const { editErrorEphemeral, sendEphemeral, editEphemeral } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
 
@@ -18,7 +18,7 @@ const execute = async (interaction, client) => {
     return await editErrorEphemeral(interaction, "This is not a course category, can not execute the command!");
   }
 
-  const categoryName = trimCourseName(channel.parent, guild);
+  const categoryName = getCourseNameFromCategory(channel.parent, guild);
   const channelAnnouncement = guild.channels.cache.find(c => c.parent === channel.parent && c.name.includes("_announcement"));
   const channelGeneral = guild.channels.cache.find(c => c.parent === channel.parent && c.name.includes("_general"));
 

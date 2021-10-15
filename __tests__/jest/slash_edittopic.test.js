@@ -1,7 +1,7 @@
 const { execute } = require("../../src/discordBot/commands/faculty/edittopic");
 const { sendEphemeral, editErrorEphemeral, editEphemeral } = require("../../src/discordBot/services/message");
 const {
-  trimCourseName,
+  getCourseNameFromCategory,
   handleCooldown,
   msToMinutesAndSeconds,
   checkCourseCooldown } = require("../../src/discordBot/services/service");
@@ -43,8 +43,8 @@ describe("slash edittopic command", () => {
     const accouncement = client.guild.channels.cache.get(5);
     const response = "Channel topic has been changed";
     await execute(defaultTeacherInteraction, client);
-    expect(trimCourseName).toHaveBeenCalledTimes(1);
-    expect(trimCourseName).toHaveBeenCalledWith(channel.parent, client.guild);
+    expect(getCourseNameFromCategory).toHaveBeenCalledTimes(1);
+    expect(getCourseNameFromCategory).toHaveBeenCalledWith(channel.parent, client.guild);
     expect(general.setTopic).toHaveBeenCalledTimes(1);
     expect(general.setTopic).toHaveBeenCalledWith(newTopic);
     expect(accouncement.setTopic).toHaveBeenCalledTimes(1);

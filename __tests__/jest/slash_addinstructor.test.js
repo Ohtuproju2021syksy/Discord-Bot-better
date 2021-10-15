@@ -1,13 +1,13 @@
 const { execute } = require("../../src/discordBot/commands/instructor/addinstructor");
 const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../src/discordBot/services/message");
-const { isCourseCategory, trimCourseName } = require("../../src/discordBot/services/service");
+const { isCourseCategory, getCourseNameFromCategory } = require("../../src/discordBot/services/service");
 const { courseAdminRole } = require("../../config.json");
 
 jest.mock("../../src/discordBot/services/message");
 jest.mock("../../src/discordBot/services/service");
 
 isCourseCategory.mockImplementation(() => true);
-trimCourseName.mockImplementation(() => "test");
+getCourseNameFromCategory.mockImplementation(() => "test");
 
 const { defaultTeacherInteraction, defaultStudentInteraction, defaultAdminInteraction } = require("../mocks/mockInteraction");
 defaultAdminInteraction.options = { getUser: jest.fn(() => { return { id: 3 }; }) };

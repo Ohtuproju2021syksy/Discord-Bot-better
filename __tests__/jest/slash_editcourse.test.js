@@ -3,7 +3,7 @@ const { sendEphemeral, editErrorEphemeral, editEphemeral } = require("../../src/
 const {
   findCategoryName,
   msToMinutesAndSeconds,
-  trimCourseName,
+  getCourseNameFromCategory,
   findCourseFromDb,
   checkCourseCooldown } = require("../../src/discordBot/services/service");
 const models = require("../mocks/mockModels");
@@ -18,7 +18,7 @@ afterEach(() => {
 const time = "4:59";
 msToMinutesAndSeconds.mockImplementation(() => time);
 findCategoryName.mockImplementation((name) => `📚 ${name}`);
-trimCourseName.mockImplementation(() => "test");
+getCourseNameFromCategory.mockImplementation(() => "test");
 findCourseFromDb
   .mockImplementation(() => {
     return {
