@@ -33,7 +33,7 @@ const execute = async (interaction, client) => {
         adminsString = "<@" + member.user.id + ">";
       }
       else {
-        adminsString = ", " + "<@" + member.user.id + ">";
+        adminsString = adminsString + ", " + "<@" + member.user.id + ">";
       }
 
     }
