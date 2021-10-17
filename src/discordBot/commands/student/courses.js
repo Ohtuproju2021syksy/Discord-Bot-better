@@ -2,9 +2,9 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 const { findCoursesFromDb } = require("../../services/service");
 const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../services/message");
 
-const execute = async (interaction, client, Course) => {
+const execute = async (interaction, client, models) => {
   await sendEphemeral(interaction, "Fetching courses...");
-  const courses = await findCoursesFromDb("fullName", Course, false);
+  const courses = await findCoursesFromDb("fullName", models.Course, false);
   const data = courses.map((c) => {
     const fullname = c.fullName;
     return `${fullname} - \`/join ${c.name}\``;

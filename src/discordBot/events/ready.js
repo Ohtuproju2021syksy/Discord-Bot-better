@@ -1,10 +1,10 @@
 const { initializeApplicationContext } = require("../services/init");
 const { setUpCommands } = require("../services/command");
 
-const execute = async (client, Course) => {
+const execute = async (client, models) => {
   client.guild = await client.guilds.fetch(process.env.GUILD_ID);
-  await initializeApplicationContext(client, Course);
-  await setUpCommands(client, Course);
+  await initializeApplicationContext(client, models.Course);
+  await setUpCommands(client, models.Course);
   client.guild.members.fetch();
   console.log(`${client.user.tag} initialized!`);
 };

@@ -42,7 +42,8 @@
     "pg-hstore": "^2.3.4",
     "prom-client": "^14.0.0",
     "sequelize": "^6.6.2",
-    "telegraf": "^4.4.0"
+    "telegraf": "^4.4.0",
+    "umzug": "^2.3.0"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
@@ -50,6 +51,7 @@
     "eslint-plugin-jest": "^24.3.6",
     "jest": "^27.0.1",
     "nodemon": "^2.0.4",
+    "sequelize-cli": "^6.2.0",
     "sequelize-mock": "^0.10.2",
     "supertest": "^6.1.3"
   }

@@ -1,7 +1,7 @@
 require("dotenv").config();
 const { Client, Intents } = require("discord.js");
 const fs = require("fs");
-const { Course } = require("../db/dbInit");
+const models = require("../db/dbInit");
 
 const token = process.env.DISCORD_BOT_TOKEN;
 const intents = [
@@ -18,10 +18,10 @@ const eventFiles = fs.readdirSync("./src/discordBot/events").filter(file => file
 for (const file of eventFiles) {
   const event = require(`./events/${file}`);
   if (event.once) {
-    client.once(event.name, (...args) => event.execute(...args, Course));
+    client.once(event.name, (...args) => event.execute(...args, models));
   }
   else {
-    client.on(event.name, (...args) => event.execute(...args, client, Course));
+    client.on(event.name, (...args) => event.execute(...args, client, models));
   }
 }
 

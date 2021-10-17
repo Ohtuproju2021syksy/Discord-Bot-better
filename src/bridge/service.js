@@ -4,6 +4,7 @@ let telegramClient;
 const keywords = ["crypto", "krypto", "btc", "doge", "btc", "eth", "musk", "money", "$", "usd", "bitcoin", "muskx.co", "coin", "elonmusk", "prize", "еlonmusk", "btc"];
 const cyrillicPattern = /^\p{Script=Cyrillic}+$/u;
 const keywordPoints = new Map(keywords.map(key => [key, null]));
+const { findCourseFromDb } = require("../discordBot/services/service");
 
 
 const validDiscordChannel = async (courseName) => {
@@ -25,7 +26,7 @@ const createDiscordUser = async (ctx) => {
   return user;
 };
 
-const sendMessageToDiscord = async (message, channel) => {
+const sendMessageToDiscord = async (ctx, message, channel) => {
   try {
     if (message.content.text && message.content.text.length > 2000) {
       console.log("Message is too long (over 2000 characters)");
@@ -38,7 +39,8 @@ const sendMessageToDiscord = async (message, channel) => {
     const webhook = webhooks.first();
     if (message.content.text) {
       if (isMessageCryptoSpam(message)) {
-        console.log("Crypto spam detected, message blocked (Either too many keywords and/or userID has bot in it)");
+        console.log("Crypto spam detected, message deleted (Either too many keywords and/or userID has bot in it)");
+        deleteMessage(ctx);
         return;
       }
       await webhook.send({
@@ -80,6 +82,16 @@ const sendMessageToDiscord = async (message, channel) => {
   }
 };
 
+const deleteMessage = (ctx) => {
+  const permissions = telegramClient.telegram.getChatMember(ctx.update.message.chat.id, ctx.botInfo.id);
+  permissions.then((v) => {
+    if (v.status === "administrator" && v.can_delete_messages) {
+      ctx.deleteMessage();
+    }
+  });
+  return;
+};
+
 const isMessageCryptoSpam = (message) => {
 
   let point = 0;
@@ -95,6 +107,7 @@ const isMessageCryptoSpam = (message) => {
 
   userId.includes("bot") ? point = point + 2 : point = point + 0;
   message.content.text.includes("elonmusk") ? point++ : point = point + 0;
+  message.content.text.includes("t.me/joinchat/") ? point = point + 2 : point = point + 0;
   cyrillicPattern.test(message.content.text) ? point++ : point = point + 0;
   if (point == 3) return true;
   for (const word of textAsList) {
@@ -141,6 +154,13 @@ const handleBridgeMessage = async (message, courseName, Course) => {
     let userName = message.guild.members.cache.get(userID);
     userName ? userName = userName.user.username : userName = "Jon Doe";
     msg = msg.replace("<@!" + userID + ">", userName);
+  }
+
+  while (msg.includes("<@&")) {
+    const roleID = msg.match(/(?<=<@&).*?(?=>)/)[0];
+    let roleName = message.guild.roles.cache.get(roleID);
+    roleName ? roleName = roleName.name : roleName = "Unknown Role";
+    msg = msg.replace("<@&" + roleID + ">", roleName);
   }
 
   const media = message.attachments.first();
@@ -192,6 +212,7 @@ const validateContent = (content) => {
 };
 
 const sendMessageToTelegram = async (telegramId, content, sender, channel) => {
+
   sender ? escapeChars(sender) : null;
   content = validateContent(content);
   try {
@@ -243,17 +264,51 @@ const sendAnimationToTelegram = async (telegramId, sender, channel, url) => {
   }
 };
 
-const getCourseName = (categoryName) => {
-  let cleaned = null;
-  if (categoryName.includes("📚")) {
-    cleaned = categoryName.replace("📚", "").trim();
+const lockTelegramCourse = async (Course, courseName) => {
+  const group = await findCourseFromDb(courseName, Course);
+  if (!group || group.telegramId == null) {
+    return;
   }
-  else {
-    cleaned = categoryName.replace("🔒", "").trim();
+  const telegramId = group.telegramId;
+  const permissions = {
+    "can_send_messages" : false,
+    "can_send_media_messages": false,
+    "can_send_polls": false,
+    "can_send_other_messages": false,
+    "can_add_web_page_previews": false,
+    "can_invite_users": false,
+  };
+  try {
+    await telegramClient.telegram.setChatPermissions(telegramId, permissions);
+    await sendMessageToTelegram(group.telegramId, "This chat has been locked", null, "");
   }
-  const regExp = /\(([^)]+)\)/;
-  const matches = regExp.exec(cleaned);
-  return matches?.[1] || cleaned;
+  catch (error) {
+    console.log("Error " + error);
+    return error;
+  }
+};
+
+const unlockTelegramCourse = async (Course, courseName) => {
+  const group = await findCourseFromDb(courseName, Course);
+  if (!group || group.telegramId == null) {
+    return;
+  }
+  const telegramId = group.telegramId;
+  try {
+    const permissions = {
+      "can_send_messages" : true,
+      "can_send_media_messages": true,
+      "can_send_polls": true,
+      "can_send_other_messages": true,
+      "can_add_web_page_previews": true,
+      "can_invite_users": true,
+    };
+    await telegramClient.telegram.setChatPermissions(telegramId, permissions);
+    await sendMessageToTelegram(group.telegramId, "This chat has been unlocked", null, "");
+  }
+  catch (error) {
+    return error;
+  }
 };
 
 const initService = (dclient, tClient) => {
@@ -270,5 +325,6 @@ module.exports = {
   sendMediaToTelegram,
   sendAnimationToTelegram,
   handleBridgeMessage,
-  getCourseName,
+  lockTelegramCourse,
+  unlockTelegramCourse,
 };
