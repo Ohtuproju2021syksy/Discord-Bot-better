@@ -1,6 +1,4 @@
 const {
-  createCategoryName,
-  createPrivateCategoryName,
   findOrCreateRoleWithName,
   updateGuideMessage,
   createInvitation,
@@ -72,20 +70,6 @@ afterEach(() => {
 });
 
 describe("Service", () => {
-  test("Get category name from course name", () => {
-    const courseString = "test";
-    const categoryName = "📚 test";
-    const result = createCategoryName(courseString);
-    expect(result).toBe(categoryName);
-  });
-
-  test("Get private category name from course name", () => {
-    const courseString = "test";
-    const privateCategoryName = "👻 test";
-    const result = createPrivateCategoryName(courseString);
-    expect(result).toBe(privateCategoryName);
-  });
-
   test("Get course name from category name", () => {
     const courseString = "test";
     const categoryName = "📚 test";

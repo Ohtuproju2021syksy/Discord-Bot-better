@@ -7,12 +7,6 @@ let invite_url = "";
 
 process.env.NODE_ENV === "production" ? invite_url = `${process.env.BACKEND_SERVER_URL}` : invite_url = `${process.env.BACKEND_SERVER_URL}:${process.env.PORT}`;
 
-const createCategoryName = (courseString) => `📚 ${courseString}`;
-
-const createPrivateCategoryName = (courseString) => `👻 ${courseString}`;
-
-const createLockedCategoryName = (courseString) => `🔐 ${courseString}`;
-
 const getUnlockedCourse = (name, guild) => {
   return guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name.toLowerCase().includes(name.toLowerCase()) && !c.name.toLowerCase().includes("🔐"));
 };
@@ -257,7 +251,7 @@ const setCourseToLocked = async (courseName, Course, guild) => {
   });
   if (course) {
     course.locked = true;
-    const categoryName = createLockedCategoryName(courseName);
+    const categoryName = `🔐 ${courseName}`;
     const category = findChannelWithNameAndType(categoryName, "GUILD_CATEGORY", guild);
     category.permissionOverwrites.create(guild.roles.cache.find(r => r.name.toLowerCase() === courseName.toLowerCase()), { VIEW_CHANNEL: true, SEND_MESSAGES: false });
     category.permissionOverwrites.create(guild.roles.cache.find(r => r.name.toLowerCase() === `${courseName.toLowerCase()} instructor`), { VIEW_CHANNEL: true, SEND_MESSAGES: true });
@@ -380,9 +374,6 @@ const findChannelsByCourse = async (id, Channel) => {
 
 
 module.exports = {
-  createCategoryName,
-  createPrivateCategoryName,
-  createLockedCategoryName,
   findOrCreateRoleWithName,
   updateGuideMessage,
   updateGuide,
