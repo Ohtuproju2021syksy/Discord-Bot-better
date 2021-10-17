@@ -14,5 +14,11 @@ const sequelize = new Sequelize("postgres", username, password, {
 });
 
 const Course = require("./models/Course")(sequelize, Sequelize.DataTypes);
+const Channel = require("./models/Channel")(sequelize, Sequelize.DataTypes);
+Channel.belongsTo(Course, {
+  foreignKeyConstraint: true, onDelete: "cascade",
+});
 
-module.exports = { Course, sequelize };
+sequelize.sync();
+
+module.exports = { Course, Channel, sequelize };

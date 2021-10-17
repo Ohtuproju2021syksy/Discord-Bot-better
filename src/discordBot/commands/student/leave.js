@@ -3,7 +3,7 @@ const { updateGuide } = require("../../services/service");
 const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../services/message");
 const { courseAdminRole } = require("../../../../config.json");
 
-const execute = async (interaction, client, Course) => {
+const execute = async (interaction, client, models) => {
   await sendEphemeral(interaction, "Leaving course...");
   let roleString = "";
 
@@ -33,7 +33,7 @@ const execute = async (interaction, client, Course) => {
   await member.fetch(true);
 
   await editEphemeral(interaction, `You have been removed from the ${roleString} course.`);
-  await updateGuide(client.guild, Course);
+  await updateGuide(client.guild, models.Course);
 };
 
 module.exports = {

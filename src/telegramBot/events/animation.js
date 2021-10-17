@@ -13,7 +13,7 @@ const execute = async (ctx, message, telegramClient, Course) => {
     const channel = await validDiscordChannel(courseName);
     if (!channel) return;
     const msg = { user: discordUser, content: { photo: { url: url.href } } };
-    return await sendMessageToDiscord(msg, channel);
+    return await sendMessageToDiscord(ctx, msg, channel);
   }
 };
 

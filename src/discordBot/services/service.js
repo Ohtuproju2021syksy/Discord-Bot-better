@@ -204,7 +204,7 @@ const setCoursePositionABC = async (guild, courseString) => {
   }
 };
 
-const deleteCommand = async (client, commandToDeleteName) => {
+const deletecommand = async (client, commandToDeleteName) => {
   client.api.applications(client.user.id).guilds(process.env.GUILD_ID).commands.get().then(commands => {
     commands.forEach(async command => {
       if (command.name === commandToDeleteName) {
@@ -359,6 +359,45 @@ const findCourseNickNameFromDbWithCourseCode = async (courseName, Course) => {
   });
 };
 
+const findChannelFromDbByName = async (channelName, Channel) => {
+  return await Channel.findOne({
+    where: {
+      name: channelName,
+    },
+  });
+};
+
+const createChannelToDatabase = async (courseId, channelName, Channel) => {
+  const alreadyinuse = await Channel.findOne({
+    where:
+      { name: { [Sequelize.Op.iLike]: channelName } },
+  });
+  if (!alreadyinuse) {
+    await Channel.create({ name: channelName, courseId: courseId });
+  }
+};
+
+const removeChannelFromDb = async (channelName, Channel) => {
+  const channel = await Channel.findOne({
+    where:
+      { name: { [Sequelize.Op.iLike]: channelName } },
+  });
+  if (channel) {
+    await Channel.destroy({
+      where:
+        { name: { [Sequelize.Op.iLike]: channelName } },
+    });
+  }
+};
+
+const findChannelsByCourse = async (id, Channel) => {
+  return await Channel.findAll({
+    where: {
+      courseId: id,
+    },
+  });
+};
+
 
 module.exports = {
   createCategoryName,
@@ -378,7 +417,7 @@ module.exports = {
   createCourseInvitationLink,
   findOrCreateChannel,
   setCoursePositionABC,
-  deleteCommand,
+  deletecommand,
   isCourseCategory,
   trimCourseName,
   findAllCourseNames,
@@ -393,6 +432,10 @@ module.exports = {
   findCourseFromDbWithFullName,
   findCoursesFromDb,
   findCourseNickNameFromDbWithCourseCode,
+  findChannelFromDbByName,
+  createChannelToDatabase,
+  removeChannelFromDb,
+  findChannelsByCourse,
   getHiddenCourse,
   getLockedCourse,
   getPublicCourse,
