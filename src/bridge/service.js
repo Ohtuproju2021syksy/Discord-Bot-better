@@ -40,7 +40,7 @@ const sendMessageToDiscord = async (ctx, message, channel) => {
     if (message.content.text) {
       if (isMessageCryptoSpam(message)) {
         console.log("Crypto spam detected, message deleted (Either too many keywords and/or userID has bot in it)");
-        ctx.deleteMessage();
+        deleteMessage(ctx);
         return;
       }
       await webhook.send({
@@ -80,6 +80,16 @@ const sendMessageToDiscord = async (ctx, message, channel) => {
   catch (error) {
     console.error("Error trying to send a message: ", error);
   }
+};
+
+const deleteMessage = (ctx) => {
+  const permissions = telegramClient.telegram.getChatMember(ctx.update.message.chat.id, ctx.botInfo.id);
+  permissions.then((v) => {
+    if (v.status === "administrator" && v.can_delete_messages) {
+      ctx.deleteMessage();
+    }
+  });
+  return;
 };
 
 const isMessageCryptoSpam = (message) => {
