@@ -17,13 +17,9 @@ const { courseAdminRole, facultyRole } = require("../../../../config.json");
 
 
 const changeCourseNames = async (newValue, channel, category, guild) => {
-  if (guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name.toLowerCase().includes(newValue.toLowerCase()))) return;
-  if (category.name.includes("📚")) {
-    await category.setName(`📚 ${newValue}`);
-  }
-  else {
-    await category.setName(`🔒 ${newValue}`);
-  }
+  if (guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && trimCourseName(c.name.toLowerCase()) === newValue.toLowerCase())) return;
+  const categoryEmojis = category.name.replace(trimCourseName(category), "");
+  await category.setName(`${categoryEmojis} ${newValue}`);
   await Promise.all(guild.channels.cache
     .filter(c => c.parent === channel.parent)
     .map(async ch => {
@@ -111,7 +107,7 @@ const execute = async (interaction, client, models) => {
   }
 
   if (choice === "name") {
-    if (findCourseFromDbWithFullName(newValue, models.Course)) return await editErrorEphemeral(interaction, "Course full name already exists");
+    if (await findCourseFromDbWithFullName(newValue, models.Course)) return await editErrorEphemeral(interaction, "Course full name already exists");
     databaseValue.fullName = newValue;
     await databaseValue.save();
   }
