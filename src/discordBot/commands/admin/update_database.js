@@ -13,7 +13,9 @@ const execute = async (message, args, models) => {
       const currentChannel = channelsAsArray[channel];
       const courseIdentifier = trimCourseName(currentChannel.parent);
       const course = await findCourseFromDb(courseIdentifier, models.Course);
-      await createChannelToDatabase(course.id, currentChannel.name, models.Channel);
+      if (course) {
+        await createChannelToDatabase(course.id, currentChannel.name, models.Channel);
+      }
     }
   }
 };
