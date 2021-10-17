@@ -74,21 +74,21 @@ Note that only one Telegram group can be connected to only one Discord course.
 
 ### How to create more text channels
 
-The `/create_course` command automatically creates three sub-channels for the course. The sub-channels are: announcements (text channel), general (text channel) and one voice channel. To create more text channels for a course go inside the wanted course. Inside this course use `/createhannel` command followed by the desired text channel name to create new text channel.
+The `/create_course` command automatically creates three sub-channels for the course. The sub-channels are: announcements (text channel), general (text channel) and one voice channel. To create more text channels for a course go inside the wanted course. Inside this course use `/create_channel` command followed by the desired text channel name to create new text channel.
 
 Note that the channel name you give is the end part of the name. For example, in the picture new channel will be created with name _wepa_feedback_.
 
 **Note also that if the course is bridged to telegram, messages from every channel will be bridged to telegram but messages from telegram are bridged only to general. If you want to disable bridge on a non-default text channel, use the command `/disable_bridge` on that channel.**
 
-To remove added text channel use `/removechannel` command followed by the name of the text channel to be removed e.g., `/delete_channel feedback` removes _wepa_feedback_. This command must also be used inside the course you want the channel to be removed. Note that announcements or general channels can not be removed.
+To remove added text channel use `/delete_channel` command followed by the name of the text channel to be removed e.g., `/delete_channel feedback` removes _wepa_feedback_. This command must also be used inside the course you want the channel to be removed. Note that announcements or general channels can not be removed.
 
 ## How to make course secret
-Once the course is created, it can be made hidden. This means joining the course channel is only possible via link. To make a secret course use the `/hide_course` command followed by the course name, e.g. `/hide_course wepa`. The secret courses can be identified by the lock_chat-and-key emoji. 
+Once the course is created, it can be made hidden. This means joining the course channel is only possible via link. To make a secret course use the `/hide_course` command followed by the course name, e.g. `/hide_course wepa`. The secret courses can be identified by the ghost emoji. 
 
 To make the course public again use the `/unhide_course` command followed by the course name, e.g. `/unhide_course wepa`. Public courses can be found with `/courses` command and with `/join` command, unlike secret courses.
 
 ## How to lock_chat course
-Once the course is created, it can be locked. This means that only instructors and faculty can write in the course channels. This can be used e.g. when a course exam is on and you don't want students to post their answers. To lock_chat a course, use the `/lock_chat` command followed by the course name, e.g. `/lock_chat wepa`. The locked courses can be identified by the ghost emoji.
+Once the course is created, it can be locked. This means that only instructors and faculty can write in the course channels. This can be used e.g. when a course exam is on and you don't want students to post their answers. To lock_chat a course, use the `/lock_chat` command followed by the course name, e.g. `/lock_chat wepa`. The locked courses can be identified by the lock emoji.
 
 To make the course unlocked again use the `/unlock_chat` command followed by the course name, e.g. `/unlock_chat wepa`.
 
@@ -123,14 +123,15 @@ Command | Explanation | Arguments
 [/enable_bridge](./commands/enable_bridge.md) | Enable the bridge between Telegram and the (non-default) course channel it is used in. | :x:
 [/edit_course](./commands/edit_course.md) | Edit course information, options; coursecode, full name, nickname | :heavy_check_mark:
 [/edit_topic](./commands/edit_topic.md) | Edit topic, must be used in course , e.g., /topic A new topic. | :heavy_check_mark:
-[/help](./commands/help.md) | Returns a list of commands with info or info about a specific command. | :o:
 [/hide_course](./commands/hide_course.md)| Make given course private, e.g., /hide_course weba. | :heavy_check_mark:
+[/unhide_course](./commands/unhide_course.md) | Make given course public, e.g., /unhide_course weba. | :heavy_check_mark:
+[/lock_chat](./commands/lock_chat.md) | Lock the chat (meaning only instructors and faculty can post messages) of a given course | :heavy_check_mark:
+[/unlock_chat](./commands/unlock_chat.md) | Unlock the chat of a given course | :heavy_check_mark:
+[/help](./commands/help.md) | Returns a list of commands with info or info about a specific command. | :o:
 [/instructors](./commands/instructors.md) | Used in course channel returns a list of course instructors. Can be used anywhere when a parameter is given. | :o:
 [/join](./commands/join.md) | Joins you into the course given, e.g., /join ohpe. | :heavy_check_mark:
 [/leave](./commands/leave.md) | Remove you from the course given, e.g., /leave ohpe. | :heavy_check_mark:
-[/removechannel](./commands/removechannel.md) | Remove given text channel inside a course, e.g., /removechannel feedback. | :heavy_check_mark:
 [/status](./commands/status.md) | Used in course channel returns general info about the course | :heavy_check_mark:
-[/unhide_course](./commands/unhide_course.md) | Make given course public, e.g., /unhide_course weba. | :heavy_check_mark:
 
 ### Material
 
