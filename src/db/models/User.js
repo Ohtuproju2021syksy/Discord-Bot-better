@@ -24,6 +24,6 @@ module.exports = (sequelize, DataTypes) => {
     freezeTableName: true,
     timestamps: true,
     updatedAt: false,
-    tableName: 'joined_users'
+    tableName: "joined_users",
   });
 };

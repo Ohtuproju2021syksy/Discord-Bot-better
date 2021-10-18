@@ -1,7 +1,7 @@
 const findUserByDiscordId = async (id, User) => {
   return await User.findOne({
     where:{
-      discordId: id
+      discordId: id,
     },
   });
 };
@@ -9,7 +9,7 @@ const findUserByDiscordId = async (id, User) => {
 const createUserToDatabase = async (discordId, username, User) => {
   const alreadyinuse = await User.findOne({
     where:{
-      discordId: discordId
+      discordId: discordId,
     },
   });
   if (!alreadyinuse) {
@@ -20,13 +20,13 @@ const createUserToDatabase = async (discordId, username, User) => {
 const removeUserFromDb = async (discordId, User) => {
   const user = await User.findOne({
     where:{
-      discordId: discordId
+      discordId: discordId,
     },
   });
   if (user) {
     await User.destroy({
       where: {
-        id: user.id
+        id: user.id,
       },
     });
   }
