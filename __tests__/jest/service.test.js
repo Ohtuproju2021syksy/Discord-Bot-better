@@ -167,7 +167,7 @@ describe("Service", () => {
     client.guild.channels.cache = [];
   });
 
-  test("find private category name", () => {
+  test("find private category", () => {
     const courseString = "test";
     const privCategoryName = "👻 test";
     const privChan = { name: privCategoryName, type: "GUILD_CATEGORY" };
