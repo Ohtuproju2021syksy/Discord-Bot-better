@@ -10,7 +10,7 @@ const execute = async (interaction, client) => {
 
   const guild = client.guild;
   const numbers = [ "1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣"];
-  const channel = guild.channels.get(interaction.channel_id);
+  const channel = guild.channels.cache.get(interaction.channelId);
 
   const pollTitle = interaction.options.getString("title").trim();
   await sendEphemeral(interaction, "Creating poll...");
@@ -44,26 +44,34 @@ const execute = async (interaction, client) => {
     .setTitle(pollTitle)
     .setDescription(answerList);
 
-  const msgEmbed = await channel.send(pollEmbed);
+  const msgEmbed = await channel.send({ embeds: [pollEmbed] });
 
   await editEphemeral(interaction, "Poll started");
+  addReactions(msgEmbed);
+
+
+  let duration = 90000;
+
+  if (interaction.options.getInteger("duration")) {
+    duration = interaction.options.getInteger("duration") * 60000;
+  }
+
+  const answerAmount = [];
+  for (let i = 0, len = duration; i < len;) {
+    await sleep(1000);
+    i = i + 1000;
+    for (let a = 0, all = answers; i < all; i++) {
+      answerAmount[a] = answerAmount[a] + msgEmbed.reactions.cache.get(numbers[i]).count - 1;
+    }
+    msgEmbed.reactions.removeAll();
+    addReactions(msgEmbed);
+
+  }
+
+  let resultsText = "";
 
   for (let i = 0, len = answers; i < len; i++) {
-    msgEmbed.react(numbers[i]);
-  }
-
-  if (interaction.options.getString("duration")) {
-    const time = interaction.options.getInt("duration") * 60000;
-    await sleep(time);
-  }
-  else {
-    await sleep(90000);
-  }
-
-  const reactions = msgEmbed.reactions.cache;
-  let resultsText = "";
-  for (let i = 0, len = answers.length; i < len; i++) {
-    resultsText = resultsText.concat("Number of " + numbers[i] + " = " + reactions.get(numbers[i]).count) + "\n\n";
+    resultsText = resultsText.concat("Number of " + numbers[i] + " = " + (answerAmount[i]) + "\n\n");
   }
 
   const resultEmbed = new MessageEmbed()
@@ -71,11 +79,15 @@ const execute = async (interaction, client) => {
     .setTitle("Results of the poll")
     .setDescription(resultsText);
 
-  await channel.send(resultEmbed);
+  await channel.send({ embeds: [resultEmbed] });
 
   await editEphemeral(interaction, "Poll duration ended");
 
-
+  function addReactions(msg) {
+    for (let i = 0, len = answers; i < len; i++) {
+      msg.react(numbers[i]);
+    }
+  }
   function sleep(ms) {
     return new Promise((resolve) => {
       setTimeout(resolve, ms);
@@ -89,13 +101,13 @@ module.exports = {
     .setName("create_poll")
     .setDescription("Create poll")
     .setDefaultPermission(false)
-    .addIntegerOption(option =>
-      option.setName("duration")
-        .setDescription("Duration of the poll")
-        .setRequired(false))
     .addStringOption(option =>
       option.setName("title")
         .setDescription("Poll title")
+        .setRequired(true))
+    .addIntegerOption(option =>
+      option.setName("duration")
+        .setDescription("Duration of the poll")
         .setRequired(true))
     .addStringOption(option =>
       option.setName("answer1")
