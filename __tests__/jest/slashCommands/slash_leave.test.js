@@ -1,7 +1,6 @@
 const { execute } = require("../../../src/discordBot/commands/student/leave");
 const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../../src/discordBot/services/message");
 const { updateGuide, findCourseFromDb } = require("../../../src/discordBot/services/service");
-const { removeCourseMemberFromDb } = require("../../../src/discordBot/services/courseMemberService");
 const { findUserByDiscordId } = require("../../../src/discordBot/services/userService");
 const models = require("../../mocks/mockModels");
 
@@ -18,9 +17,8 @@ const initialResponse = "Leaving course...";
 const course = { id: 1, name: "tester", fullName: "test course", code: "101", private: false };
 findCourseFromDb.mockImplementation(() => course);
 
-user = { name: "test", id: 1 };
-findUserByDiscordId.mockImplementation(() => user)
-removeCourseMemberFromDb.mockImplementation(() => {})
+const user = { name: "test", id: 1 };
+findUserByDiscordId.mockImplementation(() => user);
 
 afterEach(() => {
   jest.clearAllMocks();
