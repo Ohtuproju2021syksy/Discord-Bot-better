@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const {
   setCoursePositionABC,
-  findCategoryName,
+  findCategoryWithCourseName,
   createCourseInvitationLink,
   findChannelWithNameAndType,
   updateGuide,
@@ -96,8 +96,8 @@ const execute = async (interaction, client, models) => {
       await changeCourseRoles(categoryName, newValue, guild);
       await changeInvitationLink(channelAnnouncement, interaction);
 
-      const newCategoryName = findCategoryName(newValue, guild);
-      await setCoursePositionABC(guild, newCategoryName);
+      const newCategory = findCategoryWithName(newValue, guild);
+      await setCoursePositionABC(guild, newCategory.name);
 
     }
     else {
@@ -122,8 +122,8 @@ const execute = async (interaction, client, models) => {
     await changeCourseRoles(categoryName, newValue, guild);
     await changeInvitationLink(channelAnnouncement, interaction);
 
-    const newCategoryName = findCategoryName(newValue, guild);
-    await setCoursePositionABC(guild, newCategoryName);
+    const newCategory = findCategoryWithCourseName(newValue, guild);
+    await setCoursePositionABC(guild, newCategory.name);
   }
 
   await client.emit("COURSES_CHANGED", models.Course);

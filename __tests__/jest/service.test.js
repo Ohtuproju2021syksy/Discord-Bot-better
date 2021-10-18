@@ -2,7 +2,7 @@ const {
   findOrCreateRoleWithName,
   updateGuideMessage,
   createInvitation,
-  findCategoryName,
+  findCategoryWithCourseName,
   createCourseToDatabase,
   removeCourseFromDb,
   findChannelWithNameAndType,
@@ -156,25 +156,25 @@ describe("Service", () => {
     client.guild.channels.cache = [];
   });
 
-  test("find public category name", () => {
+  test("find public category", () => {
     const courseString = "test";
     const pubCategoryName = "📚 test";
     const pubChan = { name: pubCategoryName, type: "GUILD_CATEGORY" };
     client.guild.channels.cache = [pubChan];
 
-    const result = findCategoryName(courseString, client.guild);
-    expect(result).toBe(pubCategoryName);
+    const result = findCategoryWithCourseName(courseString, client.guild);
+    expect(result.name).toBe(pubCategoryName);
     client.guild.channels.cache = [];
   });
 
   test("find private category name", () => {
     const courseString = "test";
-    const privCategoryName = "🔒 test";
+    const privCategoryName = "👻 test";
     const privChan = { name: privCategoryName, type: "GUILD_CATEGORY" };
     client.guild.channels.cache = [privChan];
 
-    const result = findCategoryName(courseString, client.guild);
-    expect(result).toBe(privCategoryName);
+    const result = findCategoryWithCourseName(courseString, client.guild);
+    expect(result.name).toBe(privCategoryName);
     client.guild.channels.cache = [];
   });
 

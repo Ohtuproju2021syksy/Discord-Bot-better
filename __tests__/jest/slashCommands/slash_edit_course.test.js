@@ -1,7 +1,7 @@
 const { execute } = require("../../../src/discordBot/commands/faculty/edit_course");
 const { sendEphemeral, editErrorEphemeral, editEphemeral } = require("../../../src/discordBot/services/message");
 const {
-  findCategoryName,
+  findCategoryWithCourseName,
   msToMinutesAndSeconds,
   getCourseNameFromCategory,
   findCourseFromDb,
@@ -17,7 +17,7 @@ afterEach(() => {
 
 const time = "4:59";
 msToMinutesAndSeconds.mockImplementation(() => time);
-findCategoryName.mockImplementation((name) => `📚 ${name}`);
+findCategoryWithCourseName.mockImplementation((name) => category = { name: `📚 ${name}` });
 getCourseNameFromCategory.mockImplementation(() => "test");
 findCourseFromDb
   .mockImplementation(() => {

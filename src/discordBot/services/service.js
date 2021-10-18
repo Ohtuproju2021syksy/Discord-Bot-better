@@ -117,10 +117,10 @@ const createInvitation = async (guild, args) => {
   await message.pin();
 };
 
-const findCategoryName = (courseString, guild) => {
+const findCategoryWithCourseName = (courseString, guild) => {
   try {
     const category = guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name.toLowerCase().includes(courseString.toLowerCase()));
-    return category ? category.name : courseString;
+    return category;
   }
   catch (error) {
     // console.log(error);
@@ -375,10 +375,10 @@ const findChannelsByCourse = async (id, Channel) => {
 
 module.exports = {
   findOrCreateRoleWithName,
+  findCategoryWithCourseName,
   updateGuideMessage,
   updateGuide,
   createInvitation,
-  findCategoryName,
   findChannelWithNameAndType,
   findChannelWithId,
   msToMinutesAndSeconds,

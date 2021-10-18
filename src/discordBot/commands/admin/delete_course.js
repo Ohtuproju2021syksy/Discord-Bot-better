@@ -1,4 +1,4 @@
-const { updateGuide, findCategoryName, removeCourseFromDb, findCourseNickNameFromDbWithCourseCode } = require("../../services/service");
+const { updateGuide, findCategoryWithCourseName, removeCourseFromDb, findCourseNickNameFromDbWithCourseCode } = require("../../services/service");
 const { courseAdminRole } = require("../../../../config.json");
 
 const execute = async (message, args, models) => {
@@ -6,14 +6,12 @@ const execute = async (message, args, models) => {
     let courseName = args.join(" ");
     const guild = message.guild;
 
-    let courseString = findCategoryName(courseName, guild);
-    let category = guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name.toLowerCase() === courseString.toLowerCase());
+    let category = findCategoryWithName(courseName, guild);
     if (!category) {
       const courseNickName = await findCourseNickNameFromDbWithCourseCode(courseName, models.Course);
       if (courseNickName) {
         courseName = String(courseNickName.dataValues.name);
-        courseString = findCategoryName(courseName, guild);
-        category = guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name.toLowerCase() === courseString.toLowerCase());
+        category = findCategoryWithCourseName(courseName, guild);
       }
     }
 
