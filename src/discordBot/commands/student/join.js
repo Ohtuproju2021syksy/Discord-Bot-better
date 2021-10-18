@@ -2,11 +2,14 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 const { editEphemeral, editErrorEphemeral, sendEphemeral, sendReplyMessage } = require("../../services/message");
 const { updateGuide, findCourseFromDb } = require("../../services/service");
 const { courseAdminRole } = require("../../../../config.json");
+const { findUserByDiscordId } = require("../../services/userService");
+const { createCourseMemberToDatabase } = require("../../services/courseMemberService");
 const joinedUsersCounter = require("../../../promMetrics/joinedUsersCounter");
 
 const execute = async (interaction, client, models) => {
   let roleString = "";
   let message = "";
+  let course;
 
   if (interaction.options) {
     // Interaction was a slash command
@@ -17,7 +20,7 @@ const execute = async (interaction, client, models) => {
   else {
     // Command was copypasted or failed to register as an interaction
     roleString = interaction.roleString;
-    const course = await findCourseFromDb(roleString, models.Course);
+    course = await findCourseFromDb(roleString, models.Course);
     if (!course) {
       return await sendReplyMessage(interaction, `Hey! I couldn't find a course with name ${roleString}, try typing /join and I'll offer you a helpful list of courses to select from.`);
     }
@@ -49,6 +52,13 @@ const execute = async (interaction, client, models) => {
       return await sendReplyMessage(interaction, `You are already on the ${roleString} course.`);
     }
   }
+
+  const user = await findUserByDiscordId(interaction.member.user.id, models.User);
+  if (!course) {
+    course = await findCourseFromDb(roleString, models.Course);
+  }
+
+  await createCourseMemberToDatabase(user.id, course.id, models.CourseMember);
 
   await member.roles.add(courseRole);
   if (interaction.options) {

@@ -22,7 +22,13 @@ Channel.belongsTo(Course, {
   foreignKeyConstraint: true, onDelete: "cascade",
 });
 
-// sequelize.sync();
+CourseMember.belongsTo(User, {
+  foreignKeyConstraint: true, onDelete: "cascade",
+});
+
+CourseMember.belongsTo(Course, {
+  foreignKeyConstraint: true, onDelete: "cascade",
+});
 
 module.exports = {
   Course,
