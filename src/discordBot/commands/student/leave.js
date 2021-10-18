@@ -1,7 +1,9 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { updateGuide } = require("../../services/service");
+const { updateGuide, findCourseFromDb } = require("../../services/service");
 const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../services/message");
 const { courseAdminRole } = require("../../../../config.json");
+const { findUserByDiscordId } = require("../../services/userService");
+const { removeCourseMemberFromDb } = require("../../services/courseMemberService");
 
 const execute = async (interaction, client, models) => {
   await sendEphemeral(interaction, "Leaving course...");
@@ -31,6 +33,10 @@ const execute = async (interaction, client, models) => {
     .filter(role => courseRoles.includes(role.name))
     .map(async role => await member.roles.remove(role));
   await member.fetch(true);
+
+  const user = await findUserByDiscordId(interaction.member.user.id, models.User);
+  const course = await findCourseFromDb(roleString, models.Course);
+  await removeCourseMemberFromDb(user.id, course.id, models.CourseMember);
 
   await editEphemeral(interaction, `You have been removed from the ${roleString} course.`);
   await updateGuide(client.guild, models.Course);

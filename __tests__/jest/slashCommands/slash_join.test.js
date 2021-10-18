@@ -1,12 +1,16 @@
 const { execute } = require("../../../src/discordBot/commands/student/join");
 const { editEphemeral, editErrorEphemeral, sendEphemeral, sendReplyMessage } = require("../../../src/discordBot/services/message");
 const { updateGuide, findCourseFromDb } = require("../../../src/discordBot/services/service");
+const { createCourseMemberToDatabase } = require("../../../src/discordBot/services/courseMemberService");
+const { findUserByDiscordId } = require("../../../src/discordBot/services/userService");
 const { messageInCommandsChannel, student } = require("../../mocks/mockMessages");
 const joinedUsersCounter = require("../../../src/promMetrics/joinedUsersCounter");
 const models = require("../../mocks/mockModels");
 
 jest.mock("../../../src/discordBot/services/message");
 jest.mock("../../../src/discordBot/services/service");
+jest.mock("../../../src/discordBot/services/userService");
+jest.mock("../../../src/discordBot/services/courseMemberService");
 
 const counterSpy = jest.spyOn(joinedUsersCounter, "inc");
 
@@ -16,6 +20,10 @@ const initialResponse = "Joining course...";
 
 const course = { name: "tester", fullName: "test course", code: "101", private: false };
 findCourseFromDb.mockImplementation((role) => role === course.name ? course : undefined);
+
+user = { name: "test", id: 1 };
+findUserByDiscordId.mockImplementation(() => user)
+createCourseMemberToDatabase.mockImplementation(() => {})
 
 defaultTeacherInteraction.options = { getString: jest.fn(() => roleString) };
 defaultStudentInteraction.options = { getString: jest.fn(() => "invalid") };
