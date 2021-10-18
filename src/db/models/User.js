@@ -3,7 +3,7 @@ module.exports = (sequelize, DataTypes) => {
     name: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
+      unique: false,
     },
     admin: {
       type: DataTypes.BOOLEAN,
@@ -14,6 +14,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
       unique: false,
+    },
+    discordId: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
     },
   }, {
     freezeTableName: true,

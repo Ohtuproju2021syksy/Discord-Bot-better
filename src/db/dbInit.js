@@ -22,7 +22,7 @@ Channel.belongsTo(Course, {
   foreignKeyConstraint: true, onDelete: "cascade",
 });
 
-sequelize.sync();
+// sequelize.sync();
 
 module.exports = {
   Course,
