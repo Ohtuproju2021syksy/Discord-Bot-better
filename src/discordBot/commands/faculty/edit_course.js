@@ -11,7 +11,8 @@ const {
   trimCourseName,
   findCourseFromDb,
   createCourseToDatabase,
-  findCourseFromDbWithFullName } = require("../../services/service");
+  findCourseFromDbWithFullName,
+  editChannelNames } = require("../../services/service");
 const { sendEphemeral, editEphemeral, editErrorEphemeral } = require("../../services/message");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
 
@@ -23,7 +24,9 @@ const changeCourseNames = async (newValue, channel, category, guild) => {
   await Promise.all(guild.channels.cache
     .filter(c => c.parent === channel.parent)
     .map(async ch => {
-      const newName = ch.name.replace(/.*_/, `${newValue}_`);
+      const splitName = ch.name.split("_");
+      splitName[0] = newValue;
+      const newName = splitName.join("_");
       await ch.setName(newName);
     },
     ));
@@ -126,6 +129,7 @@ const execute = async (interaction, client, models) => {
     await setCoursePositionABC(guild, newCategoryName);
   }
 
+  await editChannelNames(databaseValue.id, databaseValue.name, models.Channel);
   await client.emit("COURSES_CHANGED", models.Course);
   await updateGuide(client.guild, models.Course);
 

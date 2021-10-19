@@ -86,7 +86,7 @@ Käytössäsi on seuraavia komentoja:
   - \`/join\` jolla voit liittyä kurssille
   - \`/leave\` jolla voit poistua kurssilta
 Esim: \`/join ohpe\`
-  
+
 You have the following commands available:
   - \`/join\` which you can use to join a course
   - \`/leave\` which you can use to leave a course
@@ -398,6 +398,18 @@ const findChannelsByCourse = async (id, Channel) => {
   });
 };
 
+const editChannelNames = async (courseId, courseName, Channel) => {
+  const channels = await findChannelsByCourse(courseId, Channel);
+  channels.map(async (channel) => {
+    const splitName = channel.name.split("_");
+    splitName[0] = courseName;
+    const newChannelName = splitName.join("_");
+    channel.name = newChannelName;
+    await channel.save();
+  });
+  await Promise.all(channels);
+};
+
 
 module.exports = {
   createCategoryName,
@@ -440,4 +452,5 @@ module.exports = {
   getLockedCourse,
   getPublicCourse,
   getUnlockedCourse,
+  editChannelNames,
 };
