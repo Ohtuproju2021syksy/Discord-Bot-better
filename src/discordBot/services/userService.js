@@ -15,6 +15,7 @@ const createUserToDatabase = async (discordId, username, User) => {
   if (!alreadyinuse) {
     return await User.create({ name: username, discordId: discordId });
   }
+  return alreadyinuse;
 };
 
 const removeUserFromDb = async (discordId, User) => {
