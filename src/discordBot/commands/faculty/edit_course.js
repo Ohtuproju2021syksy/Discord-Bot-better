@@ -111,7 +111,7 @@ const execute = async (interaction, client, models) => {
   }
 
   if (choice === "name") {
-    if (findCourseFromDbWithFullName(newValue, models.Course)) return await editErrorEphemeral(interaction, "Course full name already exists");
+    if (await findCourseFromDbWithFullName(newValue, models.Course)) return await editErrorEphemeral(interaction, "Course full name already exists");
     databaseValue.fullName = newValue;
     await databaseValue.save();
   }
