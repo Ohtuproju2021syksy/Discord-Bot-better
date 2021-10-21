@@ -7,7 +7,7 @@ const {
   setCourseToPrivate,
   getPublicCourse,
   getLockedCourse } = require("../../services/service");
-const { sendEphemeral, editErrorEphemeral, editEphemeral } = require("../../services/message");
+const { sendEphemeral, editErrorEphemeral, editEphemeral, confirmChoice } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
 
 const execute = async (interaction, client, models) => {
@@ -25,6 +25,11 @@ const execute = async (interaction, client, models) => {
     return await editErrorEphemeral(interaction, `Command cooldown [mm:ss]: you need to wait ${time}!`);
   }
   else {
+    const confirm = await confirmChoice(interaction, "Hide course: " + courseName);
+
+    if (!confirm) {
+      return await editEphemeral(interaction, "Command declined");
+    }
     if (getLockedCourse(courseName, guild)) {
       await category.setName(`👻🔐 ${courseName}`);
     }

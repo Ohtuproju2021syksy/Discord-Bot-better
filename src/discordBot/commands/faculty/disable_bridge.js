@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { findChannelFromDbByName, findCourseFromDb, trimCourseName } = require("../../services/service");
-const { sendEphemeral, editErrorEphemeral, editEphemeral } = require("../../services/message");
+const { sendEphemeral, editErrorEphemeral, editEphemeral, confirmChoice } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
 
 const execute = async (interaction, client, models) => {
@@ -19,6 +19,12 @@ const execute = async (interaction, client, models) => {
 
   if (!channelInstance.bridged) {
     return await editErrorEphemeral(interaction, "The bridge is already disabled on this channel.");
+  }
+
+  const confirm = await confirmChoice(interaction, "Disable bridge of: " + channel.name);
+
+  if (!confirm) {
+    return await editEphemeral(interaction, "Command declined");
   }
 
   channelInstance.bridged = false;
