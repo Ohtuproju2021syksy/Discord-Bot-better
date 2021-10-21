@@ -4,7 +4,7 @@ const {
   checkCourseCooldown,
   msToMinutesAndSeconds,
   trimCourseName } = require("../../services/service");
-const { editErrorEphemeral, sendEphemeral, editEphemeral } = require("../../services/message");
+const { editErrorEphemeral, sendEphemeral, editEphemeral, confirmChoice } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
 
 const execute = async (interaction, client) => {
@@ -27,6 +27,12 @@ const execute = async (interaction, client) => {
     const timeRemaining = Math.floor(cooldown - Date.now());
     const time = msToMinutesAndSeconds(timeRemaining);
     return await editErrorEphemeral(interaction, `Command cooldown [mm:ss]: you need to wait ${time}!`);
+  }
+
+  const confirm = await confirmChoice(interaction, "Change topic to: " + newTopic);
+
+  if (!confirm) {
+    return await editEphemeral(interaction, "Command declined");
   }
 
   await channelAnnouncement.setTopic(newTopic);

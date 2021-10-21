@@ -12,7 +12,7 @@ const {
   findCourseFromDb,
   createCourseToDatabase,
   findCourseFromDbWithFullName } = require("../../services/service");
-const { sendEphemeral, editEphemeral, editErrorEphemeral } = require("../../services/message");
+const { sendEphemeral, editEphemeral, editErrorEphemeral, confirmChoice } = require("../../services/message");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
 
 
@@ -85,6 +85,11 @@ const execute = async (interaction, client, models) => {
   }
 
   if (choice === "code") {
+    const confirm = await confirmChoice(interaction, "Change course code to: " + newValue);
+
+    if (!confirm) {
+      return await editEphemeral(interaction, "Command declined");
+    }
     if (databaseValue.code === databaseValue.name) {
       const change = await changeCourseNames(newValue, channel, category, guild);
       if (!change) return await editErrorEphemeral(interaction, "Course code already exists");
@@ -107,12 +112,22 @@ const execute = async (interaction, client, models) => {
   }
 
   if (choice === "name") {
+    const confirm = await confirmChoice(interaction, "Change course name to: " + newValue);
+
+    if (!confirm) {
+      return await editEphemeral(interaction, "Command declined");
+    }
     if (await findCourseFromDbWithFullName(newValue, models.Course)) return await editErrorEphemeral(interaction, "Course full name already exists");
     databaseValue.fullName = newValue;
     await databaseValue.save();
   }
 
   if (choice === "nick") {
+    const confirm = await confirmChoice(interaction, "Change course nickname to: " + newValue);
+
+    if (!confirm) {
+      return await editEphemeral(interaction, "Command declined");
+    }
     const change = await changeCourseNames(newValue, channel, category, guild);
     if (!change) return await editErrorEphemeral(interaction, "Course name already exists");
 

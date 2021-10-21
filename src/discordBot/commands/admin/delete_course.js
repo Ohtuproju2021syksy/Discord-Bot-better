@@ -1,5 +1,6 @@
 const { updateGuide, findCategoryName, removeCourseFromDb, findCourseNickNameFromDbWithCourseCode } = require("../../services/service");
 const { courseAdminRole } = require("../../../../config.json");
+const { confirmChoiceNoInteraction } = require("../../services/message");
 
 const execute = async (message, args, models) => {
   if (message.member.permissions.has("ADMINISTRATOR")) {
@@ -15,6 +16,12 @@ const execute = async (message, args, models) => {
         courseString = findCategoryName(courseName, guild);
         category = guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name.toLowerCase() === courseString.toLowerCase());
       }
+    }
+
+    const confirm = await confirmChoiceNoInteraction(message, courseName, guild);
+
+    if (!confirm) {
+      return;
     }
 
     if (!category) return message.reply(`Error: Invalid course name: ${courseName}.`);
