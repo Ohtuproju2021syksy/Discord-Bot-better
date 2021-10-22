@@ -1,9 +1,9 @@
 const { sendErrorReportNoInteraction } = require("../discordBot/services/message");
 let discordClient;
 let telegramClient;
-const keywords = ["crypto", "krypto", "btc", "doge", "btc", "eth", "musk", "money", "$", "usd", "bitcoin", "muskx.co", "coin", "elonmusk", "prize", "еlonmusk", "btc"];
+const keywords = ["crypto", "krypto", "btc", "doge", "btc", "eth", "musk", "money", "$", "usd", "bitcoin", "muskx.co", "coin", "elonmusk", "prize", "еlonmusk", "btc", "cash", "million",
+  "interest", "investment", "join"];
 const cyrillicPattern = /^\p{Script=Cyrillic}+$/u;
-const keywordPoints = new Map(keywords.map(key => [key, null]));
 const { findCourseFromDb } = require("../discordBot/services/service");
 
 
@@ -96,7 +96,6 @@ const isMessageCryptoSpam = (message) => {
 
   let point = 0;
   const userId = message.user.userId.toLowerCase();
-  const textAsList = message.content.text.toLowerCase().split(/(?: |\n)+/);
 
   for (const c of message.content.text) {
     if (cyrillicPattern.test(c)) {
@@ -110,8 +109,8 @@ const isMessageCryptoSpam = (message) => {
   message.content.text.includes("t.me/joinchat/") ? point = point + 2 : point = point + 0;
   cyrillicPattern.test(message.content.text) ? point++ : point = point + 0;
   if (point == 3) return true;
-  for (const word of textAsList) {
-    if (keywordPoints.has(word)) {
+  for (const word of keywords) {
+    if (message.content.text.includes(word)) {
       point++;
       if (point == 3) return true;
     }
