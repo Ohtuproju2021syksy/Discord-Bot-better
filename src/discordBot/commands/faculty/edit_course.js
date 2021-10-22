@@ -11,7 +11,8 @@ const {
   getCourseNameFromCategory,
   findCourseFromDb,
   createCourseToDatabase,
-  findCourseFromDbWithFullName } = require("../../services/service");
+  findCourseFromDbWithFullName,
+  isCourseCategory } = require("../../services/service");
 const { sendEphemeral, editEphemeral, editErrorEphemeral } = require("../../services/message");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
 
@@ -58,6 +59,9 @@ const execute = async (interaction, client, models) => {
   await sendEphemeral(interaction, "Editing...");
   const guild = client.guild;
   const channel = guild.channels.cache.get(interaction.channelId);
+  if (!isCourseCategory(channel)) {
+    return await editErrorEphemeral(interaction, "This is not a course category, can not execute the command");
+  }
   const categoryName = getCourseNameFromCategory(channel.parent, guild);
 
   const cooldown = checkCourseCooldown(categoryName);
@@ -69,10 +73,6 @@ const execute = async (interaction, client, models) => {
 
   const choice = interaction.options.getString("options").toLowerCase().trim();
   const newValue = interaction.options.getString("new_value").trim();
-
-  if (!channel?.parent?.name?.startsWith("🔐") && !channel?.parent?.name?.startsWith("📚") && !channel?.parent?.name?.startsWith("👻")) {
-    return await editErrorEphemeral(interaction, "This is not a course category, can not execute the command");
-  }
 
   const category = findChannelWithNameAndType(channel.parent.name, "GUILD_CATEGORY", guild);
   const channelAnnouncement = guild.channels.cache.find(c => c.parent === channel.parent && c.name.includes("_announcement"));
@@ -96,7 +96,7 @@ const execute = async (interaction, client, models) => {
       await changeCourseRoles(categoryName, newValue, guild);
       await changeInvitationLink(channelAnnouncement, interaction);
 
-      const newCategory = findCategoryWithName(newValue, guild);
+      const newCategory = findCategoryWithCourseName(newValue, guild);
       await setCoursePositionABC(guild, newCategory.name);
 
     }

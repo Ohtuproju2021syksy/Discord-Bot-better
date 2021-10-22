@@ -119,7 +119,7 @@ const createInvitation = async (guild, args) => {
 
 const findCategoryWithCourseName = (courseString, guild) => {
   try {
-    const category = guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name.toLowerCase().includes(courseString.toLowerCase()));
+    const category = guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && getCourseNameFromCategory(c.name.toLowerCase()) === courseString.toLowerCase());
     return category;
   }
   catch (error) {
@@ -128,7 +128,7 @@ const findCategoryWithCourseName = (courseString, guild) => {
 };
 
 const findChannelWithNameAndType = (name, type, guild) => {
-  return guild.channels.cache.find(c => c.type === type && c.name.toLowerCase().includes(name.toLowerCase()));
+  return guild.channels.cache.find(c => c.type === type && getCourseNameFromCategory(c.name.toLowerCase()) === name.toLowerCase());
 };
 
 const findChannelWithId = (id, guild) => {
@@ -157,7 +157,7 @@ const handleCooldown = (courseName) => {
 const findOrCreateChannel = async (channelObject, guild) => {
   const { name, options } = channelObject;
   const alreadyExists = guild.channels.cache.find(
-    (c) => c.type === options.type && c.name.toLowerCase().includes(name.toLowerCase()));
+    (c) => c.type === options.type && c.name.toLowerCase() === name.toLowerCase());
   if (alreadyExists) return alreadyExists;
   return await guild.channels.create(name, options);
 };
@@ -191,7 +191,10 @@ const deletecommand = async (client, commandToDeleteName) => {
 const emojiRegex = /(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/gi;
 
 const isCourseCategory = (channel) => {
-  return emojiRegex.test(channel.name);
+  if (channel && channel.name) {
+    return emojiRegex.test(channel.name);
+  }
+  return false;
 };
 
 const getCourseNameFromCategory = (category) => {
@@ -251,8 +254,7 @@ const setCourseToLocked = async (courseName, Course, guild) => {
   });
   if (course) {
     course.locked = true;
-    const categoryName = `🔐 ${courseName}`;
-    const category = findChannelWithNameAndType(categoryName, "GUILD_CATEGORY", guild);
+    const category = findChannelWithNameAndType(courseName, "GUILD_CATEGORY", guild);
     category.permissionOverwrites.create(guild.roles.cache.find(r => r.name.toLowerCase() === courseName.toLowerCase()), { VIEW_CHANNEL: true, SEND_MESSAGES: false });
     category.permissionOverwrites.create(guild.roles.cache.find(r => r.name.toLowerCase() === `${courseName.toLowerCase()} instructor`), { VIEW_CHANNEL: true, SEND_MESSAGES: true });
     category.permissionOverwrites.create(guild.roles.cache.find(r => r.name === "faculty"), { SEND_MESSAGES: true });

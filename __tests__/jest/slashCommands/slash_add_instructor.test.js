@@ -11,6 +11,8 @@ getCourseNameFromCategory.mockImplementation(() => "test");
 
 const { defaultTeacherInteraction, defaultStudentInteraction, defaultAdminInteraction } = require("../../mocks/mockInteraction");
 defaultAdminInteraction.options = { getUser: jest.fn(() => { return { id: 3 }; }) };
+defaultStudentInteraction.options = { getUser: jest.fn(() => { return { id: 2 }; }) };
+defaultTeacherInteraction.options = { getUser: jest.fn(() => { return { id: 2 }; }) };
 
 const initialResponse = "Adding instructor...";
 
@@ -30,6 +32,7 @@ describe("slash add instructor command", () => {
   });
 
   test("command must be used in course channel", async () => {
+    isCourseCategory.mockImplementationOnce(() => false);
     const client = defaultTeacherInteraction.client;
     const response = "Command must be used in a course channel!";
     await execute(defaultTeacherInteraction, client);

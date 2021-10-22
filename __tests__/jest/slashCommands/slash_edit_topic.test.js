@@ -4,7 +4,8 @@ const {
   getCourseNameFromCategory,
   handleCooldown,
   msToMinutesAndSeconds,
-  checkCourseCooldown } = require("../../../src/discordBot/services/service");
+  checkCourseCooldown,
+  isCourseCategory } = require("../../../src/discordBot/services/service");
 
 jest.mock("../../../src/discordBot/services/message");
 jest.mock("../../../src/discordBot/services/service");
@@ -36,6 +37,7 @@ describe("slash edit_topic command", () => {
   });
 
   test("command can be used in course channel", async () => {
+    isCourseCategory.mockImplementationOnce(() => (true));
     const client = defaultTeacherInteraction.client;
     defaultTeacherInteraction.channelId = 2;
     const channel = client.guild.channels.cache.get(2);
@@ -57,6 +59,7 @@ describe("slash edit_topic command", () => {
   });
 
   test("command has cooldown", async () => {
+    isCourseCategory.mockImplementationOnce(() => (true));
     checkCourseCooldown.mockImplementation(() => time);
     const client = defaultTeacherInteraction.client;
     defaultTeacherInteraction.channelId = 2;

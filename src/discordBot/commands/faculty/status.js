@@ -4,6 +4,7 @@ const {
   createCourseInvitationLink,
   findCourseFromDb,
   findChannelsByCourse,
+  isCourseCategory,
 } = require("../../services/service");
 const { editErrorEphemeral, sendEphemeral, editEphemeral } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
@@ -13,7 +14,7 @@ const execute = async (interaction, client, models) => {
   const guild = client.guild;
   const channel = guild.channels.cache.get(interaction.channelId);
 
-  if (!channel?.parent?.name?.startsWith("🔐") && !channel?.parent?.name?.startsWith("📚") && !channel?.parent?.name?.startsWith("👻")) {
+  if (!isCourseCategory(channel?.parent)) {
     return await editErrorEphemeral(interaction, "This is not a course category, can not execute the command!");
   }
 

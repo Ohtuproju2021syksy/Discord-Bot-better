@@ -3,7 +3,8 @@ const {
   handleCooldown,
   checkCourseCooldown,
   msToMinutesAndSeconds,
-  getCourseNameFromCategory } = require("../../services/service");
+  getCourseNameFromCategory,
+  isCourseCategory } = require("../../services/service");
 const { editErrorEphemeral, sendEphemeral, editEphemeral } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
 
@@ -14,7 +15,7 @@ const execute = async (interaction, client) => {
   const guild = client.guild;
   const channel = guild.channels.cache.get(interaction.channelId);
 
-  if (!channel?.parent?.name?.startsWith("🔐") && !channel?.parent?.name?.startsWith("📚") && !channel?.parent?.name?.startsWith("👻")) {
+  if (!isCourseCategory(channel?.parent)) {
     return await editErrorEphemeral(interaction, "This is not a course category, can not execute the command!");
   }
 

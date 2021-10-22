@@ -4,7 +4,8 @@ const {
   getCourseNameFromCategory,
   createCourseInvitationLink,
   findCourseFromDb,
-  findChannelsByCourse } = require("../../../src/discordBot/services/service");
+  findChannelsByCourse,
+  isCourseCategory } = require("../../../src/discordBot/services/service");
 const models = require("../../mocks/mockModels");
 
 jest.mock("../../../src/discordBot/services/message");
@@ -53,6 +54,7 @@ describe("slash status command", () => {
   });
 
   test("used in course channels", async () => {
+    isCourseCategory.mockImplementationOnce(() => (true));
     const client = defaultTeacherInteraction.client;
     defaultTeacherInteraction.channelId = 2;
     const response = createResponse();
