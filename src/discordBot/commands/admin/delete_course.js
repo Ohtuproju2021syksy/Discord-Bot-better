@@ -6,7 +6,7 @@ const execute = async (message, args, models) => {
     let courseName = args.join(" ");
     const guild = message.guild;
 
-    let category = findCategoryWithName(courseName, guild);
+    let category = findCategoryWithCourseName(courseName, guild);
     if (!category) {
       const courseNickName = await findCourseNickNameFromDbWithCourseCode(courseName, models.Course);
       if (courseNickName) {
