@@ -398,12 +398,10 @@ const findChannelsByCourse = async (id, Channel) => {
   });
 };
 
-const editChannelNames = async (courseId, courseName, Channel) => {
+const editChannelNames = async (courseId, previousCourseName, newCourseName, Channel) => {
   const channels = await findChannelsByCourse(courseId, Channel);
   channels.map(async (channel) => {
-    const splitName = channel.name.split("_");
-    splitName[0] = courseName;
-    const newChannelName = splitName.join("_");
+    const newChannelName = channel.name.replace(previousCourseName, newCourseName);
     channel.name = newChannelName;
     await channel.save();
   });
