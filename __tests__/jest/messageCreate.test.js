@@ -53,7 +53,7 @@ describe("prefix commands", () => {
   });
 
   test("valid command in commands channel is executed", async () => {
-    messageInCommandsChannel.content = `${prefix}sort`;
+    messageInCommandsChannel.content = `${prefix}sort_courses`;
     const client = messageInCommandsChannel.client;
     await execute(messageInCommandsChannel, client, models);
     expect(sort.execute).toHaveBeenCalledTimes(1);
