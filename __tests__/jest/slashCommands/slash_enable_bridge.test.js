@@ -1,5 +1,5 @@
 const { execute } = require("../../../src/discordBot/commands/faculty/enable_bridge");
-const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../../src/discordBot/services/message");
+const { editEphemeral, editErrorEphemeral, sendEphemeral, confirmChoice } = require("../../../src/discordBot/services/message");
 const { findChannelFromDbByName, findCourseFromDb } = require("../../../src/discordBot/services/service");
 
 const models = require("../../mocks/mockModels");
@@ -16,6 +16,7 @@ findChannelFromDbByName
   .mockImplementationOnce(() => channelModelInstanceMock);
 
 findCourseFromDb.mockImplementation(() => ({ telegramId: 1 }));
+confirmChoice.mockImplementation(() => true);
 
 afterEach(() => {
   jest.clearAllMocks();

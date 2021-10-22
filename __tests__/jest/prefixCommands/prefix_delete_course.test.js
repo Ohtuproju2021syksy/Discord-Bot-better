@@ -1,7 +1,9 @@
 const { execute } = require("../../../src/discordBot/commands/admin/delete_course");
 const { findCategoryName, updateGuide, removeCourseFromDb } = require("../../../src/discordBot/services/service");
+const { confirmChoiceNoInteraction } = require("../../../src/discordBot/services/message");
 
 jest.mock("../../../src/discordBot/services/service");
+jest.mock("../../../src/discordBot/services/message");
 
 findCategoryName
   .mockImplementation((name) => `📚 ${name}`)
@@ -9,6 +11,7 @@ findCategoryName
 
 const { messageInCommandsChannel, teacher, student } = require("../../mocks/mockMessages");
 
+confirmChoiceNoInteraction.mockImplementation(() => true);
 
 afterEach(() => {
   jest.clearAllMocks();

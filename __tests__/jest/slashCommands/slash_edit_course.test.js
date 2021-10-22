@@ -1,5 +1,5 @@
 const { execute } = require("../../../src/discordBot/commands/faculty/edit_course");
-const { sendEphemeral, editErrorEphemeral, editEphemeral } = require("../../../src/discordBot/services/message");
+const { sendEphemeral, editErrorEphemeral, editEphemeral, confirmChoice } = require("../../../src/discordBot/services/message");
 const {
   findCategoryName,
   msToMinutesAndSeconds,
@@ -10,6 +10,7 @@ const models = require("../../mocks/mockModels");
 
 jest.mock("../../../src/discordBot/services/message");
 jest.mock("../../../src/discordBot/services/service");
+confirmChoice.mockImplementation(() => true);
 
 afterEach(() => {
   jest.clearAllMocks();

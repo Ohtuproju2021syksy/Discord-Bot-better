@@ -1,5 +1,5 @@
 const { execute } = require("../../../src/discordBot/commands/faculty/unhide_course");
-const { sendEphemeral, editErrorEphemeral, editEphemeral } = require("../../../src/discordBot/services/message");
+const { sendEphemeral, editErrorEphemeral, editEphemeral, confirmChoice } = require("../../../src/discordBot/services/message");
 const {
   updateGuide,
   msToMinutesAndSeconds,
@@ -16,6 +16,7 @@ const initialResponse = "Unhiding course...";
 const { defaultTeacherInteraction } = require("../../mocks/mockInteraction");
 const courseName = "test";
 defaultTeacherInteraction.options = { getString: jest.fn(() => courseName) };
+confirmChoice.mockImplementation(() => true);
 
 
 afterEach(() => {

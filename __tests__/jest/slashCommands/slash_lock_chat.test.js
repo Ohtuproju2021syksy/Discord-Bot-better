@@ -1,5 +1,5 @@
 const { execute } = require("../../../src/discordBot/commands/faculty/lock_chat");
-const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../../src/discordBot/services/message");
+const { editEphemeral, editErrorEphemeral, sendEphemeral, confirmChoice } = require("../../../src/discordBot/services/message");
 const {
   updateGuide,
   msToMinutesAndSeconds,
@@ -19,7 +19,7 @@ const initialResponse = "Locking course...";
 const { defaultTeacherInteraction } = require("../../mocks/mockInteraction");
 const courseName = "test";
 defaultTeacherInteraction.options = { getString: jest.fn(() => courseName) };
-
+confirmChoice.mockImplementation(() => true);
 afterEach(() => {
   jest.clearAllMocks();
 });
