@@ -72,7 +72,7 @@ Bridge not created: Invalid discord channel <courseName>
 ```
 Note that only one Telegram group can be connected to only one Discord course.
 
-### How to create more text channels
+## How to create more text channels
 
 The `/create_course` command automatically creates three sub-channels for the course. The sub-channels are: announcements (text channel), general (text channel) and one voice channel. To create more text channels for a course go inside the wanted course. Inside this course use `/createhannel` command followed by the desired text channel name to create new text channel.
 
@@ -103,6 +103,9 @@ The `/edit_course` command allows you to edit the information for the course you
 
 The `/edit_topic` command allows you to create or edit the information in announcement and general channels topic field. You can use this to customize channel appearance.
 
+## How to create a poll
+
+The `/create_poll` command allows you to create a poll that is placed in the same channel that you use the command in. It has 3 required arguments _title_, _duration_ and _answers_. Duration is given in minutes (10 minutes at most), for example "3" means 3 minutes. After the duration the poll closes automatically. _answers_ is the list of all possible answers to the poll, separated by " | ". For example "Java | Python" creates 2 answer options "Java" and "Python". Optional argument _description_ let's you create additional description for the poll, like additional instructions. You can close the poll manually by clicking the red :x: button. After the poll closes it shows the results, including how much each option was voted and which option/options got the most amount of votes.
 ## Disabling the bridge on a text channel
 
 Users with faculty rights can disable the bridge between a certain course channel and Telegram. This can be used e.g. on off-topic course channels where there's a lot of discussion that could flood the Telegram chat with messages not directly related to the course. Note that the bridge can be disabled only on non-default channels, that is channels which were created individually with `/create_channel` after the course was created. You can check in which channels the bridge is disabled with the command `/status`. 
@@ -118,6 +121,7 @@ Command | Explanation | Arguments
 [/courses](./commands/courses.md) | Returns a list of all courses. | :x:
 [/create_channel](./commands/create_channel.md) | Create new text channel inside a course, e.g., /create_channel feedback. | :heavy_check_mark:
 [/create_course](./commands/create_course.md) | Create a new course | :heavy_check_mark:
+[/create_poll](./commands/create_poll,md) | Create a new poll | :heavy_check_mark:
 [/delete_channel](./commands/delete_channel.md) | Remove given text channel inside a course, e.g., /delete_channel feedback. | :heavy_check_mark:
 [/disable_bridge](./commands/disable_bridge.md) | Disable the bridge between Telegram and the (non-default) course channel it is used in. | :x:
 [/enable_bridge](./commands/enable_bridge.md) | Enable the bridge between Telegram and the (non-default) course channel it is used in. | :x:
