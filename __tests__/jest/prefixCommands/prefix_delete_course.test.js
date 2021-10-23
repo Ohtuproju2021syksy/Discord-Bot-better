@@ -1,6 +1,8 @@
 const { execute } = require("../../../src/discordBot/commands/admin/delete_course");
 const { findCategoryWithCourseName, updateGuide, removeCourseFromDb } = require("../../../src/discordBot/services/service");
+const { confirmChoiceNoInteraction } = require("../../../src/discordBot/services/message");
 
+jest.mock("../../../src/discordBot/services/message");
 jest.mock("../../../src/discordBot/services/service");
 const createCategoryInstanceMock = (name) => {
   return { name: `📚 ${name}`, delete: jest.fn() };
@@ -12,6 +14,7 @@ findCategoryWithCourseName
 
 const { messageInCommandsChannel, teacher, student } = require("../../mocks/mockMessages");
 
+confirmChoiceNoInteraction.mockImplementation(() => true);
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -41,6 +44,7 @@ describe("prefix remove", () => {
     const courseName = "invalidName";
     const response = `Error: Invalid course name: ${courseName}.`;
     await execute(messageInCommandsChannel, [courseName], Course);
+    expect(confirmChoiceNoInteraction).toHaveBeenCalledTimes(1);
     expect(findCategoryWithCourseName).toHaveBeenCalledTimes(1);
     expect(messageInCommandsChannel.reply).toHaveBeenCalledTimes(1);
     expect(messageInCommandsChannel.reply).toHaveBeenCalledWith(response);
@@ -50,6 +54,7 @@ describe("prefix remove", () => {
     messageInCommandsChannel.member = teacher;
     const courseName = "test";
     await execute(messageInCommandsChannel, [courseName], Course);
+    expect(confirmChoiceNoInteraction).toHaveBeenCalledTimes(1);
     expect(findCategoryWithCourseName).toHaveBeenCalledTimes(1);
     expect(removeCourseFromDb).toHaveBeenCalledTimes(1);
     expect(updateGuide).toHaveBeenCalledTimes(1);

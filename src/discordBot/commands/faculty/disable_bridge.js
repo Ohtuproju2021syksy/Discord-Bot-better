@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { findChannelFromDbByName, findCourseFromDb, getCourseNameFromCategory, isCourseCategory } = require("../../services/service");
-const { sendEphemeral, editErrorEphemeral, editEphemeral } = require("../../services/message");
+const { sendEphemeral, editErrorEphemeral, editEphemeral, confirmChoice } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
 
 const execute = async (interaction, client, models) => {
@@ -15,6 +15,11 @@ const execute = async (interaction, client, models) => {
 
   if (!channelInstance) {
     return await editErrorEphemeral(interaction, "Command can't be performed on default course channels!");
+  }
+  const confirm = await confirmChoice(interaction, "Disable bridge of: " + channel.name);
+
+  if (!confirm) {
+    return await editEphemeral(interaction, "Command declined");
   }
 
   if (!channelInstance.bridged) {

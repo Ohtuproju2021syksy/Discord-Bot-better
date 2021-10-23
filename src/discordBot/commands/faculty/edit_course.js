@@ -14,7 +14,7 @@ const {
   findCourseFromDbWithFullName,
   isCourseCategory,
   editChannelNames } = require("../../services/service");
-const { sendEphemeral, editEphemeral, editErrorEphemeral } = require("../../services/message");
+const { sendEphemeral, editEphemeral, editErrorEphemeral, confirmChoice } = require("../../services/message");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
 
 
@@ -65,18 +65,23 @@ const execute = async (interaction, client, models) => {
   if (!isCourseCategory(channel)) {
     return await editErrorEphemeral(interaction, "This is not a course category, can not execute the command");
   }
-  const categoryName = getCourseNameFromCategory(channel.parent, guild);
 
+  const choice = interaction.options.getString("options").toLowerCase().trim();
+  const newValue = interaction.options.getString("new_value").trim();
+
+
+  const confirm = await confirmChoice(interaction, "Change course " + choice + " to: " + newValue);
+
+  if (!confirm) {
+    return await editEphemeral(interaction, "Command declined");
+  }
+  const categoryName = getCourseNameFromCategory(channel.parent, guild);
   const cooldown = checkCourseCooldown(categoryName);
   if (cooldown) {
     const timeRemaining = Math.floor(cooldown - Date.now());
     const time = msToMinutesAndSeconds(timeRemaining);
     return await editErrorEphemeral(interaction, `Command cooldown [mm:ss]: you need to wait ${time}.`);
   }
-
-  const choice = interaction.options.getString("options").toLowerCase().trim();
-  const newValue = interaction.options.getString("new_value").trim();
-
   const category = findChannelWithNameAndType(channel.parent.name, "GUILD_CATEGORY", guild);
   const channelAnnouncement = guild.channels.cache.find(c => c.parent === channel.parent && c.name.includes("_announcement"));
 
@@ -90,6 +95,7 @@ const execute = async (interaction, client, models) => {
   const previousCourseName = databaseValue.name.replace(/ /g, "-");
   const trimmedNewCourseName = newValue.replace(/ /g, "-");
   if (choice === "code") {
+
     if (databaseValue.code === databaseValue.name) {
       const change = await changeCourseNames(previousCourseName, newValue, channel, category, guild);
       if (!change) return await editErrorEphemeral(interaction, "Course code already exists");
@@ -112,6 +118,7 @@ const execute = async (interaction, client, models) => {
   }
 
   if (choice === "name") {
+
     if (await findCourseFromDbWithFullName(newValue, models.Course)) return await editErrorEphemeral(interaction, "Course full name already exists");
     databaseValue.fullName = newValue;
     await databaseValue.save();

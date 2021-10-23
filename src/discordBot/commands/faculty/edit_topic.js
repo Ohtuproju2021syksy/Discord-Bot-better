@@ -5,7 +5,7 @@ const {
   msToMinutesAndSeconds,
   getCourseNameFromCategory,
   isCourseCategory } = require("../../services/service");
-const { editErrorEphemeral, sendEphemeral, editEphemeral } = require("../../services/message");
+const { editErrorEphemeral, sendEphemeral, editEphemeral, confirmChoice } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
 
 const execute = async (interaction, client) => {
@@ -22,6 +22,12 @@ const execute = async (interaction, client) => {
   const categoryName = getCourseNameFromCategory(channel.parent, guild);
   const channelAnnouncement = guild.channels.cache.find(c => c.parent === channel.parent && c.name.includes("_announcement"));
   const channelGeneral = guild.channels.cache.find(c => c.parent === channel.parent && c.name.includes("_general"));
+
+  const confirm = await confirmChoice(interaction, "Change topic to: " + newTopic);
+
+  if (!confirm) {
+    return await editEphemeral(interaction, "Command declined");
+  }
 
   const cooldown = checkCourseCooldown(categoryName);
   if (cooldown) {

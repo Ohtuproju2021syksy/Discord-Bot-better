@@ -1,5 +1,5 @@
 const { execute } = require("../../../src/discordBot/commands/faculty/edit_topic");
-const { sendEphemeral, editErrorEphemeral, editEphemeral } = require("../../../src/discordBot/services/message");
+const { sendEphemeral, editErrorEphemeral, editEphemeral, confirmChoice } = require("../../../src/discordBot/services/message");
 const {
   getCourseNameFromCategory,
   handleCooldown,
@@ -14,6 +14,7 @@ const time = "4:59";
 const initialResponse = "Editing topic...";
 
 msToMinutesAndSeconds.mockImplementation(() => time);
+confirmChoice.mockImplementation(() => true);
 
 const { defaultTeacherInteraction } = require("../../mocks/mockInteraction");
 const newTopic = "New topic!";
@@ -45,6 +46,7 @@ describe("slash edit_topic command", () => {
     const accouncement = client.guild.channels.cache.get(5);
     const response = "Channel topic has been changed";
     await execute(defaultTeacherInteraction, client);
+    expect(confirmChoice).toHaveBeenCalledTimes(1);
     expect(getCourseNameFromCategory).toHaveBeenCalledTimes(1);
     expect(getCourseNameFromCategory).toHaveBeenCalledWith(channel.parent, client.guild);
     expect(general.setTopic).toHaveBeenCalledTimes(1);
@@ -65,6 +67,7 @@ describe("slash edit_topic command", () => {
     defaultTeacherInteraction.channelId = 2;
     const response = `Command cooldown [mm:ss]: you need to wait ${time}!`;
     await execute(defaultTeacherInteraction, client);
+    expect(confirmChoice).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
     expect(editErrorEphemeral).toHaveBeenCalledTimes(1);

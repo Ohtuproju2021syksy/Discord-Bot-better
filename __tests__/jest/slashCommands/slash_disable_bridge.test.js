@@ -1,5 +1,5 @@
 const { execute } = require("../../../src/discordBot/commands/faculty/disable_bridge");
-const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../../src/discordBot/services/message");
+const { editEphemeral, editErrorEphemeral, sendEphemeral, confirmChoice } = require("../../../src/discordBot/services/message");
 const { findChannelFromDbByName, findCourseFromDb, isCourseCategory } = require("../../../src/discordBot/services/service");
 
 const models = require("../../mocks/mockModels");
@@ -16,6 +16,7 @@ findChannelFromDbByName
   .mockImplementationOnce(() => channelModelInstanceMock);
 
 findCourseFromDb.mockImplementation(() => ({ telegramId: 1 }));
+confirmChoice.mockImplementation(() => true);
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -52,6 +53,7 @@ describe("slash disable_bridge command", () => {
     defaultTeacherInteraction.channelId = 3;
     const response = "The bridge between this channel and Telegram is now disabled.";
     await execute(defaultTeacherInteraction, client, models);
+    expect(confirmChoice).toHaveBeenCalledTimes(1);
     expect(findChannelFromDbByName).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initalResponse);
@@ -65,6 +67,7 @@ describe("slash disable_bridge command", () => {
     defaultTeacherInteraction.channelId = 3;
     const response = "The bridge is already disabled on this channel.";
     await execute(defaultTeacherInteraction, client, models);
+    expect(confirmChoice).toHaveBeenCalledTimes(1);
     expect(findChannelFromDbByName).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initalResponse);

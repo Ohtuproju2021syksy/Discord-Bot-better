@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { getCourseNameFromCategory, removeChannelFromDb, isCourseCategory } = require("../../services/service");
-const { sendEphemeral, editEphemeral, editErrorEphemeral } = require("../../services/message");
+const { sendEphemeral, editEphemeral, editErrorEphemeral, confirmChoice } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
 
 const execute = async (interaction, client, models) => {
@@ -19,6 +19,12 @@ const execute = async (interaction, client, models) => {
 
   if (deleteName === "general" || deleteName === "announcement" || deleteName === "voice") {
     return await editErrorEphemeral(interaction, "Original channels can not be deleted.");
+  }
+
+  const confirm = await confirmChoice(interaction, "Confirm command: Delete channel " + deleteChannelName);
+
+  if (!confirm) {
+    return await editEphemeral(interaction, "Command declined");
   }
 
   const guildName = guild.channels.cache.find(c => c.parent === channel.parent && c.name === deleteChannelName);
