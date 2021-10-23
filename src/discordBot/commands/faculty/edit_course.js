@@ -1,27 +1,29 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const {
   setCoursePositionABC,
-  findCategoryName,
+  findCategoryWithCourseName,
   createCourseInvitationLink,
   findChannelWithNameAndType,
   updateGuide,
   msToMinutesAndSeconds,
   handleCooldown,
   checkCourseCooldown,
-  trimCourseName,
+  getCourseNameFromCategory,
   findCourseFromDb,
   createCourseToDatabase,
   findCourseFromDbWithFullName,
+  isCourseCategory,
   editChannelNames } = require("../../services/service");
 const { sendEphemeral, editEphemeral, editErrorEphemeral } = require("../../services/message");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
 
 
 const changeCourseNames = async (previousCourseName, newCourseName, channel, category, guild) => {
-  if (guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && trimCourseName(c.name.toLowerCase()) === newCourseName.toLowerCase())) return;
-  const categoryEmojis = category.name.replace(trimCourseName(category), "");
+  if (guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && getCourseNameFromCategory(c.name.toLowerCase()) === newCourseName.toLowerCase())) return;
+  const categoryEmojis = category.name.replace(getCourseNameFromCategory(category), "");
   await category.setName(`${categoryEmojis} ${newCourseName}`);
   const trimmedCourseName = newCourseName.replace(/ /g, "-");
+  
   await Promise.all(guild.channels.cache
     .filter(c => c.parent === channel.parent)
     .map(async ch => {
@@ -60,7 +62,10 @@ const execute = async (interaction, client, models) => {
   await sendEphemeral(interaction, "Editing...");
   const guild = client.guild;
   const channel = guild.channels.cache.get(interaction.channelId);
-  const categoryName = trimCourseName(channel.parent, guild);
+  if (!isCourseCategory(channel)) {
+    return await editErrorEphemeral(interaction, "This is not a course category, can not execute the command");
+  }
+  const categoryName = getCourseNameFromCategory(channel.parent, guild);
 
   const cooldown = checkCourseCooldown(categoryName);
   if (cooldown) {
@@ -71,10 +76,6 @@ const execute = async (interaction, client, models) => {
 
   const choice = interaction.options.getString("options").toLowerCase().trim();
   const newValue = interaction.options.getString("new_value").trim();
-
-  if (!channel?.parent?.name?.startsWith("🔐") && !channel?.parent?.name?.startsWith("📚") && !channel?.parent?.name?.startsWith("👻")) {
-    return await editErrorEphemeral(interaction, "This is not a course category, can not execute the command");
-  }
 
   const category = findChannelWithNameAndType(channel.parent.name, "GUILD_CATEGORY", guild);
   const channelAnnouncement = guild.channels.cache.find(c => c.parent === channel.parent && c.name.includes("_announcement"));
@@ -100,8 +101,8 @@ const execute = async (interaction, client, models) => {
       await changeCourseRoles(categoryName, newValue, guild);
       await changeInvitationLink(channelAnnouncement, interaction);
 
-      const newCategoryName = findCategoryName(newValue, guild);
-      await setCoursePositionABC(guild, newCategoryName);
+      const newCategory = findCategoryWithCourseName(newValue, guild);
+      await setCoursePositionABC(guild, newCategory.name);
 
     }
     else {
@@ -126,8 +127,8 @@ const execute = async (interaction, client, models) => {
     await changeCourseRoles(categoryName, newValue, guild);
     await changeInvitationLink(channelAnnouncement, interaction);
 
-    const newCategoryName = findCategoryName(newValue, guild);
-    await setCoursePositionABC(guild, newCategoryName);
+    const newCategory = findCategoryWithCourseName(newValue, guild);
+    await setCoursePositionABC(guild, newCategory.name);
   }
 
   await editChannelNames(databaseValue.id, previousCourseName, trimmedNewCourseName, models.Channel);
@@ -135,7 +136,7 @@ const execute = async (interaction, client, models) => {
   await updateGuide(client.guild, models.Course);
 
   await editEphemeral(interaction, "Course information has been changed");
-  const nameToCoolDown = trimCourseName(channel.parent, guild);
+  const nameToCoolDown = getCourseNameFromCategory(channel.parent, guild);
   handleCooldown(nameToCoolDown);
 };
 

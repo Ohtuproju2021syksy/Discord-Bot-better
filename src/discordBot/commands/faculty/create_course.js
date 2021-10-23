@@ -2,7 +2,6 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 const {
   findOrCreateRoleWithName,
   createInvitation,
-  findCategoryName,
   updateGuide,
   findOrCreateChannel,
   setCoursePositionABC,
@@ -106,8 +105,7 @@ const execute = async (interaction, client, models) => {
   const student = await findOrCreateRoleWithName(courseName, guild);
   const admin = await findOrCreateRoleWithName(`${courseName} ${courseAdminRole}`, guild);
 
-  const categoryName = findCategoryName(courseName, guild);
-  const categoryObject = getCategoryObject(categoryName, getPermissionOverwrites(guild, admin, student));
+  const categoryObject = getCategoryObject(courseName, getPermissionOverwrites(guild, admin, student));
   const category = await findOrCreateChannel(categoryObject, guild);
 
   const channelObjects = getChannelObjects(guild, admin, student, courseName, category);
@@ -116,7 +114,7 @@ const execute = async (interaction, client, models) => {
   ));
 
   await createCourseToDatabase(courseCode, courseFullName, courseName, models.Course);
-  await setCoursePositionABC(guild, categoryName);
+  await setCoursePositionABC(guild, categoryObject.name);
   await createInvitation(guild, courseName);
   await editEphemeral(interaction, `Created course ${courseName}.`);
   await client.emit("COURSES_CHANGED", models.Course);

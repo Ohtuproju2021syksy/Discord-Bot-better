@@ -7,12 +7,6 @@ let invite_url = "";
 
 process.env.NODE_ENV === "production" ? invite_url = `${process.env.BACKEND_SERVER_URL}` : invite_url = `${process.env.BACKEND_SERVER_URL}:${process.env.PORT}`;
 
-const createCategoryName = (courseString) => `📚 ${courseString}`;
-
-const createPrivateCategoryName = (courseString) => `👻 ${courseString}`;
-
-const createLockedCategoryName = (courseString) => `🔐 ${courseString}`;
-
 const getUnlockedCourse = (name, guild) => {
   return guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name.toLowerCase().includes(name.toLowerCase()) && !c.name.toLowerCase().includes("🔐"));
 };
@@ -32,26 +26,6 @@ const getPublicCourse = (name, guild) => {
 const cooldownMap = new Map();
 
 const cooldownTimeMs = 1000 * 60 * 5;
-
-/**
- * Expects role to be between parenthesis e.g., (role)
- * @param {String} string
- */
-const getRoleFromCategory = (categoryName) => {
-  let cleaned = null;
-  if (categoryName.includes("📚")) {
-    cleaned = categoryName.replace("📚", "").trim();
-  }
-  else {
-    cleaned = categoryName.replace("👻", "").trim();
-  }
-  if (cleaned.includes("🔐")) {
-    cleaned = cleaned.replace("🔐", "").trim();
-  }
-  const regExp = /\(([^)]+)\)/;
-  const matches = regExp.exec(cleaned);
-  return matches?.[1] || cleaned;
-};
 
 /**
  *
@@ -143,10 +117,10 @@ const createInvitation = async (guild, args) => {
   await message.pin();
 };
 
-const findCategoryName = (courseString, guild) => {
+const findCategoryWithCourseName = (courseString, guild) => {
   try {
-    const category = guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name.toLowerCase().includes(courseString.toLowerCase()));
-    return category ? category.name : courseString;
+    const category = guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && getCourseNameFromCategory(c.name.toLowerCase()) === courseString.toLowerCase());
+    return category;
   }
   catch (error) {
     // console.log(error);
@@ -154,7 +128,7 @@ const findCategoryName = (courseString, guild) => {
 };
 
 const findChannelWithNameAndType = (name, type, guild) => {
-  return guild.channels.cache.find(c => c.type === type && c.name.toLowerCase().includes(name.toLowerCase()));
+  return guild.channels.cache.find(c => c.type === type && getCourseNameFromCategory(c.name.toLowerCase()) === name.toLowerCase());
 };
 
 const findChannelWithId = (id, guild) => {
@@ -183,7 +157,7 @@ const handleCooldown = (courseName) => {
 const findOrCreateChannel = async (channelObject, guild) => {
   const { name, options } = channelObject;
   const alreadyExists = guild.channels.cache.find(
-    (c) => c.type === options.type && c.name.toLowerCase().includes(name.toLowerCase()));
+    (c) => c.type === options.type && c.name.toLowerCase() === name.toLowerCase());
   if (alreadyExists) return alreadyExists;
   return await guild.channels.create(name, options);
 };
@@ -217,16 +191,19 @@ const deletecommand = async (client, commandToDeleteName) => {
 const emojiRegex = /(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/gi;
 
 const isCourseCategory = (channel) => {
-  return emojiRegex.test(channel.name);
+  if (channel && channel.name) {
+    return emojiRegex.test(channel.name);
+  }
+  return false;
 };
 
-const trimCourseName = (channel) => {
+const getCourseNameFromCategory = (category) => {
   let trimmedName = "";
-  if (channel.name) {
-    trimmedName = channel.name.replace(emojiRegex, "").trim();
+  if (category.name) {
+    trimmedName = category.name.replace(emojiRegex, "").trim();
   }
   else {
-    trimmedName = channel.replace(emojiRegex, "").trim();
+    trimmedName = category.replace(emojiRegex, "").trim();
   }
 
   return trimmedName;
@@ -237,7 +214,7 @@ const findAllCourseNames = (guild) => {
 
   guild.channels.cache.forEach(channel => {
     if (isCourseCategory(channel)) {
-      courseNames.push(trimCourseName(channel));
+      courseNames.push(getCourseNameFromCategory(channel));
     }
   });
   return courseNames;
@@ -277,8 +254,7 @@ const setCourseToLocked = async (courseName, Course, guild) => {
   });
   if (course) {
     course.locked = true;
-    const categoryName = createLockedCategoryName(courseName);
-    const category = findChannelWithNameAndType(categoryName, "GUILD_CATEGORY", guild);
+    const category = findChannelWithNameAndType(courseName, "GUILD_CATEGORY", guild);
     category.permissionOverwrites.create(guild.roles.cache.find(r => r.name.toLowerCase() === courseName.toLowerCase()), { VIEW_CHANNEL: true, SEND_MESSAGES: false });
     category.permissionOverwrites.create(guild.roles.cache.find(r => r.name.toLowerCase() === `${courseName.toLowerCase()} instructor`), { VIEW_CHANNEL: true, SEND_MESSAGES: true });
     category.permissionOverwrites.create(guild.roles.cache.find(r => r.name === "faculty"), { SEND_MESSAGES: true });
@@ -410,15 +386,11 @@ const editChannelNames = async (courseId, previousCourseName, newCourseName, Cha
 
 
 module.exports = {
-  createCategoryName,
-  createPrivateCategoryName,
-  createLockedCategoryName,
-  getRoleFromCategory,
   findOrCreateRoleWithName,
+  findCategoryWithCourseName,
   updateGuideMessage,
   updateGuide,
   createInvitation,
-  findCategoryName,
   findChannelWithNameAndType,
   findChannelWithId,
   msToMinutesAndSeconds,
@@ -429,7 +401,7 @@ module.exports = {
   setCoursePositionABC,
   deletecommand,
   isCourseCategory,
-  trimCourseName,
+  getCourseNameFromCategory,
   findAllCourseNames,
   findAndUpdateInstructorRole,
   setCourseToPrivate,

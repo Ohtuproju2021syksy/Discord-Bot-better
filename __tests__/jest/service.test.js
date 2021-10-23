@@ -1,11 +1,8 @@
 const {
-  createCategoryName,
-  createPrivateCategoryName,
-  getRoleFromCategory,
   findOrCreateRoleWithName,
   updateGuideMessage,
   createInvitation,
-  findCategoryName,
+  findCategoryWithCourseName,
   createCourseToDatabase,
   removeCourseFromDb,
   findChannelWithNameAndType,
@@ -14,7 +11,7 @@ const {
   findOrCreateChannel,
   setCoursePositionABC,
   isCourseCategory,
-  trimCourseName,
+  getCourseNameFromCategory,
   findAllCourseNames } = require("../../src/discordBot/services/service");
 
 const createGuidePinnedMessage = async (guild) => {
@@ -73,31 +70,17 @@ afterEach(() => {
 });
 
 describe("Service", () => {
-  test("Get category name from course name", () => {
-    const courseString = "test";
-    const categoryName = "📚 test";
-    const result = createCategoryName(courseString);
-    expect(result).toBe(categoryName);
-  });
-
-  test("Get private category name from course name", () => {
-    const courseString = "test";
-    const privateCategoryName = "👻 test";
-    const result = createPrivateCategoryName(courseString);
-    expect(result).toBe(privateCategoryName);
-  });
-
   test("Get course name from category name", () => {
     const courseString = "test";
     const categoryName = "📚 test";
-    const result = getRoleFromCategory(categoryName);
+    const result = getCourseNameFromCategory(categoryName);
     expect(result).toBe(courseString);
   });
 
   test("Get course name from privateCategory name", () => {
     const courseString = "test";
     const privateCategoryName = "👻 test";
-    const result = getRoleFromCategory(privateCategoryName);
+    const result = getCourseNameFromCategory(privateCategoryName);
     expect(result).toBe(courseString);
   });
 
@@ -173,25 +156,25 @@ describe("Service", () => {
     client.guild.channels.cache = [];
   });
 
-  test("find public category name", () => {
+  test("find public category", () => {
     const courseString = "test";
     const pubCategoryName = "📚 test";
     const pubChan = { name: pubCategoryName, type: "GUILD_CATEGORY" };
     client.guild.channels.cache = [pubChan];
 
-    const result = findCategoryName(courseString, client.guild);
-    expect(result).toBe(pubCategoryName);
+    const result = findCategoryWithCourseName(courseString, client.guild);
+    expect(result.name).toBe(pubCategoryName);
     client.guild.channels.cache = [];
   });
 
-  test("find private category name", () => {
+  test("find private category", () => {
     const courseString = "test";
-    const privCategoryName = "🔒 test";
+    const privCategoryName = "👻 test";
     const privChan = { name: privCategoryName, type: "GUILD_CATEGORY" };
     client.guild.channels.cache = [privChan];
 
-    const result = findCategoryName(courseString, client.guild);
-    expect(result).toBe(privCategoryName);
+    const result = findCategoryWithCourseName(courseString, client.guild);
+    expect(result.name).toBe(privCategoryName);
     client.guild.channels.cache = [];
   });
 
@@ -266,7 +249,7 @@ describe("Service", () => {
     const category = "test";
     const privateCategoryName = "📚 test";
     const channel = { name: privateCategoryName };
-    const result = trimCourseName(channel);
+    const result = getCourseNameFromCategory(channel);
     expect(result).toBe(category);
   });
 
@@ -274,7 +257,7 @@ describe("Service", () => {
     const category = "test";
     const privateCategoryName = "🔒 test";
     const channel = { name: privateCategoryName };
-    const result = trimCourseName(channel);
+    const result = getCourseNameFromCategory(channel);
     expect(result).toBe(category);
   });
 

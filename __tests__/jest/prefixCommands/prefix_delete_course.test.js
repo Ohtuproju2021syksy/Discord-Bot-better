@@ -1,11 +1,11 @@
 const { execute } = require("../../../src/discordBot/commands/admin/delete_course");
-const { findCategoryName, updateGuide, removeCourseFromDb } = require("../../../src/discordBot/services/service");
+const { findCategoryWithCourseName, updateGuide, removeCourseFromDb } = require("../../../src/discordBot/services/service");
 
 jest.mock("../../../src/discordBot/services/service");
 
-findCategoryName
-  .mockImplementation((name) => `📚 ${name}`)
-  .mockImplementationOnce(() => "📚 testa");
+findCategoryWithCourseName
+  .mockImplementation((name) => category = { name: `📚 ${name}`, delete: jest.fn() })
+  .mockImplementationOnce(() => null);
 
 const { messageInCommandsChannel, teacher, student } = require("../../mocks/mockMessages");
 
@@ -27,7 +27,7 @@ describe("prefix remove", () => {
     messageInCommandsChannel.member = student;
     const courseName = "test";
     await execute(messageInCommandsChannel, [courseName], Course);
-    expect(findCategoryName).toHaveBeenCalledTimes(0);
+    expect(findCategoryWithCourseName).toHaveBeenCalledTimes(0);
     expect(messageInCommandsChannel.reply).toHaveBeenCalledTimes(0);
     expect(removeCourseFromDb).toHaveBeenCalledTimes(0);
     expect(updateGuide).toHaveBeenCalledTimes(0);
@@ -35,10 +35,10 @@ describe("prefix remove", () => {
 
   test("remove command with invalid course name responds correct ephemeral", async () => {
     messageInCommandsChannel.member = teacher;
-    const courseName = "test";
+    const courseName = "invalidName";
     const response = `Error: Invalid course name: ${courseName}.`;
     await execute(messageInCommandsChannel, [courseName], Course);
-    expect(findCategoryName).toHaveBeenCalledTimes(1);
+    expect(findCategoryWithCourseName).toHaveBeenCalledTimes(1);
     expect(messageInCommandsChannel.reply).toHaveBeenCalledTimes(1);
     expect(messageInCommandsChannel.reply).toHaveBeenCalledWith(response);
   });
@@ -47,7 +47,7 @@ describe("prefix remove", () => {
     messageInCommandsChannel.member = teacher;
     const courseName = "test";
     await execute(messageInCommandsChannel, [courseName], Course);
-    expect(findCategoryName).toHaveBeenCalledTimes(1);
+    expect(findCategoryWithCourseName).toHaveBeenCalledTimes(1);
     expect(removeCourseFromDb).toHaveBeenCalledTimes(1);
     expect(updateGuide).toHaveBeenCalledTimes(1);
   });

@@ -1,10 +1,10 @@
-const { trimCourseName } = require("../../services/service");
+const { getCourseNameFromCategory } = require("../../services/service");
 
 const execute = async (message) => {
   if (message.member.permissions.has("ADMINISTRATOR")) {
     const channels = message.guild.channels.cache.filter(c => c.type === "GUILD_CATEGORY" && c.name.includes("🔒"));
     channels.forEach(async channel => {
-      await channel.setName(`👻 ${trimCourseName(channel)}`);
+      await channel.setName(`👻 ${getCourseNameFromCategory(channel)}`);
     });
   }
 };
