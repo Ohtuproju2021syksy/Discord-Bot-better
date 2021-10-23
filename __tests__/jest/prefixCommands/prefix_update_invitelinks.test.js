@@ -1,16 +1,20 @@
-const { execute } = require("../../../src/discordBot/commands/admin/update_invlinks");
-const { createCourseInvitationLink } = require("../../../src/discordBot/services/service");
+const { execute } = require("../../../src/discordBot/commands/admin/update_invitelinks");
+const { createCourseInvitationLink, getCourseNameFromCategory } = require("../../../src/discordBot/services/service");
 
 jest.mock("../../../src/discordBot/services/service");
 
 const { messageInCommandsChannel, teacher, student } = require("../../mocks/mockMessages");
 const courseString = "test";
+const emojiRegex = /(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/gi;
+
+getCourseNameFromCategory
+  .mockImplementation((courseName) => courseName.name.replace(emojiRegex, "").trim());
 
 afterEach(() => {
   jest.clearAllMocks();
 });
 
-describe("prefix update_invlinkss command", () => {
+describe("prefix update_invitelinks command", () => {
   test("if user does not have administrator permission do nothing", async () => {
     messageInCommandsChannel.member = student;
     await execute(messageInCommandsChannel);
@@ -21,6 +25,7 @@ describe("prefix update_invlinkss command", () => {
     messageInCommandsChannel.member = teacher;
     await execute(messageInCommandsChannel);
     expect(createCourseInvitationLink).toHaveBeenCalledTimes(1);
+    expect(getCourseNameFromCategory).toHaveBeenCalledTimes(1);
     expect(createCourseInvitationLink).toHaveBeenCalledWith(courseString);
   });
 });

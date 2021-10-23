@@ -1,12 +1,12 @@
 const { execute } = require("../../../src/discordBot/commands/faculty/create_channel");
 const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../../src/discordBot/services/message");
-const { getRoleFromCategory, findCourseFromDb, createChannelToDatabase } = require("../../../src/discordBot/services/service");
+const { getCourseNameFromCategory, findCourseFromDb, createChannelToDatabase, isCourseCategory } = require("../../../src/discordBot/services/service");
 
 const models = require("../../mocks/mockModels");
 jest.mock("../../../src/discordBot/services/message");
 jest.mock("../../../src/discordBot/services/service");
 
-getRoleFromCategory.mockImplementation((name) => name.replace("📚", "").trim());
+getCourseNameFromCategory.mockImplementation((name) => name.replace("📚", "").trim());
 
 const { defaultTeacherInteraction } = require("../../mocks/mockInteraction");
 findCourseFromDb.mockImplementation((courseName) => ({ courseName: courseName, id: 1 }));
@@ -31,7 +31,7 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
-describe("slash new channel command", () => {
+describe("slash create channel command", () => {
   test("Cannot use command if channel has no parent", async () => {
     const client = defaultTeacherInteraction.client;
     const response = "Course not found, can not create new channel.";
@@ -53,7 +53,8 @@ describe("slash new channel command", () => {
     expect(editErrorEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
   });
 
-  test("new channel can be created if course channel count is less or equel than 10", async () => {
+  test("new channel can be created if course channel count is less or equal than 10", async () => {
+    isCourseCategory.mockImplementationOnce(() => (true));
     const client = defaultTeacherInteraction.client;
     defaultTeacherInteraction.channelId = 2;
     const response = `Created new channel ${courseName}_${channelName}`;
@@ -68,6 +69,7 @@ describe("slash new channel command", () => {
   });
 
   test("new channel cannot be created if course channel count is greater than 10", async () => {
+    isCourseCategory.mockImplementationOnce(() => (true));
     const client = defaultTeacherInteraction.client;
     defaultTeacherInteraction.channelId = 2;
     setMaxChannels(client);

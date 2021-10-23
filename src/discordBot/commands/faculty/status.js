@@ -1,10 +1,10 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const {
-  getRoleFromCategory,
+  getCourseNameFromCategory,
   createCourseInvitationLink,
-  trimCourseName,
   findCourseFromDb,
   findChannelsByCourse,
+  isCourseCategory,
 } = require("../../services/service");
 const { editErrorEphemeral, sendEphemeral, editEphemeral } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
@@ -14,14 +14,13 @@ const execute = async (interaction, client, models) => {
   const guild = client.guild;
   const channel = guild.channels.cache.get(interaction.channelId);
 
-  if (!channel?.parent?.name?.startsWith("🔐") && !channel?.parent?.name?.startsWith("📚") && !channel?.parent?.name?.startsWith("👻")) {
+  if (!isCourseCategory(channel?.parent)) {
     return await editErrorEphemeral(interaction, "This is not a course category, can not execute the command!");
   }
 
-  const categoryName = trimCourseName(channel.parent, guild);
-  const course = await findCourseFromDb(categoryName, models.Course);
+  const courseRole = getCourseNameFromCategory(channel.parent, guild);
+  const course = await findCourseFromDb(courseRole, models.Course);
 
-  const courseRole = getRoleFromCategory(categoryName);
   const instructorRole = `${courseRole} instructor`;
   const count = guild.roles.cache.find(
     (role) => role.name === courseRole,

@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { trimCourseName } = require("../../services/service");
+const { getCourseNameFromCategory, isCourseCategory } = require("../../services/service");
 const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../services/message");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
 
@@ -7,7 +7,7 @@ const execute = async (interaction, client) => {
   await sendEphemeral(interaction, "Adding instructor...");
   const guild = client.guild;
   const channel = guild.channels.cache.get(interaction.channelId);
-  const roleName = channel.parent ? trimCourseName(channel.parent) : "";
+  const roleName = channel.parent ? getCourseNameFromCategory(channel.parent) : "";
   let hasPermission = false;
   interaction.member._roles.forEach(roleId => {
     const role = guild.roles.cache.get(roleId);
@@ -19,7 +19,7 @@ const execute = async (interaction, client) => {
   if (!hasPermission) {
     return editErrorEphemeral(interaction, "You don't have the permission to use this command!");
   }
-  if (!channel?.parent?.name?.startsWith("🔐") && !channel?.parent?.name?.startsWith("📚") && !channel?.parent?.name?.startsWith("👻")) {
+  if (!isCourseCategory(channel?.parent)) {
     return editErrorEphemeral(interaction, "Command must be used in a course channel!");
   }
 

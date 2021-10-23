@@ -1,6 +1,6 @@
 const { execute } = require("../../../src/discordBot/commands/faculty/disable_bridge");
 const { editEphemeral, editErrorEphemeral, sendEphemeral, confirmChoice } = require("../../../src/discordBot/services/message");
-const { findChannelFromDbByName, findCourseFromDb } = require("../../../src/discordBot/services/service");
+const { findChannelFromDbByName, findCourseFromDb, isCourseCategory } = require("../../../src/discordBot/services/service");
 
 const models = require("../../mocks/mockModels");
 jest.mock("../../../src/discordBot/services/message");
@@ -35,6 +35,7 @@ describe("slash disable_bridge command", () => {
   });
 
   test("Cannot use command on default course channels", async () => {
+    isCourseCategory.mockImplementationOnce(() => (true));
     const client = defaultTeacherInteraction.client;
     defaultTeacherInteraction.channelId = 3;
     const response = "Command can't be performed on default course channels!";
@@ -47,6 +48,7 @@ describe("slash disable_bridge command", () => {
   });
 
   test("Correct channel can be disabled", async () => {
+    isCourseCategory.mockImplementationOnce(() => (true));
     const client = defaultTeacherInteraction.client;
     defaultTeacherInteraction.channelId = 3;
     const response = "The bridge between this channel and Telegram is now disabled.";
@@ -60,6 +62,7 @@ describe("slash disable_bridge command", () => {
   });
 
   test("Disabling a channel that is already disabled responds with correct error ephemeral", async () => {
+    isCourseCategory.mockImplementationOnce(() => (true));
     const client = defaultTeacherInteraction.client;
     defaultTeacherInteraction.channelId = 3;
     const response = "The bridge is already disabled on this channel.";

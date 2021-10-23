@@ -4,7 +4,6 @@ const {
   findCourseFromDb,
   findCourseFromDbWithFullName,
   findOrCreateRoleWithName,
-  findCategoryName,
   findOrCreateChannel,
   setCoursePositionABC,
   createInvitation,
@@ -16,7 +15,6 @@ jest.mock("../../../src/discordBot/services/message");
 jest.mock("../../../src/discordBot/services/service");
 
 findOrCreateRoleWithName.mockImplementation((name) => { return { id: Math.floor(Math.random() * 10) + 5, name: name }; });
-findCategoryName.mockImplementation((name) => `📚 ${name}`);
 findCourseFromDbWithFullName
   .mockImplementation(() => false)
   .mockImplementationOnce(() => true);
@@ -95,14 +93,6 @@ describe("slash create command", () => {
     expect(findOrCreateRoleWithName).toHaveBeenCalledTimes(2);
     expect(findOrCreateRoleWithName).toHaveBeenCalledWith(courseName, client.guild);
     expect(findOrCreateRoleWithName).toHaveBeenCalledWith(`${courseName} ${courseAdminRole}`, client.guild);
-  });
-
-  test("find category name", async () => {
-    const courseName = "nick name";
-    const client = defaultTeacherInteraction.client;
-    await execute(defaultTeacherInteraction, client, models);
-    expect(findCategoryName).toHaveBeenCalledTimes(1);
-    expect(findCategoryName).toHaveBeenCalledWith(courseName, client.guild);
   });
 
   test("create channels: category, announcement, general and voice ", async () => {

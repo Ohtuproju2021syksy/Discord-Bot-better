@@ -1,11 +1,12 @@
 const { execute } = require("../../../src/discordBot/commands/faculty/edit_course");
 const { sendEphemeral, editErrorEphemeral, editEphemeral, confirmChoice } = require("../../../src/discordBot/services/message");
 const {
-  findCategoryName,
+  findCategoryWithCourseName,
   msToMinutesAndSeconds,
-  trimCourseName,
+  getCourseNameFromCategory,
   findCourseFromDb,
-  checkCourseCooldown } = require("../../../src/discordBot/services/service");
+  checkCourseCooldown,
+  isCourseCategory } = require("../../../src/discordBot/services/service");
 const models = require("../../mocks/mockModels");
 
 jest.mock("../../../src/discordBot/services/message");
@@ -18,8 +19,8 @@ afterEach(() => {
 
 const time = "4:59";
 msToMinutesAndSeconds.mockImplementation(() => time);
-findCategoryName.mockImplementation((name) => `📚 ${name}`);
-trimCourseName.mockImplementation(() => "test");
+findCategoryWithCourseName.mockImplementation((name) => ({ name: `📚 ${name}` }));
+getCourseNameFromCategory.mockImplementation(() => "test");
 findCourseFromDb
   .mockImplementation(() => {
     return {
@@ -36,6 +37,8 @@ findCourseFromDb
   })
   .mockImplementationOnce(() => false);
 
+isCourseCategory.mockImplementationOnce(() => (false));
+isCourseCategory.mockImplementation(() => (true));
 
 const { defaultTeacherInteraction, defaultStudentInteraction } = require("../../mocks/mockInteraction");
 defaultTeacherInteraction.options = {

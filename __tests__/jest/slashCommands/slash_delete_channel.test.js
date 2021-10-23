@@ -1,7 +1,7 @@
 const { execute } = require("../../../src/discordBot/commands/faculty/delete_channel");
 const { sendEphemeral, editEphemeral, editErrorEphemeral, confirmChoice } = require("../../../src/discordBot/services/message");
-const {
-  removeChannelFromDb, getRoleFromCategory } = require("../../../src/discordBot/services/service");
+const { removeChannelFromDb, getCourseNameFromCategory, isCourseCategory } = require("../../../src/discordBot/services/service");
+
 
 jest.mock("../../../src/discordBot/services/message");
 
@@ -12,8 +12,8 @@ defaultTeacherInteraction.options = { getString: jest.fn((name) => name) };
 const initialResponse = "Deleting text channel...";
 
 jest.mock("../../../src/discordBot/services/service");
-getRoleFromCategory.mockImplementation((name) => name.replace("📚", "").trim());
 confirmChoice.mockImplementation(() => true);
+getCourseNameFromCategory.mockImplementation((name) => name.replace("📚", "").trim());
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -47,6 +47,7 @@ describe("slash delete_channel", () => {
   });
 
   test("Originals cannot be deleted", async () => {
+    isCourseCategory.mockImplementationOnce(() => (true));
     const courseName = "general";
     const response = "Original channels can not be deleted.";
     defaultTeacherInteraction.options = { getString: jest.fn(() => courseName) };
@@ -60,6 +61,7 @@ describe("slash delete_channel", () => {
   });
 
   test("Invalid channel cannot be deleted", async () => {
+    isCourseCategory.mockImplementationOnce(() => (true));
     const courseName = "invalid";
     const response = "There is no added channel with given name.";
     defaultTeacherInteraction.options = { getString: jest.fn(() => courseName) };
@@ -74,6 +76,7 @@ describe("slash delete_channel", () => {
   });
 
   test("Valid channel can be deleted", async () => {
+    isCourseCategory.mockImplementationOnce(() => (true));
     const courseName = "test";
     const response = `${courseName} deleted!`;
     defaultTeacherInteraction.options = { getString: jest.fn(() => courseName) };

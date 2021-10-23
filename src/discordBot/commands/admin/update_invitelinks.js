@@ -1,4 +1,4 @@
-const { createCourseInvitationLink } = require("../../services/service");
+const { createCourseInvitationLink, getCourseNameFromCategory } = require("../../services/service");
 
 const execute = async (message) => {
   if (message.member.permissions.has("ADMINISTRATOR")) {
@@ -6,9 +6,7 @@ const execute = async (message) => {
     announcementChannels.forEach(async aChannel => {
       const pinnedMessages = await aChannel.messages.fetchPinned();
       const invMessage = pinnedMessages.find(msg => msg.author === message.client.user && msg.content.includes("Invitation link for"));
-
-      const courseName = aChannel.parent.name.replace(/([\uE000-\uF8FF]|\uD83C[\uDF00-\uDFFF]|\uD83D[\uDC00-\uDDFF])/g, "").trim();
-
+      const courseName = getCourseNameFromCategory(aChannel.parent);
       const updatedMsg = createCourseInvitationLink(courseName);
       await invMessage.edit(updatedMsg);
     });
@@ -17,10 +15,10 @@ const execute = async (message) => {
 
 module.exports = {
   prefix: true,
-  name: "update_invlinks",
+  name: "update_invitelinks",
   description: "Update invitation links.",
   role: "admin",
-  usage: "!update_invlinks",
+  usage: "!update_invitelinks",
   args: false,
   execute,
 };

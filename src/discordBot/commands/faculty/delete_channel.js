@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { getRoleFromCategory, removeChannelFromDb } = require("../../services/service");
+const { getCourseNameFromCategory, removeChannelFromDb, isCourseCategory } = require("../../services/service");
 const { sendEphemeral, editEphemeral, editErrorEphemeral, confirmChoice } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
 
@@ -10,11 +10,11 @@ const execute = async (interaction, client, models) => {
   const guild = client.guild;
   const channel = guild.channels.cache.get(interaction.channelId);
 
-  if (!channel?.parent?.name?.startsWith("🔐") && !channel?.parent?.name?.startsWith("📚") && !channel?.parent?.name?.startsWith("👻")) {
+  if (!isCourseCategory(channel?.parent)) {
     return await editErrorEphemeral(interaction, "This command can be used only in course channels");
   }
 
-  const categoryName = getRoleFromCategory(channel.parent.name).replace(/ /g, "-");
+  const categoryName = getCourseNameFromCategory(channel.parent.name).replace(/ /g, "-");
   const deleteChannelName = `${categoryName}_${deleteName}`;
 
   if (deleteName === "general" || deleteName === "announcement" || deleteName === "voice") {
