@@ -50,6 +50,7 @@ describe("slash lock_chat command", () => {
     const client = defaultTeacherInteraction.client;
     const response = `This course ${courseName} is now locked.`;
     await execute(defaultTeacherInteraction, client, Course);
+    expect(confirmChoice).toHaveBeenCalledTimes(1);
     expect(getUnlockedCourse).toHaveBeenCalledTimes(1);
     expect(setCourseToLocked).toHaveBeenCalledTimes(1);
     expect(lockTelegramCourse).toHaveBeenCalledTimes(1);

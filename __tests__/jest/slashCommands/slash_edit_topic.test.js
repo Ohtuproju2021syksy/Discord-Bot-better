@@ -44,6 +44,7 @@ describe("slash edit_topic command", () => {
     const accouncement = client.guild.channels.cache.get(5);
     const response = "Channel topic has been changed";
     await execute(defaultTeacherInteraction, client);
+    expect(confirmChoice).toHaveBeenCalledTimes(1);
     expect(trimCourseName).toHaveBeenCalledTimes(1);
     expect(trimCourseName).toHaveBeenCalledWith(channel.parent, client.guild);
     expect(general.setTopic).toHaveBeenCalledTimes(1);

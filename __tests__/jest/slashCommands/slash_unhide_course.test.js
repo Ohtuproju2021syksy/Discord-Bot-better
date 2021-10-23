@@ -50,6 +50,7 @@ describe("slash unhide command", () => {
     const client = defaultTeacherInteraction.client;
     const response = `This course ${courseName} is now public.`;
     await execute(defaultTeacherInteraction, client, Course);
+    expect(confirmChoice).toHaveBeenCalledTimes(1);
     expect(getHiddenCourse).toHaveBeenCalledTimes(1);
     expect(setCourseToPublic).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);

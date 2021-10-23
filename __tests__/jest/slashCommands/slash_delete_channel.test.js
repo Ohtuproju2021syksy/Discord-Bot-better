@@ -79,6 +79,7 @@ describe("slash delete_channel", () => {
     defaultTeacherInteraction.channelId = 3;
     const client = defaultTeacherInteraction.client;
     await execute(defaultTeacherInteraction, client, models);
+    expect(confirmChoice).toHaveBeenCalledTimes(1);
     expect(removeChannelFromDb).toHaveBeenCalledTimes(1);
     expect(removeChannelFromDb).toHaveBeenCalledWith(`${courseName}_${courseName}`, models.Channel);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);

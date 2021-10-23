@@ -47,6 +47,7 @@ describe("slash hide command", () => {
     const client = defaultTeacherInteraction.client;
     const response = `This course ${courseName} is now private.`;
     await execute(defaultTeacherInteraction, client, Course);
+    expect(confirmChoice).toHaveBeenCalledTimes(1);
     expect(getPublicCourse).toHaveBeenCalledTimes(1);
     expect(setCourseToPrivate).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);

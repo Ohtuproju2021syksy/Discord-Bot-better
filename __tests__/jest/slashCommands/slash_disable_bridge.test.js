@@ -51,6 +51,7 @@ describe("slash disable_bridge command", () => {
     defaultTeacherInteraction.channelId = 3;
     const response = "The bridge between this channel and Telegram is now disabled.";
     await execute(defaultTeacherInteraction, client, models);
+    expect(confirmChoice).toHaveBeenCalledTimes(1);
     expect(findChannelFromDbByName).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initalResponse);

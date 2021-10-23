@@ -50,6 +50,7 @@ describe("prefix remove", () => {
     messageInCommandsChannel.member = teacher;
     const courseName = "test";
     await execute(messageInCommandsChannel, [courseName], Course);
+    expect(confirmChoiceNoInteraction).toHaveBeenCalledTimes(1);
     expect(findCategoryName).toHaveBeenCalledTimes(1);
     expect(removeCourseFromDb).toHaveBeenCalledTimes(1);
     expect(updateGuide).toHaveBeenCalledTimes(1);
