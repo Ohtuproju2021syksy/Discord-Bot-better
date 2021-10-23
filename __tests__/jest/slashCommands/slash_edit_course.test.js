@@ -86,6 +86,7 @@ describe("slash edit command", () => {
     defaultTeacherInteraction.channelId = 2;
     const response = "Course code already exists";
     await execute(defaultTeacherInteraction, client, models);
+    expect(confirmChoice).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, "Editing...");
     expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
@@ -110,7 +111,7 @@ describe("slash edit command", () => {
     defaultTeacherInteraction.channelId = 2;
     const response = `Command cooldown [mm:ss]: you need to wait ${time}.`;
     await execute(defaultTeacherInteraction, client), models;
-    expect(confirmChoice).toHaveBeenCalledTimes(0);
+    expect(confirmChoice).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, "Editing...");
     expect(editErrorEphemeral).toHaveBeenCalledTimes(1);

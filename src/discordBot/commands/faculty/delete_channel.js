@@ -21,15 +21,15 @@ const execute = async (interaction, client, models) => {
     return await editErrorEphemeral(interaction, "Original channels can not be deleted.");
   }
 
-  const guildName = guild.channels.cache.find(c => c.parent === channel.parent && c.name === deleteChannelName);
-  if (!guildName) {
-    return await editErrorEphemeral(interaction, "There is no added channel with given name.");
-  }
-
   const confirm = await confirmChoice(interaction, "Confirm command: Delete channel " + deleteChannelName);
 
   if (!confirm) {
     return await editEphemeral(interaction, "Command declined");
+  }
+
+  const guildName = guild.channels.cache.find(c => c.parent === channel.parent && c.name === deleteChannelName);
+  if (!guildName) {
+    return await editErrorEphemeral(interaction, "There is no added channel with given name.");
   }
 
   guild.channels.cache.find(c => c.parent === channel.parent && c.name === deleteChannelName).delete();

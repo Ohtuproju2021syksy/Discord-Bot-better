@@ -64,6 +64,7 @@ describe("slash disable_bridge command", () => {
     defaultTeacherInteraction.channelId = 3;
     const response = "The bridge is already disabled on this channel.";
     await execute(defaultTeacherInteraction, client, models);
+    expect(confirmChoice).toHaveBeenCalledTimes(1);
     expect(findChannelFromDbByName).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initalResponse);

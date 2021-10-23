@@ -16,15 +16,14 @@ const execute = async (interaction, client, models) => {
   if (!channelInstance) {
     return await editErrorEphemeral(interaction, "Command can't be performed on default course channels!");
   }
-
-  if (!channelInstance.bridged) {
-    return await editErrorEphemeral(interaction, "The bridge is already disabled on this channel.");
-  }
-
   const confirm = await confirmChoice(interaction, "Disable bridge of: " + channel.name);
 
   if (!confirm) {
     return await editEphemeral(interaction, "Command declined");
+  }
+
+  if (!channelInstance.bridged) {
+    return await editErrorEphemeral(interaction, "The bridge is already disabled on this channel.");
   }
 
   channelInstance.bridged = false;

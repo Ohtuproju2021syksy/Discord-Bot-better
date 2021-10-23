@@ -7,6 +7,11 @@ const execute = async (message, args, models) => {
     let courseName = args.join(" ");
     const guild = message.guild;
 
+    const confirm = await confirmChoiceNoInteraction(message, "Delete course: " + courseName, guild);
+    if (!confirm) {
+      return;
+    }
+
     let courseString = findCategoryName(courseName, guild);
     let category = guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name.toLowerCase() === courseString.toLowerCase());
     if (!category) {
@@ -20,12 +25,6 @@ const execute = async (message, args, models) => {
 
 
     if (!category) return message.reply(`Error: Invalid course name: ${courseName}.`);
-
-    const confirm = await confirmChoiceNoInteraction(message, "Delete course: " + courseName, guild);
-
-    if (!confirm) {
-      return;
-    }
 
     await Promise.all(guild.channels.cache
       .filter(c => c.parent === category)

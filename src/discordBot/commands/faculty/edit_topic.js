@@ -22,17 +22,17 @@ const execute = async (interaction, client) => {
   const channelAnnouncement = guild.channels.cache.find(c => c.parent === channel.parent && c.name.includes("_announcement"));
   const channelGeneral = guild.channels.cache.find(c => c.parent === channel.parent && c.name.includes("_general"));
 
+  const confirm = await confirmChoice(interaction, "Change topic to: " + newTopic);
+
+  if (!confirm) {
+    return await editEphemeral(interaction, "Command declined");
+  }
+
   const cooldown = checkCourseCooldown(categoryName);
   if (cooldown) {
     const timeRemaining = Math.floor(cooldown - Date.now());
     const time = msToMinutesAndSeconds(timeRemaining);
     return await editErrorEphemeral(interaction, `Command cooldown [mm:ss]: you need to wait ${time}!`);
-  }
-
-  const confirm = await confirmChoice(interaction, "Change topic to: " + newTopic);
-
-  if (!confirm) {
-    return await editEphemeral(interaction, "Command declined");
   }
 
   await channelAnnouncement.setTopic(newTopic);
