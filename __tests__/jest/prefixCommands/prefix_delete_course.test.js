@@ -2,9 +2,12 @@ const { execute } = require("../../../src/discordBot/commands/admin/delete_cours
 const { findCategoryWithCourseName, updateGuide, removeCourseFromDb } = require("../../../src/discordBot/services/service");
 
 jest.mock("../../../src/discordBot/services/service");
+const createCategoryInstanceMock = (name) => {
+  return { name: `📚 ${name}`, delete: jest.fn() };
+};
 
 findCategoryWithCourseName
-  .mockImplementation((name) => category = { name: `📚 ${name}`, delete: jest.fn() })
+  .mockImplementation((name) => createCategoryInstanceMock(name))
   .mockImplementationOnce(() => null);
 
 const { messageInCommandsChannel, teacher, student } = require("../../mocks/mockMessages");

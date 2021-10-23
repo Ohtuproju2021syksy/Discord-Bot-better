@@ -23,7 +23,7 @@ const changeCourseNames = async (previousCourseName, newCourseName, channel, cat
   const categoryEmojis = category.name.replace(getCourseNameFromCategory(category), "");
   await category.setName(`${categoryEmojis} ${newCourseName}`);
   const trimmedCourseName = newCourseName.replace(/ /g, "-");
-  
+
   await Promise.all(guild.channels.cache
     .filter(c => c.parent === channel.parent)
     .map(async ch => {
