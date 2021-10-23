@@ -1,5 +1,5 @@
 const { execute } = require("../../../src/discordBot/commands/faculty/lock_chat");
-const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../../src/discordBot/services/message");
+const { editEphemeral, editErrorEphemeral, sendEphemeral, confirmChoice } = require("../../../src/discordBot/services/message");
 const {
   updateGuide,
   msToMinutesAndSeconds,
@@ -19,7 +19,7 @@ const initialResponse = "Locking course...";
 const { defaultTeacherInteraction } = require("../../mocks/mockInteraction");
 const courseName = "test";
 defaultTeacherInteraction.options = { getString: jest.fn(() => courseName) };
-
+confirmChoice.mockImplementation(() => true);
 afterEach(() => {
   jest.clearAllMocks();
 });
@@ -50,6 +50,7 @@ describe("slash lock_chat command", () => {
     const client = defaultTeacherInteraction.client;
     const response = `This course ${courseName} is now locked.`;
     await execute(defaultTeacherInteraction, client, Course);
+    expect(confirmChoice).toHaveBeenCalledTimes(1);
     expect(getUnlockedCourse).toHaveBeenCalledTimes(1);
     expect(setCourseToLocked).toHaveBeenCalledTimes(1);
     expect(lockTelegramCourse).toHaveBeenCalledTimes(1);

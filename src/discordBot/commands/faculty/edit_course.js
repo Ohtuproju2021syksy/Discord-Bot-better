@@ -112,12 +112,13 @@ const execute = async (interaction, client, models) => {
   }
 
   if (choice === "name") {
+
+    if (await findCourseFromDbWithFullName(newValue, models.Course)) return await editErrorEphemeral(interaction, "Course full name already exists");
     const confirm = await confirmChoice(interaction, "Change course name to: " + newValue);
 
     if (!confirm) {
       return await editEphemeral(interaction, "Command declined");
     }
-    if (await findCourseFromDbWithFullName(newValue, models.Course)) return await editErrorEphemeral(interaction, "Course full name already exists");
     databaseValue.fullName = newValue;
     await databaseValue.save();
   }

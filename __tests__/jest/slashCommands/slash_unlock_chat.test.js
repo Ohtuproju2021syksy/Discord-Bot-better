@@ -1,5 +1,5 @@
 const { execute } = require("../../../src/discordBot/commands/faculty/unlock_chat");
-const { sendEphemeral, editErrorEphemeral, editEphemeral } = require("../../../src/discordBot/services/message");
+const { sendEphemeral, editErrorEphemeral, editEphemeral, confirmChoice } = require("../../../src/discordBot/services/message");
 const {
   updateGuide,
   getLockedCourse,
@@ -12,6 +12,7 @@ const { unlockTelegramCourse } = require("../../../src/bridge/service");
 jest.mock("../../../src/bridge/service");
 jest.mock("../../../src/discordBot/services/message");
 jest.mock("../../../src/discordBot/services/service");
+confirmChoice.mockImplementation(() => true);
 
 
 const Course = {
@@ -50,6 +51,7 @@ describe("slash unlock_chat command", () => {
     const client = defaultTeacherInteraction.client;
     const response = `This course ${courseName} is now unlocked.`;
     await execute(defaultTeacherInteraction, client, Course);
+    expect(confirmChoice).toHaveBeenCalledTimes(1);
     expect(getLockedCourse).toHaveBeenCalledTimes(1);
     expect(setCourseToUnlocked).toHaveBeenCalledTimes(1);
     expect(unlockTelegramCourse).toHaveBeenCalledTimes(1);

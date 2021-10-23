@@ -1,5 +1,5 @@
 const { execute } = require("../../../src/discordBot/commands/faculty/delete_channel");
-const { sendEphemeral, editEphemeral, editErrorEphemeral } = require("../../../src/discordBot/services/message");
+const { sendEphemeral, editEphemeral, editErrorEphemeral, confirmChoice } = require("../../../src/discordBot/services/message");
 const {
   removeChannelFromDb, getRoleFromCategory } = require("../../../src/discordBot/services/service");
 
@@ -13,6 +13,7 @@ const initialResponse = "Deleting text channel...";
 
 jest.mock("../../../src/discordBot/services/service");
 getRoleFromCategory.mockImplementation((name) => name.replace("📚", "").trim());
+confirmChoice.mockImplementation(() => true);
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -78,6 +79,7 @@ describe("slash delete_channel", () => {
     defaultTeacherInteraction.channelId = 3;
     const client = defaultTeacherInteraction.client;
     await execute(defaultTeacherInteraction, client, models);
+    expect(confirmChoice).toHaveBeenCalledTimes(1);
     expect(removeChannelFromDb).toHaveBeenCalledTimes(1);
     expect(removeChannelFromDb).toHaveBeenCalledWith(`${courseName}_${courseName}`, models.Channel);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);

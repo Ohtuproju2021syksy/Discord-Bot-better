@@ -75,20 +75,21 @@ const confirmChoice = async (interaction, msg) => {
   for (let i = 0; i < 60000;) {
     await sleep(1000);
     i = i + 1000;
-    if (stop) break;
+    if (stop) return confirm;
   }
   function sleep(ms) {
     return new Promise((resolve) => {
       setTimeout(resolve, ms);
     });
   }
+  interaction.editReply({ content: "Timeout...", components: [] });
   return confirm;
 };
 
-const confirmChoiceNoInteraction = async (message, courseName, guild) => {
+const confirmChoiceNoInteraction = async (message, interactionMessage, guild) => {
   const confirmEmbed = new MessageEmbed()
     .setColor().setColor("#0099ff")
-    .setTitle("Delete course: " + courseName);
+    .setTitle(interactionMessage);
 
   const row = new MessageActionRow();
   row.addComponents(
@@ -101,6 +102,7 @@ const confirmChoiceNoInteraction = async (message, courseName, guild) => {
       .setLabel("Decline")
       .setStyle("DANGER"),
   );
+
   const channel = guild.channels.cache.get(message.channelId);
   const messageAuthorId = message.author.id;
   const msgEmbed = await channel.send({ embeds: [confirmEmbed], components: [row] });
@@ -111,16 +113,16 @@ const confirmChoiceNoInteraction = async (message, courseName, guild) => {
     const userId = i.user.id;
     const buttonId = i.customId;
     if (userId === messageAuthorId && buttonId === "confirm") {
-      i.reply({ content: "Deleting course" });
+      i.reply({ content: "Confirming..." });
       confirm = true;
       stop = true;
     }
     else if (userId === messageAuthorId && buttonId === "decline") {
-      i.reply({ content: "Aborting" });
+      i.reply({ content: "Declining..." });
       stop = true;
     }
     else {
-      i.reply({ content: "Wrong user" });
+      i.reply({ content: "Wrong user!" });
     }
   });
 

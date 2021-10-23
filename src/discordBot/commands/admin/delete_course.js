@@ -18,13 +18,15 @@ const execute = async (message, args, models) => {
       }
     }
 
-    const confirm = await confirmChoiceNoInteraction(message, courseName, guild);
+
+    if (!category) return message.reply(`Error: Invalid course name: ${courseName}.`);
+
+    const confirm = await confirmChoiceNoInteraction(message, "Delete course: " + courseName, guild);
 
     if (!confirm) {
       return;
     }
 
-    if (!category) return message.reply(`Error: Invalid course name: ${courseName}.`);
     await Promise.all(guild.channels.cache
       .filter(c => c.parent === category)
       .map(async channel => await channel.delete()),
