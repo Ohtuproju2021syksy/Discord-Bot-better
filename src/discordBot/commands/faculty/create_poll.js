@@ -180,7 +180,7 @@ const execute = async (interaction, client) => {
 
   const resultEmbed = new MessageEmbed()
     .setColor("#0099ff")
-    .setTitle("Results of the poll")
+    .setTitle("Results of the poll\n\n" + pollTitle)
     .setDescription(resultsText);
 
   await channel.send({ embeds: [resultEmbed] });
