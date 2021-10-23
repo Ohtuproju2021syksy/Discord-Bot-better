@@ -41,6 +41,7 @@ describe("prefix remove", () => {
     const courseName = "test";
     const response = `Error: Invalid course name: ${courseName}.`;
     await execute(messageInCommandsChannel, [courseName], Course);
+    expect(confirmChoiceNoInteraction).toHaveBeenCalledTimes(1);
     expect(findCategoryName).toHaveBeenCalledTimes(1);
     expect(messageInCommandsChannel.reply).toHaveBeenCalledTimes(1);
     expect(messageInCommandsChannel.reply).toHaveBeenCalledWith(response);

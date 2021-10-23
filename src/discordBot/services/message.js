@@ -113,12 +113,10 @@ const confirmChoiceNoInteraction = async (message, interactionMessage, guild) =>
     const userId = i.user.id;
     const buttonId = i.customId;
     if (userId === messageAuthorId && buttonId === "confirm") {
-      i.reply({ content: "Confirming..." });
       confirm = true;
       stop = true;
     }
     else if (userId === messageAuthorId && buttonId === "decline") {
-      i.reply({ content: "Declining..." });
       stop = true;
     }
     else {
