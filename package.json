@@ -12,6 +12,7 @@
   },
   "jest": {
     "coveragePathIgnorePatterns": [
+      "/src/bridge/",
       "/node_modules/",
       "__tests__"
     ],
