@@ -36,7 +36,7 @@ Käytössäsi on seuraavia komentoja:
   - \`/join\` jolla voit liittyä kurssille
   - \`/leave\` jolla voit poistua kurssilta
 Esim: \`/join ohpe\`
-  
+
 You have the following commands available:
   - \`/join\` which you can use to join a course
   - \`/leave\` which you can use to leave a course
