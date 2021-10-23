@@ -24,7 +24,7 @@ const execute = async (message) => {
 
 module.exports = {
   prefix: true,
-  name: "sort",
+  name: "sort_courses",
   description: "Sort courses to alphabetical order.",
   role: "admin",
   usage: "!sort_courses",

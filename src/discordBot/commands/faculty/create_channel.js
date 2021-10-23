@@ -19,7 +19,7 @@ const execute = async (interaction, client, models) => {
 
   const courseModel = models.Course;
   const channelModel = models.Channel;
-  const channelName = interaction.options.getString("channel").trim();
+  const channelName = interaction.options.getString("channel").trim().replace(/ /g, "-");
 
   const guild = client.guild;
   const channel = guild.channels.cache.get(interaction.channelId);
@@ -50,8 +50,9 @@ const execute = async (interaction, client, models) => {
     async channelObject => await findOrCreateChannel(channelObject, guild),
   ));
   const courseFromDb = await findCourseFromDb(courseName, courseModel);
-  await createChannelToDatabase(courseFromDb.id, `${courseName}_${channelName}`, channelModel);
-  await editEphemeral(interaction, `Created new channel ${courseName}_${channelName}`);
+  const trimmedCourseName = courseName.replace(/ /g, "-");
+  await createChannelToDatabase(courseFromDb.id, `${trimmedCourseName}_${channelName}`, channelModel);
+  await editEphemeral(interaction, `Created new channel ${trimmedCourseName}_${channelName}`);
 
 };
 
