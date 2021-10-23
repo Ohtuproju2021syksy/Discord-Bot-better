@@ -21,7 +21,7 @@ const execute = async (message, args, models) => {
 
     if (!category) return message.reply(`Error: Invalid course name: ${courseName}.`);
 
-    const confirm = await confirmChoiceNoInteraction(message, courseName, guild);
+    const confirm = await confirmChoiceNoInteraction(message, "Delete course: " + courseName, guild);
 
     if (!confirm) {
       return;
