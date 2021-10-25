@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 const { editEphemeral, editErrorEphemeral, sendEphemeral, sendReplyMessage } = require("../../services/message");
 const { updateGuide, findCourseFromDb } = require("../../services/service");
 const { courseAdminRole } = require("../../../../config.json");
-const { findUserByDiscordId } = require("../../services/userService");
+const { findUserByDiscordId, createUserToDatabase } = require("../../services/userService");
 const { createCourseMemberToDatabase } = require("../../services/courseMemberService");
 const joinedUsersCounter = require("../../../promMetrics/joinedUsersCounter");
 
@@ -56,6 +56,11 @@ const execute = async (interaction, client, models) => {
   const user = await findUserByDiscordId(interaction.member.user.id, models.User);
   if (!course) {
     course = await findCourseFromDb(roleString, models.Course);
+  }
+  if (!user) {
+    await createUserToDatabase(interaction.member.user.id, interaction.member.user.username, models.User);
+    const newUser = await findUserByDiscordId(interaction.member.user.id, models.User);
+    await createCourseMemberToDatabase(newUser.id, course.id, models.CourseMember);
   }
 
   await createCourseMemberToDatabase(user.id, course.id, models.CourseMember);

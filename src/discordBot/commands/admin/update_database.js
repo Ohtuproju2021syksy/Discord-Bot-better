@@ -1,5 +1,5 @@
 const { createCourseMemberToDatabase } = require("../../services/courseMemberService");
-const { createChannelToDatabase, findCourseFromDb, trimCourseName } = require("../../services/service");
+const { createChannelToDatabase, findCourseFromDb, trimCourseName, isCourseCategory } = require("../../services/service");
 const { createUserToDatabase } = require("../../services/userService");
 
 const execute = async (message, args, models) => {
@@ -20,13 +20,15 @@ const saveChannelsToDb = async (models, guild) => {
     const currentChannel = channelsAsArray[channel];
     const courseIdentifier = trimCourseName(currentChannel.parent);
     const course = await findCourseFromDb(courseIdentifier, models.Course);
-    await createChannelToDatabase(course.id, currentChannel.name, models.Channel);
+    if (course) {
+      await createChannelToDatabase(course.id, currentChannel.name, models.Channel);
+    }
   }
 };
 
 const saveUsersToDb = async (models, guild) => {
   const courses = guild.channels.cache
-    .filter(c => c.type === "GUILD_CATEGORY" && c.name.startsWith("📚"))
+    .filter(c => c.type === "GUILD_CATEGORY" && isCourseCategory(c))
     .map((c) => c);
 
   for (const course in courses) {
