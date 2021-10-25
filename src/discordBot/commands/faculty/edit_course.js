@@ -62,7 +62,7 @@ const execute = async (interaction, client, models) => {
   await sendEphemeral(interaction, "Editing...");
   const guild = client.guild;
   const channel = guild.channels.cache.get(interaction.channelId);
-  if (!isCourseCategory(channel)) {
+  if (!isCourseCategory(channel.parent)) {
     return await editErrorEphemeral(interaction, "This is not a course category, can not execute the command");
   }
 
@@ -82,7 +82,7 @@ const execute = async (interaction, client, models) => {
     const time = msToMinutesAndSeconds(timeRemaining);
     return await editErrorEphemeral(interaction, `Command cooldown [mm:ss]: you need to wait ${time}.`);
   }
-  const category = findChannelWithNameAndType(channel.parent.name, "GUILD_CATEGORY", guild);
+  const category = findChannelWithNameAndType(getCourseNameFromCategory(channel.parent), "GUILD_CATEGORY", guild);
   const channelAnnouncement = guild.channels.cache.find(c => c.parent === channel.parent && c.name.includes("_announcement"));
 
   let databaseValue = await findCourseFromDb(categoryName, models.Course);
