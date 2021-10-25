@@ -11,16 +11,16 @@ const execute = async (interaction, client, models) => {
     return await editErrorEphemeral(interaction, "This is not a course category, can not execute the command!");
   }
 
-  const channelInstance = await findChannelFromDbByName(channel.name, models.Channel);
-
-  if (!channelInstance) {
-    return await editErrorEphemeral(interaction, "Command can't be performed on default course channels!");
-  }
-
   const confirm = await confirmChoice(interaction, "Enable bridge of: " + channel.name);
 
   if (!confirm) {
     return await editEphemeral(interaction, "Command declined");
+  }
+
+  const channelInstance = await findChannelFromDbByName(channel.name, models.Channel);
+
+  if (!channelInstance) {
+    return await editErrorEphemeral(interaction, "Command can't be performed on default course channels!");
   }
 
   if (channelInstance.bridged) {
