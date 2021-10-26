@@ -1,5 +1,5 @@
 const { client } = require("./mockSlashClient");
-const { courseAdminRole, facultyRole } = require("../../config.json");
+const { courseAdminRole, facultyRole, githubRepo } = require("../../config.json");
 const prefix = "/";
 
 const adminD = client.commands.map(c => c);
@@ -8,46 +8,53 @@ const courseAdmin = client.slashCommands.filter(command => command.roles).filter
 const studentD = client.slashCommands.filter(command => !command.roles && command.name !== "auth");
 
 const teacherData = [];
+const teacherData2 = [];
 teacherData.push("Hi **teacher**!\n");
 teacherData.push("Here's a list of commands you can use:\n");
-teacherData.push(`Category: **${facultyRole}**`);
-teacherData.push(faculty.map(command => `**${command.usage}** - ${command.description}`).join("\n"));
-teacherData.push("\n");
-teacherData.push(`Category: **${courseAdminRole}**`);
-teacherData.push(courseAdmin.map(command => `**${command.usage}** - ${command.description}`).join("\n"));
-teacherData.push("\n");
 teacherData.push("Category: **default**");
 teacherData.push(studentD.map(command => `**${command.usage}** - ${command.description}`).join("\n"));
+teacherData.push(`[User manual for students](<${githubRepo}/blob/main/documentation/usermanual-student.md>)`);
 teacherData.push("\n");
-teacherData.push("*Commands can be only in course channels");
-teacherData.push(`\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`);
+teacherData2.push(`Category: **${facultyRole}**`);
+teacherData2.push(faculty.map(command => `**${command.usage}** - ${command.description}`).join("\n"));
+teacherData2.push(`[User manual for faculty](<${githubRepo}/blob/main/documentation//usermanual-faculty.md>)`);
+teacherData2.push("\n");
+teacherData2.push(`Category: **${courseAdminRole}**`);
+teacherData2.push(courseAdmin.map(command => `**${command.usage}** - ${command.description}`).join("\n"));
+teacherData2.push("\n");
+teacherData2.push("*Commands can be used only in course channels");
+teacherData2.push(`\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`);
 
 const studentData = [];
 studentData.push("Hi **student**!\n");
 studentData.push("Here's a list of commands you can use:\n");
 studentData.push("Category: **default**");
 studentData.push(studentD.map(command => `**${command.usage}** - ${command.description}`).join("\n"));
+studentData.push(`[User manual for students](<${githubRepo}/blob/main/documentation/usermanual-student.md>)`);
 studentData.push("\n");
-studentData.push("*Commands can be only in course channels");
+studentData.push("*Commands can be used only in course channels");
 studentData.push(`\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`);
 
 const adminData = [];
+const adminData2 = [];
 adminData.push("Hi **admin**!\n");
 adminData.push("Here's a list of commands you can use:\n");
+adminData.push("Category: **default**");
+adminData.push(studentD.map(command => `**${command.usage}** - ${command.description}`).join("\n"));
+adminData.push(`[User manual for students](<${githubRepo}/blob/main/documentation/usermanual-student.md>)`);
+adminData.push("\n");
 adminData.push("Category: **admin**");
 adminData.push(adminD.map((command) => `**${command.usage}** - ${command.description}`).join("\n"));
 adminData.push("\n");
-adminData.push(`Category: **${facultyRole}**`);
-adminData.push(faculty.map(command => `**${command.usage}** - ${command.description}`).join("\n"));
-adminData.push("\n");
-adminData.push(`Category: **${courseAdminRole}**`);
-adminData.push(courseAdmin.map(command => `**${command.usage}** - ${command.description}`).join("\n"));
-adminData.push("\n");
-adminData.push("Category: **default**");
-adminData.push(studentD.map(command => `**${command.usage}** - ${command.description}`).join("\n"));
-adminData.push("\n");
-adminData.push("*Commands can be only in course channels");
-adminData.push(`\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`);
+adminData2.push(`Category: **${facultyRole}**`);
+adminData2.push(faculty.map(command => `**${command.usage}** - ${command.description}`).join("\n"));
+adminData2.push(`[User manual for faculty](<${githubRepo}/blob/main/documentation//usermanual-faculty.md>)`);
+adminData2.push("\n");
+adminData2.push(`Category: **${courseAdminRole}**`);
+adminData2.push(courseAdmin.map(command => `**${command.usage}** - ${command.description}`).join("\n"));
+adminData2.push("\n");
+adminData2.push("*Commands can be used only in course channels");
+adminData2.push(`\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`);
 
 const studentJoinData = [];
 client.slashCommands
@@ -231,7 +238,9 @@ const defaultAdminInteraction = {
 
 module.exports = {
   adminData,
+  adminData2,
   teacherData,
+  teacherData2,
   studentData,
   studentJoinData,
   studentInsData,

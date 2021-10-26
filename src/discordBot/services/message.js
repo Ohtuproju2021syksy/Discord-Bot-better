@@ -43,6 +43,10 @@ const sendReplyMessage = async (interaction, msg) => {
   await interaction.reply({ content: `${msg}` });
 };
 
+const sendFollowUpEphemeral = async (interaction, msg) => {
+  await interaction.followUp({ content: `${msg}`, ephemeral: true });
+};
+
 const confirmChoice = async (interaction, msg) => {
 
   const answerRow = new MessageActionRow();
@@ -150,6 +154,7 @@ module.exports = {
   editEphemeral,
   editErrorEphemeral,
   sendReplyMessage,
+  sendFollowUpEphemeral,
   confirmChoice,
   confirmChoiceNoInteraction,
 };

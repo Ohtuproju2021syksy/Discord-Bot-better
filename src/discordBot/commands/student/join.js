@@ -7,6 +7,7 @@ const joinedUsersCounter = require("../../../promMetrics/joinedUsersCounter");
 const execute = async (interaction, client, models) => {
   let roleString = "";
   let message = "";
+  const guild = client.guild;
 
   if (interaction.options) {
     // Interaction was a slash command
@@ -16,16 +17,16 @@ const execute = async (interaction, client, models) => {
   }
   else {
     // Command was copypasted or failed to register as an interaction
+    const guideChannel = guild.channels.cache.find((c) => c.name === "guide");
     roleString = interaction.roleString;
     const course = await findCourseFromDb(roleString, models.Course);
     if (!course) {
-      return await sendReplyMessage(interaction, `Hey! I couldn't find a course with name ${roleString}, try typing /join and I'll offer you a helpful list of courses to select from.`);
+      return await sendReplyMessage(interaction, "Hey! I couldn't find a course with name " + roleString + " , try typing /join and I'll offer you a helpful list of courses to select from. Please also read <#" + guideChannel + "> for more info on commands and available courses.");
     }
     const fullName = course.fullName;
-    message = `Hey there! I tried my best to send you to the right place! ${fullName}, right? \n You can also try writing /join and I'll offer you a helpful list of courses to click from!`;
+    message = "Hey there! I added you to " + fullName + ", hopefully I got that correct. \nYou can also try writing /join and I'll offer you a helpful list of courses to click from. Please also read <#" + guideChannel + "> for more info on commands and available courses.";
   }
 
-  const guild = client.guild;
   const member = guild.members.cache.get(interaction.member.user.id);
   const courseRole = guild.roles.cache.find(r => r.name === roleString);
 
@@ -71,6 +72,6 @@ module.exports = {
         .setDescription("Course to join.")
         .setRequired(true)),
   execute,
-  usage: "/join [course name]",
-  description: "Join a course.",
+  usage: "/join",
+  description: "Join a course. After writing '/join', the bot will give you a list of courses to choose from",
 };
