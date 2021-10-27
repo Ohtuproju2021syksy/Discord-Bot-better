@@ -7,11 +7,7 @@ const findUserByDiscordId = async (id, User) => {
 };
 
 const createUserToDatabase = async (discordId, username, User) => {
-  const alreadyinuse = await User.findOne({
-    where:{
-      discordId: discordId,
-    },
-  });
+  const alreadyinuse = await findUserByDiscordId(discordId, User);
   if (!alreadyinuse) {
     return await User.create({ name: username, discordId: discordId });
   }
@@ -19,11 +15,7 @@ const createUserToDatabase = async (discordId, username, User) => {
 };
 
 const removeUserFromDb = async (discordId, User) => {
-  const user = await User.findOne({
-    where:{
-      discordId: discordId,
-    },
-  });
+  const user = await findUserByDiscordId(discordId, User);
   if (user) {
     await User.destroy({
       where: {

@@ -1,9 +1,12 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { trimCourseName } = require("../../services/service");
+const { findUserByDiscordId } = require("../../../db/services/userService");
+const { findCourseFromDb } = require("../../../db/services/courseService");
+const { findCourseMember } = require("../../../db/services/courseMemberService");
 const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../services/message");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
 
-const execute = async (interaction, client) => {
+const execute = async (interaction, client, models) => {
   await sendEphemeral(interaction, "Adding instructor...");
   const guild = client.guild;
   const channel = guild.channels.cache.get(interaction.channelId);
@@ -25,7 +28,20 @@ const execute = async (interaction, client) => {
 
   const instructorRole = guild.roles.cache.find(r => r.name === `${roleName} ${courseAdminRole}`);
   const memberToPromote = guild.members.cache.get(interaction.options.getUser("user").id);
+
+  const userInstance = await findUserByDiscordId(memberToPromote.id, models.User);
+  const courseInstance = await findCourseFromDb(roleName, models.Course);
+  const courseMemberInstance = await findCourseMember(userInstance.id, courseInstance.id, models.CourseMember);
+
+  if (!courseMemberInstance) {
+    return editErrorEphemeral(interaction, "Selected user must be a member of this course!");
+  }
+
+  courseMemberInstance.instructor = true;
+  await courseMemberInstance.save();
+
   memberToPromote.roles.add(instructorRole);
+
   return await editEphemeral(interaction, `Gave role '${instructorRole.name}' to ${memberToPromote.displayName}.`);
 };
 
