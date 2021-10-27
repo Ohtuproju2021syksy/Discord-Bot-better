@@ -1,5 +1,7 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { getRoleFromCategory, findOrCreateChannel, findChannelWithNameAndType, createChannelToDatabase, findCourseFromDb } = require("../../services/service");
+const { getRoleFromCategory, findOrCreateChannel, findChannelWithNameAndType } = require("../../services/service");
+const { createChannelToDatabase } = require("../../../db/services/channelService");
+const { findCourseFromDb } = require("../../../db/services/courseService");
 const { sendEphemeral, editEphemeral, editErrorEphemeral } = require("../../services/message");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
 

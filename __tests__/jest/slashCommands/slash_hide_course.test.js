@@ -1,14 +1,14 @@
 const { execute } = require("../../../src/discordBot/commands/faculty/hide_course");
 const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../../src/discordBot/services/message");
 const {
-  updateGuide,
   msToMinutesAndSeconds,
-  setCourseToPrivate,
   checkCourseCooldown,
   getPublicCourse } = require("../../../src/discordBot/services/service");
+const { updateGuide, setCourseToPrivate } = require("../../../src/db/services/courseService");
 
 jest.mock("../../../src/discordBot/services/message");
 jest.mock("../../../src/discordBot/services/service");
+jest.mock("../../../src/db/services/courseService");
 
 const time = "4:59";
 const initialResponse = "Hiding course...";

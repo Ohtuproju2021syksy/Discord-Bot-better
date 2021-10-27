@@ -1,6 +1,8 @@
-const { createCourseMemberToDatabase } = require("../../services/courseMemberService");
-const { createChannelToDatabase, findCourseFromDb, trimCourseName, isCourseCategory } = require("../../services/service");
-const { createUserToDatabase } = require("../../services/userService");
+const { createCourseMemberToDatabase } = require("../../../db/services/courseMemberService");
+const { trimCourseName, isCourseCategory } = require("../../services/service");
+const { findCourseFromDb } = require("../../../db/services/courseService");
+const { createChannelToDatabase } = require("../../../db/services/channelService");
+const { createUserToDatabase } = require("../../../db/services/userService");
 
 const execute = async (message, args, models) => {
   if (message.member.permissions.has("ADMINISTRATOR")) {

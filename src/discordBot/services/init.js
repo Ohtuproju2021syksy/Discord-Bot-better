@@ -1,4 +1,5 @@
-const { findOrCreateRoleWithName, updateGuide } = require("./service");
+const { findOrCreateRoleWithName } = require("./service");
+const { updateGuide } = require("../../db/services/courseService");
 const { facultyRole } = require("../../../config.json");
 
 const findOrCreateChannel = (guild, channelObject) => {

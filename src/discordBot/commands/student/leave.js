@@ -1,9 +1,9 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { updateGuide, findCourseFromDb } = require("../../services/service");
+const { updateGuide, findCourseFromDb } = require("../../../db/services/courseService");
 const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../services/message");
 const { courseAdminRole } = require("../../../../config.json");
-const { findUserByDiscordId } = require("../../services/userService");
-const { removeCourseMemberFromDb } = require("../../services/courseMemberService");
+const { findUserByDiscordId } = require("../../../db/services/userService");
+const { removeCourseMemberFromDb } = require("../../../db/services/courseMemberService");
 
 const execute = async (interaction, client, models) => {
   await sendEphemeral(interaction, "Leaving course...");

@@ -1,10 +1,13 @@
 const { execute } = require("../../../src/discordBot/commands/faculty/enable_bridge");
 const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../../src/discordBot/services/message");
-const { findChannelFromDbByName, findCourseFromDb } = require("../../../src/discordBot/services/service");
+const { findCourseFromDb } = require("../../../src/db/services/courseService");
+const { findChannelFromDbByName } = require("../../../src/db/services/channelService");
 
 const models = require("../../mocks/mockModels");
 jest.mock("../../../src/discordBot/services/message");
 jest.mock("../../../src/discordBot/services/service");
+jest.mock("../../../src/db/services/courseService");
+jest.mock("../../../src/db/services/channelService");
 
 const { defaultTeacherInteraction } = require("../../mocks/mockInteraction");
 const initalResponse = "Enabling the bridge to Telegram...";

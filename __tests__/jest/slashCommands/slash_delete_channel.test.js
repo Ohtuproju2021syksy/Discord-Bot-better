@@ -1,9 +1,10 @@
 const { execute } = require("../../../src/discordBot/commands/faculty/delete_channel");
 const { sendEphemeral, editEphemeral, editErrorEphemeral } = require("../../../src/discordBot/services/message");
-const {
-  removeChannelFromDb, getRoleFromCategory } = require("../../../src/discordBot/services/service");
+const { getRoleFromCategory } = require("../../../src/discordBot/services/service");
+const { removeChannelFromDb } = require("../../../src/db/services/channelService");
 
 jest.mock("../../../src/discordBot/services/message");
+jest.mock("../../../src/db/services/channelService");
 
 const models = require("../../mocks/mockModels");
 const { defaultTeacherInteraction } = require("../../mocks/mockInteraction");

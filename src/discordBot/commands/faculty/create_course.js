@@ -3,12 +3,13 @@ const {
   findOrCreateRoleWithName,
   createInvitation,
   findCategoryName,
-  updateGuide,
   findOrCreateChannel,
-  setCoursePositionABC,
+  setCoursePositionABC } = require("../../services/service");
+const {
+  updateGuide,
   createCourseToDatabase,
   findCourseFromDb,
-  findCourseFromDbWithFullName } = require("../../services/service");
+  findCourseFromDbWithFullName } = require("../../../db/services/courseService");
 const { sendErrorEphemeral, sendEphemeral, editEphemeral } = require("../../services/message");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
 

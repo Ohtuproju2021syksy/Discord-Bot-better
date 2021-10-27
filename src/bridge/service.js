@@ -4,7 +4,7 @@ let telegramClient;
 const keywords = ["crypto", "krypto", "btc", "doge", "btc", "eth", "musk", "money", "$", "usd", "bitcoin", "muskx.co", "coin", "elonmusk", "prize", "еlonmusk", "btc"];
 const cyrillicPattern = /^\p{Script=Cyrillic}+$/u;
 const keywordPoints = new Map(keywords.map(key => [key, null]));
-const { findCourseFromDb } = require("../discordBot/services/service");
+const { findCourseFromDb } = require("../db/services/courseService");
 
 
 const validDiscordChannel = async (courseName) => {

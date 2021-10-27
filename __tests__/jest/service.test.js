@@ -3,11 +3,8 @@ const {
   createPrivateCategoryName,
   getRoleFromCategory,
   findOrCreateRoleWithName,
-  updateGuideMessage,
   createInvitation,
   findCategoryName,
-  createCourseToDatabase,
-  removeCourseFromDb,
   findChannelWithNameAndType,
   findChannelWithId,
   msToMinutesAndSeconds,
@@ -16,6 +13,7 @@ const {
   isCourseCategory,
   trimCourseName,
   findAllCourseNames } = require("../../src/discordBot/services/service");
+const { updateGuideMessage, createCourseToDatabase, removeCourseFromDb } = require("../../src/db/services/courseService");
 
 const createGuidePinnedMessage = async (guild) => {
   const rows = courses
@@ -36,7 +34,7 @@ Käytössäsi on seuraavia komentoja:
   - \`/join\` jolla voit liittyä kurssille
   - \`/leave\` jolla voit poistua kurssilta
 Esim: \`/join ohpe\`
-  
+
 You have the following commands available:
   - \`/join\` which you can use to join a course
   - \`/leave\` which you can use to leave a course

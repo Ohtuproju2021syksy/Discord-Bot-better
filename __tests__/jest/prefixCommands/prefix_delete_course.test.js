@@ -1,7 +1,9 @@
 const { execute } = require("../../../src/discordBot/commands/admin/delete_course");
-const { findCategoryName, updateGuide, removeCourseFromDb } = require("../../../src/discordBot/services/service");
+const { findCategoryName } = require("../../../src/discordBot/services/service");
+const { updateGuide, removeCourseFromDb } = require("../../../src/db/services/courseService");
 
 jest.mock("../../../src/discordBot/services/service");
+jest.mock("../../../src/db/services/courseService");
 
 findCategoryName
   .mockImplementation((name) => `📚 ${name}`)

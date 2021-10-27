@@ -1,4 +1,5 @@
-const { updateGuide, findCategoryName, removeCourseFromDb, findCourseNickNameFromDbWithCourseCode } = require("../../services/service");
+const { findCategoryName } = require("../../services/service");
+const { updateGuide, removeCourseFromDb, findCourseNickNameFromDbWithCourseCode } = require("../../../db/services/courseService");
 const { courseAdminRole } = require("../../../../config.json");
 
 const execute = async (message, args, models) => {

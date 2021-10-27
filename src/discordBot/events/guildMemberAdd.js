@@ -1,5 +1,5 @@
 const { updateGuide } = require("../services/service");
-const { createUserToDatabase } = require("../services/userService");
+const { createUserToDatabase } = require("../../db/services/userService");
 
 const execute = async (member, client, models) => {
   await updateGuide(client.guild, models.Course);

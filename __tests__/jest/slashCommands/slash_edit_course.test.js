@@ -4,12 +4,13 @@ const {
   findCategoryName,
   msToMinutesAndSeconds,
   trimCourseName,
-  findCourseFromDb,
   checkCourseCooldown } = require("../../../src/discordBot/services/service");
+const { findCourseFromDb } = require("../../../src/db/services/courseService");
 const models = require("../../mocks/mockModels");
 
 jest.mock("../../../src/discordBot/services/message");
 jest.mock("../../../src/discordBot/services/service");
+jest.mock("../../../src/db/services/courseService");
 
 afterEach(() => {
   jest.clearAllMocks();
