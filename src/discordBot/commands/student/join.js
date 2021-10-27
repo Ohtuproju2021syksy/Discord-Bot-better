@@ -8,6 +8,7 @@ const execute = async (interaction, client, models) => {
   let roleString = "";
   let message = "";
   const guild = client.guild;
+  const channel = interaction.channel;
 
   if (interaction.options) {
     // Interaction was a slash command
@@ -21,7 +22,7 @@ const execute = async (interaction, client, models) => {
     roleString = interaction.roleString;
     const course = await findCourseFromDb(roleString, models.Course);
     if (!course) {
-      return await sendReplyMessage(interaction, "Hey! I couldn't find a course with name " + roleString + " , try typing /join and I'll offer you a helpful list of courses to select from. Please also read <#" + guideChannel + "> for more info on commands and available courses.");
+      return await sendReplyMessage(interaction, channel, "Hey! I couldn't find a course with name " + roleString + " , try typing /join and I'll offer you a helpful list of courses to select from. Please also read <#" + guideChannel + "> for more info on commands and available courses.");
     }
     const fullName = course.fullName;
     message = "Hey there! I added you to " + fullName + ", hopefully I got that correct. \nYou can also try writing /join and I'll offer you a helpful list of courses to click from. Please also read <#" + guideChannel + "> for more info on commands and available courses.";
@@ -39,7 +40,7 @@ const execute = async (interaction, client, models) => {
       return await editErrorEphemeral(interaction, `Invalid course name: ${roleString}`);
     }
     else {
-      return await sendReplyMessage(interaction, `Invalid course name: ${roleString}`);
+      return await sendReplyMessage(interaction, channel, `Invalid course name: ${roleString}`);
     }
   }
   if (member.roles.cache.some(r => courseRoles.includes(r.name))) {
@@ -47,7 +48,7 @@ const execute = async (interaction, client, models) => {
       return await editErrorEphemeral(interaction, `You are already on the ${roleString} course.`);
     }
     else {
-      return await sendReplyMessage(interaction, `You are already on the ${roleString} course.`);
+      return await sendReplyMessage(interaction, channel, `You are already on the ${roleString} course.`);
     }
   }
 
@@ -56,7 +57,7 @@ const execute = async (interaction, client, models) => {
     await editEphemeral(interaction, message);
   }
   else {
-    await sendReplyMessage(interaction, message);
+    await sendReplyMessage(interaction, channel, message);
   }
   await updateGuide(guild, models.Course);
   joinedUsersCounter.inc({ course: roleString });
