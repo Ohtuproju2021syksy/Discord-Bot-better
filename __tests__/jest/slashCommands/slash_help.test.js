@@ -2,10 +2,12 @@ const { execute } = require("../../../src/discordBot/commands/student/help");
 
 const {
   adminData,
+  adminData2,
   defaultAdminInteraction,
   defaultTeacherInteraction,
   defaultStudentInteraction,
   teacherData,
+  teacherData2,
   studentInteractionWithoutOptions,
   studentData,
   studentJoinData } = require("../../mocks/mockInteraction");
@@ -20,7 +22,7 @@ defaultStudentInteraction.options = {
     .mockImplementationOnce(() => "invalid"),
 };
 
-const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../../src/discordBot/services/message");
+const { editEphemeral, editErrorEphemeral, sendEphemeral, sendFollowUpEphemeral } = require("../../../src/discordBot/services/message");
 const initialResponse = "Hold on...";
 
 jest.mock("../../../src/discordBot/services/message");
@@ -38,6 +40,8 @@ describe("slash help command", () => {
     expect(sendEphemeral).toHaveBeenCalledWith(defaultAdminInteraction, initialResponse);
     expect(editEphemeral).toHaveBeenCalledTimes(1);
     expect(editEphemeral).toHaveBeenCalledWith(defaultAdminInteraction, adminData.join("\n"));
+    expect(sendFollowUpEphemeral).toHaveBeenCalledTimes(1);
+    expect(sendFollowUpEphemeral).toHaveBeenCalledWith(defaultAdminInteraction, adminData2.join("\n"));
   });
 
   test("slash help with invalid arg should give error", async () => {
@@ -57,6 +61,8 @@ describe("slash help command", () => {
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
     expect(editEphemeral).toHaveBeenCalledTimes(1);
     expect(editEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, teacherData.join("\n"));
+    expect(sendFollowUpEphemeral).toHaveBeenCalledTimes(1);
+    expect(sendFollowUpEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, teacherData2.join("\n"));
   });
 
   test("slash help with student role cannot see teacher commands", async () => {
