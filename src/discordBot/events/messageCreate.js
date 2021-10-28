@@ -7,13 +7,15 @@ const execute = async (message, client, models) => {
   const commandName = args.shift().toLowerCase();
   args = args.map(arg => arg.toLowerCase().trim());
 
+  const channel = message.channel;
+
   if (message.content.startsWith("/")) {
     // Copypasted slash command
     if (client.slashCommands.has(commandName)) {
       const command = client.slashCommands.get(commandName);
       if (commandName == "join") {
-        const roleString = args.shift().toLowerCase().trim();
-        if (!roleString) return;
+        const roleString = args.shift()?.toLowerCase()?.trim();
+        if (!roleString) return sendReplyMessage(message, channel, "Sorry, I didn't quite catch what you meant. You can type **/help** to view a helpful *(pun intended)* list of commands!");
         // Command execution handles permissions and whether the course is valid
         message.roleString = roleString;
         command.execute(message, client, models);
@@ -22,7 +24,7 @@ const execute = async (message, client, models) => {
     }
     else {
       // Unknown command
-      return sendReplyMessage(message, "Sorry, I didn't quite catch what you meant. You can type **/help** to view a helpful *(pun intended)* list of commands!");
+      return sendReplyMessage(message, channel, "Sorry, I didn't quite catch what you meant. You can type **/help** to view a helpful *(pun intended)* list of commands!");
     }
   }
 
