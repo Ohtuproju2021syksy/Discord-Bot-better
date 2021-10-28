@@ -338,7 +338,7 @@ const findCourseNickNameFromDbWithCourseCode = async (courseName, Course) => {
 const findChannelFromDbByName = async (channelName, Channel) => {
   return await Channel.findOne({
     where: {
-      name: channelName,
+      name: { [Sequelize.Op.iLike]: channelName },
     },
   });
 };
