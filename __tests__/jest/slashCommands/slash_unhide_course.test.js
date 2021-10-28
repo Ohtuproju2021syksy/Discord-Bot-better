@@ -1,5 +1,5 @@
 const { execute } = require("../../../src/discordBot/commands/faculty/unhide_course");
-const { sendEphemeral, editErrorEphemeral, editEphemeral } = require("../../../src/discordBot/services/message");
+const { sendEphemeral, editErrorEphemeral, editEphemeral, confirmChoice } = require("../../../src/discordBot/services/message");
 const {
   updateGuide,
   msToMinutesAndSeconds,
@@ -16,6 +16,7 @@ const initialResponse = "Unhiding course...";
 const { defaultTeacherInteraction } = require("../../mocks/mockInteraction");
 const courseName = "test";
 defaultTeacherInteraction.options = { getString: jest.fn(() => courseName) };
+confirmChoice.mockImplementation(() => true);
 
 
 afterEach(() => {
@@ -35,8 +36,8 @@ describe("slash unhide command", () => {
     const client = defaultTeacherInteraction.client;
     const response = `Invalid course name: ${courseName} or the course is public already!`;
     await execute(defaultTeacherInteraction, client, Course);
+    expect(confirmChoice).toHaveBeenCalledTimes(1);
     expect(getHiddenCourse).toHaveBeenCalledTimes(1);
-
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
     expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
@@ -49,6 +50,7 @@ describe("slash unhide command", () => {
     const client = defaultTeacherInteraction.client;
     const response = `This course ${courseName} is now public.`;
     await execute(defaultTeacherInteraction, client, Course);
+    expect(confirmChoice).toHaveBeenCalledTimes(1);
     expect(getHiddenCourse).toHaveBeenCalledTimes(1);
     expect(setCourseToPublic).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
@@ -64,6 +66,7 @@ describe("slash unhide command", () => {
     checkCourseCooldown.mockImplementation(() => time);
     const client = defaultTeacherInteraction.client;
     await execute(defaultTeacherInteraction, client, Course);
+    expect(confirmChoice).toHaveBeenCalledTimes(1);
     expect(getHiddenCourse).toHaveBeenCalledTimes(1);
     expect(msToMinutesAndSeconds).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);

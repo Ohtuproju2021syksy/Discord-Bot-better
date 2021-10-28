@@ -7,7 +7,7 @@ const {
   setCourseToLocked,
   getHiddenCourse,
   getUnlockedCourse } = require("../../services/service");
-const { sendEphemeral, editEphemeral, editErrorEphemeral } = require("../../services/message");
+const { sendEphemeral, editEphemeral, editErrorEphemeral, confirmChoice } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
 const { lockTelegramCourse } = require("../../../bridge/service");
 
@@ -15,6 +15,12 @@ const execute = async (interaction, client, models) => {
   await sendEphemeral(interaction, "Locking course...");
   const courseName = interaction.options.getString("course").trim();
   const guild = client.guild;
+
+  const confirm = await confirmChoice(interaction, "Lock course: " + courseName);
+  if (!confirm) {
+    return await editEphemeral(interaction, "Command declined");
+  }
+
   const category = getUnlockedCourse(courseName, guild);
   if (!category) {
     return await editErrorEphemeral(interaction, `Invalid course name: ${courseName} or the course is locked already!`);
@@ -44,11 +50,11 @@ const execute = async (interaction, client, models) => {
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("lock_chat")
-    .setDescription("Lock given course")
+    .setDescription("Lock chat in given course")
     .setDefaultPermission(false)
     .addStringOption(option =>
       option.setName("course")
-        .setDescription("Lock given course")
+        .setDescription("Lock chat in given course")
         .setRequired(true)),
   execute,
   usage: "/lock_chat [course name]",

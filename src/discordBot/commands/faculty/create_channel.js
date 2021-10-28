@@ -1,5 +1,6 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { getRoleFromCategory, findOrCreateChannel, findChannelWithNameAndType, createChannelToDatabase, findCourseFromDb } = require("../../services/service");
+const { getCourseNameFromCategory, findOrCreateChannel, findChannelWithNameAndType,
+  createChannelToDatabase, findCourseFromDb, isCourseCategory } = require("../../services/service");
 const { sendEphemeral, editEphemeral, editErrorEphemeral } = require("../../services/message");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
 
@@ -28,7 +29,7 @@ const execute = async (interaction, client, models) => {
     return await editErrorEphemeral(interaction, "Course not found, can not create new channel.");
   }
 
-  if (!channel?.parent?.name?.startsWith("🔐") && !channel?.parent?.name?.startsWith("📚") && !channel?.parent?.name?.startsWith("👻")) {
+  if (!isCourseCategory(channel?.parent)) {
     return await editErrorEphemeral(interaction, "This is not a course category, can not create new channel.");
   }
 
@@ -36,7 +37,7 @@ const execute = async (interaction, client, models) => {
     return await editErrorEphemeral(interaction, "Maximum added text channel amount is 10");
   }
   const categoryName = channel.parent.name;
-  const courseName = getRoleFromCategory(categoryName);
+  const courseName = getCourseNameFromCategory(categoryName);
   if (findChannelWithNameAndType(`${courseName}_${channelName}`, "GUILD_TEXT", guild)) {
     return await editErrorEphemeral(interaction, "Channel with given name already exists");
   }

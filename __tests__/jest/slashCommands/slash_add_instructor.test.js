@@ -1,16 +1,18 @@
 const { execute } = require("../../../src/discordBot/commands/instructor/add_instructor");
 const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../../src/discordBot/services/message");
-const { isCourseCategory, trimCourseName } = require("../../../src/discordBot/services/service");
+const { isCourseCategory, getCourseNameFromCategory } = require("../../../src/discordBot/services/service");
 const { courseAdminRole } = require("../../../config.json");
 
 jest.mock("../../../src/discordBot/services/message");
 jest.mock("../../../src/discordBot/services/service");
 
 isCourseCategory.mockImplementation(() => true);
-trimCourseName.mockImplementation(() => "test");
+getCourseNameFromCategory.mockImplementation(() => "test");
 
 const { defaultTeacherInteraction, defaultStudentInteraction, defaultAdminInteraction } = require("../../mocks/mockInteraction");
 defaultAdminInteraction.options = { getUser: jest.fn(() => { return { id: 3 }; }) };
+defaultStudentInteraction.options = { getUser: jest.fn(() => { return { id: 2 }; }) };
+defaultTeacherInteraction.options = { getUser: jest.fn(() => { return { id: 2 }; }) };
 
 const initialResponse = "Adding instructor...";
 
@@ -30,6 +32,7 @@ describe("slash add instructor command", () => {
   });
 
   test("command must be used in course channel", async () => {
+    isCourseCategory.mockImplementationOnce(() => false);
     const client = defaultTeacherInteraction.client;
     const response = "Command must be used in a course channel!";
     await execute(defaultTeacherInteraction, client);

@@ -1,15 +1,17 @@
 const { execute } = require("../../../src/discordBot/commands/faculty/edit_course");
-const { sendEphemeral, editErrorEphemeral, editEphemeral } = require("../../../src/discordBot/services/message");
+const { sendEphemeral, editErrorEphemeral, editEphemeral, confirmChoice } = require("../../../src/discordBot/services/message");
 const {
-  findCategoryName,
+  findCategoryWithCourseName,
   msToMinutesAndSeconds,
-  trimCourseName,
+  getCourseNameFromCategory,
   findCourseFromDb,
-  checkCourseCooldown } = require("../../../src/discordBot/services/service");
+  checkCourseCooldown,
+  isCourseCategory } = require("../../../src/discordBot/services/service");
 const models = require("../../mocks/mockModels");
 
 jest.mock("../../../src/discordBot/services/message");
 jest.mock("../../../src/discordBot/services/service");
+confirmChoice.mockImplementation(() => true);
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -17,8 +19,8 @@ afterEach(() => {
 
 const time = "4:59";
 msToMinutesAndSeconds.mockImplementation(() => time);
-findCategoryName.mockImplementation((name) => `📚 ${name}`);
-trimCourseName.mockImplementation(() => "test");
+findCategoryWithCourseName.mockImplementation((name) => ({ name: `📚 ${name}` }));
+getCourseNameFromCategory.mockImplementation(() => "test");
 findCourseFromDb
   .mockImplementation(() => {
     return {
@@ -35,6 +37,8 @@ findCourseFromDb
   })
   .mockImplementationOnce(() => false);
 
+isCourseCategory.mockImplementationOnce(() => (false));
+isCourseCategory.mockImplementation(() => (true));
 
 const { defaultTeacherInteraction, defaultStudentInteraction } = require("../../mocks/mockInteraction");
 defaultTeacherInteraction.options = {
@@ -85,6 +89,7 @@ describe("slash edit command", () => {
     defaultTeacherInteraction.channelId = 2;
     const response = "Course code already exists";
     await execute(defaultTeacherInteraction, client, models);
+    expect(confirmChoice).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, "Editing...");
     expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
@@ -96,18 +101,20 @@ describe("slash edit command", () => {
     defaultTeacherInteraction.channelId = 2;
     const response = "Course information has been changed";
     await execute(defaultTeacherInteraction, client, models);
+    expect(confirmChoice).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, "Editing...");
     expect(editEphemeral).toHaveBeenCalledTimes(1);
     expect(editEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
   });
 
-  test("edit with valid args responds with correct ephemeral", async () => {
+  test("command has cooldown", async () => {
     checkCourseCooldown.mockImplementation(() => time);
     const client = defaultTeacherInteraction.client;
     defaultTeacherInteraction.channelId = 2;
     const response = `Command cooldown [mm:ss]: you need to wait ${time}.`;
     await execute(defaultTeacherInteraction, client), models;
+    expect(confirmChoice).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, "Editing...");
     expect(editErrorEphemeral).toHaveBeenCalledTimes(1);

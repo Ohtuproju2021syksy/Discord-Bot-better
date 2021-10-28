@@ -1,5 +1,5 @@
 const { execute } = require("../../../src/discordBot/commands/admin/update_invitelinks");
-const { createCourseInvitationLink, trimCourseName } = require("../../../src/discordBot/services/service");
+const { createCourseInvitationLink, getCourseNameFromCategory } = require("../../../src/discordBot/services/service");
 
 jest.mock("../../../src/discordBot/services/service");
 
@@ -7,7 +7,7 @@ const { messageInCommandsChannel, teacher, student } = require("../../mocks/mock
 const courseString = "test";
 const emojiRegex = /(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/gi;
 
-trimCourseName
+getCourseNameFromCategory
   .mockImplementation((courseName) => courseName.name.replace(emojiRegex, "").trim());
 
 afterEach(() => {
@@ -25,7 +25,7 @@ describe("prefix update_invitelinks command", () => {
     messageInCommandsChannel.member = teacher;
     await execute(messageInCommandsChannel);
     expect(createCourseInvitationLink).toHaveBeenCalledTimes(1);
-    expect(trimCourseName).toHaveBeenCalledTimes(1);
+    expect(getCourseNameFromCategory).toHaveBeenCalledTimes(1);
     expect(createCourseInvitationLink).toHaveBeenCalledWith(courseString);
   });
 });

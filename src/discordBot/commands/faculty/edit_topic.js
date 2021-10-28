@@ -3,8 +3,9 @@ const {
   handleCooldown,
   checkCourseCooldown,
   msToMinutesAndSeconds,
-  trimCourseName } = require("../../services/service");
-const { editErrorEphemeral, sendEphemeral, editEphemeral } = require("../../services/message");
+  getCourseNameFromCategory,
+  isCourseCategory } = require("../../services/service");
+const { editErrorEphemeral, sendEphemeral, editEphemeral, confirmChoice } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
 
 const execute = async (interaction, client) => {
@@ -14,13 +15,19 @@ const execute = async (interaction, client) => {
   const guild = client.guild;
   const channel = guild.channels.cache.get(interaction.channelId);
 
-  if (!channel?.parent?.name?.startsWith("🔐") && !channel?.parent?.name?.startsWith("📚") && !channel?.parent?.name?.startsWith("👻")) {
+  if (!isCourseCategory(channel?.parent)) {
     return await editErrorEphemeral(interaction, "This is not a course category, can not execute the command!");
   }
 
-  const categoryName = trimCourseName(channel.parent, guild);
+  const categoryName = getCourseNameFromCategory(channel.parent, guild);
   const channelAnnouncement = guild.channels.cache.find(c => c.parent === channel.parent && c.name.includes("_announcement"));
   const channelGeneral = guild.channels.cache.find(c => c.parent === channel.parent && c.name.includes("_general"));
+
+  const confirm = await confirmChoice(interaction, "Change topic to: " + newTopic);
+
+  if (!confirm) {
+    return await editEphemeral(interaction, "Command declined");
+  }
 
   const cooldown = checkCourseCooldown(categoryName);
   if (cooldown) {

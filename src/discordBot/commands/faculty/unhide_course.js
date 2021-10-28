@@ -7,17 +7,24 @@ const {
   setCourseToPublic,
   getHiddenCourse,
   getLockedCourse } = require("../../services/service");
-const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../services/message");
+const { editEphemeral, editErrorEphemeral, sendEphemeral, confirmChoice } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
 
 const execute = async (interaction, client, models) => {
   await sendEphemeral(interaction, "Unhiding course...");
   const courseName = interaction.options.getString("course").trim();
   const guild = client.guild;
+
+  const confirm = await confirmChoice(interaction, "Unhide course: " + courseName);
+  if (!confirm) {
+    return await editEphemeral(interaction, "Command declined");
+  }
+
   const category = getHiddenCourse(courseName, guild);
   if (!category) {
     return await editErrorEphemeral(interaction, `Invalid course name: ${courseName} or the course is public already!`);
   }
+
   const cooldown = checkCourseCooldown(courseName);
   if (cooldown) {
     const timeRemaining = Math.floor(cooldown - Date.now());

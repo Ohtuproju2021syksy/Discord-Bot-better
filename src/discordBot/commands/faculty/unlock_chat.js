@@ -7,7 +7,7 @@ const {
   setCourseToUnlocked,
   getHiddenCourse,
   getLockedCourse } = require("../../services/service");
-const { sendEphemeral, editEphemeral, editErrorEphemeral } = require("../../services/message");
+const { sendEphemeral, editEphemeral, editErrorEphemeral, confirmChoice } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
 const { unlockTelegramCourse } = require("../../../bridge/service");
 
@@ -15,6 +15,12 @@ const execute = async (interaction, client, models) => {
   await sendEphemeral(interaction, "Unlocking course...");
   const courseName = interaction.options.getString("course").trim();
   const guild = client.guild;
+
+  const confirm = await confirmChoice(interaction, "Unlock course: " + courseName);
+  if (!confirm) {
+    return await editEphemeral(interaction, "Command declined");
+  }
+
   const category = getLockedCourse(courseName, guild);
   if (!category) {
     return await editErrorEphemeral(interaction, `Invalid course name: ${courseName} or the course is unlocked already!`);
