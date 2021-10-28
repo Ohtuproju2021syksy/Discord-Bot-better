@@ -47,5 +47,5 @@ Command | Description | Example
 `/help "command name"` | Shows information on the given command. | `/help courses`
 `/intructors` | Lists the instructors of the course. Must be used inside a course. | `/instructors`
 `/instructors "course name"` | Lists the instructors for the given course. | `/instructors ohpe`
-`/join` | Join the given course. | `/join ohpe`
-`/leave` | Leave the given course. | `/leave ohpe`
+`/join` | Join the given course. After writing `/join`, the bot will give you a list of courses to choose from. | `/join`
+`/leave` | Leave the given course. After writing `/leave`, the bot will give you a list of courses to choose from. | `/leave`
