@@ -42,7 +42,6 @@ const execute = async (ctx, message, telegramClient, Course) => {
   }
 
   if (!group) return;
-
   const courseName = group.name;
 
   if (String(ctx.message.chat.id) === group.telegramId) {
@@ -67,9 +66,10 @@ const execute = async (ctx, message, telegramClient, Course) => {
       });
       msg.content.text = formattedMessage;
     }
-
     const channel = await validDiscordChannel(courseName);
-    if (!channel) return;
+    if (!channel) {
+      return;
+    }
     await sendMessageToDiscord(ctx, msg, channel);
   }
 };

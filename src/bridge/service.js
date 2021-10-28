@@ -9,7 +9,7 @@ const { findCourseFromDb } = require("../discordBot/services/service");
 
 const validDiscordChannel = async (courseName) => {
   const guild = await discordClient.guilds.fetch(process.env.GUILD_ID);
-  courseName = courseName.replace(/ /g, "-");
+  courseName = courseName.replace(/ /g, "-").toLowerCase();
   const channel = guild.channels.cache.find(
     c => c.name === `${courseName}_general`,
   );
@@ -135,7 +135,7 @@ const handleBridgeMessage = async (message, courseName, Course) => {
   let channel = ":";
 
   if (!message.channel.name.includes("general")) {
-    channel = escapeChars(" on " + (message.channel.name.split(courseName.replace(" ", "-"))[1]).substring(1) + " channel:\n");
+    channel = escapeChars(" on " + (message.channel.name.split(courseName.toLowerCase().replace(" ", "-"))[1]).substring(1) + " channel:\n");
   }
 
   let msg = message.content;
