@@ -1,5 +1,18 @@
-const { findOrCreateRoleWithName, updateGuide, findOrCreateChannel } = require("./service");
+const { findOrCreateRoleWithName, updateGuide } = require("./service");
 const { facultyRole, githubRepo } = require("../../../config.json");
+
+const findOrCreateChannel = async (channelObject, guild) => {
+  const { name, options } = channelObject;
+  const alreadyExists = guild.channels.cache.find(
+    (c) => c.type === options.type && c.name.toLowerCase() === name.toLowerCase());
+  if (alreadyExists) {
+    if (options?.topic && alreadyExists.topic !== options.topic) {
+      return await alreadyExists.setTopic(options.topic);
+    }
+    return alreadyExists;
+  }
+  return await guild.channels.create(name, options);
+};
 
 const initChannels = async (guild, client) => {
 
