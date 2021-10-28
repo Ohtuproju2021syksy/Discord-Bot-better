@@ -159,7 +159,7 @@ const findOrCreateChannel = async (channelObject, guild) => {
   const alreadyExists = guild.channels.cache.find(
     (c) => c.type === options.type && c.name.toLowerCase() === name.toLowerCase());
   if (alreadyExists) {
-    if (options.topic && alreadyExists.topic !== options.topic) {
+    if (options?.topic && alreadyExists.topic !== options.topic) {
       return await alreadyExists.setTopic(options.topic);
     }
     return alreadyExists;
