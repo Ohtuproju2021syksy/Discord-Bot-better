@@ -15,7 +15,7 @@ const execute = async (interaction, client, models) => {
   }
 
   const categoryName = getCourseNameFromCategory(channel.parent.name).replace(/ /g, "-");
-  const deleteChannelName = `${categoryName}_${deleteName}`;
+  const deleteChannelName = `${categoryName}_${deleteName}`.toLowerCase();
 
   if (deleteName === "general" || deleteName === "announcement" || deleteName === "voice") {
     return await editErrorEphemeral(interaction, "Original channels can not be deleted.");

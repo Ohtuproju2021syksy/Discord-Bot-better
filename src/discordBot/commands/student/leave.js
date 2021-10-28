@@ -46,6 +46,6 @@ module.exports = {
         .setDescription("Course to leave.")
         .setRequired(true)),
   execute,
-  usage: "/leave [course name]",
-  description: "Leave the course.",
+  usage: "/leave",
+  description: "Leave the course. After writing '/leave', the bot will give you a list of courses to choose from",
 };
