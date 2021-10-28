@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../services/message");
-const { facultyRole, courseAdminRole } = require("../../../../config.json");
+const { editEphemeral, editErrorEphemeral, sendEphemeral, sendFollowUpEphemeral } = require("../../services/message");
+const { facultyRole, courseAdminRole, githubRepo } = require("../../../../config.json");
 const prefix = "/";
 
 const getBestRole = (member) => {
@@ -13,29 +13,46 @@ const getBestRole = (member) => {
 
 const handleAllCommands = async (interaction, member, adminData, facultyData, courseAdminData, studentData) => {
   const data = [];
+  const data2 = [];
   data.push(`Hi **${member.displayName}**!\n`);
+
   data.push("Here's a list of commands you can use:\n");
+  data.push("Category: **default**");
+  data.push(studentData.map((command) => `**${command.usage}** - ${command.description}`).join("\n"));
+  data.push(`[User manual for students](<${githubRepo}/blob/main/documentation/usermanual-student.md>)`);
+  data.push("\n");
+
   if (adminData.size) {
     data.push("Category: **admin**");
     data.push(adminData.map((command) => `**${command.usage}** - ${command.description}`).join("\n"));
     data.push("\n");
   }
+
   if (facultyData.size) {
-    data.push(`Category: **${facultyRole}**`);
-    data.push(facultyData.map((command) => `**${command.usage}** - ${command.description}`).join("\n"));
-    data.push("\n");
+    data2.push(`Category: **${facultyRole}**`);
+    data2.push(facultyData.map((command) => `**${command.usage}** - ${command.description}`).join("\n"));
+    data2.push(`[User manual for faculty](<${githubRepo}/blob/main/documentation//usermanual-faculty.md>)`);
+    data2.push("\n");
   }
+
   if (courseAdminData.size) {
-    data.push(`Category: **${courseAdminRole}**`);
-    data.push(courseAdminData.map((command) => `**${command.usage}** - ${command.description}`).join("\n"));
-    data.push("\n");
+    data2.push(`Category: **${courseAdminRole}**`);
+    data2.push(courseAdminData.map((command) => `**${command.usage}** - ${command.description}`).join("\n"));
+    data2.push("\n");
   }
-  data.push("Category: **default**");
-  data.push(studentData.map((command) => `**${command.usage}** - ${command.description}`).join("\n"));
-  data.push("\n");
-  data.push("*Commands can be only in course channels");
-  data.push(`\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`);
-  return await editEphemeral(interaction, data.join("\n"));
+
+  if (data2.length > 0) {
+    data2.push("*Commands can be used only in course channels");
+    data2.push(`\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`);
+    await editEphemeral(interaction, data.join("\n"));
+    return await sendFollowUpEphemeral(interaction, data2.join("\n"));
+  }
+  else {
+    data.push("*Commands can be used only in course channels");
+    data.push(`\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`);
+    return await editEphemeral(interaction, data.join("\n"));
+  }
+
 };
 
 const handleSingleCommand = async (interaction, member, commandsReadyToPrint) => {

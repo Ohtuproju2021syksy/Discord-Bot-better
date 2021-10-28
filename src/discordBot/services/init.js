@@ -1,14 +1,5 @@
-const { findOrCreateRoleWithName, updateGuide } = require("./service");
-const { facultyRole } = require("../../../config.json");
-
-const findOrCreateChannel = (guild, channelObject) => {
-  const { name, options } = channelObject;
-  const alreadyExists = guild.channels.cache.find(
-    (c) => c.type === options.type && c.name === name,
-  );
-  if (alreadyExists) return alreadyExists;
-  return guild.channels.create(name, options);
-};
+const { findOrCreateRoleWithName, updateGuide, findOrCreateChannel } = require("./service");
+const { facultyRole, githubRepo } = require("../../../config.json");
 
 const initChannels = async (guild, client) => {
 
@@ -30,14 +21,14 @@ const initChannels = async (guild, client) => {
       name: "guide",
       options: {
         type: "GUILD_TEXT",
-        topic: " ",
+        topic: `User manual for students: ${githubRepo}/blob/main/documentation/usermanual-student.md`,
         permissionOverwrites: [{ id: guild.id, deny: ["SEND_MESSAGES"], "allow": ["VIEW_CHANNEL"] }, { id: client.user.id, allow: ["SEND_MESSAGES", "VIEW_CHANNEL"] }],
       },
     },
   ];
   await channels.reduce(async (promise, channel) => {
     await promise;
-    await findOrCreateChannel(guild, channel);
+    await findOrCreateChannel(channel, guild);
   }, Promise.resolve());
 };
 
