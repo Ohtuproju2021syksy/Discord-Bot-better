@@ -90,7 +90,7 @@ const updateGuide = async (guild, Course) => {
 
 const createCourseInvitationLink = (courseName) => {
   courseName = courseName.replace(/ /g, "%20").trim();
-  return `Invitation link for the course ${invite_url}/join/${courseName}`;
+  return `Invitation link for the course <${invite_url}/join/${courseName}>`;
 };
 
 const createInvitation = async (guild, args) => {
@@ -107,7 +107,7 @@ const createInvitation = async (guild, args) => {
   let invitationlink;
   if (args === GUIDE_CHANNEL_NAME) {
     await guide.createInvite({ maxAge: 0, unique: true, reason: args });
-    invitationlink = `Invitation link for the server ${invite_url}`;
+    invitationlink = `Invitation link for the server <${invite_url}>`;
   }
   else {
     invitationlink = createCourseInvitationLink(args);
