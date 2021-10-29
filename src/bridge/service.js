@@ -123,7 +123,7 @@ const isMessageCryptoSpam = (message) => {
 const handleBridgeMessage = async (message, courseName, Course) => {
   if (!message.channel.parent || message.type === "CHANNEL_PINNED_MESSAGE") return;
 
-  const group = await Course.findOne({ where: { name: String(courseName) } });
+  const group = await findCourseFromDb(courseName, Course);
 
   if (!group || group.telegramId == null) {
     return;
