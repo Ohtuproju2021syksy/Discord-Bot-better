@@ -6,6 +6,9 @@ const execute = async (message, client, models) => {
   let args = message.content.slice(prefix.length).trim().split(/ +/);
   const commandName = args.shift().toLowerCase();
   args = args.map(arg => arg.toLowerCase().trim());
+  const guideChannel = client.guild.channels.cache.find((c) => c.name === "guide");
+  const copyPasteGuideReply = "Sorry, <@" + message.author + ">, I didn't quite catch what you meant.\nPlease read <#" + guideChannel + "> for more info on commands and available courses.\n" +
+  "You can also type `/help` to view a helpful *(pun intended)* list of commands!";
 
   const channel = message.channel;
 
@@ -15,7 +18,7 @@ const execute = async (message, client, models) => {
       const command = client.slashCommands.get(commandName);
       if (commandName == "join") {
         const roleString = args.shift()?.toLowerCase()?.trim();
-        if (!roleString) return sendReplyMessage(message, channel, "Sorry, I didn't quite catch what you meant. You can type **/help** to view a helpful *(pun intended)* list of commands!");
+        if (!roleString) return sendReplyMessage(message, channel, copyPasteGuideReply);
         // Command execution handles permissions and whether the course is valid
         message.roleString = roleString;
         command.execute(message, client, models);
@@ -24,7 +27,7 @@ const execute = async (message, client, models) => {
     }
     else {
       // Unknown command
-      return sendReplyMessage(message, channel, "Sorry, I didn't quite catch what you meant. You can type **/help** to view a helpful *(pun intended)* list of commands!");
+      return sendReplyMessage(message, channel, copyPasteGuideReply);
     }
   }
 

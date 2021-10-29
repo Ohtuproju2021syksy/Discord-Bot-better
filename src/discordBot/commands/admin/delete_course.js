@@ -48,5 +48,6 @@ module.exports = {
   usage: "!delete_course [course name]",
   role: "admin",
   emit: true,
+  args: true,
   execute,
 };
