@@ -113,7 +113,6 @@ const execute = async (interaction, client) => {
 
   if (interaction.options.getInteger("duration") >= 10) {
     duration = 600000;
-    console.log("lol");
   }
   else {
     duration = interaction.options.getInteger("duration") * 60000;
