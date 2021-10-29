@@ -35,7 +35,7 @@ const execute = async (interaction, client) => {
     voteMap.set(numbers[i], 0);
   }
 
-  answerDescription = answerDescription.concat("\n\nYou can vote only one option.\nYou can remove your vote with ❌ so you can change your vote");
+  answerDescription = answerDescription.concat("\n\nYou can answer only one option.\nYou can change your answer by clicking another choice\nYou can remove your answer with ❌");
 
   const pollEmbed = new MessageEmbed()
     .setColor().setColor("#0099ff")
@@ -109,14 +109,14 @@ const execute = async (interaction, client) => {
       .setStyle("DANGER"),
   );
 
-  let duration;
-
-  if (interaction.options.getInteger("duration") >= 10) {
-    duration = 600000;
+  let duration = "";
+  if (interaction.options.getInteger("duration") >= 15) {
+    duration = 14 * 60000;
   }
   else {
     duration = interaction.options.getInteger("duration") * 60000;
   }
+
 
   const closeReply = await editEphemeralWithComponents(interaction, "Poll started, it will close in " + (duration / 60000).toFixed() + " minutes or you can close it from this button.", closeRow);
   let stop = false;
@@ -222,7 +222,7 @@ module.exports = {
         .setRequired(true))
     .addIntegerOption(option =>
       option.setName("duration")
-        .setDescription("Duration of the poll (1-15 minutes)")
+        .setDescription("Duration of the poll (1-14 minutes)")
         .setRequired(true))
     .addStringOption(option =>
       option.setName("answers")
