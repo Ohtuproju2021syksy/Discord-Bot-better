@@ -122,6 +122,7 @@ Command | Explanation | Arguments
 [/create_channel](./commands/create_channel.md) | Create new text channel inside a course, e.g., /create_channel feedback. | :heavy_check_mark:
 [/create_course](./commands/create_course.md) | Create a new course | :heavy_check_mark:
 [/create_poll](./commands/create_poll.md) | Create a new poll | :heavy_check_mark:
+[/delete_bridge](./commands/delete_bridge.md) | Delete the bridge from specified Course, e.g., /delete_bridge ohpe | :heavy_check_mark:
 [/delete_channel](./commands/delete_channel.md) | Remove given text channel inside a course, e.g., /delete_channel feedback. | :heavy_check_mark:
 [/disable_bridge](./commands/disable_bridge.md) | Disable the bridge between Telegram and the (non-default) course channel it is used in. | :x:
 [/enable_bridge](./commands/enable_bridge.md) | Enable the bridge between Telegram and the (non-default) course channel it is used in. | :x:
