@@ -7,10 +7,9 @@ const {
   isCourseCategory,
   downloadImage,
 } = require("../../services/service");
-const { editErrorEphemeral, sendEphemeral, editEphemeral } = require("../../services/message");
+const { editErrorEphemeral, sendEphemeral, editEphemeralForStatus } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
-const path = require("path");
-const { MessageEmbed, MessageAttachment } = require("discord.js");
+
 
 const execute = async (interaction, client, models) => {
   await sendEphemeral(interaction, "Fetching status...");
@@ -49,21 +48,17 @@ const execute = async (interaction, client, models) => {
 
   await downloadImage(course.name);
 
-  const img = new MessageAttachment(path.resolve(__dirname, "../../../promMetrics/tmp/", "stats.png"));
-  const msgEmbed = new MessageEmbed()
-    .setTitle("Trends")
-    .setImage("attachment://stats.png");
-
-  return await editEphemeral(interaction, `
+  return await editEphemeralForStatus(interaction, `
 Course: ${course.name}
 Fullname: ${course.fullName}
 Code: ${course.code}
 Hidden: ${course.private}
 Invitation Link: ${createCourseInvitationLink(course.name)}
 Bridge blocked on channels: ${blockedChannelMessage}
+
 Instructors: ${instructorMessage}
 Members: ${count}
-  `, msgEmbed, img);
+  `);
 };
 
 module.exports = {

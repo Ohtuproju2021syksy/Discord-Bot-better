@@ -394,7 +394,13 @@ const editChannelNames = async (courseId, previousCourseName, newCourseName, Cha
 
 const downloadImage = async (course) => {
   const url = `http://95.216.219.139/grafana/render/d-solo/WpYTNiOnz/discord-dashboard?orgId=1&from=now-30d&to=now&var-course=${course}&panelId=2&width=1000&height=500&tz=Europe%2FHelsinki`;
-  const filepath = path.resolve(__dirname, "../../promMetrics/tmp/", "stats.png");
+  const directory = path.resolve(__dirname, "../../promMetrics/graph/");
+
+  if (!fs.existsSync(directory)) {
+    fs.mkdirSync(directory);
+  }
+
+  const filepath = path.resolve(__dirname, directory, "graph.png");
   const writer = fs.createWriteStream(filepath);
 
   const response = await axios({
