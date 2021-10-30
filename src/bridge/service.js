@@ -77,6 +77,8 @@ const sendMessageToDiscord = async (ctx, message, channel) => {
         files: [message.content.video.url],
       });
     }
+    const course = channel.name.split("_")[0];
+    bridgedMessagesCounter.inc({ origin: "telegram", course });
   }
   catch (error) {
     console.error("Error trying to send a message: ", error);
