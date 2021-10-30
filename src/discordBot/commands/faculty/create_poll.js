@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { MessageEmbed, MessageActionRow, MessageButton } = require("discord.js");
 
-const { sendEphemeral, editEphemeral } = require("../../services/message");
+const { sendEphemeral, editEphemeral, editEphemeralWithComponents, editEphemeralClearComponents } = require("../../services/message");
 
 const { facultyRole } = require("../../../../config.json");
 const numbers = [ "1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟" ];
@@ -35,7 +35,7 @@ const execute = async (interaction, client) => {
     voteMap.set(numbers[i], 0);
   }
 
-  answerDescription = answerDescription.concat("\n\nYou can vote only one option.\nYou can remove your vote with ❌ so you can change your vote");
+  answerDescription = answerDescription.concat("\n\nYou can answer only one option.\nYou can change your answer by clicking another choice\nYou can remove your answer with ❌");
 
   const pollEmbed = new MessageEmbed()
     .setColor().setColor("#0099ff")
@@ -101,20 +101,35 @@ const execute = async (interaction, client) => {
     msgEmbed = await channel.send({ embeds: [pollEmbed], components: [row] });
   }
 
-  await editEphemeral(interaction, "Poll started, it will close in " + interaction.options.getInteger("duration") + " minutes or you can close the poll by pressing button ❌");
+  const closeRow = new MessageActionRow();
+  closeRow.addComponents(
+    new MessageButton()
+      .setCustomId("close")
+      .setLabel("Close the poll")
+      .setStyle("DANGER"),
+  );
 
-
-  let duration;
-
-  if (interaction.options.getInteger("duration") < 600000) {
-    duration = interaction.options.getInteger("duration") * 60000;
+  let duration = "";
+  if (interaction.options.getInteger("duration") >= 15) {
+    duration = 14 * 60000;
   }
   else {
-    duration = 600000;
+    duration = interaction.options.getInteger("duration") * 60000;
   }
+
+
+  const closeReply = await editEphemeralWithComponents(interaction, "Poll started, it will close in " + (duration / 60000).toFixed() + " minutes or you can close it from this button.", closeRow);
+  let stop = false;
+  const collectorButtonClose = closeReply.createMessageComponentCollector({ componentType: "BUTTON", time: duration });
+
+  collectorButtonClose.on("collect", i => {
+    const buttonId = i.customId;
+    if (buttonId === "close");
+    stop = true;
+  });
+
   const collectorbutton = msgEmbed.createMessageComponentCollector({ componentType: "BUTTON", time: duration });
   const userMap = new Map();
-  let stop = false;
 
   collectorbutton.on("collect", i => {
     const userTag = i.user.tag;
@@ -122,21 +137,20 @@ const execute = async (interaction, client) => {
     if (!userMap.has(userTag) && !i.user.bot && buttonId !== "x") {
       userMap.set(userTag, numbers[buttonId]);
       voteMap.set(numbers[buttonId], voteMap.get(numbers[buttonId]) + 1);
-      i.reply({ content: "Thank you for voting!", ephemeral: true });
+      i.reply({ content: "Thank you for answering! Your answer: " + answerList[buttonId], ephemeral: true });
     }
     else if (buttonId == "x") {
-      if (guild.members.cache.get(i.user.id).roles.cache.some(r => r.name === "faculty" || r.name === "admin")) {
-        stop = true;
-      }
-      else {
-        const emojiToRemove = userMap.get(userTag);
-        voteMap.set(emojiToRemove, voteMap.get(emojiToRemove) - 1);
-        userMap.delete(userTag);
-        i.reply({ content: "Vote removed, you can now vote again!", ephemeral: true });
-      }
+      const emojiToRemove = userMap.get(userTag);
+      voteMap.set(emojiToRemove, voteMap.get(emojiToRemove) - 1);
+      userMap.delete(userTag);
+      i.reply({ content: "Answer removed!", ephemeral: true });
     }
     else {
-      i.reply({ content: "You have voted already, you can remove your vote by pressing ❌", ephemeral: true });
+      const emojiToRemove = userMap.get(userTag);
+      voteMap.set(emojiToRemove, voteMap.get(emojiToRemove) - 1);
+      voteMap.set(numbers[buttonId], voteMap.get(numbers[buttonId]) + 1);
+      userMap.set(userTag, numbers[buttonId]);
+      i.reply({ content: "Your answer has been changed to: " + answerList[buttonId], ephemeral: true });
     }
   });
 
@@ -187,7 +201,7 @@ const execute = async (interaction, client) => {
 
   msgEmbed.delete();
 
-  await editEphemeral(interaction, "Poll closed, results are in");
+  await editEphemeralClearComponents(interaction, "Poll closed, results are in");
 
   function sleep(ms) {
     return new Promise((resolve) => {
@@ -208,7 +222,7 @@ module.exports = {
         .setRequired(true))
     .addIntegerOption(option =>
       option.setName("duration")
-        .setDescription("Duration of the poll (1-10 minutes)")
+        .setDescription("Duration of the poll (1-14 minutes)")
         .setRequired(true))
     .addStringOption(option =>
       option.setName("answers")
