@@ -32,7 +32,12 @@ const sendEphemeral = async (interaction, msg) => {
 };
 
 const editEphemeral = async (interaction, msg, msgEmbed, img) => {
-  await interaction.editReply({ content: `${msg}`, ephemeral: true, embeds: [msgEmbed], files: [img] });
+  if (msgEmbed && img) {
+    await interaction.editReply({ content: `${msg}`, ephemeral: true, embeds: [msgEmbed], files: [img] });
+  }
+  else {
+    await interaction.editReply({ content: `${msg}`, ephemeral: true });
+  }
 };
 
 const editErrorEphemeral = async (interaction, msg) => {

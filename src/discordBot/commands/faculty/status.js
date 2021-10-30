@@ -5,11 +5,10 @@ const {
   findCourseFromDb,
   findChannelsByCourse,
   isCourseCategory,
+  downloadImage,
 } = require("../../services/service");
 const { editErrorEphemeral, sendEphemeral, editEphemeral } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
-const axios = require("axios");
-const fs = require("fs");
 const path = require("path");
 const { MessageEmbed, MessageAttachment } = require("discord.js");
 
@@ -48,13 +47,12 @@ const execute = async (interaction, client, models) => {
     `${blockedChannels.join(", ")}` :
     "No blocked channels";
 
-  await downloadImage();
+  await downloadImage(course.name);
 
-  const img = new MessageAttachment(path.resolve(__dirname, "../../../promMetrics/stats/", "test.png"));
-  const msbEmbed = new MessageEmbed()
-    .setTitle("Stats for the course")
-    .setImage("attachment://test.png");
-  // channel.send({ embeds: [msbEmbed], files: [img] });
+  const img = new MessageAttachment(path.resolve(__dirname, "../../../promMetrics/tmp/", "stats.png"));
+  const msgEmbed = new MessageEmbed()
+    .setTitle("Trends")
+    .setImage("attachment://stats.png");
 
   return await editEphemeral(interaction, `
 Course: ${course.name}
@@ -65,27 +63,7 @@ Invitation Link: ${createCourseInvitationLink(course.name)}
 Bridge blocked on channels: ${blockedChannelMessage}
 Instructors: ${instructorMessage}
 Members: ${count}
-  `, msbEmbed, img);
-};
-
-const downloadImage = async () => {
-  const url = "http://95.216.219.139/grafana/render/d-solo/WpYTNiOnz/discord-dashboard?orgId=1&from=1634106757051&to=1634711557051&panelId=2&width=1000&height=500&tz=Europe%2FHelsinki";
-  const filepath = path.resolve(__dirname, "../../../promMetrics/stats/", "test.png");
-  const writer = fs.createWriteStream(filepath);
-
-  const response = await axios({
-    url,
-    method: "GET",
-    responseType: "stream",
-    headers: { "Authorization": `Bearer ${process.env.GRAFANA_TOKEN}` },
-  });
-
-  response.data.pipe(writer);
-
-  return new Promise((resolve, reject) => {
-    writer.on("finish", resolve);
-    writer.on("error", reject);
-  });
+  `, msgEmbed, img);
 };
 
 module.exports = {

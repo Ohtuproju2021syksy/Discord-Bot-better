@@ -108,4 +108,4 @@ dist
 
 *.swp
 
-/src/promMetrics/stats
+/src/promMetrics/tmp/*.png
