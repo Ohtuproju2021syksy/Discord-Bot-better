@@ -8,7 +8,8 @@ const execute = async (message, client, models) => {
   args = args.map(arg => arg.toLowerCase().trim());
   const guideChannel = client.guild.channels.cache.find((c) => c.name === "guide");
   const copyPasteGuideReply = "Sorry, <@" + message.author + ">, I didn't quite catch what you meant.\nPlease read <#" + guideChannel + "> for more info on commands and available courses.\n" +
-  "You can also type `/help` to view a helpful *(pun intended)* list of commands!";
+  "You can also type `/help` to view a helpful *(pun intended)* list of commands.\n" +
+  "Note that you have to **manually** type the commands; I rarely understand copy-pasted commands!";
 
   const channel = message.channel;
 
