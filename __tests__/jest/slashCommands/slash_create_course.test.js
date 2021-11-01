@@ -12,6 +12,7 @@ const models = require("../../mocks/mockModels");
 jest.mock("../../../src/discordBot/services/message");
 jest.mock("../../../src/discordBot/services/service");
 jest.mock("../../../src/db/services/courseService");
+jest.mock("../../../src/db/services/channelService");
 
 findOrCreateRoleWithName.mockImplementation((name) => { return { id: Math.floor(Math.random() * 10) + 5, name: name }; });
 findCourseFromDbWithFullName
