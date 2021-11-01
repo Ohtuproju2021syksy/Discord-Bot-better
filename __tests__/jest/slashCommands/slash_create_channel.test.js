@@ -1,10 +1,18 @@
 const { execute } = require("../../../src/discordBot/commands/faculty/create_channel");
 const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../../src/discordBot/services/message");
+<<<<<<< HEAD
 const { getCourseNameFromCategory, findCourseFromDb, createChannelToDatabase, isCourseCategory } = require("../../../src/discordBot/services/service");
+=======
+const { getRoleFromCategory } = require("../../../src/discordBot/services/service");
+const { findCourseFromDb } = require("../../../src/db/services/courseService");
+const { createChannelToDatabase } = require("../../../src/db/services/channelService");
+>>>>>>> 3bac4b5d0dc6bb5aa287daf766384f34a90defcc
 
 const models = require("../../mocks/mockModels");
 jest.mock("../../../src/discordBot/services/message");
 jest.mock("../../../src/discordBot/services/service");
+jest.mock("../../../src/db/services/courseService");
+jest.mock("../../../src/db/services/channelService");
 
 getCourseNameFromCategory.mockImplementation((name) => name.replace("📚", "").trim());
 

@@ -1,7 +1,8 @@
 const { getCourseChoices } = require("../../src/discordBot/services/command");
-const { findCoursesFromDb } = require("../../src/discordBot/services/service");
+const { findCoursesFromDb } = require("../../src/db/services/courseService");
 
 jest.mock("../../src/discordBot/services/service");
+jest.mock("../../src/db/services/courseService");
 
 const courses = [{ code: "tkt100en", fullName: "test course", name: "test" }];
 

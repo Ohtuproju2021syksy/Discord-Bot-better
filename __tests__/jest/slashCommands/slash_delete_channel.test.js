@@ -1,9 +1,16 @@
 const { execute } = require("../../../src/discordBot/commands/faculty/delete_channel");
+<<<<<<< HEAD
 const { sendEphemeral, editEphemeral, editErrorEphemeral, confirmChoice } = require("../../../src/discordBot/services/message");
 const { removeChannelFromDb, getCourseNameFromCategory, isCourseCategory } = require("../../../src/discordBot/services/service");
 
+=======
+const { sendEphemeral, editEphemeral, editErrorEphemeral } = require("../../../src/discordBot/services/message");
+const { getRoleFromCategory } = require("../../../src/discordBot/services/service");
+const { removeChannelFromDb } = require("../../../src/db/services/channelService");
+>>>>>>> 3bac4b5d0dc6bb5aa287daf766384f34a90defcc
 
 jest.mock("../../../src/discordBot/services/message");
+jest.mock("../../../src/db/services/channelService");
 
 const models = require("../../mocks/mockModels");
 const { defaultTeacherInteraction } = require("../../mocks/mockInteraction");

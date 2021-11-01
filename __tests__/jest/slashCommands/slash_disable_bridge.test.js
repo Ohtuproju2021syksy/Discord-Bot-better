@@ -1,10 +1,18 @@
 const { execute } = require("../../../src/discordBot/commands/faculty/disable_bridge");
+<<<<<<< HEAD
 const { editEphemeral, editErrorEphemeral, sendEphemeral, confirmChoice } = require("../../../src/discordBot/services/message");
 const { findChannelFromDbByName, findCourseFromDb, isCourseCategory } = require("../../../src/discordBot/services/service");
+=======
+const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../../src/discordBot/services/message");
+const { findCourseFromDb } = require("../../../src/db/services/courseService");
+const { findChannelFromDbByName } = require("../../../src/db/services/channelService");
+
+>>>>>>> 3bac4b5d0dc6bb5aa287daf766384f34a90defcc
 
 const models = require("../../mocks/mockModels");
 jest.mock("../../../src/discordBot/services/message");
-jest.mock("../../../src/discordBot/services/service");
+jest.mock("../../../src/db/services/courseService");
+jest.mock("../../../src/db/services/channelService");
 
 const { defaultTeacherInteraction } = require("../../mocks/mockInteraction");
 const initalResponse = "Disabling the bridge to Telegram...";

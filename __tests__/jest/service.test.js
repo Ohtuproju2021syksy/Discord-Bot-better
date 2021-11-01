@@ -1,10 +1,13 @@
 const {
   findOrCreateRoleWithName,
-  updateGuideMessage,
   createInvitation,
+<<<<<<< HEAD
   findCategoryWithCourseName,
   createCourseToDatabase,
   removeCourseFromDb,
+=======
+  findCategoryName,
+>>>>>>> 3bac4b5d0dc6bb5aa287daf766384f34a90defcc
   findChannelWithNameAndType,
   findChannelWithId,
   msToMinutesAndSeconds,
@@ -13,6 +16,7 @@ const {
   isCourseCategory,
   getCourseNameFromCategory,
   findAllCourseNames } = require("../../src/discordBot/services/service");
+const { updateGuideMessage, createCourseToDatabase, removeCourseFromDb } = require("../../src/db/services/courseService");
 
 const createGuidePinnedMessage = async (guild) => {
   const rows = courses
@@ -32,7 +36,11 @@ const createGuidePinnedMessage = async (guild) => {
 Käytössäsi on seuraavia komentoja:
   - \`/join\` jolla voit liittyä kurssille
   - \`/leave\` jolla voit poistua kurssilta
+<<<<<<< HEAD
 Kirjoittamalla \`/join\` tai \`/leave\` botti antaa listan kursseista.
+=======
+Esim: \`/join ohpe\`
+>>>>>>> 3bac4b5d0dc6bb5aa287daf766384f34a90defcc
 
 You have the following commands available:
   - \`/join\` which you can use to join a course
