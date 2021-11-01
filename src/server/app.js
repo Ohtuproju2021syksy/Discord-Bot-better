@@ -14,16 +14,19 @@ const SequelizeStore = require("connect-session-sequelize")(session.Store);
 
 module.exports = (sequelize) => {
   const app = express();
+  var store = new SequelizeStore({
+    db: sequelize,
+  });
 
   app.use(
     session({
       secret: process.env.SESSION_SECRET,
-      store: new SequelizeStore({
-        db: sequelize,
-      }),
+      store: store,
       saveUninitialized: false,
       resave: false,
     }));
+
+  store.sync();
 
   app.use(passport.initialize());
   app.use(passport.session());
