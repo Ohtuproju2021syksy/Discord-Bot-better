@@ -4,7 +4,7 @@
 
 The Discord group (course channel) is for peer support for students. We recommend that you use the group with either browser-based version of Discord or Discord application (desktop app or mobile app).
 
-The participants of the group are fellow students as well as volunteer instructors. The group's activities are voluntary. Please also help others reciprocally. However, do not share task answers in this group to avoid accidentally depriving other students of learning opportunities. The little tips are instructive and still allow for the joy of learning yourself. Thank you.
+The participants of the group are fellow students as well as volunteer instructors and faculty members. The group's activities are voluntary. Please also help others reciprocally. However, do not share task answers in this group to avoid accidentally depriving other students of learning opportunities. The little tips are instructive and still allow for the joy of learning yourself. Thank you.
 
 ### Create your Discord account
 Create yourself a Discord account. You can do this on [Discord Website](https://discord.com/). If you already have the account, you can login [here](https://discord.com/login).
@@ -55,6 +55,8 @@ Announcement - this is the course announcements and only teachers can make entri
 General - main discussion area.
 
 Voice - you can hang out over voice and video.
+
+Other channels - There might also exist other channels on a course, for example Off-Topic channel or some very specific channels for a certain part of the course.
 
 If you want to see who are the instructors on your course, you can use command `/instructors`.
 
