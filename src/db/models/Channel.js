@@ -20,6 +20,11 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: true,
       unique: false,
     },
+    defaultChannel: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+      unique: false,
+    },
   }, {
     timestamps: false,
     freezeTableName: true,

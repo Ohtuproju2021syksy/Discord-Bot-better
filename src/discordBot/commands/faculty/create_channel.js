@@ -52,7 +52,7 @@ const execute = async (interaction, client, models) => {
     async channelObject => await findOrCreateChannel(channelObject, guild),
   ));
   const courseFromDb = await findCourseFromDb(courseName, courseModel);
-  await createChannelToDatabase(courseFromDb.id, `${courseName}_${channelName}`, channelModel);
+  await createChannelToDatabase(courseFromDb.id, `${courseName}_${channelName}`, false, channelModel);
   await editEphemeral(interaction, `Created new channel ${courseName}_${channelName}`);
 
 };
