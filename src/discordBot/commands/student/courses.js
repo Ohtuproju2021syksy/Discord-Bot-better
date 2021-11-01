@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { findCoursesFromDb } = require("../../services/service");
+const { findCoursesFromDb } = require("../../../db/services/courseService");
 const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../services/message");
 
 const execute = async (interaction, client, models) => {

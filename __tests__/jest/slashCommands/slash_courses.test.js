@@ -1,10 +1,11 @@
 const { execute } = require("../../../src/discordBot/commands/student/courses");
 const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../../src/discordBot/services/message");
-const { findCoursesFromDb } = require("../../../src/discordBot/services/service");
+const { findCoursesFromDb } = require("../../../src/db/services/courseService");
 const models = require("../../mocks/mockModels");
 
 jest.mock("../../../src/discordBot/services/message");
 jest.mock("../../../src/discordBot/services/service");
+jest.mock("../../../src/db/services/courseService");
 
 const course = [{ code: "tkt test", fullName: "test course", name: "test" }];
 const initialResponse = "Fetching courses...";

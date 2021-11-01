@@ -3,10 +3,6 @@ const Umzug = require("umzug");
 
 const DB_CONNECTION_RETRY_LIMIT = 10;
 
-const testConnection = async () => {
-  await sequelize.authenticate();
-};
-
 const runMigrations = async () => {
   const migrator = new Umzug({
     storage: "sequelize",
@@ -26,12 +22,17 @@ const runMigrations = async () => {
   });
 };
 
+const testConnection = async () => {
+  await sequelize.authenticate();
+};
+
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const connectToDatabase = async (attempt = 0) => {
   try {
     await testConnection();
     console.log("Connected to database");
+    await sequelize.sync();
     try {
       await runMigrations();
     }
@@ -50,7 +51,6 @@ const connectToDatabase = async (attempt = 0) => {
     await sleep(5000);
     return connectToDatabase(attempt + 1);
   }
-  sequelize.sync();
   return null;
 };
 

@@ -4,20 +4,23 @@ const {
   findCategoryWithCourseName,
   msToMinutesAndSeconds,
   getCourseNameFromCategory,
-  findCourseFromDb,
   checkCourseCooldown,
   isCourseCategory } = require("../../../src/discordBot/services/service");
+const { findCourseFromDb } = require("../../../src/db/services/courseService");
+const { editChannelNames } = require("../../../src/db/services/channelService");
 const models = require("../../mocks/mockModels");
 
 jest.mock("../../../src/discordBot/services/message");
 jest.mock("../../../src/discordBot/services/service");
-confirmChoice.mockImplementation(() => true);
+jest.mock("../../../src/db/services/courseService");
+jest.mock("../../../src/db/services/channelService");
 
 afterEach(() => {
   jest.clearAllMocks();
 });
 
 const time = "4:59";
+confirmChoice.mockImplementation(() => true);
 msToMinutesAndSeconds.mockImplementation(() => time);
 findCategoryWithCourseName.mockImplementation((name) => ({ name: `📚 ${name}` }));
 getCourseNameFromCategory.mockImplementation(() => "test");
@@ -39,6 +42,7 @@ findCourseFromDb
 
 isCourseCategory.mockImplementationOnce(() => (false));
 isCourseCategory.mockImplementation(() => (true));
+editChannelNames.mockImplementation(() => null);
 
 const { defaultTeacherInteraction, defaultStudentInteraction } = require("../../mocks/mockInteraction");
 defaultTeacherInteraction.options = {
@@ -113,7 +117,7 @@ describe("slash edit command", () => {
     const client = defaultTeacherInteraction.client;
     defaultTeacherInteraction.channelId = 2;
     const response = `Command cooldown [mm:ss]: you need to wait ${time}.`;
-    await execute(defaultTeacherInteraction, client), models;
+    await execute(defaultTeacherInteraction, client, models);
     expect(confirmChoice).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, "Editing...");

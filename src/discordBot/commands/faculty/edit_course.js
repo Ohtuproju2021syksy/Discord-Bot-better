@@ -4,16 +4,18 @@ const {
   findCategoryWithCourseName,
   createCourseInvitationLink,
   findChannelWithNameAndType,
-  updateGuide,
   msToMinutesAndSeconds,
   handleCooldown,
   checkCourseCooldown,
   getCourseNameFromCategory,
+  isCourseCategory } = require("../../services/service");
+
+const {
   findCourseFromDb,
   createCourseToDatabase,
   findCourseFromDbWithFullName,
-  isCourseCategory,
-  editChannelNames } = require("../../services/service");
+  updateGuide } = require("../../../db/services/courseService");
+const { editChannelNames } = require("../../../db/services/channelService");
 const { sendEphemeral, editEphemeral, editErrorEphemeral, confirmChoice } = require("../../services/message");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
 
@@ -118,7 +120,6 @@ const execute = async (interaction, client, models) => {
   }
 
   if (choice === "name") {
-
     if (await findCourseFromDbWithFullName(newValue, models.Course)) return await editErrorEphemeral(interaction, "Course full name already exists");
     databaseValue.fullName = newValue;
     await databaseValue.save();

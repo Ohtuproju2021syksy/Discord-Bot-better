@@ -2,12 +2,14 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 const {
   findOrCreateRoleWithName,
   createInvitation,
-  updateGuide,
   findOrCreateChannel,
-  setCoursePositionABC,
+  setCoursePositionABC } = require("../../services/service");
+const {
   createCourseToDatabase,
   findCourseFromDb,
-  findCourseFromDbWithFullName } = require("../../services/service");
+  findCourseFromDbWithFullName,
+  updateGuide } = require("../../../db/services/courseService");
+const { createChannelToDatabase } = require("../../../db/services/channelService");
 const { sendErrorEphemeral, sendEphemeral, editEphemeral } = require("../../services/message");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
 
@@ -113,7 +115,11 @@ const execute = async (interaction, client, models) => {
     async channelObject => await findOrCreateChannel(channelObject, guild),
   ));
 
-  await createCourseToDatabase(courseCode, courseFullName, courseName, models.Course);
+  const course = await createCourseToDatabase(courseCode, courseFullName, courseName, models.Course);
+  await Promise.all(channelObjects.map(
+    async channelObject => await createChannelToDatabase(course.id, channelObject.name, true, models.Channel),
+  ));
+
   await setCoursePositionABC(guild, categoryObject.name);
   await createInvitation(guild, courseName);
   await editEphemeral(interaction, `Created course ${courseName}.`);

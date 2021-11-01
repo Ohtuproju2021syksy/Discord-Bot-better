@@ -15,7 +15,7 @@ const SequelizeStore = require("connect-session-sequelize")(session.Store);
 
 module.exports = (sequelize) => {
   const app = express();
-  var store = new SequelizeStore({
+  const store = new SequelizeStore({
     db: sequelize,
   });
 
