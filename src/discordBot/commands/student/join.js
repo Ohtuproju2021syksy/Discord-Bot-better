@@ -9,9 +9,10 @@ const execute = async (interaction, client, models) => {
   let message = "";
   const guild = client.guild;
   const guideChannel = guild.channels.cache.find((c) => c.name === "guide");
-  const copyPasteGuideReply = "You can also try writing `/join` and I'll offer you a helpful list of courses to click from.\n" +
+  const copyPasteGuideReply = "You can try typing `/join` and I'll offer you a helpful list of courses to click from.\n" +
     "Please also read <#" + guideChannel + "> for more info on commands and available courses.\n" +
-    "You can also type `/help` to view a helpful *(pun intended)* list of commands!";
+    "You can also type `/help` to view a helpful *(pun intended)* list of commands.\n" +
+    "Note that you have to **manually** type the commands; I rarely understand copy-pasted commands!";
   const channel = interaction.channel;
 
   if (interaction.options) {
@@ -25,10 +26,10 @@ const execute = async (interaction, client, models) => {
     roleString = interaction.roleString;
     const course = await findCourseFromDb(roleString, models.Course);
     if (!course || course.private) {
-      return await sendReplyMessage(interaction, channel, "Hey, <@" + interaction.author + ">, I couldn't find a course with name " + roleString + ".\n" + copyPasteGuideReply);
+      return await sendReplyMessage(interaction, channel, "Hey, <@" + interaction.author + ">, I couldn't find a course with name **" + roleString + "**.\n" + copyPasteGuideReply);
     }
     const fullName = course.fullName;
-    message = "Hey, <@" + interaction.author + ">, I added you to " + fullName + ", hopefully I got that correct.\n" + copyPasteGuideReply;
+    message = "Hey, <@" + interaction.author + ">, I added you to **" + fullName + "**, hopefully I got that correct.\n" + copyPasteGuideReply;
   }
 
   const member = guild.members.cache.get(interaction.member.user.id);
@@ -43,7 +44,7 @@ const execute = async (interaction, client, models) => {
       return await editErrorEphemeral(interaction, `Invalid course name: ${roleString}`);
     }
     else {
-      return await sendReplyMessage(interaction, channel, "Hey, <@" + interaction.author + ">. The course name " + roleString + " you gave was invalid.\n" + copyPasteGuideReply);
+      return await sendReplyMessage(interaction, channel, "Hey, <@" + interaction.author + ">. The course name **" + roleString + "** you gave was invalid.\n" + copyPasteGuideReply);
     }
   }
   if (member.roles.cache.some(r => courseRoles.includes(r.name))) {
@@ -51,7 +52,7 @@ const execute = async (interaction, client, models) => {
       return await editErrorEphemeral(interaction, `You are already on the ${roleString} course.`);
     }
     else {
-      return await sendReplyMessage(interaction, channel, "Hey, <@" + interaction.author + ">, you are already on the " + roleString + " course.\n" + copyPasteGuideReply);
+      return await sendReplyMessage(interaction, channel, "Hey, <@" + interaction.author + ">, you are already on the **" + roleString + "** course.\n" + copyPasteGuideReply);
     }
   }
 

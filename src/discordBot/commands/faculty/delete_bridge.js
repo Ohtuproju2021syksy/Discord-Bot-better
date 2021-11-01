@@ -1,14 +1,14 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { sendEphemeral, editEphemeral, confirmChoice } = require("../../services/message");
-const { Course } = require("../../../db/dbInit");
 const { facultyRole } = require("../../../../config.json");
-const { findCourseFromDb, findCategoryWithCourseName } = require("../../services/service");
+const { findCourseFromDb } = require("../../services/service");
+const { sendMessageToTelegram } = require("../../../bridge/service");
 
 
-const execute = async (interaction, client) => {
+const execute = async (interaction, client, models) => {
 
   await sendEphemeral(interaction, "Deleting bridge...");
-  const guild = client.guild;
+  const Course = models.Course;
   const courseName = interaction.options.getString("course").trim();
 
 
@@ -17,20 +17,19 @@ const execute = async (interaction, client) => {
     return await editEphemeral(interaction, "Command declined");
   }
 
-  const category = await findCategoryWithCourseName(courseName, guild);
-  if (!category) {
+  const databaseValue = await findCourseFromDb(courseName, Course);
+  if (!databaseValue) {
     return await editEphemeral(interaction, `Invalid course name: ${courseName}`);
   }
-
-  const databaseValue = await findCourseFromDb(courseName, Course);
   if (!databaseValue.telegramId) {
-    return await editEphemeral(interaction, `Course: ${courseName} does not have a Telegram bridge!`);
+    return await editEphemeral(interaction, `Course ${databaseValue.name} does not have a Telegram bridge!`);
   }
 
+  await sendMessageToTelegram(databaseValue.telegramId, "The bridge has been deleted", null, "");
   databaseValue.telegramId = null;
   await databaseValue.save();
 
-  return await editEphemeral(interaction, `Deleted Telegram bridge from course: ${courseName}`);
+  return await editEphemeral(interaction, `Deleted Telegram bridge from course: ${databaseValue.name}`);
 };
 
 
