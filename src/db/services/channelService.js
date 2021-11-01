@@ -8,13 +8,13 @@ const findChannelFromDbByName = async (channelName, Channel) => {
   });
 };
 
-const createChannelToDatabase = async (courseId, channelName, Channel) => {
+const createChannelToDatabase = async (courseId, channelName, defaultChannel, Channel) => {
   const alreadyinuse = await Channel.findOne({
     where:
       { name: { [Sequelize.Op.iLike]: channelName } },
   });
   if (!alreadyinuse) {
-    await Channel.create({ name: channelName, courseId: courseId });
+    await Channel.create({ name: channelName, courseId: courseId, defaultChannel: defaultChannel });
   }
 };
 

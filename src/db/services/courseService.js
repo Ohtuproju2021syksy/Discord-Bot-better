@@ -61,7 +61,7 @@ const createCourseToDatabase = async (courseCode, courseFullName, courseName, Co
       { name: { [Sequelize.Op.iLike]: courseName } },
   });
   if (!alreadyinuse) {
-    await Course.create({ code: courseCode, fullName: courseFullName, name: courseName, private: false });
+    return await Course.create({ code: courseCode, fullName: courseFullName, name: courseName, private: false });
   }
 };
 
