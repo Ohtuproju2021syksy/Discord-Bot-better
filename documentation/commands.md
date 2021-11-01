@@ -20,6 +20,7 @@ Command | Description | Example
 `/create_channel` | Add a text channel for the course. Must be used inside a course. | `/create_channel questions`
 `/create_course ` | Create a given course channel | `/create_course ohpe ohjelmoinnin perusteet`
 `/create_poll ` | Create a poll | `/create_poll Question 10 answer1 | answer 2 | answer 3`
+`/delete_bridge` | Delete bridge from specified course | `/delete_bridge ohpe`
 `/delete_channel` | Delete a text channel from the course. Must be used inside a course. | `/delete_channel questions`
 `/disable_bridge` | Disable bridge in a Discord text channel. Must be used inside a course and in a non-default text channel. | `/disable_bridge`
 `/edit_course` | Edit course information, e.g. course code, fullname, or nickname. Must be used inside a course. | `/edit_course nickname ohpe`
