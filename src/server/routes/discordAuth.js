@@ -3,8 +3,10 @@ const passport = require("passport");
 const { getRoles, addRole, getMember, addMember } = require("../api/api");
 
 router.get("/", passport.authenticate("discord", {
-  failureRedirect: "/discord/discordAuth/unauthorized",
+  failureRedirect: "/discordAuth/unauthorized",
+  failureFlash: true,
 }), async (req, res) => {
+  console.log(req.user);
   const roles = await getRoles();
   const role = roles.find(r => r.id === req.authInfo.state.roleID);
   const member = await getMember(req.user.id);
@@ -18,7 +20,7 @@ router.get("/", passport.authenticate("discord", {
 });
 
 router.get("/unauthorized", (req, res) => {
-  res.sendStatus(401);
+  res.status(401).send(req.flash("error")[0]);
 });
 
 module.exports = router;
