@@ -30,7 +30,7 @@ Commands can be used by typing to the bottom area `/` and after that the command
 
 ### Authentication
 
-To be able to use all the faculty commands, you need to authenticate yourself. Use command `/auth` and you receive an authentication link. Click the link and go through the verfication steps. Now you have the faculty role and you can use all the commands.
+To be able to use all the faculty commands, you need to authenticate yourself. Use command `/auth` and you receive an authentication link. Click the link and go through the verfication steps. Now you have the faculty role and you can use all the faculty commands.
 
 ### Creating a new course
 
@@ -44,7 +44,7 @@ If your course has multilingual course name, enter all the information in the _f
 
 If your course is an open university course, use the abbreviation **MOOC** in the _full name_ field next to your course name.
 
-After the course is created there is the invitation link for the course on the course´s guide channel. Share this on the needed platforms, so the students can join this channel. Another option for joining is using the `/join` command.
+After the course is created there is an invitation link for the course on the course´s guide channel. Share this on the needed platforms, so the students can join this channel. Another option for joining is using the `/join` command.
 
 ### Create Telegram bridge
 
@@ -54,7 +54,7 @@ Today, many courses use Telegram discussion channels. At the moment there are st
 
 Invite the **@cs-discord-bot** bot to your Telegram channel. First go to your channel. From the right top corner choose three dots and from the drop-down menu choose _Add members_.
 
-Give the bot admin role (choose channel member and give the bot admin rights). You need to have an admin role to do this change. Under _What can this admin do?_ mark all the showing rights off.
+Give the bot admin role (choose channel member and give the bot admin rights). You need to have an admin role to do this change. Under _What can this admin do?_ you must keep the **"Delete messages"** and **"Change group info"** settings on, but you can turn off all others.
 
 #### Make the bridge
 
@@ -72,6 +72,10 @@ Bridge not created: Invalid discord channel <courseName>
 ```
 Note that only one Telegram group can be connected to only one Discord course.
 
+### Delete the bridge
+
+To delete existing bridge to a Telegram channel, use the command `/delete_bridge <your Discord course name>` on Discord. This will remove the bridge completely between the channels.
+
 ## How to create more text channels
 
 The `/create_course` command automatically creates three sub-channels for the course. The sub-channels are: announcements (text channel), general (text channel) and one voice channel. To create more text channels for a course go inside the wanted course. Inside this course use `/create_channel` command followed by the desired text channel name to create new text channel.
@@ -82,12 +86,12 @@ Note that the channel name you give is the end part of the name. For example, in
 
 To remove added text channel use `/delete_channel` command followed by the name of the text channel to be removed e.g., `/delete_channel feedback` removes _wepa_feedback_. This command must also be used inside the course you want the channel to be removed. Note that announcements or general channels can not be removed.
 
-## How to make course secret
+## How to make course hidden
 Once the course is created, it can be made hidden. This means joining the course channel is only possible via link. To make a secret course use the `/hide_course` command followed by the course name, e.g. `/hide_course wepa`. The secret courses can be identified by the ghost emoji. 
 
 To make the course public again use the `/unhide_course` command followed by the course name, e.g. `/unhide_course wepa`. Public courses can be found with `/courses` command and with `/join` command, unlike secret courses.
 
-## How to lock_chat course
+## How to lock chat on course
 Once the course is created, it can be locked. This means that only instructors and faculty can write in the course channels. This can be used e.g. when a course exam is on and you don't want students to post their answers. To lock_chat a course, use the `/lock_chat` command followed by the course name, e.g. `/lock_chat wepa`. The locked courses can be identified by the lock emoji.
 
 To make the course unlocked again use the `/unlock_chat` command followed by the course name, e.g. `/unlock_chat wepa`.
@@ -105,7 +109,7 @@ The `/edit_topic` command allows you to create or edit the information in announ
 
 ## How to create a poll
 
-The `/create_poll` command allows you to create a poll that is placed in the same channel that you use the command in. It has 3 required arguments _title_, _duration_ and _answers_. Duration is given in minutes (10 minutes at most), for example "3" means 3 minutes. After the duration the poll closes automatically. _answers_ is the list of all possible answers to the poll, separated by " | ". For example "Java | Python" creates 2 answer options "Java" and "Python". Optional argument _description_ let's you create additional description for the poll, like additional instructions. You can close the poll manually by clicking the red :x: button. After the poll closes it shows the results, including how much each option was voted and which option/options got the most amount of votes.
+The `/create_poll` command allows you to create a poll that is placed in the same channel that you use the command in. It has 3 required arguments _title_, _duration_ and _answers_. Duration is given in minutes (14 minutes at most), for example "3" means 3 minutes. After the duration the poll closes automatically. _answers_ is the list of all possible answers to the poll, separated by " | ". For example "Java | Python" creates 2 answer options "Java" and "Python". Optional argument _description_ let's you create additional description for the poll, like additional instructions. You can close the poll manually by clicking the **Close Poll** -button that appears to the original `/create_poll` message. After the poll closes it shows the results, including how much each option was voted and which option/options got the most amount of votes.
 ## Disabling the bridge on a text channel
 
 Users with faculty rights can disable the bridge between a certain course channel and Telegram. This can be used e.g. on off-topic course channels where there's a lot of discussion that could flood the Telegram chat with messages not directly related to the course. Note that the bridge can be disabled only on non-default channels, that is channels which were created individually with `/create_channel` after the course was created. You can check in which channels the bridge is disabled with the command `/status`. 
@@ -137,6 +141,8 @@ Command | Explanation | Arguments
 [/join](./commands/join.md) | Joins you into the course given, e.g., /join ohpe. | :heavy_check_mark:
 [/leave](./commands/leave.md) | Remove you from the course given, e.g., /leave ohpe. | :heavy_check_mark:
 [/status](./commands/status.md) | Used in course channel returns general info about the course | :heavy_check_mark:
+
+:o: means that the command can be used with or without arguments
 
 ### Material
 
