@@ -1,21 +1,14 @@
 const { execute } = require("../../../src/discordBot/commands/admin/delete_course");
-<<<<<<< HEAD
-const { findCategoryWithCourseName, updateGuide, removeCourseFromDb } = require("../../../src/discordBot/services/service");
-const { confirmChoiceNoInteraction } = require("../../../src/discordBot/services/message");
-=======
-const { findCategoryName } = require("../../../src/discordBot/services/service");
+const { findCategoryWithCourseName } = require("../../../src/discordBot/services/service");
 const { updateGuide, removeCourseFromDb } = require("../../../src/db/services/courseService");
->>>>>>> 3bac4b5d0dc6bb5aa287daf766384f34a90defcc
+const { confirmChoiceNoInteraction } = require("../../../src/discordBot/services/message");
 
 jest.mock("../../../src/discordBot/services/message");
 jest.mock("../../../src/discordBot/services/service");
-<<<<<<< HEAD
 const createCategoryInstanceMock = (name) => {
   return { name: `📚 ${name}`, delete: jest.fn() };
 };
-=======
 jest.mock("../../../src/db/services/courseService");
->>>>>>> 3bac4b5d0dc6bb5aa287daf766384f34a90defcc
 
 findCategoryWithCourseName
   .mockImplementation((name) => createCategoryInstanceMock(name))

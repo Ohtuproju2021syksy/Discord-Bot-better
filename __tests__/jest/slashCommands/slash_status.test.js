@@ -2,16 +2,11 @@ const { execute } = require("../../../src/discordBot/commands/faculty/status");
 const { sendEphemeral, editErrorEphemeral, editEphemeral } = require("../../../src/discordBot/services/message");
 const {
   getCourseNameFromCategory,
-  createCourseInvitationLink,
-<<<<<<< HEAD
-  findCourseFromDb,
-  findChannelsByCourse,
-  isCourseCategory } = require("../../../src/discordBot/services/service");
-=======
-  trimCourseName } = require("../../../src/discordBot/services/service");
+  createCourseInvitationLink } = require("../../../src/discordBot/services/service");
 const { findCourseFromDb } = require("../../../src/db/services/courseService");
 const { findChannelsByCourse } = require("../../../src/db/services/channelService");
->>>>>>> 3bac4b5d0dc6bb5aa287daf766384f34a90defcc
+const { isCourseCategory } = require("../../../src/discordBot/services/service");
+
 const models = require("../../mocks/mockModels");
 
 jest.mock("../../../src/discordBot/services/message");

@@ -5,7 +5,7 @@ const {
   findOrCreateChannel,
   setCoursePositionABC,
   createInvitation } = require("../../../src/discordBot/services/service");
-const { findCourseFromDb, findCourseFromDbWithFullName, updateGuide } = require("../../../src/db/services/courseService");
+const { findCourseFromDb, findCourseFromDbWithFullName, updateGuide, createCourseToDatabase } = require("../../../src/db/services/courseService");
 const { courseAdminRole } = require("../../../config.json");
 const models = require("../../mocks/mockModels");
 
@@ -21,6 +21,8 @@ findCourseFromDb
   .mockImplementation(() => false)
   .mockImplementationOnce(() => true)
   .mockImplementationOnce(() => true);
+
+createCourseToDatabase.mockImplementation(() => {return { id:  Math.floor(Math.random() * 10) + 5 }; });
 
 const { defaultTeacherInteraction, defaultStudentInteraction } = require("../../mocks/mockInteraction");
 defaultTeacherInteraction.options = {

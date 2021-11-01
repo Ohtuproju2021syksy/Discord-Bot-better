@@ -11,11 +11,8 @@ const { unlockTelegramCourse } = require("../../../src/bridge/service");
 jest.mock("../../../src/bridge/service");
 jest.mock("../../../src/discordBot/services/message");
 jest.mock("../../../src/discordBot/services/service");
-<<<<<<< HEAD
 confirmChoice.mockImplementation(() => true);
-=======
 jest.mock("../../../src/db/services/courseService");
->>>>>>> 3bac4b5d0dc6bb5aa287daf766384f34a90defcc
 
 
 const Course = {

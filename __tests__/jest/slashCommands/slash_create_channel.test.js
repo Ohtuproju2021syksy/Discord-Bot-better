@@ -1,12 +1,8 @@
 const { execute } = require("../../../src/discordBot/commands/faculty/create_channel");
 const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../../src/discordBot/services/message");
-<<<<<<< HEAD
-const { getCourseNameFromCategory, findCourseFromDb, createChannelToDatabase, isCourseCategory } = require("../../../src/discordBot/services/service");
-=======
-const { getRoleFromCategory } = require("../../../src/discordBot/services/service");
+const { getCourseNameFromCategory, isCourseCategory } = require("../../../src/discordBot/services/service");
 const { findCourseFromDb } = require("../../../src/db/services/courseService");
 const { createChannelToDatabase } = require("../../../src/db/services/channelService");
->>>>>>> 3bac4b5d0dc6bb5aa287daf766384f34a90defcc
 
 const models = require("../../mocks/mockModels");
 jest.mock("../../../src/discordBot/services/message");
@@ -29,6 +25,7 @@ const setMaxChannels = (client) => {
     const channelToCreate = {
       name: i,
       parent: category,
+      defaultChannel: false,
       type: "GUILD_TEXT",
     };
     client.guild.channels.cache.set(i, channelToCreate);
@@ -69,7 +66,7 @@ describe("slash create channel command", () => {
     await execute(defaultTeacherInteraction, client, models);
     expect(findCourseFromDb).toHaveBeenCalledTimes(1);
     expect(createChannelToDatabase).toHaveBeenCalledTimes(1);
-    expect(createChannelToDatabase).toHaveBeenCalledWith(1, `${courseName}_${channelName}`, models.Channel);
+    expect(createChannelToDatabase).toHaveBeenCalledWith(1, `${courseName}_${channelName}`, false, models.Channel);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
     expect(editEphemeral).toHaveBeenCalledTimes(1);
