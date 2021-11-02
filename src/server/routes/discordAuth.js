@@ -1,9 +1,10 @@
+require("dotenv").config();
 const router = require("express").Router();
 const passport = require("passport");
 const { getRoles, addRole, getMember, addMember } = require("../api/api");
 
 router.get("/", passport.authenticate("discord", {
-  failureRedirect: "/discordAuth/unauthorized",
+  failureRedirect: process.env.DISCORD_REDIRECT_URL + "/unauthorized",
   failureFlash: true,
 }), async (req, res) => {
   console.log(req.user);
