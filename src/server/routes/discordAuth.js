@@ -1,9 +1,14 @@
 const router = require("express").Router();
 const passport = require("passport");
 const { getRoles, addRole, getMember, addMember } = require("../api/api");
+const { createCourseMemberToDatabase } = require("../../db/services/courseMemberService");
+const { findCourseFromDb } = require("../../db/services/courseService");
+const { findUserByDiscordId } = require("../../db/services/userService");
+const models = require("../../db/dbInit");
 
 router.get("/", passport.authenticate("discord", {
-  failureRedirect: "/discord/discordAuth/unauthorized",
+  failureRedirect: "/discordAuth/unauthorized",
+  failureFlash: true,
 }), async (req, res) => {
   const roles = await getRoles();
   const role = roles.find(r => r.id === req.authInfo.state.roleID);
@@ -14,11 +19,14 @@ router.get("/", passport.authenticate("discord", {
   else {
     await addMember(req.user, role);
   }
+  const course = await findCourseFromDb(role.name, models.Course);
+  const user = await findUserByDiscordId(req.user.id, models.User);
+  await createCourseMemberToDatabase(user.id, course.id, models.CourseMember);
   res.redirect(process.env.DISCORD_SERVER_INVITE);
 });
 
 router.get("/unauthorized", (req, res) => {
-  res.sendStatus(401);
+  res.status(401).send(req.flash('error')[0]);
 });
 
 module.exports = router;
