@@ -5,6 +5,7 @@ const keywords = ["crypto", "krypto", "btc", "doge", "btc", "eth", "musk", "mone
   "interest", "investment", "join"];
 const cyrillicPattern = /^\p{Script=Cyrillic}+$/u;
 const { findCourseFromDb } = require("../discordBot/services/service");
+const bridgedMessagesCounter = require("../promMetrics/bridgedMessagesCounter");
 
 
 const validDiscordChannel = async (courseName) => {
@@ -76,6 +77,8 @@ const sendMessageToDiscord = async (ctx, message, channel) => {
         files: [message.content.video.url],
       });
     }
+    const course = channel.name.split("_")[0];
+    bridgedMessagesCounter.inc({ origin: "telegram", course });
   }
   catch (error) {
     console.error("Error trying to send a message: ", error);
@@ -182,6 +185,7 @@ const handleBridgeMessage = async (message, courseName, Course) => {
     else {
       await sendMessageToTelegram(group.telegramId, msg, sender, channel);
     }
+    bridgedMessagesCounter.inc({ origin: "discord", course: group.name });
   }
   catch (error) {
     return await sendErrorReportNoInteraction(group.telegramId, message.member, message.channel.name, discordClient, error.toString());
@@ -280,7 +284,7 @@ const lockTelegramCourse = async (Course, courseName) => {
   }
   const telegramId = group.telegramId;
   const permissions = {
-    "can_send_messages" : false,
+    "can_send_messages": false,
     "can_send_media_messages": false,
     "can_send_polls": false,
     "can_send_other_messages": false,
@@ -305,7 +309,7 @@ const unlockTelegramCourse = async (Course, courseName) => {
   const telegramId = group.telegramId;
   try {
     const permissions = {
-      "can_send_messages" : true,
+      "can_send_messages": true,
       "can_send_media_messages": true,
       "can_send_polls": true,
       "can_send_other_messages": true,

@@ -1,4 +1,5 @@
-const { MessageActionRow, MessageButton, MessageEmbed } = require("discord.js");
+const { MessageActionRow, MessageButton, MessageEmbed, MessageAttachment } = require("discord.js");
+const path = require("path");
 
 const validateChannel = (channel) => {
   if (channel.parent) return false;
@@ -38,6 +39,14 @@ const sendEphemeral = async (interaction, msg) => {
 
 const editEphemeral = async (interaction, msg) => {
   await interaction.editReply({ content: `${msg}`, ephemeral: true });
+};
+
+const editEphemeralForStatus = async (interaction, msg) => {
+  const img = new MessageAttachment(path.resolve(__dirname, "../../promMetrics/graph/", "graph.png"));
+  const msgEmbed = new MessageEmbed()
+    .setTitle("Trends")
+    .setImage("attachment://graph.png");
+  await interaction.editReply({ content: `${msg}`, ephemeral: true, embeds: [msgEmbed], files: [img] });
 };
 
 const editEphemeralWithComponents = async (interaction, msg, components) => {
@@ -183,6 +192,7 @@ module.exports = {
   editEphemeral,
   editEphemeralWithComponents,
   editEphemeralClearComponents,
+  editEphemeralForStatus,
   editErrorEphemeral,
   sendReplyMessage,
   sendFollowUpEphemeral,

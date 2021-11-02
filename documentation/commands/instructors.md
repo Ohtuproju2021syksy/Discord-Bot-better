@@ -4,9 +4,7 @@
 - :heavy_check_mark: Reply with an ephemeral message - is only visible to the user of the interaction.
 - :heavy_check_mark: Response includes the course instructor information.
 - :heavy_check_mark: All members can use this command.
-
 - :x: Shows the number of instructors.
-
 - :o: Argument course_name is optional.
 
 Example | Explanation | Info
