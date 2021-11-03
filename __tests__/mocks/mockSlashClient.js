@@ -48,6 +48,7 @@ const client = {
       create: jest.fn((data) => {
         client.guild.roles.cache.set(roleId, {
           name: data.name,
+          id: data.id,
           members: data.members,
           delete: jest.fn(),
         }),
@@ -57,6 +58,7 @@ const client = {
     },
     members: {
       cache: new Discord.Collection(),
+      fetch: jest.fn(()=> { return client.guild.members.cache; }),
     },
   },
   guilds: {

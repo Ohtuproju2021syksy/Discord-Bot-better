@@ -86,6 +86,7 @@ const teacher = {
     fetch: jest.fn(),
     remove: jest.fn((role) => teacher.roles.cache = teacher.roles.cache.filter(r => r.name !== role.name)),
   },
+  _roles: [1, 3, 4],
   fetch: jest.fn(),
   displayName: "teacher",
   user: {
@@ -103,8 +104,12 @@ const student = {
     fetch: jest.fn(),
     remove: jest.fn((role) => student.roles.cache = student.roles.cache.filter(r => r.name !== role.name)),
   },
+  _roles: [3],
   fetch: jest.fn(),
   displayName: "student",
+  user: {
+    id: 2,
+  },
 };
 
 const admin = {
@@ -117,8 +122,12 @@ const admin = {
     fetch: jest.fn(),
     remove: jest.fn((role) => admin.roles.cache = admin.roles.cache.filter(r => r.name !== role.name)),
   },
+  _roles: [2, 3],
   fetch: jest.fn(),
   displayName: "admin",
+  user: {
+    id: 3,
+  },
 };
 
 const guideChannel = {

@@ -422,6 +422,53 @@ const downloadImage = async (course) => {
   }
 };
 
+const listCourseInstructors = async (guild, roleString, courseAdminRole) => {
+
+  const facultyRole = await guild.roles.cache.find(r => r.name === "faculty");
+  const instructorRole = await guild.roles.cache.find(r => r.name === `${roleString} ${courseAdminRole}`);
+  const members = await guild.members.fetch();
+  let adminsString = "";
+  members.forEach(m => {
+    const roles = m._roles;
+    if (roles.some(r => r === facultyRole.id) && roles.some(r => r === instructorRole.id)) {
+      if (adminsString === "") {
+        adminsString = "<@" + m.user.id + ">";
+      }
+      else {
+        adminsString = adminsString + ", " + "<@" + m.user.id + ">";
+      }
+    }
+  });
+
+  members.forEach(m => {
+    const roles = m._roles;
+    if (!roles.some(r => r === facultyRole.id) && roles.some(r => r === instructorRole.id)) {
+      if (adminsString === "") {
+        adminsString = "<@" + m.user.id + ">";
+      }
+      else {
+        adminsString = adminsString + ", " + "<@" + m.user.id + ">";
+      }
+    }
+  });
+  return adminsString;
+};
+
+const updateInviteLinks = async (guild, courseAdminRole, facultyRole, client) => {
+  const announcementChannels = guild.channels.cache.filter(c => c.name.includes("announcement"));
+  announcementChannels.forEach(async aChannel => {
+    const pinnedMessages = await aChannel.messages.fetchPinned();
+    const invMessage = pinnedMessages.find(msg => msg.author === client.user && msg.content.includes("Invitation link for"));
+    const courseName = getCourseNameFromCategory(aChannel.parent);
+    let updatedMsg = createCourseInvitationLink(courseName);
+    const instructors = await listCourseInstructors(guild, courseName, courseAdminRole, facultyRole);
+    if (!instructors !== "") {
+      updatedMsg = updatedMsg + "\nInstructors for the course:" + instructors;
+    }
+    await invMessage.edit(updatedMsg);
+  });
+};
+
 module.exports = {
   findOrCreateRoleWithName,
   findCategoryWithCourseName,
@@ -460,5 +507,7 @@ module.exports = {
   getPublicCourse,
   getUnlockedCourse,
   editChannelNames,
+  listCourseInstructors,
+  updateInviteLinks,
   downloadImage,
 };
