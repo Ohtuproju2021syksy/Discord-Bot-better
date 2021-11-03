@@ -427,14 +427,10 @@ const listCourseInstructors = async (guild, roleString, courseAdminRole) => {
   const facultyRole = await guild.roles.cache.find(r => r.name === "faculty");
   const instructorRole = await guild.roles.cache.find(r => r.name === `${roleString} ${courseAdminRole}`);
   const members = await guild.members.fetch();
-  console.log("*********************");
-  console.log(roleString);
-  console.log("inst id " + instructorRole.id);
   let adminsString = "";
   members.forEach(m => {
     const roles = m._roles;
     if (roles.some(r => r === facultyRole.id) && roles.some(r => r === instructorRole.id)) {
-      console.log("Löyty fac/ins " + m.user.id);
       if (adminsString === "") {
         adminsString = "<@" + m.user.id + ">";
       }
@@ -447,7 +443,6 @@ const listCourseInstructors = async (guild, roleString, courseAdminRole) => {
   members.forEach(m => {
     const roles = m._roles;
     if (!roles.some(r => r === facultyRole.id) && roles.some(r => r === instructorRole.id)) {
-      console.log("Löyty ins " + m.user.id);
       if (adminsString === "") {
         adminsString = "<@" + m.user.id + ">";
       }
@@ -456,7 +451,6 @@ const listCourseInstructors = async (guild, roleString, courseAdminRole) => {
       }
     }
   });
-  console.log(adminsString);
   return adminsString;
 };
 
