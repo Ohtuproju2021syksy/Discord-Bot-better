@@ -12,6 +12,7 @@ const createCourseMemberToDatabase = async (userId, courseId, CourseMember) => {
   if (!alreadyinuse) {
     return await CourseMember.create({ userId: userId, courseId: courseId });
   }
+  return alreadyinuse;
 };
 
 const removeCourseMemberFromDb = async (userId, courseId, CourseMember) => {
