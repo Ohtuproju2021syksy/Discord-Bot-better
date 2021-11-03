@@ -5,9 +5,11 @@ const {
   findCourseFromDb,
   findChannelsByCourse,
   isCourseCategory,
+  downloadImage,
 } = require("../../services/service");
-const { editErrorEphemeral, sendEphemeral, editEphemeral } = require("../../services/message");
+const { editErrorEphemeral, sendEphemeral, editEphemeralForStatus } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
+
 
 const execute = async (interaction, client, models) => {
   await sendEphemeral(interaction, "Fetching status...");
@@ -44,7 +46,9 @@ const execute = async (interaction, client, models) => {
     `${blockedChannels.join(", ")}` :
     "No blocked channels";
 
-  return await editEphemeral(interaction, `
+  await downloadImage(course.name);
+
+  return await editEphemeralForStatus(interaction, `
 Course: ${course.name}
 Fullname: ${course.fullName}
 Code: ${course.code}
