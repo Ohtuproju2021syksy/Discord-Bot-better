@@ -403,19 +403,23 @@ const downloadImage = async (course) => {
   const filepath = path.resolve(__dirname, directory, "graph.png");
   const writer = fs.createWriteStream(filepath);
 
-  const response = await axios({
-    url,
-    method: "GET",
-    responseType: "stream",
-    headers: { "Authorization": `Bearer ${process.env.GRAFANA_TOKEN}` },
-  });
+  try {
+    const response = await axios({
+      url,
+      method: "GET",
+      responseType: "stream",
+      headers: { "Authorization": `Bearer ${process.env.GRAFANA_TOKEN}` },
+    });
+    response.data.pipe(writer);
 
-  response.data.pipe(writer);
-
-  return new Promise((resolve, reject) => {
-    writer.on("finish", resolve);
-    writer.on("error", reject);
-  });
+    return new Promise((resolve, reject) => {
+      writer.on("finish", resolve);
+      writer.on("error", reject);
+    });
+  }
+  catch (error) {
+    return;
+  }
 };
 
 module.exports = {
