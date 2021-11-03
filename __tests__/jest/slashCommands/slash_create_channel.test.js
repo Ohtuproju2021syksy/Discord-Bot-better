@@ -66,7 +66,7 @@ describe("slash create channel command", () => {
     await execute(defaultTeacherInteraction, client, models);
     expect(findCourseFromDb).toHaveBeenCalledTimes(1);
     expect(createChannelToDatabase).toHaveBeenCalledTimes(1);
-    expect(createChannelToDatabase).toHaveBeenCalledWith(1, `${courseName}_${channelName}`, false, models.Channel);
+    expect(createChannelToDatabase).toHaveBeenCalledWith({ courseId: 1, name: `${courseName}_${channelName}` }, models.Channel);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
     expect(editEphemeral).toHaveBeenCalledTimes(1);

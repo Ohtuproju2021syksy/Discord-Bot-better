@@ -1,6 +1,6 @@
 const { createCourseMemberToDatabase } = require("../../../db/services/courseMemberService");
 const { getCourseNameFromCategory, isCourseCategory } = require("../../services/service");
-const { findCourseFromDb, findCoursesFromDb } = require("../../../db/services/courseService");
+const { findCourseFromDb } = require("../../../db/services/courseService");
 const { createChannelToDatabase } = require("../../../db/services/channelService");
 const { createUserToDatabase } = require("../../../db/services/userService");
 const { facultyRole } = require("../../../../config.json");
@@ -27,13 +27,13 @@ const saveChannelsToDb = async (models, guild) => {
     const course = await findCourseFromDb(courseIdentifier, models.Course);
     if (course) {
       const defaultChannel = currentChannel.name
-        .includes('_general') || currentChannel.name.includes('_announcement') || currentChannel.type === "GUILD_VOICE"
+        .includes("_general") || currentChannel.name.includes("_announcement") || currentChannel.type === "GUILD_VOICE";
       const voiceChannel = currentChannel.type === "GUILD_VOICE";
       await createChannelToDatabase({
         courseId: course.id,
         name: currentChannel.name,
         defaultChannel: defaultChannel,
-        voiceChannel: voiceChannel}, models.Channel);
+        voiceChannel: voiceChannel }, models.Channel);
     }
   }
 };
@@ -43,7 +43,7 @@ const saveUsersToDb = async (models, guild) => {
   const members = memberCache.map(m => m.user).filter(u => !u.bot);
 
   const admins = guild.roles.cache
-    .find(r => r.name === 'admin')?.members
+    .find(r => r.name === "admin")?.members
     .map(m => m.user.id);
 
   const faculty = guild.roles.cache
@@ -55,9 +55,8 @@ const saveUsersToDb = async (models, guild) => {
       const user = await createUserToDatabase(m.id, m.username, models.User);
       if (admins.includes(m.id)) user.admin = true;
       if (faculty.includes(m.id)) user.faculty = true;
-      user.save()
-    })
-  )
+      user.save();
+    }));
 };
 
 const saveCourseMembersToDb = async (models, guild) => {

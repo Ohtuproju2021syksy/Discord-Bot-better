@@ -8,7 +8,7 @@ const facultyAuthRoute = require("./routes/authenticateFaculty");
 const metricsRoute = require("./routes/metrics");
 const defaultRouteHandler = require("./routes/defaultRouteHandler");
 const defaultRouteErrorHandler = require("./routes/defaultRouteErrorHandler");
-const flash = require('connect-flash');
+const flash = require("connect-flash");
 require("./strategies/discordstrategy");
 
 const SequelizeStore = require("connect-session-sequelize")(session.Store);

@@ -123,9 +123,8 @@ const execute = async (interaction, client, models) => {
         courseId: course.id,
         name: channelObject.name,
         defaultChannel: true,
-        voiceChannel: voiceChannel }, models.Channel)
-    })
-  );
+        voiceChannel: voiceChannel }, models.Channel);
+    }));
 
   await setCoursePositionABC(guild, categoryObject.name);
   await createInvitation(guild, courseName);

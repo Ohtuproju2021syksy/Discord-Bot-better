@@ -26,7 +26,7 @@ router.get("/", passport.authenticate("discord", {
 });
 
 router.get("/unauthorized", (req, res) => {
-  res.status(401).send(req.flash('error')[0]);
+  res.status(401).send(req.flash("error")[0]);
 });
 
 module.exports = router;
