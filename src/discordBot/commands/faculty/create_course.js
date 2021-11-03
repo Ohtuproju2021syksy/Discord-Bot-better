@@ -116,9 +116,16 @@ const execute = async (interaction, client, models) => {
   ));
 
   const course = await createCourseToDatabase(courseCode, courseFullName, courseName, models.Course);
-  await Promise.all(channelObjects.map(
-    async channelObject => await createChannelToDatabase(course.id, channelObject.name, true, models.Channel),
-  ));
+  await Promise.all(channelObjects
+    .map(async channelObject => {
+      const voiceChannel = channelObject.options.type === "GUILD_VOICE";
+      await createChannelToDatabase({
+        courseId: course.id,
+        name: channelObject.name,
+        defaultChannel: true,
+        voiceChannel: voiceChannel }, models.Channel)
+    })
+  );
 
   await setCoursePositionABC(guild, categoryObject.name);
   await createInvitation(guild, courseName);
