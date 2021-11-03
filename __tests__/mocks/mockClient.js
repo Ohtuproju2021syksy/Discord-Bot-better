@@ -37,6 +37,10 @@ const client = {
         name: data.name,
       })),
     },
+    members: {
+      cache: [],
+      fetch: jest.fn(()=> { return client.guild.members.cache; }),
+    },
   },
   emit: jest.fn(),
 };

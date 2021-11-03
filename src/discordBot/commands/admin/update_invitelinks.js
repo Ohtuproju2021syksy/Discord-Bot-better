@@ -1,15 +1,9 @@
-const { createCourseInvitationLink, getCourseNameFromCategory } = require("../../services/service");
+const { updateInviteLinks } = require("../../services/service");
+const { courseAdminRole, facultyRole } = require("../../../../config.json");
 
 const execute = async (message) => {
   if (message.member.permissions.has("ADMINISTRATOR")) {
-    const announcementChannels = message.guild.channels.cache.filter(c => c.name.includes("announcement"));
-    announcementChannels.forEach(async aChannel => {
-      const pinnedMessages = await aChannel.messages.fetchPinned();
-      const invMessage = pinnedMessages.find(msg => msg.author === message.client.user && msg.content.includes("Invitation link for"));
-      const courseName = getCourseNameFromCategory(aChannel.parent);
-      const updatedMsg = createCourseInvitationLink(courseName);
-      await invMessage.edit(updatedMsg);
-    });
+    await updateInviteLinks(message.guild, courseAdminRole, facultyRole, message.client);
   }
 };
 

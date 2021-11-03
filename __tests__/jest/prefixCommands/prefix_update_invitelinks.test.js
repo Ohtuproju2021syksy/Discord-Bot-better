@@ -1,10 +1,10 @@
 const { execute } = require("../../../src/discordBot/commands/admin/update_invitelinks");
-const { createCourseInvitationLink, getCourseNameFromCategory } = require("../../../src/discordBot/services/service");
+const { createCourseInvitationLink, getCourseNameFromCategory, updateInviteLinks } = require("../../../src/discordBot/services/service");
+const { courseAdminRole, facultyRole } = require("../../../config.json");
 
 jest.mock("../../../src/discordBot/services/service");
 
 const { messageInCommandsChannel, teacher, student } = require("../../mocks/mockMessages");
-const courseString = "test";
 const emojiRegex = /(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/gi;
 
 getCourseNameFromCategory
@@ -24,8 +24,7 @@ describe("prefix update_invitelinks command", () => {
   test("if user has administrator permission update roles", async () => {
     messageInCommandsChannel.member = teacher;
     await execute(messageInCommandsChannel);
-    expect(createCourseInvitationLink).toHaveBeenCalledTimes(1);
-    expect(getCourseNameFromCategory).toHaveBeenCalledTimes(1);
-    expect(createCourseInvitationLink).toHaveBeenCalledWith(courseString);
+    expect(updateInviteLinks).toHaveBeenCalledTimes(1);
+    expect(updateInviteLinks).toHaveBeenCalledWith(messageInCommandsChannel.guild, courseAdminRole, facultyRole, messageInCommandsChannel.client);
   });
 });
