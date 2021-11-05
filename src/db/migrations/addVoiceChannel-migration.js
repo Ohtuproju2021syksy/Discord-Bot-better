@@ -9,6 +9,6 @@ module.exports = {
     });
   },
   down: async (queryInterface) => {
-    await queryInterface.removeColumn("channel", "defaultChannel");
+    await queryInterface.removeColumn("channel", "voiceChannel");
   },
 };
