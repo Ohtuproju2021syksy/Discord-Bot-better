@@ -101,7 +101,7 @@ The `/edit_course` command allows you to edit the information for the course you
 
 ## How to create or edit course channel topics
 
-The `/edit_topic` command allows you to create or edit the information in announcement and general channels topic field. You can use this to customize channel appearance.
+The `/edit_topic` command allows you to create or edit the information in the topic field of a channel. You can use this to customize channel appearance.
 
 ## How to create a poll
 
@@ -127,7 +127,7 @@ Command | Explanation | Arguments
 [/disable_bridge](./commands/disable_bridge.md) | Disable the bridge between Telegram and the (non-default) course channel it is used in. | :x:
 [/enable_bridge](./commands/enable_bridge.md) | Enable the bridge between Telegram and the (non-default) course channel it is used in. | :x:
 [/edit_course](./commands/edit_course.md) | Edit course information, options; coursecode, full name, nickname | :heavy_check_mark:
-[/edit_topic](./commands/edit_topic.md) | Edit topic, must be used in course , e.g., /topic A new topic. | :heavy_check_mark:
+[/edit_topic](./commands/edit_topic.md) | Edit topic, must be used in a course channel, e.g., /edit_topic A new topic. | :heavy_check_mark:
 [/hide_course](./commands/hide_course.md)| Make given course private, e.g., /hide_course weba. | :heavy_check_mark:
 [/unhide_course](./commands/unhide_course.md) | Make given course public, e.g., /unhide_course weba. | :heavy_check_mark:
 [/lock_chat](./commands/lock_chat.md) | Lock the chat (meaning only instructors and faculty can post messages) of a given course | :heavy_check_mark:
