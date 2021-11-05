@@ -16,10 +16,10 @@ const {
 const { sendEphemeral, editEphemeral, editErrorEphemeral, confirmChoice } = require("../../services/message");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
 
-
 const changeCourseNames = async (previousCourseName, newCourseName, channel, courseCategory, guild) => {
-  const categoryEmojis = courseCategory.name.replace(getCourseNameFromCategory(courseCategory), "");
+  const categoryEmojis = courseCategory.name.replace(getCourseNameFromCategory(courseCategory), "").trim();
   await courseCategory.setName(`${categoryEmojis} ${newCourseName}`);
+
   const trimmedCourseName = newCourseName.replace(/ /g, "-");
 
   await Promise.all(guild.channels.cache
