@@ -20,7 +20,7 @@ const { courseAdminRole, facultyRole } = require("../../../../config.json");
 
 const changeCourseNames = async (previousCourseName, newCourseName, channel, category, guild) => {
   if (guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && getCourseNameFromCategory(c.name.toLowerCase()) === newCourseName.toLowerCase())) return;
-  const categoryEmojis = category.name.replace(getCourseNameFromCategory(category), "");
+  const categoryEmojis = category.name.replace(getCourseNameFromCategory(category), "").trim();
   await category.setName(`${categoryEmojis} ${newCourseName}`);
   const trimmedCourseName = newCourseName.replace(/ /g, "-");
 
