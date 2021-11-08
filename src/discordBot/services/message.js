@@ -60,9 +60,9 @@ const editErrorEphemeral = async (interaction, msg) => {
   await interaction.editReply({ content: `Error: ${msg}`, ephemeral: true });
 };
 
-const sendReplyMessage = async (interaction, channel, msg) => {
-  const interactionId = interaction.id;
-  const reply = await interaction.reply({ content: `${msg}` });
+const sendReplyMessage = async (message, channel, replyText) => {
+  const interactionId = message.id;
+  const reply = await message.reply({ content: `${replyText}` });
   setTimeout(async () => {
     try {
       const fetchedReply = await channel.messages.fetch(reply.id);
