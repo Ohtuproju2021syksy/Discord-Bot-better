@@ -25,7 +25,13 @@ const changeCourseNames = async (previousCourseName, newCourseName, channel, cou
   await Promise.all(guild.channels.cache
     .filter(c => c.parent === channel.parent)
     .map(async ch => {
-      const newName = ch.name.replace(previousCourseName, trimmedCourseName);
+      let newName;
+      if (ch.name.includes(previousCourseName)) {
+        newName = ch.name.replace(previousCourseName, trimmedCourseName);
+      }
+      else {
+        newName = ch.name.replace(previousCourseName.toLowerCase(), trimmedCourseName);
+      }
       await ch.setName(newName);
     },
     ));
