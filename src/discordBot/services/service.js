@@ -173,16 +173,18 @@ const findOrCreateChannel = async (channelObject, guild) => {
 const setCoursePositionABC = async (guild, courseString) => {
   let first = 9999;
   const result = guild.channels.cache
-    .filter(c => c.type === "GUILD_CATEGORY" && c.name.startsWith("📚"))
+    .filter(c => c.type === "GUILD_CATEGORY" && (c.name.startsWith("📚") || c.name.startsWith("👻") || c.name.startsWith("🔐")))
     .map((c) => {
-      const categoryName = c.name;
+      const categoryName = c.name.split(" ")[1];
       if (first > c.position) first = c.position;
       return categoryName;
     }).sort((a, b) => a.localeCompare(b));
 
+  const course = courseString.split(" ")[1];
+
   const category = guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name.toLowerCase() === courseString.toLowerCase());
   if (category) {
-    await category.edit({ position: result.indexOf(courseString) + first });
+    await category.edit({ position: result.indexOf(course) + first });
   }
 };
 
