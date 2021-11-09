@@ -24,21 +24,10 @@ const execute = async (interaction, client, models) => {
   const courseRole = getCourseNameFromCategory(channel.parent, guild);
   const course = await findCourseFromDb(courseRole, models.Course);
 
-  const category = guild.channels.cache.get(interaction.channelId).parent;
-
-  let courseName = "";
-
-  if (!category) {
-    return await editErrorEphemeral(interaction, "Provide course name as argument or use the command in course channel.");
-  }
-  else {
-    courseName = getCourseNameFromCategory(category.name);
-  }
-
-  let instructors = await listCourseInstructors(guild, courseName, courseAdminRole, facultyRole);
+  let instructors = await listCourseInstructors(guild, courseRole, courseAdminRole);
 
   if (instructors === "") {
-    instructors = `No instructors for ${courseName}`;
+    instructors = `No instructors for ${courseRole}`;
   }
 
   const count = guild.roles.cache.find(

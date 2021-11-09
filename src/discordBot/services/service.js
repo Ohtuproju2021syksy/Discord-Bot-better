@@ -215,7 +215,6 @@ const getCourseNameFromCategory = (category) => {
   else {
     trimmedName = category.replace(emojiRegex, "").trim();
   }
-
   return trimmedName;
 };
 
