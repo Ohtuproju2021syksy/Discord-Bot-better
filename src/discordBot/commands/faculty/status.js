@@ -6,9 +6,10 @@ const {
   findChannelsByCourse,
   isCourseCategory,
   downloadImage,
+  listCourseInstructors,
 } = require("../../services/service");
 const { editErrorEphemeral, sendEphemeral, editEphemeralForStatus } = require("../../services/message");
-const { facultyRole } = require("../../../../config.json");
+const { facultyRole, courseAdminRole } = require("../../../../config.json");
 
 
 const execute = async (interaction, client, models) => {
@@ -23,18 +24,26 @@ const execute = async (interaction, client, models) => {
   const courseRole = getCourseNameFromCategory(channel.parent, guild);
   const course = await findCourseFromDb(courseRole, models.Course);
 
-  const instructorRole = `${courseRole} instructor`;
+  const category = guild.channels.cache.get(interaction.channelId).parent;
+
+  let courseName = "";
+
+  if (!category) {
+    return await editErrorEphemeral(interaction, "Provide course name as argument or use the command in course channel.");
+  }
+  else {
+    courseName = getCourseNameFromCategory(category.name);
+  }
+
+  let instructors = await listCourseInstructors(guild, courseName, courseAdminRole, facultyRole);
+
+  if (instructors === "") {
+    instructors = `No instructors for ${courseName}`;
+  }
+
   const count = guild.roles.cache.find(
     (role) => role.name === courseRole,
   )?.members.size;
-
-  const instructors = guild.roles.cache.find(
-    (role) => role.name === instructorRole,
-  )?.members.map(m => m.displayName);
-
-  const instructorMessage = (instructors && instructors.length) ?
-    `${instructors.join(", ")}` :
-    "No instructors";
 
   const channels = await findChannelsByCourse(course.id, models.Channel);
 
@@ -56,7 +65,7 @@ Hidden: ${course.private}
 Invitation Link: ${createCourseInvitationLink(course.name)}
 Bridge blocked on channels: ${blockedChannelMessage}
 
-Instructors: ${instructorMessage}
+Instructors: ${instructors}
 Members: ${count}
   `);
 };
