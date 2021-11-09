@@ -24,16 +24,14 @@ const execute = async (interaction, client, models) => {
   const courseRole = getCourseNameFromCategory(channel.parent, guild);
   const course = await findCourseFromDb(courseRole, models.Course);
 
-  let instructors = await listCourseInstructors(guild, courseRole, courseAdminRole);
-
-  if (instructors === "") {
-    instructors = `No instructors for ${courseRole}`;
-  }
-
   const count = guild.roles.cache.find(
     (role) => role.name === courseRole,
   )?.members.size;
 
+  let instructors = listCourseInstructors(guild, courseRole, courseAdminRole);
+  if (instructors === "") {
+    instructors = `No instructors for ${courseRole}`;
+  }
   const channels = await findChannelsByCourse(course.id, models.Channel);
 
   const blockedChannels = channels

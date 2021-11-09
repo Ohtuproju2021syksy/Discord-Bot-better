@@ -18,8 +18,7 @@ const channel = { courseId: 1, name: "test_channel", topic: "test", bridged: tru
 const url = "mockUrl";
 const initialResponse = "Fetching status...";
 
-listCourseInstructors.mockImplementation(() => `No instructors for ${course.name}`);
-getCourseNameFromCategory.mockImplementation(() => "test");
+listCourseInstructors.mockImplementation(() => "");
 findCourseFromDb.mockImplementation(() => course);
 findChannelsByCourse.mockImplementation(() => [channel]);
 
@@ -36,7 +35,7 @@ Hidden: ${course.private}
 Invitation Link: ${url}
 Bridge blocked on channels: No blocked channels
 
-Instructors: No instructors for ${course.name}
+Instructors: No instructors for undefined
 Members: undefined
   `;
 };
