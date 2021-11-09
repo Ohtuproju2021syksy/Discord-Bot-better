@@ -1,4 +1,5 @@
-const { MessageActionRow, MessageButton, MessageEmbed } = require("discord.js");
+const { MessageActionRow, MessageButton, MessageEmbed, MessageAttachment } = require("discord.js");
+const path = require("path");
 
 const validateChannel = (channel) => {
   if (channel.parent) return false;
@@ -40,6 +41,14 @@ const editEphemeral = async (interaction, msg) => {
   await interaction.editReply({ content: `${msg}`, ephemeral: true });
 };
 
+const editEphemeralForStatus = async (interaction, msg) => {
+  const img = new MessageAttachment(path.resolve(__dirname, "../../promMetrics/graph/", "graph.png"));
+  const msgEmbed = new MessageEmbed()
+    .setTitle("Trends")
+    .setImage("attachment://graph.png");
+  await interaction.editReply({ content: `${msg}`, ephemeral: true, embeds: [msgEmbed], files: [img] });
+};
+
 const editEphemeralWithComponents = async (interaction, msg, components) => {
   return await interaction.editReply({ content: `${msg}`, components: [components], ephemeral: true });
 };
@@ -51,9 +60,9 @@ const editErrorEphemeral = async (interaction, msg) => {
   await interaction.editReply({ content: `Error: ${msg}`, ephemeral: true });
 };
 
-const sendReplyMessage = async (interaction, channel, msg) => {
-  const interactionId = interaction.id;
-  const reply = await interaction.reply({ content: `${msg}` });
+const sendReplyMessage = async (message, channel, replyText) => {
+  const interactionId = message.id;
+  const reply = await message.reply({ content: `${replyText}` });
   setTimeout(async () => {
     try {
       const fetchedReply = await channel.messages.fetch(reply.id);
@@ -183,6 +192,7 @@ module.exports = {
   editEphemeral,
   editEphemeralWithComponents,
   editEphemeralClearComponents,
+  editEphemeralForStatus,
   editErrorEphemeral,
   sendReplyMessage,
   sendFollowUpEphemeral,

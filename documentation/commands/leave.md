@@ -5,5 +5,4 @@
 - :heavy_check_mark: Response includes the interaction status.
 - :heavy_check_mark: All members can use this command.
 - :heavy_check_mark: Needs argument: the course you want to leave.
-
 - :x: The user can leave server with this command.
