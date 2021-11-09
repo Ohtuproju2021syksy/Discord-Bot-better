@@ -462,7 +462,7 @@ const updateInviteLinks = async (guild, courseAdminRole, facultyRole, client) =>
     const courseName = getCourseNameFromCategory(aChannel.parent);
     let updatedMsg = createCourseInvitationLink(courseName);
     const instructors = await listCourseInstructors(guild, courseName, courseAdminRole, facultyRole);
-    if (!instructors !== "") {
+    if (instructors !== "") {
       updatedMsg = updatedMsg + "\nInstructors for the course:" + instructors;
     }
     await invMessage.edit(updatedMsg);
