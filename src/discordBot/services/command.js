@@ -6,7 +6,7 @@ const { Routes } = require("discord-api-types/v9");
 const clientId = process.env.BOT_ID;
 const guildId = process.env.GUILD_ID;
 const token = process.env.DISCORD_BOT_TOKEN;
-const { findCoursesFromDb } = require("./service");
+const { findCoursesFromDb } = require("../../db/services/courseService");
 
 const getCourseChoices = async (showPrivate, Course) => {
   showPrivate = showPrivate ? undefined : false;

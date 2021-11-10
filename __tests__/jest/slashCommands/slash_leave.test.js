@@ -1,15 +1,25 @@
 const { execute } = require("../../../src/discordBot/commands/student/leave");
 const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../../src/discordBot/services/message");
-const { updateGuide } = require("../../../src/discordBot/services/service");
+const { updateGuide, findCourseFromDb } = require("../../../src/db/services/courseService");
+const { findUserByDiscordId } = require("../../../src/db/services/userService");
 const models = require("../../mocks/mockModels");
 
 jest.mock("../../../src/discordBot/services/message");
 jest.mock("../../../src/discordBot/services/service");
+jest.mock("../../../src/db/services/userService");
+jest.mock("../../../src/db/services/courseService");
+jest.mock("../../../src/db/services/courseMemberService");
 
 const { defaultTeacherInteraction } = require("../../mocks/mockInteraction");
 const roleString = "testing";
 defaultTeacherInteraction.options = { getString: jest.fn(() => roleString) };
 const initialResponse = "Leaving course...";
+
+const course = { id: 1, name: "tester", fullName: "test course", code: "101", private: false };
+findCourseFromDb.mockImplementation(() => course);
+
+const user = { name: "test", id: 1 };
+findUserByDiscordId.mockImplementation(() => user);
 
 afterEach(() => {
   jest.clearAllMocks();

@@ -4,8 +4,10 @@ let telegramClient;
 const keywords = ["crypto", "krypto", "btc", "doge", "btc", "eth", "musk", "money", "$", "usd", "bitcoin", "muskx.co", "coin", "elonmusk", "prize", "еlonmusk", "btc", "cash", "million",
   "interest", "investment", "join"];
 const cyrillicPattern = /^\p{Script=Cyrillic}+$/u;
-const { findCourseFromDb } = require("../discordBot/services/service");
+
+const { findCourseFromDb } = require("../db/services/courseService");
 const bridgedMessagesCounter = require("../promMetrics/bridgedMessagesCounter");
+
 
 
 const validDiscordChannel = async (courseName) => {

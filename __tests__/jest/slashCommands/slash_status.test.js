@@ -3,14 +3,17 @@ const { sendEphemeral, editErrorEphemeral, editEphemeralForStatus } = require(".
 const {
   getCourseNameFromCategory,
   createCourseInvitationLink,
-  findCourseFromDb,
-  findChannelsByCourse,
   isCourseCategory,
   listCourseInstructors } = require("../../../src/discordBot/services/service");
+const { findCourseFromDb } = require("../../../src/db/services/courseService");
+const { findChannelsByCourse } = require("../../../src/db/services/channelService");
+
 const models = require("../../mocks/mockModels");
 
 jest.mock("../../../src/discordBot/services/message");
 jest.mock("../../../src/discordBot/services/service");
+jest.mock("../../../src/db/services/courseService");
+jest.mock("../../../src/db/services/channelService");
 
 
 const course = { name: "test", fullName: "test course", code: "101", private: false };

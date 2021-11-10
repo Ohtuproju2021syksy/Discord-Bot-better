@@ -1,12 +1,15 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { editEphemeral, editErrorEphemeral, sendEphemeral, sendReplyMessage } = require("../../services/message");
-const { updateGuide, findCourseFromDb } = require("../../services/service");
+const { updateGuide, findCourseFromDb } = require("../../../db/services/courseService");
 const { courseAdminRole } = require("../../../../config.json");
+const { findUserByDiscordId, createUserToDatabase } = require("../../../db/services/userService");
+const { createCourseMemberToDatabase } = require("../../../db/services/courseMemberService");
 const joinedUsersCounter = require("../../../promMetrics/joinedUsersCounter");
 
 const execute = async (interaction, client, models) => {
   let roleString = "";
   let message = "";
+  let course;
   const guild = client.guild;
   const guideChannel = guild.channels.cache.find((c) => c.name === "guide");
   const copyPasteGuideReply = "You can try typing `/join` and I'll offer you a helpful list of courses to click from.\n" +
@@ -24,7 +27,7 @@ const execute = async (interaction, client, models) => {
   else {
     // Command was copypasted or failed to register as an interaction
     roleString = interaction.roleString;
-    const course = await findCourseFromDb(roleString, models.Course);
+    course = await findCourseFromDb(roleString, models.Course);
     if (!course || course.private) {
       return await sendReplyMessage(interaction, channel, "Hey, <@" + interaction.author + ">, I couldn't find a course with name **" + roleString + "**.\n" + copyPasteGuideReply);
     }
@@ -55,6 +58,18 @@ const execute = async (interaction, client, models) => {
       return await sendReplyMessage(interaction, channel, "Hey, <@" + interaction.author + ">, you are already on the **" + roleString + "** course.\n" + copyPasteGuideReply);
     }
   }
+
+  const user = await findUserByDiscordId(interaction.member.user.id, models.User);
+  if (!course) {
+    course = await findCourseFromDb(roleString, models.Course);
+  }
+  if (!user) {
+    await createUserToDatabase(interaction.member.user.id, interaction.member.user.username, models.User);
+    const newUser = await findUserByDiscordId(interaction.member.user.id, models.User);
+    await createCourseMemberToDatabase(newUser.id, course.id, models.CourseMember);
+  }
+
+  await createCourseMemberToDatabase(user.id, course.id, models.CourseMember);
 
   await member.roles.add(courseRole);
   if (interaction.options) {

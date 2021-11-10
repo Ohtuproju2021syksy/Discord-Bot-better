@@ -1,4 +1,5 @@
-const { updateGuide, findCategoryWithCourseName, removeCourseFromDb, findCourseNickNameFromDbWithCourseCode } = require("../../services/service");
+const { findCategoryWithCourseName } = require("../../services/service");
+const { updateGuide, removeCourseFromDb, findCourseNickNameFromDbWithCourseCode } = require("../../../db/services/courseService");
 const { courseAdminRole } = require("../../../../config.json");
 const { confirmChoiceNoInteraction } = require("../../services/message");
 

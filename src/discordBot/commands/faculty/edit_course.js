@@ -4,15 +4,17 @@ const {
   findCategoryWithCourseName,
   createCourseInvitationLink,
   findChannelWithNameAndType,
-  updateGuide,
   msToMinutesAndSeconds,
   handleCooldown,
   checkCourseCooldown,
   getCourseNameFromCategory,
+  isCourseCategory } = require("../../services/service");
+
+const {
   findCourseFromDb,
   findCourseFromDbWithFullName,
-  isCourseCategory,
-  editChannelNames } = require("../../services/service");
+  updateGuide } = require("../../../db/services/courseService");
+const { editChannelNames } = require("../../../db/services/channelService");
 const { sendEphemeral, editEphemeral, editErrorEphemeral, confirmChoice } = require("../../services/message");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
 

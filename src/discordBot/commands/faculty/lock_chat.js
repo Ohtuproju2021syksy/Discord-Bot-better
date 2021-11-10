@@ -1,12 +1,11 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const {
-  updateGuide,
   msToMinutesAndSeconds,
   handleCooldown,
   checkCourseCooldown,
-  setCourseToLocked,
   getHiddenCourse,
   getUnlockedCourse } = require("../../services/service");
+const { updateGuide, setCourseToLocked } = require("../../../db/services/courseService");
 const { sendEphemeral, editEphemeral, editErrorEphemeral, confirmChoice } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
 const { lockTelegramCourse } = require("../../../bridge/service");
