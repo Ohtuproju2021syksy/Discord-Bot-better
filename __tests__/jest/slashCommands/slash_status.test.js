@@ -1,11 +1,12 @@
 const { execute } = require("../../../src/discordBot/commands/faculty/status");
-const { sendEphemeral, editErrorEphemeral, editEphemeral } = require("../../../src/discordBot/services/message");
+const { sendEphemeral, editErrorEphemeral, editEphemeralForStatus } = require("../../../src/discordBot/services/message");
 const {
   getCourseNameFromCategory,
-  createCourseInvitationLink } = require("../../../src/discordBot/services/service");
+  createCourseInvitationLink,
+  isCourseCategory,
+  listCourseInstructors } = require("../../../src/discordBot/services/service");
 const { findCourseFromDb } = require("../../../src/db/services/courseService");
 const { findChannelsByCourse } = require("../../../src/db/services/channelService");
-const { isCourseCategory } = require("../../../src/discordBot/services/service");
 
 const models = require("../../mocks/mockModels");
 
@@ -20,6 +21,7 @@ const channel = { courseId: 1, name: "test_channel", topic: "test", bridged: tru
 const url = "mockUrl";
 const initialResponse = "Fetching status...";
 
+listCourseInstructors.mockImplementation(() => "");
 findCourseFromDb.mockImplementation(() => course);
 findChannelsByCourse.mockImplementation(() => [channel]);
 
@@ -36,7 +38,7 @@ Hidden: ${course.private}
 Invitation Link: ${url}
 Bridge blocked on channels: No blocked channels
 
-Instructors: No instructors
+Instructors: No instructors for undefined
 Members: undefined
   `;
 };
@@ -67,7 +69,7 @@ describe("slash status command", () => {
     expect(createCourseInvitationLink).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
-    expect(editEphemeral).toHaveBeenCalledTimes(1);
-    expect(editEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
+    expect(editEphemeralForStatus).toHaveBeenCalledTimes(1);
+    expect(editEphemeralForStatus).toHaveBeenCalledWith(defaultTeacherInteraction, response);
   });
 });

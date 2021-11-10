@@ -3,11 +3,14 @@ const {
   getCourseNameFromCategory,
   createCourseInvitationLink,
   isCourseCategory,
+  downloadImage,
+  listCourseInstructors,
 } = require("../../services/service");
 const { findCourseFromDb } = require("../../../db/services/courseService");
 const { findChannelsByCourse } = require("../../../db/services/channelService");
-const { editErrorEphemeral, sendEphemeral, editEphemeral } = require("../../services/message");
-const { facultyRole } = require("../../../../config.json");
+const { editErrorEphemeral, sendEphemeral, editEphemeralForStatus } = require("../../services/message");
+const { facultyRole, courseAdminRole } = require("../../../../config.json");
+
 
 const execute = async (interaction, client, models) => {
   await sendEphemeral(interaction, "Fetching status...");
@@ -21,19 +24,14 @@ const execute = async (interaction, client, models) => {
   const courseRole = getCourseNameFromCategory(channel.parent, guild);
   const course = await findCourseFromDb(courseRole, models.Course);
 
-  const instructorRole = `${courseRole} instructor`;
   const count = guild.roles.cache.find(
     (role) => role.name === courseRole,
   )?.members.size;
 
-  const instructors = guild.roles.cache.find(
-    (role) => role.name === instructorRole,
-  )?.members.map(m => m.displayName);
-
-  const instructorMessage = (instructors && instructors.length) ?
-    `${instructors.join(", ")}` :
-    "No instructors";
-
+  let instructors = listCourseInstructors(guild, courseRole, courseAdminRole);
+  if (instructors === "") {
+    instructors = `No instructors for ${courseRole}`;
+  }
   const channels = await findChannelsByCourse(course.id, models.Channel);
 
   const blockedChannels = channels
@@ -44,7 +42,9 @@ const execute = async (interaction, client, models) => {
     `${blockedChannels.join(", ")}` :
     "No blocked channels";
 
-  return await editEphemeral(interaction, `
+  await downloadImage(course.name);
+
+  return await editEphemeralForStatus(interaction, `
 Course: ${course.name}
 Fullname: ${course.fullName}
 Code: ${course.code}
@@ -52,7 +52,7 @@ Hidden: ${course.private}
 Invitation Link: ${createCourseInvitationLink(course.name)}
 Bridge blocked on channels: ${blockedChannelMessage}
 
-Instructors: ${instructorMessage}
+Instructors: ${instructors}
 Members: ${count}
   `);
 };

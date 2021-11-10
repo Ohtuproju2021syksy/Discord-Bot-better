@@ -1,3 +1,7 @@
+const axios = require("axios");
+const fs = require("fs");
+const path = require("path");
+
 require("dotenv").config();
 const GUIDE_CHANNEL_NAME = "guide";
 
@@ -120,16 +124,18 @@ const findOrCreateChannel = async (channelObject, guild) => {
 const setCoursePositionABC = async (guild, courseString) => {
   let first = 9999;
   const result = guild.channels.cache
-    .filter(c => c.type === "GUILD_CATEGORY" && c.name.startsWith("📚"))
+    .filter(c => c.type === "GUILD_CATEGORY" && (c.name.startsWith("📚") || c.name.startsWith("👻") || c.name.startsWith("🔐")))
     .map((c) => {
-      const categoryName = c.name;
+      const categoryName = c.name.split(" ")[1];
       if (first > c.position) first = c.position;
       return categoryName;
     }).sort((a, b) => a.localeCompare(b));
 
+  const course = courseString.split(" ")[1];
+
   const category = guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name.toLowerCase() === courseString.toLowerCase());
   if (category) {
-    await category.edit({ position: result.indexOf(courseString) + first });
+    await category.edit({ position: result.indexOf(course) + first });
   }
 };
 
@@ -160,7 +166,6 @@ const getCourseNameFromCategory = (category) => {
   else {
     trimmedName = category.replace(emojiRegex, "").trim();
   }
-
   return trimmedName;
 };
 
@@ -178,6 +183,83 @@ const findAllCourseNames = (guild) => {
 const findAndUpdateInstructorRole = async (name, guild, courseAdminRole) => {
   const oldInstructorRole = guild.roles.cache.find((role) => role.name !== name && role.name.includes(name));
   oldInstructorRole.setName(`${name} ${courseAdminRole}`);
+};
+
+const downloadImage = async (course) => {
+  const url = `http://95.216.219.139/grafana/render/d-solo/WpYTNiOnz/discord-dashboard?orgId=1&from=now-30d&to=now&var-course=${course}&panelId=2&width=1000&height=500&tz=Europe%2FHelsinki`;
+  const directory = path.resolve(__dirname, "../../promMetrics/graph/");
+
+  if (!fs.existsSync(directory)) {
+    fs.mkdirSync(directory);
+  }
+
+  const filepath = path.resolve(__dirname, directory, "graph.png");
+  const writer = fs.createWriteStream(filepath);
+
+  try {
+    const response = await axios({
+      url,
+      method: "GET",
+      responseType: "stream",
+      headers: { "Authorization": `Bearer ${process.env.GRAFANA_TOKEN}` },
+    });
+    response.data.pipe(writer);
+
+    return new Promise((resolve, reject) => {
+      writer.on("finish", resolve);
+      writer.on("error", reject);
+    });
+  }
+  catch (error) {
+    return;
+  }
+};
+
+const listCourseInstructors = async (guild, roleString, courseAdminRole) => {
+
+  const facultyRole = await guild.roles.cache.find(r => r.name === "faculty");
+  const instructorRole = await guild.roles.cache.find(r => r.name === `${roleString} ${courseAdminRole}`);
+  const members = await guild.members.fetch();
+  let adminsString = "";
+  members.forEach(m => {
+    const roles = m._roles;
+    if (roles.some(r => r === facultyRole.id) && roles.some(r => r === instructorRole.id)) {
+      if (adminsString === "") {
+        adminsString = "<@" + m.user.id + ">";
+      }
+      else {
+        adminsString = adminsString + ", " + "<@" + m.user.id + ">";
+      }
+    }
+  });
+
+  members.forEach(m => {
+    const roles = m._roles;
+    if (!roles.some(r => r === facultyRole.id) && roles.some(r => r === instructorRole.id)) {
+      if (adminsString === "") {
+        adminsString = "<@" + m.user.id + ">";
+      }
+      else {
+        adminsString = adminsString + ", " + "<@" + m.user.id + ">";
+      }
+    }
+  });
+  return adminsString;
+};
+
+const updateInviteLinks = async (guild, courseAdminRole, facultyRole, client) => {
+  const announcementChannels = guild.channels.cache.filter(c => c.name.includes("announcement"));
+  announcementChannels.forEach(async aChannel => {
+    const pinnedMessages = await aChannel.messages.fetchPinned();
+    const invMessage = pinnedMessages.find(msg => msg.author === client.user && msg.content.includes("Invitation link for"));
+    const courseName = getCourseNameFromCategory(aChannel.parent);
+    let updatedMsg = createCourseInvitationLink(courseName);
+    const instructors = await listCourseInstructors(guild, courseName, courseAdminRole, facultyRole);
+    if (instructors !== "") {
+      updatedMsg = updatedMsg + "\nInstructors for the course:" + instructors;
+    }
+    await invMessage.edit(updatedMsg);
+  });
 };
 
 module.exports = {
@@ -201,4 +283,7 @@ module.exports = {
   getLockedCourse,
   getPublicCourse,
   getUnlockedCourse,
+  listCourseInstructors,
+  updateInviteLinks,
+  downloadImage,
 };
