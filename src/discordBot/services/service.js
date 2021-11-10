@@ -1,6 +1,7 @@
 const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
+const { logError } = require("./logger");
 
 require("dotenv").config();
 const GUIDE_CHANNEL_NAME = "guide";
@@ -77,6 +78,7 @@ const findCategoryWithCourseName = (courseString, guild) => {
     return category;
   }
   catch (error) {
+    logError(error);
     // console.log(error);
   }
 };
@@ -211,6 +213,7 @@ const downloadImage = async (course) => {
     });
   }
   catch (error) {
+    logError(error);
     return;
   }
 };

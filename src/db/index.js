@@ -1,4 +1,5 @@
 const { sequelize } = require("./dbInit");
+const { logError } = require("./../discordBot/services/logger");
 const Umzug = require("umzug");
 
 const DB_CONNECTION_RETRY_LIMIT = 10;
@@ -37,10 +38,12 @@ const connectToDatabase = async (attempt = 0) => {
       await runMigrations();
     }
     catch (err) {
+      logError(err);
       console.log("Failed to run migrations: \n " + err);
     }
   }
   catch (err) {
+    logError(err);
     if (attempt === DB_CONNECTION_RETRY_LIMIT) {
       console.log(`Connection to database failed after ${attempt} attempts`);
       return process.exit(1);
