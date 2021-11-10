@@ -6,8 +6,23 @@ const winstonPapertrail = new PapertrailConnection({
   port: 10737
 });
 
+const paperTrailTransport = new PapertrailTransport(winstonPapertrail);
+
 const logger = new winston.createLogger({
-  transports: [ new PapertrailTransport(winstonPapertrail) ]
+  transports: [ paperTrailTransport ]
 });
 
-module.exports = logger;
+if (process.env.NODE_ENV === "development") {
+  logger.add(new winston.transports.Console({
+    format: winston.format.simple(),
+  }));
+  logger.remove(paperTrailTransport)
+};
+
+const logError = (error) => {
+  logger.error(error);
+};
+
+module.exports = {
+  logError
+};
