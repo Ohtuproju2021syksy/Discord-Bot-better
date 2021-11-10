@@ -28,7 +28,7 @@ const execute = async (interaction, client, models) => {
     (role) => role.name === courseRole,
   )?.members.size;
 
-  let instructors = listCourseInstructors(guild, courseRole, courseAdminRole);
+  let instructors = await listCourseInstructors(guild, courseRole, courseAdminRole);
   if (instructors === "") {
     instructors = `No instructors for ${courseRole}`;
   }
