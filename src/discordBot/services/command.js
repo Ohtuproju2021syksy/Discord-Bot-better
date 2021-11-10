@@ -7,6 +7,7 @@ const clientId = process.env.BOT_ID;
 const guildId = process.env.GUILD_ID;
 const token = process.env.DISCORD_BOT_TOKEN;
 const { findCoursesFromDb } = require("../../db/services/courseService");
+const { logError } = require("./logger");
 
 const getCourseChoices = async (showPrivate, Course) => {
   showPrivate = showPrivate ? undefined : false;
@@ -107,6 +108,7 @@ const deployCommands = async (commands) => {
       console.log("Successfully registered application commands.");
     }
     catch (error) {
+      logError(error);
       console.error(error);
     }
   })();

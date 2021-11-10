@@ -5,6 +5,7 @@ const {
   sendMessageToTelegram } = require("../../bridge/service");
 const { findCourseFromDb } = require("../../db/services/courseService");
 const { lockTelegramCourse } = require("../../bridge/service");
+const { logError } = require("../../discordBot/services/logger");
 
 
 const execute = async (ctx, message, telegramClient, Course) => {
@@ -23,7 +24,13 @@ const execute = async (ctx, message, telegramClient, Course) => {
       return await sendMessageToTelegram(id,
         `Bridge not created: the bridge already exists ${telegramCourseName} <--> ${group.name}`);
     }
-    await channel.createWebhook(discordCourseName, { avatar: "https://cdn.discordapp.com/embed/avatars/1.png" }).catch(console.error);
+    try {
+      await channel.createWebhook(discordCourseName, { avatar: "https://cdn.discordapp.com/embed/avatars/1.png" });
+    }
+    catch (error) {
+      console.log(error);
+      logError(error);
+    }
     const databaseValue = await findCourseFromDb(discordCourseName, Course);
     if (databaseValue.telegramId) {
       return await sendMessageToTelegram(id,
