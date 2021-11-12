@@ -10,7 +10,6 @@ const defaultRouteHandler = require("./routes/defaultRouteHandler");
 const defaultRouteErrorHandler = require("./routes/defaultRouteErrorHandler");
 const flash = require("connect-flash");
 const path = require('path');
-const exp = require("constants");
 require("./strategies/discordstrategy");
 
 const SequelizeStore = require("connect-session-sequelize")(session.Store);
@@ -35,7 +34,7 @@ module.exports = (sequelize) => {
   app.use(passport.session());
 
   app.use(express.static(path.join(__dirname, "public")));
-  //app.use("/", defaultRouteHandler);
+  app.use("/", defaultRouteHandler);
   app.use(flash());
   app.use("/discordAuth", discordAuthRoute);
   app.use("/join", discordJoinRoute);
