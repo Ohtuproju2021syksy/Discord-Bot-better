@@ -1,0 +1,21 @@
+body {
+    height: 100vh;
+}
+
+#error {
+    display: block;
+    margin: 10vh;
+    text-align: center;
+    font-size: 3vh;
+}
+
+#logo {
+    height: 20vh;
+
+}
+
+#logo img {
+    height: 20vh;
+    display: block;
+    margin: auto;
+}
