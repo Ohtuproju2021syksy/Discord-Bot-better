@@ -1,18 +1,16 @@
 const {
   findOrCreateRoleWithName,
-  updateGuideMessage,
   createInvitation,
   findCategoryWithCourseName,
-  createCourseToDatabase,
-  removeCourseFromDb,
-  findChannelWithNameAndType,
   findChannelWithId,
   msToMinutesAndSeconds,
   findOrCreateChannel,
   setCoursePositionABC,
   isCourseCategory,
   getCourseNameFromCategory,
-  findAllCourseNames } = require("../../src/discordBot/services/service");
+  findAllCourseNames,
+  findChannelWithNameAndType } = require("../../src/discordBot/services/service");
+const { updateGuideMessage, createCourseToDatabase, removeCourseFromDb } = require("../../src/db/services/courseService");
 
 const createGuidePinnedMessage = async (guild) => {
   const rows = courses

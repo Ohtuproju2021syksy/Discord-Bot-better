@@ -1,18 +1,18 @@
 const { execute } = require("../../../src/discordBot/commands/faculty/create_course");
 const { sendEphemeral, sendErrorEphemeral, editEphemeral } = require("../../../src/discordBot/services/message");
 const {
-  findCourseFromDb,
-  findCourseFromDbWithFullName,
   findOrCreateRoleWithName,
   findOrCreateChannel,
   setCoursePositionABC,
-  createInvitation,
-  updateGuide } = require("../../../src/discordBot/services/service");
+  createInvitation } = require("../../../src/discordBot/services/service");
+const { findCourseFromDb, findCourseFromDbWithFullName, updateGuide, createCourseToDatabase } = require("../../../src/db/services/courseService");
 const { courseAdminRole } = require("../../../config.json");
 const models = require("../../mocks/mockModels");
 
 jest.mock("../../../src/discordBot/services/message");
 jest.mock("../../../src/discordBot/services/service");
+jest.mock("../../../src/db/services/courseService");
+jest.mock("../../../src/db/services/channelService");
 
 findOrCreateRoleWithName.mockImplementation((name) => { return { id: Math.floor(Math.random() * 10) + 5, name: name }; });
 findCourseFromDbWithFullName
@@ -22,6 +22,8 @@ findCourseFromDb
   .mockImplementation(() => false)
   .mockImplementationOnce(() => true)
   .mockImplementationOnce(() => true);
+
+createCourseToDatabase.mockImplementation(() => {return { id:  Math.floor(Math.random() * 10) + 5 }; });
 
 const { defaultTeacherInteraction, defaultStudentInteraction } = require("../../mocks/mockInteraction");
 defaultTeacherInteraction.options = {

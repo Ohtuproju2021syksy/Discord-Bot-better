@@ -3,7 +3,7 @@ const {
   validDiscordChannel,
   sendMessageToDiscord,
   sendMessageToTelegram } = require("../../bridge/service");
-const { findCourseFromDb } = require("../../discordBot/services/service");
+const { findCourseFromDb } = require("../../db/services/courseService");
 const { lockTelegramCourse } = require("../../bridge/service");
 
 

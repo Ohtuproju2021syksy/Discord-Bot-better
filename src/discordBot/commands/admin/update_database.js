@@ -1,20 +1,89 @@
-const { createChannelToDatabase, findCourseFromDb, getCourseNameFromCategory } = require("../../services/service");
+const { createCourseMemberToDatabase } = require("../../../db/services/courseMemberService");
+const { getCourseNameFromCategory, isCourseCategory } = require("../../services/service");
+const { findCourseFromDb } = require("../../../db/services/courseService");
+const { createChannelToDatabase } = require("../../../db/services/channelService");
+const { createUserToDatabase } = require("../../../db/services/userService");
+const { facultyRole } = require("../../../../config.json");
+const { courseAdminRole } = require("../../../../config.json");
 
 const execute = async (message, args, models) => {
   if (message.member.permissions.has("ADMINISTRATOR")) {
     const guild = message.client.guild;
-    const channelCache = guild.channels.cache;
+    await saveChannelsToDb(models, guild);
+    await saveUsersToDb(models, guild);
+    await saveCourseMembersToDb(models, guild);
+  }
+};
 
-    const courseTextChannels = channelCache.filter(c => c.type === "GUILD_TEXT" && c.name !== "general" && c.parentId != null);
-    const channelsToSave = courseTextChannels.filter(c => !c.name.includes("_announcement") && !c.name.includes("_general"));
-    const channelsAsArray = Array.from(channelsToSave.values());
+const saveChannelsToDb = async (models, guild) => {
+  const channelCache = guild.channels.cache;
+  const categoryChannels = channelCache.filter(c => isCourseCategory(c)).map(c => c.id);
+  const courseChannels = channelCache.filter(c => categoryChannels.includes(c.parentId));
+  const channelsAsArray = Array.from(courseChannels.values());
 
-    for (const channel in channelsAsArray) {
-      const currentChannel = channelsAsArray[channel];
-      const courseIdentifier = getCourseNameFromCategory(currentChannel.parent);
-      const course = await findCourseFromDb(courseIdentifier, models.Course);
-      if (course) {
-        await createChannelToDatabase(course.id, currentChannel.name, models.Channel);
+  for (const channel in channelsAsArray) {
+    const currentChannel = channelsAsArray[channel];
+    const courseIdentifier = getCourseNameFromCategory(currentChannel.parent);
+    const course = await findCourseFromDb(courseIdentifier, models.Course);
+    if (course) {
+      const defaultChannel = currentChannel.name
+        .includes("_general") || currentChannel.name.includes("_announcement") || currentChannel.type === "GUILD_VOICE";
+      const voiceChannel = currentChannel.type === "GUILD_VOICE";
+      await createChannelToDatabase({
+        courseId: course.id,
+        name: currentChannel.name,
+        defaultChannel: defaultChannel,
+        voiceChannel: voiceChannel }, models.Channel);
+    }
+  }
+};
+
+const saveUsersToDb = async (models, guild) => {
+  const memberCache = guild.members.cache;
+  const members = memberCache.map(m => m.user).filter(u => !u.bot);
+
+  const admins = guild.roles.cache
+    .find(r => r.name === "admin")?.members
+    .map(m => m.user.id);
+
+  const faculty = guild.roles.cache
+    .find(r => r.name === facultyRole)?.members
+    .map(m => m.user.id);
+
+  await Promise.all(members
+    .map(async (m) => {
+      const user = await createUserToDatabase(m.id, m.username, models.User);
+      if (admins.includes(m.id)) user.admin = true;
+      if (faculty.includes(m.id)) user.faculty = true;
+      user.save();
+    }));
+};
+
+const saveCourseMembersToDb = async (models, guild) => {
+  const courses = guild.channels.cache
+    .filter(c => isCourseCategory(c))
+    .map((c) => c);
+
+
+  for (const course in courses) {
+    const courseIdentifier = getCourseNameFromCategory(courses[course].name);
+    const courseMembers = guild.roles.cache.find(
+      (role) => role.name === courseIdentifier,
+    )?.members.map((m) => m.user);
+
+    const courseInstructors = guild.roles.cache.find(
+      (role) => role.name === `${courseIdentifier} ${courseAdminRole}`,
+    )?.members.map((m) => m.user.id);
+
+    for (const courseMember in courseMembers) {
+      const user = courseMembers[courseMember];
+      const userFromDb = await createUserToDatabase(user.id, user.username, models.User);
+      const courseFromDb = await findCourseFromDb(courseIdentifier, models.Course);
+      const courseMemberInstance = await createCourseMemberToDatabase(userFromDb.id, courseFromDb.id, models.CourseMember);
+
+      if (courseInstructors.includes(user.id)) {
+        courseMemberInstance.instructor = true;
+        courseMemberInstance.save();
       }
     }
   }

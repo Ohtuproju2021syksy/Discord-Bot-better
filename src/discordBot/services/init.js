@@ -1,5 +1,6 @@
-const { findOrCreateRoleWithName, updateGuide } = require("./service");
+const { findOrCreateRoleWithName } = require("./service");
 const { facultyRole, githubRepo } = require("../../../config.json");
+const { updateGuide } = require("../../db/services/courseService");
 
 const findOrCreateChannel = async (channelObject, guild) => {
   const { name, options } = channelObject;

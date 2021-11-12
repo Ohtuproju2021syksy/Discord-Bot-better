@@ -1,17 +1,17 @@
 const { execute } = require("../../../src/discordBot/commands/faculty/lock_chat");
 const { editEphemeral, editErrorEphemeral, sendEphemeral, confirmChoice } = require("../../../src/discordBot/services/message");
 const {
-  updateGuide,
   msToMinutesAndSeconds,
-  setCourseToLocked,
   checkCourseCooldown,
   getUnlockedCourse } = require("../../../src/discordBot/services/service");
+const { updateGuide, setCourseToLocked } = require("../../../src/db/services/courseService");
 
 const { lockTelegramCourse } = require("../../../src/bridge/service");
 
 jest.mock("../../../src/bridge/service");
 jest.mock("../../../src/discordBot/services/message");
 jest.mock("../../../src/discordBot/services/service");
+jest.mock("../../../src/db/services/courseService");
 
 const time = "4:59";
 const initialResponse = "Locking course...";

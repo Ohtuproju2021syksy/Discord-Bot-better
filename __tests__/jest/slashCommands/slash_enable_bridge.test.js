@@ -1,20 +1,21 @@
 const { execute } = require("../../../src/discordBot/commands/faculty/enable_bridge");
 const { editEphemeral, editErrorEphemeral, sendEphemeral, confirmChoice } = require("../../../src/discordBot/services/message");
-const { findChannelFromDbByName, findCourseFromDb, isCourseCategory } = require("../../../src/discordBot/services/service");
+const { findCourseFromDb } = require("../../../src/db/services/courseService");
+const { findChannelFromDbByName } = require("../../../src/db/services/channelService");
+const { isCourseCategory } = require("../../../src/discordBot/services/service");
 
 
 const models = require("../../mocks/mockModels");
 jest.mock("../../../src/discordBot/services/message");
 jest.mock("../../../src/discordBot/services/service");
+jest.mock("../../../src/db/services/courseService");
+jest.mock("../../../src/db/services/channelService");
 
 const { defaultTeacherInteraction } = require("../../mocks/mockInteraction");
 const initalResponse = "Enabling the bridge to Telegram...";
-const channelModelInstanceMock = { save: jest.fn(), bridged: false };
-
-findChannelFromDbByName
-  .mockImplementation(() => ({ bridged: true }))
-  .mockImplementationOnce(() => null)
-  .mockImplementationOnce(() => channelModelInstanceMock);
+const defaultChannelModelInstanceMock = { save: jest.fn(), bridged: false, defaultChannel: true };
+const nonDefaultBridgedChannelModelInstanceMock = { save: jest.fn(), bridged: true, defaultChannel: false };
+const nonDefaultChannelModelInstanceMock = { save: jest.fn(), bridged: false, defaultChannel: false };
 
 findCourseFromDb.mockImplementation(() => ({ telegramId: 1 }));
 confirmChoice.mockImplementation(() => true);
@@ -36,6 +37,7 @@ describe("slash enable_bridge command", () => {
   });
 
   test("Cannot use command on default course channels", async () => {
+    findChannelFromDbByName.mockImplementation(() => defaultChannelModelInstanceMock);
     isCourseCategory.mockImplementationOnce(() => (true));
     const client = defaultTeacherInteraction.client;
     defaultTeacherInteraction.channelId = 3;
@@ -49,6 +51,7 @@ describe("slash enable_bridge command", () => {
   });
 
   test("Disabled bridge on channel can be enabled", async () => {
+    findChannelFromDbByName.mockImplementation(() => nonDefaultChannelModelInstanceMock);
     isCourseCategory.mockImplementationOnce(() => (true));
     const client = defaultTeacherInteraction.client;
     defaultTeacherInteraction.channelId = 3;
@@ -63,6 +66,7 @@ describe("slash enable_bridge command", () => {
   });
 
   test("Attempting to enable a channel that has not been disabled responds with correct ephemeral", async () => {
+    findChannelFromDbByName.mockImplementation(() => nonDefaultBridgedChannelModelInstanceMock);
     isCourseCategory.mockImplementationOnce(() => (true));
     const client = defaultTeacherInteraction.client;
     defaultTeacherInteraction.channelId = 3;

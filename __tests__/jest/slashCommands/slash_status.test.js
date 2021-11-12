@@ -3,13 +3,17 @@ const { sendEphemeral, editErrorEphemeral, editEphemeralForStatus } = require(".
 const {
   getCourseNameFromCategory,
   createCourseInvitationLink,
-  findCourseFromDb,
-  findChannelsByCourse,
-  isCourseCategory } = require("../../../src/discordBot/services/service");
+  isCourseCategory,
+  listCourseInstructors } = require("../../../src/discordBot/services/service");
+const { findCourseFromDb } = require("../../../src/db/services/courseService");
+const { findChannelsByCourse } = require("../../../src/db/services/channelService");
+
 const models = require("../../mocks/mockModels");
 
 jest.mock("../../../src/discordBot/services/message");
 jest.mock("../../../src/discordBot/services/service");
+jest.mock("../../../src/db/services/courseService");
+jest.mock("../../../src/db/services/channelService");
 
 
 const course = { name: "test", fullName: "test course", code: "101", private: false };
@@ -17,6 +21,7 @@ const channel = { courseId: 1, name: "test_channel", topic: "test", bridged: tru
 const url = "mockUrl";
 const initialResponse = "Fetching status...";
 
+listCourseInstructors.mockImplementation(() => "");
 findCourseFromDb.mockImplementation(() => course);
 findChannelsByCourse.mockImplementation(() => [channel]);
 
@@ -33,7 +38,7 @@ Hidden: ${course.private}
 Invitation Link: ${url}
 Bridge blocked on channels: No blocked channels
 
-Instructors: No instructors
+Instructors: No instructors for undefined
 Members: undefined
   `;
 };
