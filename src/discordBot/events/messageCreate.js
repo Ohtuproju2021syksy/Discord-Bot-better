@@ -1,7 +1,10 @@
 const { sendReplyMessage } = require("../services/message");
+const { spamHandler } = require("../services/spamHandler");
 const prefix = process.env.PREFIX;
 
 const execute = async (message, client, models) => {
+
+  await spamHandler(message, client);
 
   let args = message.content.slice(prefix.length).trim().split(/ +/);
   const commandName = args.shift().toLowerCase();

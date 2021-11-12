@@ -24,6 +24,12 @@ const sendErrorReportNoInteraction = async (telegramId, member, channel, client,
   await commandsChannel.send({ content: error });
 };
 
+const sendSpamReport = async (member, channel, client) => {
+  const commandsChannel = client.guild.channels.cache.find((c) => validateChannel(c));
+  const msg = `**SPAM DETECTED!**\nMember: ${member}\nChannel: ${channel}`;
+  await commandsChannel.send({ content: msg });
+};
+
 const sendErrorEphemeral = async (interaction, msg) => {
   if (interaction.deferred || interaction.replied) {
     await interaction.editReply({ content: `Error: ${msg}`, ephemeral: true });
@@ -188,6 +194,7 @@ module.exports = {
   sendErrorReport,
   sendErrorEphemeral,
   sendErrorReportNoInteraction,
+  sendSpamReport,
   sendEphemeral,
   editEphemeral,
   editEphemeralWithComponents,
