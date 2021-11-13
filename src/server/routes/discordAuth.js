@@ -4,16 +4,17 @@ const passport = require("passport");
 const { getRoles, addRole, getMember, addMember } = require("../api/api");
 const { createCourseMemberToDatabase } = require("../../db/services/courseMemberService");
 const { findCourseFromDb } = require("../../db/services/courseService");
-const { findUserByDiscordId } = require("../../db/services/userService");
+const { findUserByDiscordId, saveFacultyRoleToDb } = require("../../db/services/userService");
 const models = require("../../db/dbInit");
+const { facultyRole } = require("../../../config.json");
 
 router.get("/", passport.authenticate("discord", {
   failureRedirect: process.env.DISCORD_REDIRECT_URL + "/unauthorized",
   failureFlash: true,
 }), async (req, res) => {
-  console.log("redirected to discordAuth");
   const roles = await getRoles();
   const role = roles.find(r => r.id === req.authInfo.state.roleID);
+  const teacherRole = roles.find(r => r.name === facultyRole);
   const member = await getMember(req.user.id);
   if (member.user) {
     await addRole(member.user, role);
@@ -21,8 +22,11 @@ router.get("/", passport.authenticate("discord", {
   else {
     await addMember(req.user, role);
   }
-  const course = await findCourseFromDb(role.name, models.Course);
   const user = await findUserByDiscordId(req.user.id, models.User);
+  if (role.id === teacherRole.id) {
+    await saveFacultyRoleToDb(user.id, models.User);
+  }
+  const course = await findCourseFromDb(role.name, models.Course);
   if (course) {
     await createCourseMemberToDatabase(user.id, course.id, models.CourseMember);
   }
