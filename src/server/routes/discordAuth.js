@@ -24,7 +24,7 @@ router.get("/", passport.authenticate("discord", {
   }
   const user = await findUserByDiscordId(req.user.id, models.User);
   if (role.id === teacherRole.id) {
-    await saveFacultyRoleToDb(user.id, models.User);
+    await saveFacultyRoleToDb(user.discordId, models.User);
   }
   const course = await findCourseFromDb(role.name, models.Course);
   if (course) {
