@@ -22,7 +22,9 @@ router.get("/", passport.authenticate("discord", {
   }
   const course = await findCourseFromDb(role.name, models.Course);
   const user = await findUserByDiscordId(req.user.id, models.User);
-  await createCourseMemberToDatabase(user.id, course.id, models.CourseMember);
+  if (course) {
+    await createCourseMemberToDatabase(user.id, course.id, models.CourseMember);
+  }
   res.redirect(process.env.DISCORD_SERVER_INVITE);
 });
 
