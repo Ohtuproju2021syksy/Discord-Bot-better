@@ -116,31 +116,36 @@ Users with faculty rights can disable the bridge between a certain course channe
 
 To enable the bridge on a channel, write the command `/enable_bridge` on that channel.
 
-### List of commands
+#### Faculty specific commands ####
 
 Command | Explanation | Arguments
 --------|-------------|----------:
-[/add_instructor](./commands/add_instructor.md) | Give instructor role to another user, e.g., /add_instructor @username. | :heavy_check_mark:
-[/auth](./commands/auth.md) | Returns the URL from which the faculty role can be obtained. | :x:
-[/courses](./commands/courses.md) | Returns a list of all courses. | :x:
-[/create_channel](./commands/create_channel.md) | Create new text channel inside a course, e.g., /create_channel feedback. | :heavy_check_mark:
-[/create_course](./commands/create_course.md) | Create a new course | :heavy_check_mark:
-[/create_poll](./commands/create_poll.md) | Create a new poll | :heavy_check_mark:
-[/delete_bridge](./commands/delete_bridge.md) | Delete the bridge from specified Course, e.g., /delete_bridge ohpe | :heavy_check_mark:
-[/delete_channel](./commands/delete_channel.md) | Remove given text channel inside a course, e.g., /delete_channel feedback. | :heavy_check_mark:
-[/disable_bridge](./commands/disable_bridge.md) | Disable the bridge between Telegram and the (non-default) course channel it is used in. | :x:
-[/enable_bridge](./commands/enable_bridge.md) | Enable the bridge between Telegram and the (non-default) course channel it is used in. | :x:
-[/edit_course](./commands/edit_course.md) | Edit course information, options; coursecode, full name, nickname | :heavy_check_mark:
-[/edit_topic](./commands/edit_topic.md) | Edit topic, must be used in a course channel, e.g., /edit_topic A new topic. | :heavy_check_mark:
-[/hide_course](./commands/hide_course.md)| Make given course private, e.g., /hide_course weba. | :heavy_check_mark:
-[/unhide_course](./commands/unhide_course.md) | Make given course public, e.g., /unhide_course weba. | :heavy_check_mark:
-[/lock_chat](./commands/lock_chat.md) | Lock the chat (meaning only instructors and faculty can post messages) of a given course | :heavy_check_mark:
-[/unlock_chat](./commands/unlock_chat.md) | Unlock the chat of a given course | :heavy_check_mark:
-[/help](./commands/help.md) | Returns a list of commands with info or info about a specific command. | :o:
-[/instructors](./commands/instructors.md) | Used in course channel returns a list of course instructors. Can be used anywhere when a parameter is given. | :o:
-[/join](./commands/join.md) | Joins you into the course given, e.g., /join ohpe. | :heavy_check_mark:
-[/leave](./commands/leave.md) | Remove you from the course given, e.g., /leave ohpe. | :heavy_check_mark:
-[/status](./commands/status.md) | Used in course channel returns general info about the course | :heavy_check_mark:
+[/add_instructor](./commands/faculty/add_instructor.md) | Give instructor role to another user, e.g., /add_instructor @username. | :heavy_check_mark:
+[/create_channel](./commands/faculty/create_channel.md) | Create new text channel inside a course, e.g., /create_channel feedback. | :heavy_check_mark:
+[/create_course](./commands/faculty/create_course.md) | Create a new course | :heavy_check_mark:
+[/create_poll](./commands/faculty/create_poll.md) | Create a new poll | :heavy_check_mark:
+[/delete_bridge](./commands/faculty/delete_bridge.md) | Delete the bridge from specified Course, e.g., /delete_bridge ohpe | :heavy_check_mark:
+[/delete_channel](./commands/faculty/delete_channel.md) | Remove given text channel inside a course, e.g., /delete_channel feedback. | :heavy_check_mark:
+[/disable_bridge](./commands/faculty/disable_bridge.md) | Disable the bridge between Telegram and the (non-default) course channel it is used in. | :x:
+[/edit_course](./commands/faculty/edit_course.md) | Edit course information, options; coursecode, full name, nickname | :heavy_check_mark:
+[/edit_topic](./commands/faculty/edit_topic.md) | Edit topic, must be used in a course channel, e.g., /edit_topic A new topic. | :heavy_check_mark:
+[/enable_bridge](./commands/faculty/enable_bridge.md) | Enable the bridge between Telegram and the (non-default) course channel it is used in. | :x:
+[/hide_course](./commands/faculty/hide_course.md)| Make given course private, e.g., /hide_course weba. | :heavy_check_mark:
+[/lock_chat](./commands/faculty/lock_chat.md) | Lock the chat (meaning only instructors and faculty can post messages) of a given course | :heavy_check_mark:
+[/status](./commands/faculty/status.md) | Used in course channel returns general info about the course | :heavy_check_mark:
+[/unhide_course](./commands/faculty/unhide_course.md) | Make given course public, e.g., /unhide_course weba. | :heavy_check_mark:
+[/unlock_chat](./commands/faculty/unlock_chat.md) | Unlock the chat of a given course | :heavy_check_mark:
+
+#### General commands ####
+
+Command | Explanation | Arguments
+--------|-------------|----------:
+[/auth](./commands/general/auth.md) | Returns the URL from which the faculty role can be obtained. | :x:
+[/courses](./commands/general/courses.md) | Returns a list of all courses. | :x:
+[/help](./commands/general/help.md) | Returns a list of commands with info or info about a specific command. | :o:
+[/instructors](./commands/general/instructors.md) | Used in course channel returns a list of course instructors. Can be used anywhere when a parameter is given. | :o:
+[/join](./commands/general/join.md) | Joins you into the course given, e.g., /join ohpe. | :heavy_check_mark:
+[/leave](./commands/general/leave.md) | Remove you from the course given, e.g., /leave ohpe. | :heavy_check_mark:
 
 :o: means that the command can be used with or without arguments
 

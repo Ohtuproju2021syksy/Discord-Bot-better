@@ -42,6 +42,13 @@ defaultTeacherInteraction.options = {
     .fn((option) => {
       const options = {
         options: "code",
+        new_value: "testing",
+      };
+      return options[option];
+    })
+    .mockImplementationOnce((option) => {
+      const options = {
+        options: "code",
         new_value: "test",
       };
       return options[option];
@@ -81,7 +88,7 @@ describe("slash edit command", () => {
   });
 
   test("if target channel code exists with correct ephemeral", async () => {
-    findCourseFromDb.mockImplementation(() => {
+    findCourseFromDb.mockImplementationOnce(() => {
       return {
         code: "test2",
         name: "test2",
@@ -100,7 +107,7 @@ describe("slash edit command", () => {
 
   test("edit with valid args responds with correct ephemeral", async () => {
     findCourseFromDb
-      .mockImplementation(() => {
+      .mockImplementationOnce(() => {
         return {
           code: "tkt",
           name: "test",
@@ -119,15 +126,7 @@ describe("slash edit command", () => {
   });
 
   test("command has cooldown", async () => {
-    findCourseFromDb
-      .mockImplementation(() => {
-        ({
-          code: "tkt",
-          name: "test",
-          save: jest.fn(),
-        });
-      });
-    checkCourseCooldown.mockImplementation(() => time);
+    checkCourseCooldown.mockImplementationOnce(() => time);
     const client = defaultTeacherInteraction.client;
     defaultTeacherInteraction.channelId = 2;
     const response = `Command cooldown [mm:ss]: you need to wait ${time}.`;
@@ -138,4 +137,5 @@ describe("slash edit command", () => {
     expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
     expect(editErrorEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
   });
+
 });
