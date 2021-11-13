@@ -2,16 +2,16 @@
 
 ### Admin commands
 
-#### Note that admin commands must be run inside the _commands_ text channel.
+#### Note that admin commands must be run inside the _#commands_ text channel.
 
 Command | Description | Example
 --- |--- | ---
-`/delete_command` | Delete the given slash command. | `/delete help`
-`/delete_course` | Delete the given course channel. | `/delete_course ohpe`
-`/reload_commands` | Reload all slash commands, returning deleted commands, registering new commands, and updating command permissions. | `/reload_commands`
-`/sort_courses` | Sort courses alphabetically. | `/sort_courses`
-`/update_instructors` | Update course instructor roles. | `/update_instructors`
-`/update_invlinkss` | Update course invitation links. | `/update_invlinkss`
+`!delete_command` | Delete the given slash command. | `!delete help`
+`!delete_course` | Delete the given course channel. | `!delete_course ohpe`
+`!reload_commands` | Reload all slash commands, returning deleted commands, registering new commands, and updating command permissions. | `!reload_commands`
+`!sort_courses` | Sort courses alphabetically. | `!sort_courses`
+`!update_instructors` | Update course instructor roles. | `!update_instructors`
+`!update_invitelinks` | Update course invitation links. | `!update_invitelinks`
 
 ### Faculty commands
 
