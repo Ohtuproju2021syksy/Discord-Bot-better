@@ -11,6 +11,7 @@ router.get("/", passport.authenticate("discord", {
   failureRedirect: process.env.DISCORD_REDIRECT_URL + "/unauthorized",
   failureFlash: true,
 }), async (req, res) => {
+  console.log("redirected to discordAuth");
   const roles = await getRoles();
   const role = roles.find(r => r.id === req.authInfo.state.roleID);
   const member = await getMember(req.user.id);
