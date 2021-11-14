@@ -107,3 +107,5 @@ dist
 *.sqlite
 
 *.swp
+
+/src/promMetrics/graph/

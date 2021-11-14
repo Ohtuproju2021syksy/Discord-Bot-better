@@ -5,9 +5,11 @@ const {
   msToMinutesAndSeconds,
   getCourseNameFromCategory,
   checkCourseCooldown,
-  isCourseCategory } = require("../../../src/discordBot/services/service");
+  isCourseCategory,
+  findChannelWithNameAndType } = require("../../../src/discordBot/services/service");
 const { findCourseFromDb } = require("../../../src/db/services/courseService");
 const { editChannelNames } = require("../../../src/db/services/channelService");
+
 const models = require("../../mocks/mockModels");
 
 jest.mock("../../../src/discordBot/services/message");
@@ -15,34 +17,24 @@ jest.mock("../../../src/discordBot/services/service");
 jest.mock("../../../src/db/services/courseService");
 jest.mock("../../../src/db/services/channelService");
 
-afterEach(() => {
-  jest.clearAllMocks();
-});
-
 const time = "4:59";
 confirmChoice.mockImplementation(() => true);
 msToMinutesAndSeconds.mockImplementation(() => time);
 findCategoryWithCourseName.mockImplementation((name) => ({ name: `📚 ${name}` }));
 getCourseNameFromCategory.mockImplementation(() => "test");
-findCourseFromDb
-  .mockImplementation(() => {
-    return {
-      code: "tkt",
-      name: "test",
-      save: jest.fn(),
-    };
-  })
-  .mockImplementationOnce(() => {
-    return {
-      code: "test",
-      name: "test",
-    };
-  })
-  .mockImplementationOnce(() => false);
 
 isCourseCategory.mockImplementationOnce(() => (false));
 isCourseCategory.mockImplementation(() => (true));
+
 editChannelNames.mockImplementation(() => null);
+
+findChannelWithNameAndType.mockImplementation(() => {
+  return {
+    code: "test",
+    name: "test2",
+    save: jest.fn(),
+  };
+});
 
 const { defaultTeacherInteraction, defaultStudentInteraction } = require("../../mocks/mockInteraction");
 defaultTeacherInteraction.options = {
@@ -88,7 +80,13 @@ describe("slash edit command", () => {
     expect(editErrorEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
   });
 
-  test("if target channel name exists with correct ephemeral", async () => {
+  test("if target channel code exists with correct ephemeral", async () => {
+    findCourseFromDb.mockImplementation(() => {
+      return {
+        code: "test2",
+        name: "test2",
+      };
+    });
     const client = defaultTeacherInteraction.client;
     defaultTeacherInteraction.channelId = 2;
     const response = "Course code already exists";
@@ -101,6 +99,14 @@ describe("slash edit command", () => {
   });
 
   test("edit with valid args responds with correct ephemeral", async () => {
+    findCourseFromDb
+      .mockImplementation(() => {
+        return {
+          code: "tkt",
+          name: "test",
+          save: jest.fn(),
+        };
+      });
     const client = defaultTeacherInteraction.client;
     defaultTeacherInteraction.channelId = 2;
     const response = "Course information has been changed";
@@ -113,6 +119,14 @@ describe("slash edit command", () => {
   });
 
   test("command has cooldown", async () => {
+    findCourseFromDb
+      .mockImplementation(() => {
+        ({
+          code: "tkt",
+          name: "test",
+          save: jest.fn(),
+        });
+      });
     checkCourseCooldown.mockImplementation(() => time);
     const client = defaultTeacherInteraction.client;
     defaultTeacherInteraction.channelId = 2;

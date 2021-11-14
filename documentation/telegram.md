@@ -2,7 +2,7 @@
 
 ## Create your Telegram bot
 
-Go to Telegram and search and join the channel **@botfather**. You can see all the commands byt typing  `/start`.
+Go to Telegram and search and find the user **@botfather**. You can see all the commands byt typing  `/start`.
 
 Next type `/newbot` and press enter. Give your bot a name, it must end in `bot`. Your bot is now ready, and you should get this feedback:
 
@@ -19,7 +19,7 @@ From there, choose your bot. Under `What can this admin do?` mark all the rights
 
 ## Make the bridge
 
-On your telegram channel that you want to bridge to discord course `courseName` send command `/bridge <courseName>`.
+On your telegram group that you want to bridge to discord course `courseName` send command `/bridge <courseName>`.
 For example, to bridge telegram group `tkt-tito` to discord course `tito` use command `/bridge tito` in telegram group.
 
 Bot answers
@@ -31,4 +31,17 @@ if bridge is created successfully.
 If `courseName` is invalid bot answers with message
 ```
 Bridge not created: Invalid discord channel <courseName>
+```
+if the course is bridged already bot will answer with message
+```
+Bridge not created: this course <courseName> has bridge already
+```
+
+### Delete the bridge
+
+If you want to delete the bridge between Discord course and Telegram group, you can do so by using `/delete_bridge <courseName>` command in Discord.
+
+If the deletion is succesfull the bot will answer with message
+```
+Deleted Telegram bridge from course: <courseName>
 ```
