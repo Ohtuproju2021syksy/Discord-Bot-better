@@ -3,9 +3,8 @@ const {
   msToMinutesAndSeconds,
   handleCooldown,
   checkCourseCooldown,
-  getPublicCourse,
-  getLockedCourse } = require("../../services/service");
-const { updateGuide, setCourseToPrivate } = require("../../../db/services/courseService");
+  findCategoryWithCourseName } = require("../../services/service");
+const { updateGuide, setCourseToPrivate, findCourseFromDb } = require("../../../db/services/courseService");
 const { sendEphemeral, editErrorEphemeral, editEphemeral, confirmChoice } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
 
@@ -19,8 +18,8 @@ const execute = async (interaction, client, models) => {
     return await editEphemeral(interaction, "Command declined");
   }
 
-  const category = getPublicCourse(courseName, guild);
-  if (!category) {
+  const categoryInstance = await findCourseFromDb(courseName, models.Course);
+  if (!categoryInstance || categoryInstance.private) {
     return await editErrorEphemeral(interaction, `Invalid course name: ${courseName} or the course is private already!`);
   }
 
@@ -31,7 +30,8 @@ const execute = async (interaction, client, models) => {
     return await editErrorEphemeral(interaction, `Command cooldown [mm:ss]: you need to wait ${time}!`);
   }
   else {
-    if (getLockedCourse(courseName, guild)) {
+    const category = findCategoryWithCourseName(courseName, guild);
+    if (categoryInstance.locked) {
       await category.setName(`👻🔐 ${courseName}`);
     }
     else {

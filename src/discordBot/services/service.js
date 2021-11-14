@@ -9,22 +9,6 @@ let invite_url = "";
 
 process.env.NODE_ENV === "production" ? invite_url = `${process.env.BACKEND_SERVER_URL}` : invite_url = `${process.env.BACKEND_SERVER_URL}:${process.env.PORT}`;
 
-const getUnlockedCourse = (name, guild) => {
-  return guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name.toLowerCase().includes(name.toLowerCase()) && !c.name.toLowerCase().includes("🔐"));
-};
-
-const getLockedCourse = (name, guild) => {
-  return guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name.toLowerCase().includes(name.toLowerCase()) && c.name.toLowerCase().includes("🔐"));
-};
-
-const getHiddenCourse = (name, guild) => {
-  return guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name.toLowerCase().includes(name.toLowerCase()) && c.name.toLowerCase().includes("👻"));
-};
-
-const getPublicCourse = (name, guild) => {
-  return guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name.toLowerCase().includes(name.toLowerCase()) && !c.name.toLowerCase().includes("👻"));
-};
-
 const cooldownMap = new Map();
 
 const cooldownTimeMs = 1000 * 60 * 5;
@@ -279,10 +263,6 @@ module.exports = {
   getCourseNameFromCategory,
   findAllCourseNames,
   findAndUpdateInstructorRole,
-  getHiddenCourse,
-  getLockedCourse,
-  getPublicCourse,
-  getUnlockedCourse,
   listCourseInstructors,
   updateInviteLinks,
   downloadImage,
