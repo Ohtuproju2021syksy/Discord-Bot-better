@@ -143,15 +143,6 @@ const containsEmojis = (text) => {
   return result;
 };
 
-const isCourseCategory = (channel) => {
-  if (channel && channel.name) {
-    const result = emojiRegex.test(channel.name);
-    emojiRegex.lastIndex = 0;
-    return result;
-  }
-  return false;
-};
-
 const getCourseNameFromCategory = (category) => {
   let trimmedName = "";
   if (category.name) {
