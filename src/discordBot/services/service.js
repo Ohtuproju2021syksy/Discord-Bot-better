@@ -135,13 +135,6 @@ const deletecommand = async (client, commandToDeleteName) => {
 
 const emojiRegex = /(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/gi;
 
-const isCourseCategory = (channel) => {
-  if (channel && channel.name) {
-    return emojiRegex.test(channel.name);
-  }
-  return false;
-};
-
 const getCourseNameFromCategory = (category) => {
   let trimmedName = "";
   if (category.name) {
@@ -151,17 +144,6 @@ const getCourseNameFromCategory = (category) => {
     trimmedName = category.replace(emojiRegex, "").trim();
   }
   return trimmedName;
-};
-
-const findAllCourseNames = (guild) => {
-  const courseNames = [];
-
-  guild.channels.cache.forEach(channel => {
-    if (isCourseCategory(channel)) {
-      courseNames.push(getCourseNameFromCategory(channel));
-    }
-  });
-  return courseNames;
 };
 
 const findAndUpdateInstructorRole = async (name, guild, courseAdminRole) => {
@@ -259,9 +241,7 @@ module.exports = {
   findOrCreateChannel,
   setCoursePositionABC,
   deletecommand,
-  isCourseCategory,
   getCourseNameFromCategory,
-  findAllCourseNames,
   findAndUpdateInstructorRole,
   listCourseInstructors,
   updateInviteLinks,

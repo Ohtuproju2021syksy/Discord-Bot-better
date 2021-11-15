@@ -8,8 +8,6 @@ const cyrillicPattern = /^\p{Script=Cyrillic}+$/u;
 const { findCourseFromDb } = require("../db/services/courseService");
 const bridgedMessagesCounter = require("../promMetrics/bridgedMessagesCounter");
 
-
-
 const validDiscordChannel = async (courseName) => {
   const guild = await discordClient.guilds.fetch(process.env.GUILD_ID);
   courseName = courseName.replace(/ /g, "-").toLowerCase();

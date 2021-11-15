@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { getCourseNameFromCategory, isCourseCategory, updateInviteLinks } = require("../../services/service");
+const { getCourseNameFromCategory, updateInviteLinks } = require("../../services/service");
 const { findUserByDiscordId } = require("../../../db/services/userService");
-const { findCourseFromDb } = require("../../../db/services/courseService");
+const { findCourseFromDb, isCourseCategory } = require("../../../db/services/courseService");
 const { findCourseMember } = require("../../../db/services/courseMemberService");
 const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../services/message");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
@@ -22,7 +22,7 @@ const execute = async (interaction, client, models) => {
   if (!hasPermission) {
     return editErrorEphemeral(interaction, "You don't have the permission to use this command!");
   }
-  if (!isCourseCategory(channel?.parent)) {
+  if (!await isCourseCategory(channel?.parent, models.Course)) {
     return editErrorEphemeral(interaction, "Command must be used in a course channel!");
   }
 
