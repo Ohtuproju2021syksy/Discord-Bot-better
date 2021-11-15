@@ -243,6 +243,7 @@ const defaultAdminInteraction = {
   options: undefined,
   commandName: "test",
   reply: jest.fn(),
+  editReply: jest.fn(),
 };
 
 module.exports = {

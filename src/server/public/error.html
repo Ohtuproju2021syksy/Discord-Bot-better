@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<head>
+    <link rel="stylesheet" href="css/style.css">
+    <title>Test</title>
+</head>
+<body>
+
+    <div id="error">
+
+        <h3>Hey there! Something went wrong.</h3>
+        <p>Try again or contact a staff member.</p>
+        <p id="msg">Error: </p>
+
+    </div>
+    
+    
+    <div id="logo">
+
+        <img src="images/hy_logo.jpg" alt="hy_logo" />
+
+    </div>
+
+    <script>
+        const params = new URLSearchParams(document.location.search);
+        const msg = params.get("error");
+        console.log(msg);
+        document.getElementById("msg").textContent += msg;
+    </script>
+
+</body>
