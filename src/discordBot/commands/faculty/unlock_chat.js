@@ -3,9 +3,8 @@ const {
   msToMinutesAndSeconds,
   handleCooldown,
   checkCourseCooldown,
-  getHiddenCourse,
-  getLockedCourse } = require("../../services/service");
-const { setCourseToUnlocked, updateGuide } = require("../../../db/services/courseService");
+  findCategoryWithCourseName } = require("../../services/service");
+const { setCourseToUnlocked, updateGuide, findCourseFromDb } = require("../../../db/services/courseService");
 const { sendEphemeral, editEphemeral, editErrorEphemeral, confirmChoice } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
 const { unlockTelegramCourse } = require("../../../bridge/service");
@@ -20,8 +19,8 @@ const execute = async (interaction, client, models) => {
     return await editEphemeral(interaction, "Command declined");
   }
 
-  const category = getLockedCourse(courseName, guild);
-  if (!category) {
+  const categoryInstance = await findCourseFromDb(courseName, models.Course);
+  if (!categoryInstance || !categoryInstance.locked) {
     return await editErrorEphemeral(interaction, `Invalid course name: ${courseName} or the course is unlocked already!`);
   }
   const cooldown = checkCourseCooldown(courseName);
@@ -31,7 +30,8 @@ const execute = async (interaction, client, models) => {
     return await editErrorEphemeral(interaction, `Command cooldown [mm:ss]: you need to wait ${time}!`);
   }
   else {
-    if (getHiddenCourse(courseName, guild)) {
+    const category = findCategoryWithCourseName(courseName, guild);
+    if (categoryInstance.private) {
       await category.setName(`👻 ${courseName}`);
     }
     else {
