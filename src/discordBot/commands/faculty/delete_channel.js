@@ -34,7 +34,6 @@ const execute = async (interaction, client, models) => {
     return await editErrorEphemeral(interaction, "There is no added channel with given name.");
   }
 
-  guild.channels.cache.find(c => c.parent === channel.parent && c.name === deleteChannelName).delete();
   await removeChannelFromDb(deleteChannelName, channelModel);
   return await editEphemeral(interaction, `${deleteName} deleted!`);
 };

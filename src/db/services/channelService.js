@@ -1,4 +1,5 @@
 const { Sequelize } = require("sequelize");
+const { findOrCreateChannel, getChannelObject, findCategoryWithCourseName } = require("../../discordBot/services/service");
 
 const findChannelFromDbByName = async (channelName, Channel) => {
   return await Channel.findOne({
@@ -26,7 +27,7 @@ const removeChannelFromDb = async (channelName, Channel) => {
   if (channel) {
     await Channel.destroy({
       where:
-        { name: { [Sequelize.Op.iLike]: channelName } },
+        { name: channelName },
     });
   }
 };
@@ -63,6 +64,25 @@ const saveChannelTopicToDb = async (channelName, newTopic, Channel) => {
     { where: { name: channelName } });
 };
 
+const initChannelHooks = (guild, Channel) => {
+  Channel.addHook("afterBulkDestroy", (channel) => {
+    guild.channels.cache.find(c => c.name === channel.where.name)?.delete();
+  });
+
+  Channel.addHook("afterCreate", async (channel) => {
+    if (!channel.defaultChannel) {
+      const params = channel.name.split("_");
+      const courseName = params[0];
+      const channelName = params.slice(1).join("_");
+
+      const category = findCategoryWithCourseName(courseName, guild);
+      const channelObject = getChannelObject(courseName, channelName, category);
+
+      await findOrCreateChannel(channelObject, guild);
+    }
+  });
+};
+
 module.exports = {
   findChannelFromDbByName,
   createChannelToDatabase,
@@ -71,4 +91,5 @@ module.exports = {
   countChannelsByCourse,
   editChannelNames,
   saveChannelTopicToDb,
+  initChannelHooks,
 };
