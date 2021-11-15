@@ -39,7 +39,11 @@ if (process.env.NODE_ENV !== "test") {
     logger.remove(paperTrailTransport);
   }
 
+  winstonPapertrail.on("connect", function() {
+    logger.info("Logger connected to Papertrail");
+  });
 }
+
 const logError = (error) => {
   if (logger) {
     logger.error(error);
