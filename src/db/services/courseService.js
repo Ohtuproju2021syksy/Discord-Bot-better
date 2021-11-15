@@ -170,13 +170,11 @@ const isCourseCategory = async (channel, Course) => {
   }
 };
 
-const findAllCourseNames = async (guild, Course) => {
+const findAllCourseNames = async (Course) => {
   const courseNames = [];
-  const channels = guild.channels.cache;
-  for (const c of channels) {
-    if (await isCourseCategory(c, Course)) {
-      courseNames.push(getCourseNameFromCategory(channel));
-    }
+  const courses = await Course.findAll();
+  for (const c of courses) {
+    courseNames.push(c.name);
   };
   return courseNames;
 };

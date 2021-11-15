@@ -19,8 +19,8 @@ const saveChannelsToDb = async (models, guild) => {
   const channelCache = guild.channels.cache;
   const categoryChannels = [];
   for (const c in channelCache) {
-    if (await isCourseCategory(c), models.Course) {
-      categoryChannels.push(c);
+    if (await isCourseCategory(channelCache[c])) {
+      categoryChannels.push(channelCache[c]);
     }
   }
   categoryChannels.map(c => c.id);
@@ -69,8 +69,8 @@ const saveCourseMembersToDb = async (models, guild) => {
   const courses = [];
   const channels = guild.channels.cache;
   for (const c in channels) {
-    if (await isCourseCategory(c), models.Course) {
-      courses.push(c);
+    if (await isCourseCategory(channels[c])) {
+      courses.push(channels[c]);
     }
   }
 

@@ -3,9 +3,8 @@ const { sendEphemeral, editErrorEphemeral, editEphemeralForStatus } = require(".
 const {
   getCourseNameFromCategory,
   createCourseInvitationLink,
-  isCourseCategory,
   listCourseInstructors } = require("../../../src/discordBot/services/service");
-const { findCourseFromDb } = require("../../../src/db/services/courseService");
+const { findCourseFromDb, isCourseCategory } = require("../../../src/db/services/courseService");
 const { findChannelsByCourse } = require("../../../src/db/services/channelService");
 
 const models = require("../../mocks/mockModels");
