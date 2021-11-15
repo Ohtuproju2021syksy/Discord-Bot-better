@@ -8,7 +8,6 @@ const {
   handleCooldown,
   checkCourseCooldown,
   getCourseNameFromCategory,
-  isCourseCategory,
   containsEmojis } = require("../../services/service");
 
 const {
