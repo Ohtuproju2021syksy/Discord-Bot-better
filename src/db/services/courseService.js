@@ -175,7 +175,7 @@ const findAllCourseNames = async (Course) => {
   const courses = await Course.findAll();
   for (const c of courses) {
     courseNames.push(c.name);
-  };
+  }
   return courseNames;
 };
 
