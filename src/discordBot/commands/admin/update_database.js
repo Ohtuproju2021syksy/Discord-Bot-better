@@ -1,6 +1,6 @@
 const { createCourseMemberToDatabase } = require("../../../db/services/courseMemberService");
-const { getCourseNameFromCategory, isCourseCategory } = require("../../services/service");
-const { findCourseFromDb } = require("../../../db/services/courseService");
+const { getCourseNameFromCategory } = require("../../services/service");
+const { findCourseFromDb, isCourseCategory } = require("../../../db/services/courseService");
 const { createChannelToDatabase } = require("../../../db/services/channelService");
 const { createUserToDatabase } = require("../../../db/services/userService");
 const { facultyRole } = require("../../../../config.json");
@@ -17,7 +17,13 @@ const execute = async (message, args, models) => {
 
 const saveChannelsToDb = async (models, guild) => {
   const channelCache = guild.channels.cache;
-  const categoryChannels = channelCache.filter(c => isCourseCategory(c)).map(c => c.id);
+  const categoryChannels = [];
+  for (const c in channelCache) {
+    if (await isCourseCategory(c), models.Course) {
+      categoryChannels.push(c);
+    }
+  }
+  categoryChannels.map(c => c.id);
   const courseChannels = channelCache.filter(c => categoryChannels.includes(c.parentId));
   const channelsAsArray = Array.from(courseChannels.values());
 
@@ -60,9 +66,13 @@ const saveUsersToDb = async (models, guild) => {
 };
 
 const saveCourseMembersToDb = async (models, guild) => {
-  const courses = guild.channels.cache
-    .filter(c => isCourseCategory(c))
-    .map((c) => c);
+  const courses = [];
+  const channels = guild.channels.cache;
+  for (const c in channels) {
+    if (await isCourseCategory(c), models.Course) {
+      courses.push(c);
+    }
+  }
 
 
   for (const course in courses) {
