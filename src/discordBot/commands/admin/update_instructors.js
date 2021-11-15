@@ -1,14 +1,15 @@
 const { courseAdminRole } = require("../../../../config.json");
-const { findAllCourseNames, findAndUpdateInstructorRole } = require("../../services/service");
+const { findAndUpdateInstructorRole } = require("../../services/service");
+const { findAllCourseNames } = require("../../../db/services/courseService");
 
-const execute = async (message) => {
+const execute = async (message, args, models) => {
   if (message.member.permissions.has("ADMINISTRATOR")) {
     const guild = message.client.guild;
-    const courseNames = findAllCourseNames(guild);
+    const courseNames = await findAllCourseNames(models.Course);
 
-    courseNames.forEach(course => {
-      findAndUpdateInstructorRole(course, guild, courseAdminRole);
-    });
+    for (const course in courseNames) {
+      findAndUpdateInstructorRole(courseNames[course], guild, courseAdminRole);
+    }
   }
 };
 

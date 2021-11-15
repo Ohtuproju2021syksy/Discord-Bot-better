@@ -1,4 +1,4 @@
-const { findChannelWithNameAndType } = require("../../discordBot/services/service");
+const { findChannelWithNameAndType, getCourseNameFromCategory } = require("../../discordBot/services/service");
 const { Sequelize } = require("sequelize");
 const GUIDE_CHANNEL_NAME = "guide";
 
@@ -163,6 +163,22 @@ const updateGuide = async (guild, Course) => {
   await updateGuideMessage(message, Course);
 };
 
+const isCourseCategory = async (channel, Course) => {
+  if (channel && channel.name) {
+    const course = await findCourseFromDb(getCourseNameFromCategory(channel.name), Course);
+    return course ? true : false;
+  }
+};
+
+const findAllCourseNames = async (Course) => {
+  const courseNames = [];
+  const courses = await Course.findAll();
+  for (const c of courses) {
+    courseNames.push(c.name);
+  }
+  return courseNames;
+};
+
 module.exports = {
   setCourseToPrivate,
   setCourseToPublic,
@@ -176,4 +192,6 @@ module.exports = {
   findCourseNickNameFromDbWithCourseCode,
   updateGuide,
   updateGuideMessage,
+  isCourseCategory,
+  findAllCourseNames,
 };

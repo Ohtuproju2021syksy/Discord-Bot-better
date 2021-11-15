@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { isCourseCategory, getCourseNameFromCategory, findOrCreateChannel, findChannelWithNameAndType } = require("../../services/service");
+const { getCourseNameFromCategory, findOrCreateChannel, findChannelWithNameAndType } = require("../../services/service");
 const { createChannelToDatabase } = require("../../../db/services/channelService");
-const { findCourseFromDb } = require("../../../db/services/courseService");
+const { findCourseFromDb, isCourseCategory } = require("../../../db/services/courseService");
 const { sendEphemeral, editEphemeral, editErrorEphemeral } = require("../../services/message");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
 
@@ -30,7 +30,7 @@ const execute = async (interaction, client, models) => {
     return await editErrorEphemeral(interaction, "Course not found, can not create new channel.");
   }
 
-  if (!isCourseCategory(channel?.parent)) {
+  if (!await isCourseCategory(channel?.parent, models.Course)) {
     return await editErrorEphemeral(interaction, "This is not a course category, can not create new channel.");
   }
 
