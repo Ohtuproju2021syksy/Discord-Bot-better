@@ -66,12 +66,12 @@ If you want to see who are the instructors on your course, you can use command `
 
 Command | Explanation | Arguments
 --------|-------------|----------:
-[/auth](./commands/auth.md) | For faculty members with student role to acquire the faculty role. | :x:
-[/courses](./commands/courses.md) | Get public course information | :x:
-[/help](./commands/help.md) | Get help how to use slash commands. | :o:
-[/instructors](./commands/instructors.md) | Get course intructors information. | :o:
-[/join](./commands/join.md) | Joins you into the course given, e.g., /join ohpe. | :heavy_check_mark:
-[/leave](./commands/leave.md) | Remove you from the course given, e.g., /leave ohpe. | :heavy_check_mark:
+[/auth](./commands/general/auth.md) | For faculty members with student role to acquire the faculty role. | :x:
+[/courses](./commands/general/courses.md) | Get public course information | :x:
+[/help](./commands/general/help.md) | Get help how to use slash commands. | :o:
+[/instructors](./commands/general/instructors.md) | Get course intructors information. | :o:
+[/join](./commands/general/join.md) | Joins you into the course given, e.g., /join ohpe. | :heavy_check_mark:
+[/leave](./commands/general/leave.md) | Remove you from the course given, e.g., /leave ohpe. | :heavy_check_mark:
 
 ### Material
 

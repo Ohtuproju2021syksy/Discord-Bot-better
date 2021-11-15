@@ -2,12 +2,12 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 const {
   getCourseNameFromCategory,
   createCourseInvitationLink,
-  findCourseFromDb,
-  findChannelsByCourse,
   isCourseCategory,
   downloadImage,
   listCourseInstructors,
 } = require("../../services/service");
+const { findCourseFromDb } = require("../../../db/services/courseService");
+const { findChannelsByCourse } = require("../../../db/services/channelService");
 const { editErrorEphemeral, sendEphemeral, editEphemeralForStatus } = require("../../services/message");
 const { facultyRole, courseAdminRole } = require("../../../../config.json");
 

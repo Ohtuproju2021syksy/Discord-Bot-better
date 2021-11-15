@@ -1,6 +1,7 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { getCourseNameFromCategory, findOrCreateChannel, findChannelWithNameAndType,
-  createChannelToDatabase, findCourseFromDb, isCourseCategory } = require("../../services/service");
+const { isCourseCategory, getCourseNameFromCategory, findOrCreateChannel, findChannelWithNameAndType } = require("../../services/service");
+const { createChannelToDatabase } = require("../../../db/services/channelService");
+const { findCourseFromDb } = require("../../../db/services/courseService");
 const { sendEphemeral, editEphemeral, editErrorEphemeral } = require("../../services/message");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
 
@@ -52,7 +53,7 @@ const execute = async (interaction, client, models) => {
   ));
   const courseFromDb = await findCourseFromDb(courseName, courseModel);
   const trimmedCourseName = courseName.replace(/ /g, "-");
-  await createChannelToDatabase(courseFromDb.id, `${trimmedCourseName}_${channelName}`, channelModel);
+  await createChannelToDatabase({ courseId: courseFromDb.id, name: `${trimmedCourseName}_${channelName}` }, channelModel);
   await editEphemeral(interaction, `Created new channel ${trimmedCourseName}_${channelName}`);
 
 };

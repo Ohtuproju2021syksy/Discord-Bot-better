@@ -2,16 +2,16 @@
 
 ### Admin commands
 
-#### Note that admin commands must be run inside the _commands_ text channel.
+#### Note that admin commands must be run inside the _#commands_ text channel.
 
 Command | Description | Example
 --- |--- | ---
-`/delete_command` | Delete the given slash command. | `/delete help`
-`/delete_course` | Delete the given course channel. | `/delete_course ohpe`
-`/reload_commands` | Reload all slash commands, returning deleted commands, registering new commands, and updating command permissions. | `/reload_commands`
-`/sort_courses` | Sort courses alphabetically. | `/sort_courses`
-`/update_instructors` | Update course instructor roles. | `/update_instructors`
-`/update_invlinkss` | Update course invitation links. | `/update_invlinkss`
+`!delete_command` | Delete the given slash command. | `!delete help`
+`!delete_course` | Delete the given course channel. | `!delete_course ohpe`
+`!reload_commands` | Reload all slash commands, returning deleted commands, registering new commands, and updating command permissions. | `!reload_commands`
+`!sort_courses` | Sort courses alphabetically. | `!sort_courses`
+`!update_instructors` | Update course instructor roles. | `!update_instructors`
+`!update_invitelinks` | Update course invitation links. | `!update_invitelinks`
 
 ### Faculty commands
 
@@ -24,7 +24,7 @@ Command | Description | Example
 `/delete_channel` | Delete a text channel from the course. Must be used inside a course. | `/delete_channel questions`
 `/disable_bridge` | Disable bridge in a Discord text channel. Must be used inside a course and in a non-default text channel. | `/disable_bridge`
 `/edit_course` | Edit course information, e.g. course code, fullname, or nickname. Must be used inside a course. | `/edit_course nickname ohpe`
-`/edit_topic` | Edit course topic, replacing an already existing topic. | `/edit_topic perusteet`
+`/edit_topic` | Edit channel topic, replacing an already existing topic. | `/edit_topic perusteet`
 `/enable_bridge` | Enable bridge in a Discord text channel. Must be used inside a course and in a non-default text channel. | `/enable_bridge`
 `/hide_course` | Make the given course private, disabling joining with `/join` | `/hide_course ohpe`
 `/lock_chat` | Lock the given course, disabling messaging by regular users | `/lock_chat ohpe`

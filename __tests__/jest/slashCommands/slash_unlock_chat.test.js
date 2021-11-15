@@ -1,11 +1,10 @@
 const { execute } = require("../../../src/discordBot/commands/faculty/unlock_chat");
 const { sendEphemeral, editErrorEphemeral, editEphemeral, confirmChoice } = require("../../../src/discordBot/services/message");
 const {
-  updateGuide,
   getLockedCourse,
   msToMinutesAndSeconds,
-  setCourseToUnlocked,
   checkCourseCooldown } = require("../../../src/discordBot/services/service");
+const { updateGuide, setCourseToUnlocked } = require("../../../src/db/services/courseService");
 
 const { unlockTelegramCourse } = require("../../../src/bridge/service");
 
@@ -13,6 +12,7 @@ jest.mock("../../../src/bridge/service");
 jest.mock("../../../src/discordBot/services/message");
 jest.mock("../../../src/discordBot/services/service");
 confirmChoice.mockImplementation(() => true);
+jest.mock("../../../src/db/services/courseService");
 
 
 const Course = {

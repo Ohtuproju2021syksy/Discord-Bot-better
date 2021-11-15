@@ -2,12 +2,15 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 const {
   findOrCreateRoleWithName,
   createInvitation,
-  updateGuide,
   findOrCreateChannel,
   setCoursePositionABC,
+  containsEmojis } = require("../../services/service");
+const {
   createCourseToDatabase,
   findCourseFromDb,
-  findCourseFromDbWithFullName } = require("../../services/service");
+  findCourseFromDbWithFullName,
+  updateGuide } = require("../../../db/services/courseService");
+const { createChannelToDatabase } = require("../../../db/services/channelService");
 const { sendErrorEphemeral, sendEphemeral, editEphemeral } = require("../../services/message");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
 
@@ -78,19 +81,23 @@ const getCategoryObject = (categoryName, permissionOverwrites) => ({
 });
 
 const execute = async (interaction, client, models) => {
-  const courseCode = interaction.options.getString("coursecode").trim();
+  const courseCode = interaction.options.getString("coursecode").replace(/\s/g, "");
   const courseFullName = interaction.options.getString("full_name").trim();
   if (await findCourseFromDbWithFullName(courseFullName, models.Course)) return await sendErrorEphemeral(interaction, "Course fullname must be unique.");
 
   let courseName;
   let errorMessage;
   if (!interaction.options.getString("nick_name")) {
-    courseName = courseCode;
+    courseName = courseCode.toLowerCase();
     errorMessage = "Course code must be unique.";
   }
   else {
-    courseName = interaction.options.getString("nick_name").trim();
+    courseName = interaction.options.getString("nick_name").replace(/\s/g, "").toLowerCase();
     errorMessage = "Course nick name must be unique.";
+  }
+
+  if (containsEmojis(courseCode) || containsEmojis(courseFullName) || containsEmojis(courseName)) {
+    return await sendErrorEphemeral(interaction, "Emojis are not allowed!");
   }
 
   const courseNameConcat = courseCode + " - " + courseFullName + " - " + courseName;
@@ -113,7 +120,17 @@ const execute = async (interaction, client, models) => {
     async channelObject => await findOrCreateChannel(channelObject, guild),
   ));
 
-  await createCourseToDatabase(courseCode, courseFullName, courseName, models.Course);
+  const course = await createCourseToDatabase(courseCode, courseFullName, courseName, models.Course);
+  await Promise.all(channelObjects
+    .map(async channelObject => {
+      const voiceChannel = channelObject.options.type === "GUILD_VOICE";
+      await createChannelToDatabase({
+        courseId: course.id,
+        name: channelObject.name,
+        defaultChannel: true,
+        voiceChannel: voiceChannel }, models.Channel);
+    }));
+
   await setCoursePositionABC(guild, categoryObject.name);
   await createInvitation(guild, courseName);
   await editEphemeral(interaction, `Created course ${courseName}.`);
