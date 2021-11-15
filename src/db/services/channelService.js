@@ -39,6 +39,14 @@ const findChannelsByCourse = async (id, Channel) => {
   });
 };
 
+const countChannelsByCourse = async (id, Channel) => {
+  return await Channel.count({
+    where: {
+      courseId: id,
+    },
+  });
+};
+
 const editChannelNames = async (courseId, previousCourseName, newCourseName, Channel) => {
   const channels = await findChannelsByCourse(courseId, Channel);
   channels.map(async (channel) => {
@@ -60,6 +68,7 @@ module.exports = {
   createChannelToDatabase,
   removeChannelFromDb,
   findChannelsByCourse,
+  countChannelsByCourse,
   editChannelNames,
   saveChannelTopicToDb,
 };
