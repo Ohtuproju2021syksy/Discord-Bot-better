@@ -41,7 +41,7 @@ if (process.env.NODE_ENV !== "test") {
 
   winstonPapertrail.on("connect", function() {
     logger.info("Logger connected to Papertrail");
-});
+  });
 }
 
 const logError = (error) => {
