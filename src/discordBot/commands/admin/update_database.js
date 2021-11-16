@@ -18,12 +18,13 @@ const execute = async (message, args, models) => {
 const saveChannelsToDb = async (models, guild) => {
   const channelCache = guild.channels.cache;
   const categoryChannels = [];
-  for (const c in channelCache) {
-    if (await isCourseCategory(channelCache[c])) {
-      categoryChannels.push(channelCache[c]);
+
+  await Promise.all(channelCache.map(async (c) => {
+    if (await isCourseCategory(c, models.Course)) {
+      categoryChannels.push(c.id);
     }
-  }
-  categoryChannels.map(c => c.id);
+  }));
+
   const courseChannels = channelCache.filter(c => categoryChannels.includes(c.parentId));
   const channelsAsArray = Array.from(courseChannels.values());
 
@@ -66,14 +67,14 @@ const saveUsersToDb = async (models, guild) => {
 };
 
 const saveCourseMembersToDb = async (models, guild) => {
+  const channelCache = guild.channels.cache;
   const courses = [];
-  const channels = guild.channels.cache;
-  for (const c in channels) {
-    if (await isCourseCategory(channels[c])) {
-      courses.push(channels[c]);
-    }
-  }
 
+  await Promise.all(channelCache.map(async (c) => {
+    if (await isCourseCategory(c, models.Course)) {
+      courses.push(c);
+    }
+  }));
 
   for (const course in courses) {
     const courseIdentifier = getCourseNameFromCategory(courses[course].name);
