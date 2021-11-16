@@ -12,7 +12,7 @@ const execute = async (interaction, client, models) => {
   const channel = await guild.channels.cache.get(interaction.channelId);
   const roleName = channel.parent ? getCourseNameFromCategory(channel.parent) : "";
 
-  if (!isCourseCategory(channel?.parent, models.Course)) {
+  if (!await isCourseCategory(channel?.parent, models.Course)) {
     return editErrorEphemeral(interaction, "Command must be used in a course channel!");
   }
 
