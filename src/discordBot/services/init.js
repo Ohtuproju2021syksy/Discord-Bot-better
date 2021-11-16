@@ -70,7 +70,9 @@ const initializeApplicationContext = async (client, models) => {
   await initRoles(client.guild);
   await initChannels(client.guild, client);
   await setInitialGuideMessage(client.guild, "guide", models.Course);
-  await sendPullDateMessage(client);
+  if (process.env.NODE_ENV === "production") {
+    await sendPullDateMessage(client);
+  }
 };
 
 module.exports = {
