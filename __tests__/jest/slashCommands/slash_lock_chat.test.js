@@ -3,8 +3,8 @@ const { editEphemeral, editErrorEphemeral, sendEphemeral, confirmChoice } = requ
 const {
   msToMinutesAndSeconds,
   checkCourseCooldown,
-  getUnlockedCourse } = require("../../../src/discordBot/services/service");
-const { updateGuide, setCourseToLocked } = require("../../../src/db/services/courseService");
+  findCategoryWithCourseName } = require("../../../src/discordBot/services/service");
+const { updateGuide, setCourseToLocked, findCourseFromDb } = require("../../../src/db/services/courseService");
 
 const { lockTelegramCourse } = require("../../../src/bridge/service");
 
@@ -32,13 +32,15 @@ const Course = {
   destroy: jest.fn(),
 };
 
+findCategoryWithCourseName.mockImplementation((name) => { return { name: name, setName: jest.fn() }; });
+
 describe("slash lock_chat command", () => {
   test("lock_chat command with invalid course name responds with correct ephemeral", async () => {
     const client = defaultTeacherInteraction.client;
     const response = `Invalid course name: ${courseName} or the course is locked already!`;
     await execute(defaultTeacherInteraction, client, Course);
     expect(confirmChoice).toHaveBeenCalledTimes(1);
-    expect(getUnlockedCourse).toHaveBeenCalledTimes(1);
+    expect(findCourseFromDb).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
     expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
@@ -47,12 +49,13 @@ describe("slash lock_chat command", () => {
   });
 
   test("lock_chat command with valid course name responds with correct ephemeral", async () => {
-    getUnlockedCourse.mockImplementationOnce((name) => { return { name: `📚 ${name}`, setName: jest.fn() }; });
+    findCourseFromDb.mockImplementationOnce((name) => { return { name: name, locked: false }; });
     const client = defaultTeacherInteraction.client;
     const response = `This course ${courseName} is now locked.`;
     await execute(defaultTeacherInteraction, client, Course);
     expect(confirmChoice).toHaveBeenCalledTimes(1);
-    expect(getUnlockedCourse).toHaveBeenCalledTimes(1);
+    expect(findCourseFromDb).toHaveBeenCalledTimes(1);
+    expect(findCategoryWithCourseName).toHaveBeenCalledTimes(1);
     expect(setCourseToLocked).toHaveBeenCalledTimes(1);
     expect(lockTelegramCourse).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
@@ -64,12 +67,12 @@ describe("slash lock_chat command", () => {
   });
 
   test("slash command with cooldown", async () => {
-    getUnlockedCourse.mockImplementation((name) => { return { name: `📚 ${name}`, setName: jest.fn() }; });
+    findCourseFromDb.mockImplementation((name) => { return { name: name, locked: false }; });
     checkCourseCooldown.mockImplementation(() => time);
     const client = defaultTeacherInteraction.client;
     await execute(defaultTeacherInteraction, client, Course);
     expect(confirmChoice).toHaveBeenCalledTimes(1);
-    expect(getUnlockedCourse).toHaveBeenCalledTimes(1);
+    expect(findCourseFromDb).toHaveBeenCalledTimes(1);
     expect(msToMinutesAndSeconds).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);

@@ -10,22 +10,6 @@ let invite_url = "";
 
 process.env.NODE_ENV === "production" ? invite_url = `${process.env.BACKEND_SERVER_URL}` : invite_url = `${process.env.BACKEND_SERVER_URL}:${process.env.PORT}`;
 
-const getUnlockedCourse = (name, guild) => {
-  return guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name.toLowerCase().includes(name.toLowerCase()) && !c.name.toLowerCase().includes("🔐"));
-};
-
-const getLockedCourse = (name, guild) => {
-  return guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name.toLowerCase().includes(name.toLowerCase()) && c.name.toLowerCase().includes("🔐"));
-};
-
-const getHiddenCourse = (name, guild) => {
-  return guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name.toLowerCase().includes(name.toLowerCase()) && c.name.toLowerCase().includes("👻"));
-};
-
-const getPublicCourse = (name, guild) => {
-  return guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name.toLowerCase().includes(name.toLowerCase()) && !c.name.toLowerCase().includes("👻"));
-};
-
 const cooldownMap = new Map();
 
 const cooldownTimeMs = 1000 * 60 * 5;
@@ -54,7 +38,7 @@ const createInvitation = async (guild, args) => {
   );
   const name = args;
   const category = guild.channels.cache.find(
-    c => c.type === "GUILD_CATEGORY" && c.name.toLowerCase().includes(name.toLowerCase()),
+    c => c.type === "GUILD_CATEGORY" && getCourseNameFromCategory(c.name.toLowerCase()) === name.toLowerCase(),
   );
   const course = guild.channels.cache.find(
     (c => c.parent === category),
@@ -151,13 +135,12 @@ const deletecommand = async (client, commandToDeleteName) => {
   });
 };
 
-const emojiRegex = /(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/gi;
+const emojiRegex = new RegExp(/(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/gi);
 
-const isCourseCategory = (channel) => {
-  if (channel && channel.name) {
-    return emojiRegex.test(channel.name);
-  }
-  return false;
+const containsEmojis = (text) => {
+  const result = emojiRegex.test(text);
+  emojiRegex.lastIndex = 0;
+  return result;
 };
 
 const getCourseNameFromCategory = (category) => {
@@ -169,17 +152,6 @@ const getCourseNameFromCategory = (category) => {
     trimmedName = category.replace(emojiRegex, "").trim();
   }
   return trimmedName;
-};
-
-const findAllCourseNames = (guild) => {
-  const courseNames = [];
-
-  guild.channels.cache.forEach(channel => {
-    if (isCourseCategory(channel)) {
-      courseNames.push(getCourseNameFromCategory(channel));
-    }
-  });
-  return courseNames;
 };
 
 const findAndUpdateInstructorRole = async (name, guild, courseAdminRole) => {
@@ -278,15 +250,10 @@ module.exports = {
   findOrCreateChannel,
   setCoursePositionABC,
   deletecommand,
-  isCourseCategory,
   getCourseNameFromCategory,
-  findAllCourseNames,
   findAndUpdateInstructorRole,
-  getHiddenCourse,
-  getLockedCourse,
-  getPublicCourse,
-  getUnlockedCourse,
   listCourseInstructors,
   updateInviteLinks,
   downloadImage,
+  containsEmojis,
 };

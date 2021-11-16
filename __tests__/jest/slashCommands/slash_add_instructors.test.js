@@ -1,8 +1,8 @@
 const { execute } = require("../../../src/discordBot/commands/faculty/add_instructors");
 const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../../src/discordBot/services/message");
-const { isCourseCategory, getCourseNameFromCategory } = require("../../../src/discordBot/services/service");
+const { getCourseNameFromCategory } = require("../../../src/discordBot/services/service");
 const { findUserByDiscordId } = require("../../../src/db/services/userService");
-const { findCourseFromDb } = require("../../../src/db/services/courseService");
+const { findCourseFromDb, isCourseCategory } = require("../../../src/db/services/courseService");
 const { findCourseMember } = require("../../../src/db/services/courseMemberService");
 const { courseAdminRole } = require("../../../config.json");
 const models = require("../../mocks/mockModels");

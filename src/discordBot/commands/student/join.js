@@ -59,14 +59,14 @@ const execute = async (interaction, client, models) => {
     }
   }
 
-  const user = await findUserByDiscordId(interaction.member.user.id, models.User);
+  let user = await findUserByDiscordId(interaction.member.user.id, models.User);
   if (!course) {
     course = await findCourseFromDb(roleString, models.Course);
   }
   if (!user) {
     await createUserToDatabase(interaction.member.user.id, interaction.member.user.username, models.User);
-    const newUser = await findUserByDiscordId(interaction.member.user.id, models.User);
-    await createCourseMemberToDatabase(newUser.id, course.id, models.CourseMember);
+    user = await findUserByDiscordId(interaction.member.user.id, models.User);
+    await createCourseMemberToDatabase(user.id, course.id, models.CourseMember);
   }
 
   await createCourseMemberToDatabase(user.id, course.id, models.CourseMember);
