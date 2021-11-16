@@ -1,23 +1,29 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { getCourseNameFromCategory } = require("../../services/service");
-const { removeChannelFromDb } = require("../../../db/services/channelService");
-const { isCourseCategory } = require("../../../db/services/courseService");
+const { removeChannelFromDb, findChannelFromDbByName } = require("../../../db/services/channelService");
+const { findCourseFromDb } = require("../../../db/services/courseService");
 const { sendEphemeral, editEphemeral, editErrorEphemeral, confirmChoice } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
 
 const execute = async (interaction, client, models) => {
   await sendEphemeral(interaction, "Deleting text channel...");
   const channelModel = models.Channel;
+  const courseModel = models.Course;
   const deleteName = interaction.options.getString("channel").toLowerCase().trim().replace(/ /g, "-");
   const guild = client.guild;
   const channel = guild.channels.cache.get(interaction.channelId);
 
-  if (!await isCourseCategory(channel?.parent, models.Course)) {
+  if (!channel.parent) {
+    return await editErrorEphemeral(interaction, "Course not found, can not delete channel.");
+  }
+
+  const parentChannel = await findCourseFromDb(getCourseNameFromCategory(channel.parent.name), courseModel);
+
+  if (!parentChannel) {
     return await editErrorEphemeral(interaction, "This command can be used only in course channels");
   }
 
-  const categoryName = getCourseNameFromCategory(channel.parent.name).replace(/ /g, "-");
-  const deleteChannelName = `${categoryName}_${deleteName}`.toLowerCase();
+  const deleteChannelName = `${parentChannel.name}_${deleteName}`.toLowerCase();
 
   if (deleteName === "general" || deleteName === "announcement" || deleteName === "voice") {
     return await editErrorEphemeral(interaction, "Original channels can not be deleted.");
@@ -29,8 +35,8 @@ const execute = async (interaction, client, models) => {
     return await editEphemeral(interaction, "Command declined");
   }
 
-  const guildName = guild.channels.cache.find(c => c.parent === channel.parent && c.name === deleteChannelName);
-  if (!guildName) {
+  const channelFromDb = await findChannelFromDbByName(deleteChannelName, channelModel);
+  if (!channelFromDb) {
     return await editErrorEphemeral(interaction, "There is no added channel with given name.");
   }
 
