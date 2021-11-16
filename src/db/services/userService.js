@@ -26,9 +26,10 @@ const removeUserFromDb = async (discordId, User) => {
 };
 
 const saveFacultyRoleToDb = async (discordId, User) => {
-  await User.update(
-    { faculty: true },
-    { where: { discordId: discordId } });
+  const user = await findUserByDiscordId(discordId, User);
+  if (user) {
+    await user.update({ faculty: true });
+  }
 };
 
 module.exports = { findUserByDiscordId, createUserToDatabase, removeUserFromDb, saveFacultyRoleToDb };

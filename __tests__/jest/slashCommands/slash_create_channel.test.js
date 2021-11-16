@@ -1,7 +1,7 @@
 const { execute } = require("../../../src/discordBot/commands/faculty/create_channel");
 const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../../src/discordBot/services/message");
-const { getCourseNameFromCategory, isCourseCategory } = require("../../../src/discordBot/services/service");
-const { findCourseFromDb } = require("../../../src/db/services/courseService");
+const { getCourseNameFromCategory } = require("../../../src/discordBot/services/service");
+const { findCourseFromDb, isCourseCategory } = require("../../../src/db/services/courseService");
 const { createChannelToDatabase } = require("../../../src/db/services/channelService");
 
 const models = require("../../mocks/mockModels");
@@ -48,6 +48,7 @@ describe("slash create channel command", () => {
   });
 
   test("Cannot use command if channel is not course channel", async () => {
+    isCourseCategory.mockImplementationOnce(() => (false));
     const client = defaultTeacherInteraction.client;
     defaultTeacherInteraction.channelId = 4;
     const response = "This is not a course category, can not create new channel.";

@@ -3,7 +3,8 @@ const {
   findOrCreateRoleWithName,
   createInvitation,
   findOrCreateChannel,
-  setCoursePositionABC } = require("../../services/service");
+  setCoursePositionABC,
+  containsEmojis } = require("../../services/service");
 const {
   createCourseToDatabase,
   findCourseFromDb,
@@ -80,19 +81,23 @@ const getCategoryObject = (categoryName, permissionOverwrites) => ({
 });
 
 const execute = async (interaction, client, models) => {
-  const courseCode = interaction.options.getString("coursecode").trim();
+  const courseCode = interaction.options.getString("coursecode").replace(/\s/g, "");
   const courseFullName = interaction.options.getString("full_name").trim();
   if (await findCourseFromDbWithFullName(courseFullName, models.Course)) return await sendErrorEphemeral(interaction, "Course fullname must be unique.");
 
   let courseName;
   let errorMessage;
   if (!interaction.options.getString("nick_name")) {
-    courseName = courseCode;
+    courseName = courseCode.toLowerCase();
     errorMessage = "Course code must be unique.";
   }
   else {
-    courseName = interaction.options.getString("nick_name").trim();
+    courseName = interaction.options.getString("nick_name").replace(/\s/g, "").toLowerCase();
     errorMessage = "Course nick name must be unique.";
+  }
+
+  if (containsEmojis(courseCode) || containsEmojis(courseFullName) || containsEmojis(courseName)) {
+    return await sendErrorEphemeral(interaction, "Emojis are not allowed!");
   }
 
   const courseNameConcat = courseCode + " - " + courseFullName + " - " + courseName;

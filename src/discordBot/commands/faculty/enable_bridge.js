@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { getCourseNameFromCategory, isCourseCategory } = require("../../services/service");
+const { getCourseNameFromCategory } = require("../../services/service");
 const { findChannelFromDbByName } = require("../../../db/services/channelService");
-const { findCourseFromDb } = require("../../../db/services/courseService");
+const { findCourseFromDb, isCourseCategory } = require("../../../db/services/courseService");
 const { sendEphemeral, editErrorEphemeral, editEphemeral, confirmChoice } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
 
@@ -9,7 +9,7 @@ const execute = async (interaction, client, models) => {
   await sendEphemeral(interaction, "Enabling the bridge to Telegram...");
 
   const channel = client.guild.channels.cache.get(interaction.channelId);
-  if (!isCourseCategory(channel?.parent)) {
+  if (!await isCourseCategory(channel?.parent, models.Course)) {
     return await editErrorEphemeral(interaction, "This is not a course category, can not execute the command!");
   }
 
