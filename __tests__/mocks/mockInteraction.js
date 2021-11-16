@@ -4,7 +4,6 @@ const prefix = "/";
 
 const adminD = client.commands.map(c => c);
 const faculty = client.slashCommands.filter(command => command.roles).filter(command => !command.roles.includes(courseAdminRole));
-const courseAdmin = client.slashCommands.filter(command => command.roles).filter(command => command.roles.includes(courseAdminRole));
 const studentD = client.slashCommands.filter(command => !command.roles && command.name !== "auth");
 
 const teacherData = [];
@@ -18,9 +17,6 @@ teacherData.push("\n");
 teacherData2.push(`Category: **${facultyRole}**`);
 teacherData2.push(faculty.map(command => `**${command.usage}** - ${command.description}`).join("\n"));
 teacherData2.push(`[User manual for faculty](<${githubRepo}/blob/main/documentation//usermanual-faculty.md>)`);
-teacherData2.push("\n");
-teacherData2.push(`Category: **${courseAdminRole}**`);
-teacherData2.push(courseAdmin.map(command => `**${command.usage}** - ${command.description}`).join("\n"));
 teacherData2.push("\n");
 teacherData2.push("*Commands can be used only in course channels");
 teacherData2.push(`\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`);
@@ -49,9 +45,6 @@ adminData.push("\n");
 adminData2.push(`Category: **${facultyRole}**`);
 adminData2.push(faculty.map(command => `**${command.usage}** - ${command.description}`).join("\n"));
 adminData2.push(`[User manual for faculty](<${githubRepo}/blob/main/documentation//usermanual-faculty.md>)`);
-adminData2.push("\n");
-adminData2.push(`Category: **${courseAdminRole}**`);
-adminData2.push(courseAdmin.map(command => `**${command.usage}** - ${command.description}`).join("\n"));
 adminData2.push("\n");
 adminData2.push("*Commands can be used only in course channels");
 adminData2.push(`\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`);
