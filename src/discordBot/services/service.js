@@ -237,6 +237,10 @@ const updateInviteLinks = async (guild, courseAdminRole, facultyRole, client) =>
   });
 };
 
+const getUserWithUserId = (guild, userId) => {
+  return guild.members.cache.get(userId);
+};
+
 module.exports = {
   findCategoryWithCourseName,
   findOrCreateRoleWithName,
@@ -256,4 +260,5 @@ module.exports = {
   updateInviteLinks,
   downloadImage,
   containsEmojis,
+  getUserWithUserId,
 };

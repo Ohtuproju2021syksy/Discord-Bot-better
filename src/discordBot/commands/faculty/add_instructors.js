@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { getCourseNameFromCategory, updateInviteLinks } = require("../../services/service");
+const { getCourseNameFromCategory, updateInviteLinks, getUserWithUserId } = require("../../services/service");
 const { findUserByDiscordId } = require("../../../db/services/userService");
 const { findCourseFromDb, isCourseCategory } = require("../../../db/services/courseService");
 const { findCourseMember } = require("../../../db/services/courseMemberService");
@@ -27,13 +27,15 @@ const execute = async (interaction, client, models) => {
     userIdList.push(userID);
     users = users.replace("<@!" + userID + ">", "");
   }
-  for (let i = 0; i < userIdList.length; i++) {
-    const memberToPromote = guild.members.cache.get(parseInt(userIdList[i]));
 
+  for (let i = 0; i < userIdList.length; i++) {
+    const memberToPromote = getUserWithUserId(guild, userIdList[i]);
+    if (memberToPromote.user.bot) {
+      continue;
+    }
     const userInstance = await findUserByDiscordId(memberToPromote.user.id, models.User);
 
     const courseInstance = await findCourseFromDb(roleName, models.Course);
-
     const courseMemberInstance = await findCourseMember(userInstance.id, courseInstance.id, models.CourseMember);
 
     if (!courseMemberInstance) {
@@ -48,7 +50,7 @@ const execute = async (interaction, client, models) => {
 
   await updateInviteLinks(guild, courseAdminRole, facultyRole, client);
 
-  return await editEphemeral(interaction, `Gave role '${instructorRole.name}' to all.`);
+  return await editEphemeral(interaction, `Gave role '${instructorRole.name}' to all users listed.`);
 };
 
 module.exports = {
