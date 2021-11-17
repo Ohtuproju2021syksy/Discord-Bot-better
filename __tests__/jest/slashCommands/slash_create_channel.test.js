@@ -1,8 +1,8 @@
 const { execute } = require("../../../src/discordBot/commands/faculty/create_channel");
 const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../../src/discordBot/services/message");
 const { getCourseNameFromCategory } = require("../../../src/discordBot/services/service");
-const { findCourseFromDb, isCourseCategory } = require("../../../src/db/services/courseService");
-const { createChannelToDatabase } = require("../../../src/db/services/channelService");
+const { findCourseFromDb } = require("../../../src/db/services/courseService");
+const { createChannelToDatabase, countChannelsByCourse, findChannelFromDbByName } = require("../../../src/db/services/channelService");
 
 const models = require("../../mocks/mockModels");
 jest.mock("../../../src/discordBot/services/message");
@@ -13,24 +13,11 @@ jest.mock("../../../src/db/services/channelService");
 getCourseNameFromCategory.mockImplementation((name) => name.replace("📚", "").trim());
 
 const { defaultTeacherInteraction } = require("../../mocks/mockInteraction");
-findCourseFromDb.mockImplementation((courseName) => ({ courseName: courseName, id: 1 }));
+findCourseFromDb.mockImplementation((courseName) => ({ name: courseName, courseName: courseName, id: 1 }));
 const courseName = "test";
 const channelName = "rules";
 const initialResponse = "Creating text channel...";
 defaultTeacherInteraction.options = { getString: jest.fn(() => channelName) };
-
-const setMaxChannels = (client) => {
-  const category = client.guild.channels.cache.get(2).parent;
-  for (let i = 3; i < 15; i++) {
-    const channelToCreate = {
-      name: i,
-      parent: category,
-      defaultChannel: false,
-      type: "GUILD_TEXT",
-    };
-    client.guild.channels.cache.set(i, channelToCreate);
-  }
-};
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -48,7 +35,7 @@ describe("slash create channel command", () => {
   });
 
   test("Cannot use command if channel is not course channel", async () => {
-    isCourseCategory.mockImplementationOnce(() => (false));
+    findCourseFromDb.mockImplementationOnce(() => (null));
     const client = defaultTeacherInteraction.client;
     defaultTeacherInteraction.channelId = 4;
     const response = "This is not a course category, can not create new channel.";
@@ -59,13 +46,24 @@ describe("slash create channel command", () => {
     expect(editErrorEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
   });
 
+  test("Creation fails if another channel with same name exists", async () => {
+    findChannelFromDbByName.mockImplementationOnce(() => true);
+    const client = defaultTeacherInteraction.client;
+    defaultTeacherInteraction.channelId = 4;
+    const response = "Channel with given name already exists";
+    await execute(defaultTeacherInteraction, client, models);
+    expect(sendEphemeral).toHaveBeenCalledTimes(1);
+    expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
+    expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
+    expect(editErrorEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
+  });
+
   test("new channel can be created if course channel count is less or equal than 10", async () => {
-    isCourseCategory.mockImplementationOnce(() => (true));
     const client = defaultTeacherInteraction.client;
     defaultTeacherInteraction.channelId = 2;
     const response = `Created new channel ${courseName}_${channelName}`;
     await execute(defaultTeacherInteraction, client, models);
-    expect(findCourseFromDb).toHaveBeenCalledTimes(1);
+    expect(findCourseFromDb).toHaveBeenCalledTimes(2);
     expect(createChannelToDatabase).toHaveBeenCalledTimes(1);
     expect(createChannelToDatabase).toHaveBeenCalledWith({ courseId: 1, name: `${courseName}_${channelName}` }, models.Channel);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
@@ -75,10 +73,9 @@ describe("slash create channel command", () => {
   });
 
   test("new channel cannot be created if course channel count is greater than 10", async () => {
-    isCourseCategory.mockImplementationOnce(() => (true));
+    countChannelsByCourse.mockImplementationOnce(() => 13);
     const client = defaultTeacherInteraction.client;
     defaultTeacherInteraction.channelId = 2;
-    setMaxChannels(client);
     const response = "Maximum added text channel amount is 10";
     await execute(defaultTeacherInteraction, client, models);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);

@@ -94,6 +94,15 @@ const handleCooldown = (courseName) => {
   }, cooldownTimeMs);
 };
 
+const getChannelObject = (roleName, channelName, category) => {
+  roleName = roleName.replace(/ /g, "-");
+  return {
+    name: `${roleName}_${channelName}`,
+    parent: category,
+    options: { type: "GUILD_TEXT", parent: category, permissionOverwrites: [] },
+  };
+};
+
 const findOrCreateChannel = async (channelObject, guild) => {
   const { name, options } = channelObject;
   const alreadyExists = guild.channels.cache.find(
@@ -260,5 +269,7 @@ module.exports = {
   updateInviteLinks,
   downloadImage,
   containsEmojis,
+  instructorsFeature
   getUserWithUserId,
+  getChannelObject,
 };
