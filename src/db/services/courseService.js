@@ -106,10 +106,6 @@ const findCoursesFromDb = async (order, Course, state) => {
   });
 };
 
-const findAllCoursesFromDb = async (Course) => {
-  return await Course.findAll();
-};
-
 const findCourseFromDbWithFullName = async (courseFullName, Course) => {
   return await Course.findOne({
     where: {
@@ -200,7 +196,6 @@ module.exports = {
   findCourseFromDb,
   findCourseFromDbWithFullName,
   findCoursesFromDb,
-  findAllCoursesFromDb,
   findCourseNickNameFromDbWithCourseCode,
   updateGuide,
   updateGuideMessage,

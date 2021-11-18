@@ -1,5 +1,5 @@
-const { findAllCoursesFromDb } = require("../../../db/services/courseService");
-const { findChannelWithNameAndType } = require("../../services/service");
+const { findAllCourseNames } = require("../../../db/services/courseService");
+const { findCategoryWithCourseName } = require("../../services/service");
 
 const execute = async (message, args, models) => {
   if (message.member.permissions.has("ADMINISTRATOR")) {
@@ -7,19 +7,18 @@ const execute = async (message, args, models) => {
 
     let first = 9999;
 
-    const result = await findAllCoursesFromDb(models.Course);
-    result.sort((a, b) => a.name.localeCompare(b.name));
+    const result = await findAllCourseNames(models.Course);
+    result.sort((a, b) => a.localeCompare(b));
     result.map((c) => {
-      const channel = findChannelWithNameAndType(c.name, "GUILD_CATEGORY", guild);
+      const channel = findCategoryWithCourseName(c, guild);
       if (first > channel.position) first = channel.position;
-      return channel.name;
+      return c;
     });
-
     let category;
 
     for (let index = 0; index < result.length; index++) {
-      const courseString = result[index].name;
-      category = guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name.includes(courseString));
+      const courseString = result[index];
+      category = findCategoryWithCourseName(courseString, guild);
       await category.edit({ position: index + first });
     }
   }
