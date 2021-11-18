@@ -7,6 +7,14 @@ const findCourseMember = async (userId, courseId, CourseMember) => {
   });
 };
 
+const findAllCourseMembers = async (courseId, CourseMember) => {
+  return await CourseMember.findAll({
+    where:{
+      courseId: courseId,
+    },
+  });
+};
+
 const createCourseMemberToDatabase = async (userId, courseId, CourseMember) => {
   const alreadyinuse = await findCourseMember(userId, courseId, CourseMember);
   if (!alreadyinuse) {
@@ -29,5 +37,6 @@ const removeCourseMemberFromDb = async (userId, courseId, CourseMember) => {
 
 module.exports = {
   findCourseMember,
+  findAllCourseMembers,
   createCourseMemberToDatabase,
   removeCourseMemberFromDb };

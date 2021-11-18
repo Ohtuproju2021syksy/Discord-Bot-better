@@ -9,6 +9,7 @@ const { findCourseFromDb, isCourseCategory } = require("../../../db/services/cou
 const { findChannelsByCourse } = require("../../../db/services/channelService");
 const { editErrorEphemeral, sendEphemeral, editEphemeralForStatus } = require("../../services/message");
 const { facultyRole, courseAdminRole } = require("../../../../config.json");
+const { findAllCourseMembers } = require("../../../db/services/courseMemberService");
 
 
 const execute = async (interaction, client, models) => {
@@ -23,9 +24,8 @@ const execute = async (interaction, client, models) => {
   const courseRole = getCourseNameFromCategory(channel.parent, guild);
   const course = await findCourseFromDb(courseRole, models.Course);
 
-  const count = guild.roles.cache.find(
-    (role) => role.name === courseRole,
-  )?.members.size;
+  const members = await findAllCourseMembers(course.id, models.CourseMember);
+  const count = members.length;
 
   let instructors = await listCourseInstructors(guild, courseRole, courseAdminRole);
   if (instructors === "") {
