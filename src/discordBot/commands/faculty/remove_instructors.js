@@ -7,7 +7,7 @@ const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../serv
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
 
 const execute = async (interaction, client, models) => {
-  await sendEphemeral(interaction, "Adding instructors...");
+  await sendEphemeral(interaction, "Removing instructors...");
 
   const courseModel = models.Course;
   const userModel = models.User;
@@ -38,11 +38,11 @@ const execute = async (interaction, client, models) => {
   }
 
   for (let i = 0; i < userIdList.length; i++) {
-    const memberToPromote = getUserWithUserId(guild, userIdList[i]);
-    if (memberToPromote.user.bot) {
+    const memberToDemote = getUserWithUserId(guild, userIdList[i]);
+    if (memberToDemote.user.bot) {
       continue;
     }
-    const userInstance = await findUserByDiscordId(memberToPromote.user.id, userModel);
+    const userInstance = await findUserByDiscordId(memberToDemote.user.id, userModel);
 
     const courseMemberInstance = await findCourseMember(userInstance.id, parentCourse.id, courseMemberModel);
 
@@ -50,28 +50,28 @@ const execute = async (interaction, client, models) => {
       return editErrorEphemeral(interaction, "All listed users must be members of this course!");
     }
 
-    courseMemberInstance.instructor = true;
+    courseMemberInstance.instructor = false;
     await courseMemberInstance.save();
 
-    memberToPromote.roles.add(instructorRole);
+    memberToDemote.roles.remove(instructorRole);
   }
 
   await updateInviteLinks(guild, courseAdminRole, facultyRole, client);
 
-  return await editEphemeral(interaction, `Gave role '${instructorRole.name}' to all users listed.`);
+  return await editEphemeral(interaction, `Removed role '${instructorRole.name}' from all users listed.`);
 };
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("add_instructors")
-    .setDescription("Add instructors to the course.")
+    .setName("remove_instructors")
+    .setDescription("Remove instructors from the course.")
     .setDefaultPermission(false)
     .addStringOption(option =>
       option.setName("list")
-        .setDescription("List all users you wish to add as instructors using @tags")
+        .setDescription("List all users you wish to remove from instructors using @tags")
         .setRequired(true)),
   execute,
-  usage: "/add_instructors [members]",
-  description: "Add instructors to the course.*",
+  usage: "/remove_instructors [members]",
+  description: "Remove instructors from the course.*",
   roles: ["admin", facultyRole],
 };
