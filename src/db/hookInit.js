@@ -10,9 +10,11 @@ const {
   createInvitation } = require("../discordBot/services/service");
 const { findCourseFromDbById, updateGuide } = require("./services/courseService");
 const { courseAdminRole } = require("../../config.json");
+const { Op } = require("sequelize");
 
 const initHooks = (guild, models) => {
   initChannelHooks(guild, models);
+  initCourseHooks(guild, models);
 };
 
 const initChannelHooks = (guild, { Channel, Course }) => {
@@ -48,6 +50,27 @@ const initChannelHooks = (guild, { Channel, Course }) => {
     await setCoursePositionABC(guild, categoryObject.name);
     await createInvitation(guild, course.name);
     await guild.client.emit("COURSES_CHANGED", Course);
+    await updateGuide(guild, Course);
+  });
+};
+
+const initCourseHooks = (guild, { Course }) => {
+  Course.addHook("afterBulkDestroy", async (course) => {
+    const courseName = course.where.name[Op.iLike];
+    const category = findCategoryWithCourseName(courseName, guild);
+
+    await Promise.all(guild.channels.cache
+      .filter(c => c.parent === category)
+      .map(async channel => await channel.delete()),
+    );
+
+    await category?.delete();
+
+    await Promise.all(guild.roles.cache
+      .filter(r => (r.name === `${courseName} ${courseAdminRole}` || r.name.toLowerCase() === courseName.toLowerCase()))
+      .map(async role => await role.delete()),
+    );
+
     await updateGuide(guild, Course);
   });
 };
