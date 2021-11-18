@@ -1,13 +1,9 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const {
-  createInvitation,
-  setCoursePositionABC,
-  containsEmojis } = require("../../services/service");
+const { containsEmojis } = require("../../services/service");
 const {
   createCourseToDatabase,
   findCourseFromDb,
-  findCourseFromDbWithFullName,
-  updateGuide } = require("../../../db/services/courseService");
+  findCourseFromDbWithFullName } = require("../../../db/services/courseService");
 const { createDefaultChannelsToDatabase } = require("../../../db/services/channelService");
 const { sendErrorEphemeral, sendEphemeral, editEphemeral } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
@@ -58,12 +54,10 @@ const execute = async (interaction, client, models) => {
 
   if (await findCourseFromDb(courseName, models.Course)) return await sendErrorEphemeral(interaction, errorMessage);
   await sendEphemeral(interaction, "Creating course...");
-  const guild = client.guild;
+
+  const course = await createCourseToDatabase(courseCode, courseFullName, courseName, models.Course);
 
   const channelObjects = getDefaultChannelObjects(courseName);
-  const course = await createCourseToDatabase(courseCode, courseFullName, courseName, models.Course);
-  const categoryName = `📚 ${course.name}`;
-
   const defaultChannelObjects = channelObjects.map(channelObject => {
     const voiceChannel = channelObject.type === "GUILD_VOICE";
     return {
@@ -75,11 +69,7 @@ const execute = async (interaction, client, models) => {
   });
 
   await createDefaultChannelsToDatabase(defaultChannelObjects, models.Channel);
-  await setCoursePositionABC(guild, categoryName);
-  await createInvitation(guild, courseName);
   await editEphemeral(interaction, `Created course ${courseName}.`);
-  await client.emit("COURSES_CHANGED", models.Course);
-  await updateGuide(client.guild, models.Course);
 };
 
 module.exports = {

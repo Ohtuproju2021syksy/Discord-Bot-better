@@ -1,7 +1,7 @@
 const { execute } = require("../../../src/discordBot/commands/faculty/create_course");
 const { sendEphemeral, sendErrorEphemeral, editEphemeral } = require("../../../src/discordBot/services/message");
-const { createInvitation, setCoursePositionABC, containsEmojis } = require("../../../src/discordBot/services/service");
-const { findCourseFromDb, findCourseFromDbWithFullName, updateGuide, createCourseToDatabase } = require("../../../src/db/services/courseService");
+const { containsEmojis } = require("../../../src/discordBot/services/service");
+const { findCourseFromDb, findCourseFromDbWithFullName, createCourseToDatabase } = require("../../../src/db/services/courseService");
 const { createDefaultChannelsToDatabase } = require("../../../src/db/services/channelService");
 const models = require("../../mocks/mockModels");
 
@@ -90,23 +90,6 @@ describe("slash create command", () => {
     expect(createDefaultChannelsToDatabase.mock.calls[0][0]).toHaveLength(3);
   });
 
-  test("set course positions", async () => {
-    const courseName = "nickname";
-    const client = defaultTeacherInteraction.client;
-    const categoryName = `📚 ${courseName}`;
-    await execute(defaultTeacherInteraction, client, models);
-    expect(setCoursePositionABC).toHaveBeenCalledTimes(1);
-    expect(setCoursePositionABC).toHaveBeenCalledWith(client.guild, categoryName);
-  });
-
-  test("create invitation", async () => {
-    const courseName = "nickname";
-    const client = defaultTeacherInteraction.client;
-    await execute(defaultTeacherInteraction, client, models);
-    expect(createInvitation).toHaveBeenCalledTimes(1);
-    expect(createInvitation).toHaveBeenCalledWith(client.guild, courseName);
-  });
-
   test("respond with correct emphemeral", async () => {
     const courseName = "nickname";
     const client = defaultTeacherInteraction.client;
@@ -116,19 +99,6 @@ describe("slash create command", () => {
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, "Creating course...");
     expect(editEphemeral).toHaveBeenCalledTimes(1);
     expect(editEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, result);
-  });
-
-  test("update join/leave command list", async () => {
-    const client = defaultTeacherInteraction.client;
-    await execute(defaultTeacherInteraction, client, models);
-    expect(client.emit).toHaveBeenCalledTimes(1);
-  });
-
-  test("update guide", async () => {
-    const client = defaultTeacherInteraction.client;
-    await execute(defaultTeacherInteraction, client, models);
-    expect(updateGuide).toHaveBeenCalledTimes(1);
-    expect(updateGuide).toHaveBeenCalledWith(client.guild, models.Course);
   });
 
   test("fails if parameters are too long", async () => {

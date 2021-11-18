@@ -5,7 +5,6 @@ const { logError } = require("./logger");
 
 require("dotenv").config();
 const GUIDE_CHANNEL_NAME = "guide";
-const { courseAdminRole } = require("../../../config.json");
 
 let invite_url = "";
 
@@ -266,12 +265,8 @@ const getCategoryChannelPermissionOverwrites = (guild, admin, student) => ([
   },
 ]);
 
-const getDefaultChannelObjects = async (guild, courseName) => {
+const getDefaultChannelObjects = async (guild, courseName, student, admin, category) => {
   courseName = courseName.replace(/ /g, "-");
-  const student = await findOrCreateRoleWithName(courseName, guild);
-  const admin = await findOrCreateRoleWithName(`${courseName} ${courseAdminRole}`, guild);
-  const categoryObject = getCategoryObject(courseName, getCategoryChannelPermissionOverwrites(guild, admin, student));
-  const category = await findOrCreateChannel(categoryObject, guild);
 
   return [
     {
