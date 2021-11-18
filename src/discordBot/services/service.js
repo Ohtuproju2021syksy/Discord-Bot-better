@@ -4,6 +4,7 @@ const path = require("path");
 
 require("dotenv").config();
 const GUIDE_CHANNEL_NAME = "guide";
+const { courseAdminRole } = require("../../../config.json");
 
 let invite_url = "";
 
@@ -161,9 +162,9 @@ const getCourseNameFromCategory = (category) => {
   return trimmedName;
 };
 
-const findAndUpdateInstructorRole = async (name, guild, courseAdminRole) => {
+const findAndUpdateInstructorRole = async (name, guild, adminRole) => {
   const oldInstructorRole = guild.roles.cache.find((role) => role.name !== name && role.name.includes(name));
-  oldInstructorRole.setName(`${name} ${courseAdminRole}`);
+  oldInstructorRole.setName(`${name} ${adminRole}`);
 };
 
 const downloadImage = async (course) => {
@@ -196,10 +197,10 @@ const downloadImage = async (course) => {
   }
 };
 
-const listCourseInstructors = async (guild, roleString, courseAdminRole) => {
+const listCourseInstructors = async (guild, roleString, adminRole) => {
 
   const facultyRole = await guild.roles.cache.find(r => r.name === "faculty");
-  const instructorRole = await guild.roles.cache.find(r => r.name === `${roleString} ${courseAdminRole}`);
+  const instructorRole = await guild.roles.cache.find(r => r.name === `${roleString} ${adminRole}`);
   const members = await guild.members.fetch();
   let adminsString = "";
   members.forEach(m => {
@@ -228,20 +229,91 @@ const listCourseInstructors = async (guild, roleString, courseAdminRole) => {
   return adminsString;
 };
 
-const updateInviteLinks = async (guild, courseAdminRole, facultyRole, client) => {
+const updateInviteLinks = async (guild, adminRole, facultyRole, client) => {
   const announcementChannels = guild.channels.cache.filter(c => c.name.includes("announcement"));
   announcementChannels.forEach(async aChannel => {
     const pinnedMessages = await aChannel.messages.fetchPinned();
     const invMessage = pinnedMessages.find(msg => msg.author === client.user && msg.content.includes("Invitation link for"));
     const courseName = getCourseNameFromCategory(aChannel.parent);
     let updatedMsg = createCourseInvitationLink(courseName);
-    const instructors = await listCourseInstructors(guild, courseName, courseAdminRole, facultyRole);
+    const instructors = await listCourseInstructors(guild, courseName, adminRole, facultyRole);
     if (instructors !== "") {
       updatedMsg = updatedMsg + "\nInstructors for the course:" + instructors;
     }
     await invMessage.edit(updatedMsg);
   });
 };
+
+const getCategoryChannelPermissionOverwrites = (guild, admin, student) => ([
+  {
+    id: guild.id,
+    deny: ["VIEW_CHANNEL"],
+  },
+  {
+    id: guild.me.roles.highest,
+    allow: ["VIEW_CHANNEL"],
+  },
+  {
+    id: admin.id,
+    allow: ["VIEW_CHANNEL"],
+  },
+  {
+    id: student.id,
+    allow: ["VIEW_CHANNEL"],
+  },
+]);
+
+const getDefaultChannelObjects = async (guild, courseName) => {
+  courseName = courseName.replace(/ /g, "-");
+  const student = await findOrCreateRoleWithName(courseName, guild);
+  const admin = await findOrCreateRoleWithName(`${courseName} ${courseAdminRole}`, guild);
+  const categoryObject = getCategoryObject(courseName, getCategoryChannelPermissionOverwrites(guild, admin, student));
+  const category = await findOrCreateChannel(categoryObject, guild);
+
+  return [
+    {
+      name: `${courseName}_announcement`,
+      options: {
+        type: "GUILD_TEXT",
+        description: "Messages from course admins",
+        parent: category,
+        permissionOverwrites: [
+          {
+            id: guild.id,
+            deny: ["VIEW_CHANNEL"],
+          },
+          {
+            id: student,
+            deny: ["SEND_MESSAGES"],
+            allow: ["VIEW_CHANNEL"],
+          },
+          {
+            id: admin,
+            allow: ["VIEW_CHANNEL", "SEND_MESSAGES"],
+          },
+        ],
+      },
+    },
+    {
+      name: `${courseName}_general`,
+      parent: category,
+      options: { type: "GUILD_TEXT", parent: category, permissionOverwrites: [] },
+    },
+    {
+      name: `${courseName}_voice`,
+      parent: category,
+      options: { type: "GUILD_VOICE", parent: category, permissionOverwrites: [] },
+    },
+  ];
+};
+
+const getCategoryObject = (categoryName, permissionOverwrites) => ({
+  name: `📚 ${categoryName}`,
+  options: {
+    type: "GUILD_CATEGORY",
+    permissionOverwrites,
+  },
+});
 
 module.exports = {
   findCategoryWithCourseName,
@@ -263,4 +335,7 @@ module.exports = {
   downloadImage,
   containsEmojis,
   getChannelObject,
+  getCategoryChannelPermissionOverwrites,
+  getDefaultChannelObjects,
+  getCategoryObject,
 };

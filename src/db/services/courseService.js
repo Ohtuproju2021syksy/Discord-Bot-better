@@ -85,6 +85,13 @@ const findCourseFromDb = async (courseName, Course) => {
   });
 };
 
+const findCourseFromDbById = async (courseId, Course) => {
+  return await Course.findOne({
+    where:
+      { id: courseId },
+  });
+};
+
 const findCoursesFromDb = async (order, Course, state) => {
   const filter = {
     true: { private: true },
@@ -194,4 +201,5 @@ module.exports = {
   updateGuideMessage,
   isCourseCategory,
   findAllCourseNames,
+  findCourseFromDbById,
 };

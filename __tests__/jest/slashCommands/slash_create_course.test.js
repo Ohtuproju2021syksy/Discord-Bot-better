@@ -1,13 +1,8 @@
 const { execute } = require("../../../src/discordBot/commands/faculty/create_course");
 const { sendEphemeral, sendErrorEphemeral, editEphemeral } = require("../../../src/discordBot/services/message");
-const {
-  findOrCreateRoleWithName,
-  findOrCreateChannel,
-  setCoursePositionABC,
-  createInvitation,
-  containsEmojis } = require("../../../src/discordBot/services/service");
+const { createInvitation, setCoursePositionABC, containsEmojis } = require("../../../src/discordBot/services/service");
 const { findCourseFromDb, findCourseFromDbWithFullName, updateGuide, createCourseToDatabase } = require("../../../src/db/services/courseService");
-const { courseAdminRole } = require("../../../config.json");
+const { createDefaultChannelsToDatabase } = require("../../../src/db/services/channelService");
 const models = require("../../mocks/mockModels");
 
 jest.mock("../../../src/discordBot/services/message");
@@ -15,7 +10,6 @@ jest.mock("../../../src/discordBot/services/service");
 jest.mock("../../../src/db/services/courseService");
 jest.mock("../../../src/db/services/channelService");
 
-findOrCreateRoleWithName.mockImplementation((name) => { return { id: Math.floor(Math.random() * 10) + 5, name: name }; });
 findCourseFromDbWithFullName
   .mockImplementation(() => false)
   .mockImplementationOnce(() => true);
@@ -24,7 +18,7 @@ findCourseFromDb
   .mockImplementationOnce(() => true)
   .mockImplementationOnce(() => true);
 
-createCourseToDatabase.mockImplementation(() => {return { id:  Math.floor(Math.random() * 10) + 5 }; });
+createCourseToDatabase.mockImplementation(() => {return { name: "nickname", id:  Math.floor(Math.random() * 10) + 5 }; });
 
 const { defaultTeacherInteraction, defaultStudentInteraction } = require("../../mocks/mockInteraction");
 defaultTeacherInteraction.options = {
@@ -82,26 +76,18 @@ describe("slash create command", () => {
 
   test("create course name without nick", async () => {
     const courseCode = "TKT-100";
+    const fullName = "Long course name";
     const client = defaultStudentInteraction.client;
     await execute(defaultStudentInteraction, client, models);
-    expect(findOrCreateRoleWithName).toHaveBeenCalledTimes(2);
-    expect(findOrCreateRoleWithName).toHaveBeenCalledWith(courseCode.toLowerCase(), client.guild);
-    expect(findOrCreateRoleWithName).toHaveBeenCalledWith(`${courseCode.toLowerCase()} ${courseAdminRole}`, client.guild);
-  });
-
-  test("find or create correct roles", async () => {
-    const courseName = "nickname";
-    const client = defaultTeacherInteraction.client;
-    await execute(defaultTeacherInteraction, client, models);
-    expect(findOrCreateRoleWithName).toHaveBeenCalledTimes(2);
-    expect(findOrCreateRoleWithName).toHaveBeenCalledWith(courseName, client.guild);
-    expect(findOrCreateRoleWithName).toHaveBeenCalledWith(`${courseName} ${courseAdminRole}`, client.guild);
+    expect(createCourseToDatabase).toHaveBeenCalledTimes(1);
+    expect(createCourseToDatabase).toHaveBeenCalledWith(courseCode, fullName, courseCode.toLowerCase(), models.Course);
   });
 
   test("create channels: category, announcement, general and voice ", async () => {
     const client = defaultTeacherInteraction.client;
     await execute(defaultTeacherInteraction, client, models);
-    expect(findOrCreateChannel).toHaveBeenCalledTimes(4);
+    expect(createDefaultChannelsToDatabase).toHaveBeenCalledTimes(1);
+    expect(createDefaultChannelsToDatabase.mock.calls[0][0]).toHaveLength(3);
   });
 
   test("set course positions", async () => {

@@ -1,8 +1,6 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const {
-  findOrCreateRoleWithName,
   createInvitation,
-  findOrCreateChannel,
   setCoursePositionABC,
   containsEmojis } = require("../../services/service");
 const {
@@ -10,75 +8,28 @@ const {
   findCourseFromDb,
   findCourseFromDbWithFullName,
   updateGuide } = require("../../../db/services/courseService");
-const { createChannelToDatabase } = require("../../../db/services/channelService");
+const { createDefaultChannelsToDatabase } = require("../../../db/services/channelService");
 const { sendErrorEphemeral, sendEphemeral, editEphemeral } = require("../../services/message");
-const { courseAdminRole, facultyRole } = require("../../../../config.json");
+const { facultyRole } = require("../../../../config.json");
 
-const getPermissionOverwrites = (guild, admin, student) => ([
-  {
-    id: guild.id,
-    deny: ["VIEW_CHANNEL"],
-  },
-  {
-    id: guild.me.roles.highest,
-    allow: ["VIEW_CHANNEL"],
-  },
-  {
-    id: admin.id,
-    allow: ["VIEW_CHANNEL"],
-  },
-  {
-    id: student.id,
-    allow: ["VIEW_CHANNEL"],
-  },
-]);
+const getDefaultChannelObjects = (courseName) => {
+  courseName = courseName.replace(/ /g, "-");
 
-const getChannelObjects = (guild, admin, student, roleName, category) => {
-  roleName = roleName.replace(/ /g, "-");
   return [
     {
-      name: `${roleName}_announcement`,
-      options: {
-        type: "GUILD_TEXT",
-        description: "Messages from course admins",
-        parent: category,
-        permissionOverwrites: [
-          {
-            id: guild.id,
-            deny: ["VIEW_CHANNEL"],
-          },
-          {
-            id: student,
-            deny: ["SEND_MESSAGES"],
-            allow: ["VIEW_CHANNEL"],
-          },
-          {
-            id: admin,
-            allow: ["VIEW_CHANNEL", "SEND_MESSAGES"],
-          },
-        ],
-      },
+      name: `${courseName}_announcement`,
+      type: "GUILD_TEXT",
     },
     {
-      name: `${roleName}_general`,
-      parent: category,
-      options: { type: "GUILD_TEXT", parent: category, permissionOverwrites: [] },
+      name: `${courseName}_general`,
+      type: "GUILD_TEXT",
     },
     {
-      name: `${roleName}_voice`,
-      parent: category,
-      options: { type: "GUILD_VOICE", parent: category, permissionOverwrites: [] },
+      name: `${courseName}_voice`,
+      type: "GUILD_VOICE",
     },
   ];
 };
-
-const getCategoryObject = (categoryName, permissionOverwrites) => ({
-  name: `📚 ${categoryName}`,
-  options: {
-    type: "GUILD_CATEGORY",
-    permissionOverwrites,
-  },
-});
 
 const execute = async (interaction, client, models) => {
   const courseCode = interaction.options.getString("coursecode").replace(/\s/g, "");
@@ -109,29 +60,22 @@ const execute = async (interaction, client, models) => {
   await sendEphemeral(interaction, "Creating course...");
   const guild = client.guild;
 
-  const student = await findOrCreateRoleWithName(courseName, guild);
-  const admin = await findOrCreateRoleWithName(`${courseName} ${courseAdminRole}`, guild);
-
-  const categoryObject = getCategoryObject(courseName, getPermissionOverwrites(guild, admin, student));
-  const category = await findOrCreateChannel(categoryObject, guild);
-
-  const channelObjects = getChannelObjects(guild, admin, student, courseName, category);
-  await Promise.all(channelObjects.map(
-    async channelObject => await findOrCreateChannel(channelObject, guild),
-  ));
-
+  const channelObjects = getDefaultChannelObjects(courseName);
   const course = await createCourseToDatabase(courseCode, courseFullName, courseName, models.Course);
-  await Promise.all(channelObjects
-    .map(async channelObject => {
-      const voiceChannel = channelObject.options.type === "GUILD_VOICE";
-      await createChannelToDatabase({
-        courseId: course.id,
-        name: channelObject.name,
-        defaultChannel: true,
-        voiceChannel: voiceChannel }, models.Channel);
-    }));
+  const categoryName = `📚 ${course.name}`;
 
-  await setCoursePositionABC(guild, categoryObject.name);
+  const defaultChannelObjects = channelObjects.map(channelObject => {
+    const voiceChannel = channelObject.type === "GUILD_VOICE";
+    return {
+      courseId: course.id,
+      name: channelObject.name,
+      defaultChannel: true,
+      voiceChannel: voiceChannel,
+    };
+  });
+
+  await createDefaultChannelsToDatabase(defaultChannelObjects, models.Channel);
+  await setCoursePositionABC(guild, categoryName);
   await createInvitation(guild, courseName);
   await editEphemeral(interaction, `Created course ${courseName}.`);
   await client.emit("COURSES_CHANGED", models.Course);
