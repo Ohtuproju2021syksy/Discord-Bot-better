@@ -116,24 +116,6 @@ const findOrCreateChannel = async (channelObject, guild) => {
   return await guild.channels.create(name, options);
 };
 
-const setCoursePositionABC = async (guild, courseString) => {
-  let first = 9999;
-  const result = guild.channels.cache
-    .filter(c => c.type === "GUILD_CATEGORY" && (c.name.startsWith("📚") || c.name.startsWith("👻") || c.name.startsWith("🔐")))
-    .map((c) => {
-      const categoryName = c.name.split(" ")[1];
-      if (first > c.position) first = c.position;
-      return categoryName;
-    }).sort((a, b) => a.localeCompare(b));
-
-  const course = courseString.split(" ")[1];
-
-  const category = guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name.toLowerCase() === courseString.toLowerCase());
-  if (category) {
-    await category.edit({ position: result.indexOf(course) + first });
-  }
-};
-
 const deletecommand = async (client, commandToDeleteName) => {
   client.api.applications(client.user.id).guilds(process.env.GUILD_ID).commands.get().then(commands => {
     commands.forEach(async command => {
@@ -328,7 +310,6 @@ module.exports = {
   handleCooldown,
   createCourseInvitationLink,
   findOrCreateChannel,
-  setCoursePositionABC,
   deletecommand,
   getCourseNameFromCategory,
   findAndUpdateInstructorRole,

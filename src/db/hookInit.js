@@ -6,9 +6,8 @@ const {
   findOrCreateRoleWithName,
   getCategoryObject,
   getCategoryChannelPermissionOverwrites,
-  setCoursePositionABC,
   createInvitation } = require("../discordBot/services/service");
-const { findCourseFromDbById, updateGuide } = require("./services/courseService");
+const { findCourseFromDbById, updateGuide, setCoursePositionABC } = require("./services/courseService");
 const { courseAdminRole } = require("../../config.json");
 const { Op } = require("sequelize");
 
@@ -47,7 +46,7 @@ const initChannelHooks = (guild, { Channel, Course }) => {
       async channelObject => await findOrCreateChannel(channelObject, guild),
     ));
 
-    await setCoursePositionABC(guild, categoryObject.name);
+    await setCoursePositionABC(guild, categoryObject.name, Course);
     await createInvitation(guild, course.name);
     await guild.client.emit("COURSES_CHANGED", Course);
     await updateGuide(guild, Course);
