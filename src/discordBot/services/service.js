@@ -269,7 +269,6 @@ module.exports = {
   updateInviteLinks,
   downloadImage,
   containsEmojis,
-  instructorsFeature
   getUserWithUserId,
   getChannelObject,
 };
