@@ -106,7 +106,7 @@ const student = {
 };
 
 const admin = {
-  id: 2,
+  id: 3,
   nickname: "admin",
   roles: {
     cache: [{ name: "admin" }],
@@ -120,6 +120,7 @@ const admin = {
   displayName: "admin",
   user: {
     id: 3,
+    bot: false,
   },
 };
 
@@ -228,10 +229,9 @@ const defaultAdminInteraction = {
   client: client,
   channelId: 2,
   member: {
-    user: {
-      id: 3,
-    },
+    user: admin,
     _roles: [2, 3],
+    roles: [2, 3],
   },
   options: undefined,
   commandName: "test",
