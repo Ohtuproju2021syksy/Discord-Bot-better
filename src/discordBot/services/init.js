@@ -2,13 +2,14 @@ const { findOrCreateRoleWithName } = require("./service");
 const { facultyRole, githubRepo } = require("../../../config.json");
 const { updateGuide } = require("../../db/services/courseService");
 const { initHooks } = require("../../db/hookInit");
+const { sendPullDateMessage } = require("./message");
 
 const findOrCreateChannel = async (channelObject, guild) => {
   const { name, options } = channelObject;
   const alreadyExists = guild.channels.cache.find(
     (c) => c.type === options.type && c.name.toLowerCase() === name.toLowerCase());
   if (alreadyExists) {
-    if (options?.topic && alreadyExists.topic !== options.topic) {
+    if (options?.topic && alreadyExists.topic !== options.topic && process.env.NODE_ENV === "production") {
       return await alreadyExists.setTopic(options.topic);
     }
     return alreadyExists;
@@ -69,6 +70,9 @@ const initializeApplicationContext = async (client, models) => {
   await initRoles(client.guild);
   await initChannels(client.guild, client);
   await setInitialGuideMessage(client.guild, "guide", models.Course);
+  if (process.env.NODE_ENV === "production") {
+    await sendPullDateMessage(client);
+  }
 };
 
 module.exports = {

@@ -2,6 +2,7 @@ require("dotenv").config();
 const { Telegraf } = require("telegraf");
 const { Course } = require("../db/dbInit");
 const fs = require("fs");
+const { logError } = require("../discordBot/services/logger");
 
 const telegramClient = new Telegraf(process.env.TELEGRAM_BOT_TOKEN);
 telegramClient.command("quit", (ctx) => {
@@ -20,6 +21,7 @@ for (const file of eventFiles) {
       event.execute(...args, telegramClient, Course);
     }
     catch (error) {
+      logError(error);
       console.log(error);
     }
   });

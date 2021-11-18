@@ -1,5 +1,6 @@
 const { MessageActionRow, MessageButton, MessageEmbed, MessageAttachment } = require("discord.js");
 const path = require("path");
+const { logError } = require("./logger");
 
 const validateChannel = (channel) => {
   if (channel.parent) return false;
@@ -22,6 +23,17 @@ const sendErrorReportNoInteraction = async (telegramId, member, channel, client,
   const msg = `**ERROR DETECTED!**\nMember: ${member}\nChannel: ${channel}`;
   await commandsChannel.send({ content: msg });
   await commandsChannel.send({ content: error });
+};
+
+const sendPullDateMessage = async (client) => {
+  const commandsChannel = client.guild.channels.cache.find((c) => validateChannel(c));
+  if (!commandsChannel.lastPinTimestamp) {
+    const msg = await commandsChannel.send("initial");
+    await msg.pin();
+  }
+  const messages = await commandsChannel.messages.fetchPinned(true);
+  const message = messages.first();
+  await message.edit(`Latest version pulled on ${new Date()}`);
 };
 
 const sendErrorEphemeral = async (interaction, msg) => {
@@ -69,6 +81,7 @@ const sendReplyMessage = async (message, channel, replyText) => {
       fetchedReply.delete();
     }
     catch (e) {
+      logError(e);
       // console.log(error);
     }
     try {
@@ -76,6 +89,7 @@ const sendReplyMessage = async (message, channel, replyText) => {
       fetchedInteraction.delete();
     }
     catch (e) {
+      logError(e);
       // console.log(error);
     }
   }, 86400000);
@@ -198,4 +212,5 @@ module.exports = {
   sendFollowUpEphemeral,
   confirmChoice,
   confirmChoiceNoInteraction,
+  sendPullDateMessage,
 };

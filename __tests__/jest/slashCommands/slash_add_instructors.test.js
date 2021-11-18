@@ -1,10 +1,11 @@
-const { execute } = require("../../../src/discordBot/commands/instructor/add_instructor");
+const { execute } = require("../../../src/discordBot/commands/faculty/add_instructors");
 const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../../src/discordBot/services/message");
-const { getCourseNameFromCategory } = require("../../../src/discordBot/services/service");
+const { getCourseNameFromCategory, getUserWithUserId } = require("../../../src/discordBot/services/service");
 const { findUserByDiscordId } = require("../../../src/db/services/userService");
 const { findCourseFromDb, isCourseCategory } = require("../../../src/db/services/courseService");
 const { findCourseMember } = require("../../../src/db/services/courseMemberService");
 const { courseAdminRole } = require("../../../config.json");
+const { defaultTeacherInteraction, defaultAdminInteraction } = require("../../mocks/mockInteraction");
 const models = require("../../mocks/mockModels");
 
 jest.mock("../../../src/discordBot/services/message");
@@ -18,10 +19,10 @@ getCourseNameFromCategory.mockImplementation(() => "test");
 findUserByDiscordId.mockImplementation(() => { return { id: 1 }; });
 findCourseFromDb.mockImplementation(() => { return { id: 1 }; });
 findCourseMember.mockImplementation(() => { return { id: 1, instructor: false, save: () => null }; });
+getUserWithUserId.mockImplementation(() => defaultAdminInteraction.member.user);
 
-const { defaultTeacherInteraction, defaultStudentInteraction, defaultAdminInteraction } = require("../../mocks/mockInteraction");
-defaultAdminInteraction.options = { getUser: jest.fn(() => { return { id: 3 }; }) };
-defaultStudentInteraction.options = { getUser: jest.fn(() => { return { id: 2 }; }) };
+
+defaultAdminInteraction.options = { getString: jest.fn(() => { return "<@!3>"; }) };
 defaultTeacherInteraction.options = { getUser: jest.fn(() => { return { id: 2 }; }) };
 
 const initialResponse = "Adding instructor...";
@@ -31,16 +32,6 @@ afterEach(() => {
 });
 
 describe("slash add instructor command", () => {
-  test("if no permission to use the command reponds with correct ephemeral", async () => {
-    const client = defaultStudentInteraction.client;
-    const response = "You don't have the permission to use this command!";
-    await execute(defaultStudentInteraction, client, models);
-    expect(sendEphemeral).toHaveBeenCalledTimes(1);
-    expect(sendEphemeral).toHaveBeenCalledWith(defaultStudentInteraction, initialResponse);
-    expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
-    expect(editErrorEphemeral).toHaveBeenCalledWith(defaultStudentInteraction, response);
-  });
-
   test("command must be used in course channel", async () => {
     isCourseCategory.mockImplementationOnce(() => false);
     const client = defaultTeacherInteraction.client;
@@ -55,10 +46,10 @@ describe("slash add instructor command", () => {
   test("instructor role can be given", async () => {
     const roleString = "test";
     const client = defaultAdminInteraction.client;
-    const response = `Gave role '${roleString} ${courseAdminRole}' to admin.`;
-    const admin = client.guild.members.cache.get(3);
+    const response = `Gave role '${roleString} ${courseAdminRole}' to all users listed.`;
     client.guild.roles.create({ name: `${roleString} ${courseAdminRole}`, members: [] });
     await execute(defaultAdminInteraction, client, models);
+    const admin = client.guild.members.cache.get(3);
     expect(admin.roles.add).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultAdminInteraction, initialResponse);

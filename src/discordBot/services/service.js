@@ -1,6 +1,7 @@
 const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
+const { logError } = require("./logger");
 
 require("dotenv").config();
 const GUIDE_CHANNEL_NAME = "guide";
@@ -38,7 +39,7 @@ const createInvitation = async (guild, args) => {
   );
   const name = args;
   const category = guild.channels.cache.find(
-    c => c.type === "GUILD_CATEGORY" && c.name.toLowerCase().includes(name.toLowerCase()),
+    c => c.type === "GUILD_CATEGORY" && getCourseNameFromCategory(c.name.toLowerCase()) === name.toLowerCase(),
   );
   const course = guild.channels.cache.find(
     (c => c.parent === category),
@@ -62,6 +63,7 @@ const findCategoryWithCourseName = (courseString, guild) => {
     return category;
   }
   catch (error) {
+    logError(error);
     // console.log(error);
   }
 };
@@ -193,6 +195,7 @@ const downloadImage = async (course) => {
     });
   }
   catch (error) {
+    logError(error);
     return;
   }
 };
@@ -315,6 +318,10 @@ const getCategoryObject = (categoryName, permissionOverwrites) => ({
   },
 });
 
+const getUserWithUserId = (guild, userId) => {
+  return guild.members.cache.get(userId);
+};
+
 module.exports = {
   findCategoryWithCourseName,
   findOrCreateRoleWithName,
@@ -334,6 +341,7 @@ module.exports = {
   updateInviteLinks,
   downloadImage,
   containsEmojis,
+  getUserWithUserId,
   getChannelObject,
   getCategoryChannelPermissionOverwrites,
   getDefaultChannelObjects,
