@@ -188,18 +188,21 @@ const findAllCourseNames = async (Course) => {
 
 const setCoursePositionABC = async (guild, courseString, Course) => {
   let first = 9999;
-  const result = await findAllCourseNames(Course);
-  result.sort((a, b) => a.localeCompare(b));
-  result.map((c) => {
-    const channel = findCategoryWithCourseName(c, guild);
-    if (first > channel.position) first = channel.position;
-    return c;
+  const categoryNames = await findAllCourseNames(Course);
+  categoryNames.sort((a, b) => a.localeCompare(b));
+  const categories = [];
+  categoryNames.forEach(cat => {
+    const guildCat = findCategoryWithCourseName(cat, guild);
+    if (guildCat) {
+      categories.push(guildCat);
+      if (first > guildCat.position) first = guildCat.position;
+    }
   });
   const course = courseString.split(" ")[1];
 
   const category = findCategoryWithCourseName(course, guild);
   if (category) {
-    await category.edit({ position: result.indexOf(course) + first });
+    await category.edit({ position: categories.indexOf(category) + first });
   }
 };
 

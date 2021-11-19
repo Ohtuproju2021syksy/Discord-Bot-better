@@ -22,11 +22,9 @@ describe("prefix sort courses command", () => {
     findAllCourseNames.mockImplementationOnce(() => ["b", "a"]);
     findCategoryWithCourseName.mockImplementationOnce(() => client.guild.channels.cache.get(1));
     findCategoryWithCourseName.mockImplementationOnce(() => client.guild.channels.cache.get(2));
-    findCategoryWithCourseName.mockImplementationOnce(() => client.guild.channels.cache.get(1));
-    findCategoryWithCourseName.mockImplementationOnce(() => client.guild.channels.cache.get(2));
     await execute(messageInCommandsChannel, args, models.Course);
     expect(findAllCourseNames).toHaveBeenCalledTimes(1);
-    expect(findCategoryWithCourseName).toHaveBeenCalledTimes(4);
+    expect(findCategoryWithCourseName).toHaveBeenCalledTimes(2);
     expect(channelA.edit).toHaveBeenCalledTimes(1);
     expect(channelB.edit).toHaveBeenCalledTimes(1);
     client.guild.channels.init();
