@@ -40,7 +40,7 @@ const execute = async (interaction, client, models) => {
     await setCourseToPrivate(courseName, models.Course);
     await editEphemeral(interaction, `This course ${courseName} is now private.`);
     await client.emit("COURSES_CHANGED", models.Course);
-    await updateGuide(client.guild, models.Course);
+    await updateGuide(client.guild, models);
     handleCooldown(courseName);
   }
 };

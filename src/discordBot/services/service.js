@@ -295,8 +295,8 @@ const getCategoryObject = (categoryName, permissionOverwrites) => ({
   },
 });
 
-const getUserWithUserId = (guild, userId) => {
-  return guild.members.cache.get(userId);
+const getUserWithUserId = async (guild, userId) => {
+  return await guild.members.cache.get(userId);
 };
 
 module.exports = {

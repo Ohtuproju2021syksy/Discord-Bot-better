@@ -16,13 +16,15 @@ const initHooks = (guild, models) => {
   initCourseHooks(guild, models);
 };
 
-const initChannelHooks = (guild, { Channel, Course }) => {
-  Channel.addHook("afterBulkDestroy", (channel) => {
+const initChannelHooks = (guild, models) => {
+  const channelModel = models.Channel;
+  const courseModel = models.Course;
+  channelModel.addHook("afterBulkDestroy", (channel) => {
     guild.channels.cache.find(c => c.name === channel.where.name)?.delete();
   });
 
-  Channel.addHook("afterCreate", async (channel) => {
-    const course = await findCourseFromDbById(channel.courseId, Course);
+  channelModel.addHook("afterCreate", async (channel) => {
+    const course = await findCourseFromDbById(channel.courseId, courseModel);
     const channelName = channel.name.replace(`${course.name}_`, "");
 
     if (!channel.defaultChannel) {
@@ -33,8 +35,8 @@ const initChannelHooks = (guild, { Channel, Course }) => {
     }
   });
 
-  Channel.addHook("afterBulkCreate", async (channel) => {
-    const course = await findCourseFromDbById(channel[0].courseId, Course);
+  channelModel.addHook("afterBulkCreate", async (channel) => {
+    const course = await findCourseFromDbById(channel[0].courseId, courseModel);
 
     const student = await findOrCreateRoleWithName(course.name, guild);
     const admin = await findOrCreateRoleWithName(`${course.name} ${courseAdminRole}`, guild);
@@ -46,15 +48,15 @@ const initChannelHooks = (guild, { Channel, Course }) => {
       async channelObject => await findOrCreateChannel(channelObject, guild),
     ));
 
-    await setCoursePositionABC(guild, categoryObject.name, Course);
+    await setCoursePositionABC(guild, categoryObject.name, courseModel);
     await createInvitation(guild, course.name);
-    await guild.client.emit("COURSES_CHANGED", Course);
-    await updateGuide(guild, Course);
+    await guild.client.emit("COURSES_CHANGED", courseModel);
+    await updateGuide(guild, models);
   });
 };
 
-const initCourseHooks = (guild, { Course }) => {
-  Course.addHook("afterBulkDestroy", async (course) => {
+const initCourseHooks = (guild, models) => {
+  models.Course.addHook("afterBulkDestroy", async (course) => {
     const courseName = course.where.name[Op.iLike];
     const category = findCategoryWithCourseName(courseName, guild);
 
@@ -70,7 +72,7 @@ const initCourseHooks = (guild, { Course }) => {
       .map(async role => await role.delete()),
     );
 
-    await updateGuide(guild, Course);
+    await updateGuide(guild, models);
   });
 };
 

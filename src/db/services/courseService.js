@@ -1,4 +1,5 @@
 const { findChannelWithNameAndType, getCourseNameFromCategory, findCategoryWithCourseName } = require("../../discordBot/services/service");
+const { findCourseMemberCount } = require("./courseMemberService");
 const { Sequelize } = require("sequelize");
 const GUIDE_CHANNEL_NAME = "guide";
 
@@ -99,7 +100,7 @@ const findCoursesFromDb = async (order, Course, state) => {
     undefined: {},
   };
   return await Course.findAll({
-    attributes: ["code", "fullName", "name"],
+    attributes: ["id", "code", "fullName", "name"],
     order: [order],
     where: filter[state],
     raw: true,
@@ -122,20 +123,17 @@ const findCourseNickNameFromDbWithCourseCode = async (courseName, Course) => {
   });
 };
 
-const updateGuideMessage = async (message, Course) => {
-  const guild = message.guild;
-  const courseData = await findCoursesFromDb("code", Course, false);
-  const rows = courseData
-    .map((course) => {
+const updateGuideMessage = async (message, models) => {
+  const courseData = await findCoursesFromDb("code", models.Course, false);
+  const rows = await Promise.all(courseData
+    .map(async (course) => {
       const regExp = /[^0-9]*/;
       const fullname = course.fullName;
       const matches = regExp.exec(course.code)?.[0];
       const code = matches ? matches + course.code.slice(matches.length) : course.code;
-      const count = guild.roles.cache.find(
-        (role) => role.name === course.name,
-      )?.members.size;
+      const count = await findCourseMemberCount(course.id, models.CourseMember);
       return `  - ${code} - ${fullname} 👤${count}`;
-    });
+    }));
 
   const newContent = `
 Käytössäsi on seuraavia komentoja:
@@ -161,13 +159,13 @@ Invitation link for the server ${invite_url}
   await message.edit(newContent);
 };
 
-const updateGuide = async (guild, Course) => {
+const updateGuide = async (guild, models) => {
   const channel = guild.channels.cache.find(
     (c) => c.name === GUIDE_CHANNEL_NAME,
   );
   const messages = await channel.messages.fetchPinned(true);
   const message = messages.first();
-  await updateGuideMessage(message, Course);
+  await updateGuideMessage(message, models);
 };
 
 const isCourseCategory = async (channel, Course) => {

@@ -38,7 +38,7 @@ const execute = async (interaction, client, models) => {
   }
 
   for (let i = 0; i < userIdList.length; i++) {
-    const memberToDemote = getUserWithUserId(guild, userIdList[i]);
+    const memberToDemote = await getUserWithUserId(guild, userIdList[i]);
     if (memberToDemote.user.bot) {
       continue;
     }
@@ -47,13 +47,13 @@ const execute = async (interaction, client, models) => {
     const courseMemberInstance = await findCourseMember(userInstance.id, parentCourse.id, courseMemberModel);
 
     if (!courseMemberInstance) {
-      return editErrorEphemeral(interaction, "All listed users must be members of this course!");
+      return await editErrorEphemeral(interaction, "All listed users must be members of this course!");
     }
 
     courseMemberInstance.instructor = false;
     await courseMemberInstance.save();
 
-    memberToDemote.roles.remove(instructorRole);
+    await memberToDemote.roles.remove(instructorRole);
   }
 
   await updateInviteLinks(guild, courseAdminRole, facultyRole, client);
