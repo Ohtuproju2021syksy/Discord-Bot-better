@@ -9,6 +9,11 @@ const validateChannel = (channel) => {
   else return true;
 };
 
+const sendPullDateMessage = async (client) => {
+  const commandsChannel = client.guild.channels.cache.find((c) => validateChannel(c));
+  await commandsChannel.send(`Latest version pulled on ${new Date()}`);
+};
+
 const sendErrorReport = async (interaction, client, error) => {
   const commandsChannel = client.guild.channels.cache.find((c) => validateChannel(c));
   const member = client.guild.members.cache.get(interaction.member.user.id);
@@ -23,17 +28,6 @@ const sendErrorReportNoInteraction = async (telegramId, member, channel, client,
   const msg = `**ERROR DETECTED!**\nMember: ${member}\nChannel: ${channel}`;
   await commandsChannel.send({ content: msg });
   await commandsChannel.send({ content: error });
-};
-
-const sendPullDateMessage = async (client) => {
-  const commandsChannel = client.guild.channels.cache.find((c) => validateChannel(c));
-  if (!commandsChannel.lastPinTimestamp) {
-    const msg = await commandsChannel.send("initial");
-    await msg.pin();
-  }
-  const messages = await commandsChannel.messages.fetchPinned(true);
-  const message = messages.first();
-  await message.edit(`Latest version pulled on ${new Date()}`);
 };
 
 const sendErrorEphemeral = async (interaction, msg) => {
@@ -199,6 +193,7 @@ const confirmChoiceNoInteraction = async (message, interactionMessage, guild) =>
 };
 
 module.exports = {
+  sendPullDateMessage,
   sendErrorReport,
   sendErrorEphemeral,
   sendErrorReportNoInteraction,
@@ -212,5 +207,4 @@ module.exports = {
   sendFollowUpEphemeral,
   confirmChoice,
   confirmChoiceNoInteraction,
-  sendPullDateMessage,
 };

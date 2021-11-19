@@ -47,21 +47,20 @@ const saveChannelsToDb = async (models, guild) => {
 const saveUsersToDb = async (models, guild) => {
   const members = await guild.members.fetch();
   const roles = await guild.roles.fetch();
-  const notBots = members.map(m => m.user).filter(u => !u.bot);
+  const notBots = members.filter(u => !u.user.bot);
 
-  const admins = roles
-    .find(r => r.name === "admin")?.members
-    .map(m => m.user.id);
+  const adminRoleId = roles
+    .find(r => r.name === "admin")?.id;
 
-  const faculty = roles
-    .find(r => r.name === facultyRole)?.members
-    .map(m => m.user.id);
+  const facultyRoleId = roles
+    .find(r => r.name === facultyRole)?.id;
 
   await Promise.all(notBots
     .map(async (m) => {
-      const user = await createUserToDatabase(m.id, m.username, models.User);
-      user.admin = admins.includes(m.id);
-      user.faculty = faculty.includes(m.id);
+      const u = m.user;
+      const user = await createUserToDatabase(u.id, u.username, models.User);
+      user.admin = m._roles.includes(adminRoleId);
+      user.faculty = m._roles.includes(facultyRoleId);
       user.save();
     }));
 };

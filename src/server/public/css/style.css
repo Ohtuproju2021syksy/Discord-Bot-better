@@ -1,5 +1,5 @@
 body {
-    height: 100vh;
+    height: 0vh;
 }
 
 #error {
@@ -7,15 +7,28 @@ body {
     margin: 10vh;
     text-align: center;
     font-size: 3vh;
+    height: 55vh;
 }
 
 #logo {
     height: 20vh;
-
+    text-align: center;
+    font-size: 2vh;
+    vertical-align: center;
+    margin-left: -5vh;
 }
 
-#logo img {
+#footer-text {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 2vh;
+}
+
+#footer-img {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+#footer-img img {
     height: 20vh;
-    display: block;
-    margin: auto;
 }
