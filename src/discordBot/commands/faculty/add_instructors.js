@@ -55,11 +55,12 @@ const execute = async (interaction, client, models) => {
 
     memberToPromote.roles.add(instructorRole);
   }
-
+  await sleep(5000);
   await updateInviteLinks(guild, courseAdminRole, facultyRole, client);
-
   return await editEphemeral(interaction, `Gave role '${instructorRole.name}' to all users listed.`);
 };
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 module.exports = {
   data: new SlashCommandBuilder()
