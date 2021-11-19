@@ -34,7 +34,7 @@ router.get("/", passport.authenticate("discord", {
 });
 
 router.get("/unauthorized", (req, res) => {
-  res.redirect("/error.html?error=" + req.flash("error")[0]);
+  res.redirect(process.env.BACKEND_SERVER_URL + "/error.html?error=" + req.flash("error")[0]);
 });
 
 module.exports = router;

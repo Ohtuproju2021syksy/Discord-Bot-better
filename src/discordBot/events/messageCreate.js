@@ -1,4 +1,5 @@
 const { sendReplyMessage } = require("../services/message");
+const { logError } = require("./../services/logger");
 const prefix = process.env.PREFIX;
 
 const execute = async (message, client, models) => {
@@ -53,6 +54,7 @@ const execute = async (message, client, models) => {
     await message.react("✅");
   }
   catch (error) {
+    logError(error);
     console.error(error);
     await message.react("❌");
   }

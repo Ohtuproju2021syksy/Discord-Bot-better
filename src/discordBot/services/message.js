@@ -1,5 +1,6 @@
 const { MessageActionRow, MessageButton, MessageEmbed, MessageAttachment } = require("discord.js");
 const path = require("path");
+const { logError } = require("./logger");
 
 const validateChannel = (channel) => {
   if (channel.parent) return false;
@@ -80,6 +81,7 @@ const sendReplyMessage = async (message, channel, replyText) => {
       fetchedReply.delete();
     }
     catch (e) {
+      logError(e);
       // console.log(error);
     }
     try {
@@ -87,6 +89,7 @@ const sendReplyMessage = async (message, channel, replyText) => {
       fetchedInteraction.delete();
     }
     catch (e) {
+      logError(e);
       // console.log(error);
     }
   }, 86400000);

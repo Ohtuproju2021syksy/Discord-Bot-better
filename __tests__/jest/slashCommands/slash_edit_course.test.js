@@ -5,9 +5,8 @@ const {
   msToMinutesAndSeconds,
   getCourseNameFromCategory,
   checkCourseCooldown,
-  isCourseCategory,
   findChannelWithNameAndType } = require("../../../src/discordBot/services/service");
-const { findCourseFromDb } = require("../../../src/db/services/courseService");
+const { findCourseFromDb, isCourseCategory } = require("../../../src/db/services/courseService");
 const { editChannelNames } = require("../../../src/db/services/channelService");
 
 const models = require("../../mocks/mockModels");

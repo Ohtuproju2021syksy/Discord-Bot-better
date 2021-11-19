@@ -1,4 +1,5 @@
 const { sendErrorReportNoInteraction } = require("../discordBot/services/message");
+const { logError } = require("../discordBot/services/logger");
 let discordClient;
 let telegramClient;
 const keywords = ["crypto", "krypto", "btc", "doge", "btc", "eth", "musk", "money", "$", "usd", "bitcoin", "muskx.co", "coin", "elonmusk", "prize", "еlonmusk", "btc", "cash", "million",
@@ -81,6 +82,7 @@ const sendMessageToDiscord = async (ctx, message, channel) => {
     bridgedMessagesCounter.inc({ origin: "telegram", course });
   }
   catch (error) {
+    logError(error);
     console.error("Error trying to send a message: ", error);
   }
 };
@@ -188,6 +190,7 @@ const handleBridgeMessage = async (message, courseName, Course) => {
     bridgedMessagesCounter.inc({ origin: "discord", course: group.name });
   }
   catch (error) {
+    logError(error);
     return await sendErrorReportNoInteraction(group.telegramId, message.member, message.channel.name, discordClient, error.toString());
   }
 };
@@ -234,6 +237,7 @@ const sendMessageToTelegram = async (telegramId, content, sender, channel) => {
       await telegramClient.telegram.sendMessage(telegramId, `${content}`, { parse_mode: "MarkdownV2" });
   }
   catch (error) {
+    logError(error);
     return error;
   }
 };
@@ -262,6 +266,7 @@ const sendMediaToTelegram = async (telegramId, info, sender, channel, media) => 
     }
   }
   catch (error) {
+    logError(error);
     return error;
   }
 };
@@ -273,6 +278,7 @@ const sendAnimationToTelegram = async (telegramId, sender, channel, url) => {
     await telegramClient.telegram.sendAnimation(telegramId, { url }, { caption, parse_mode: "MarkdownV2" });
   }
   catch (error) {
+    logError(error);
     return error;
   }
 };
@@ -297,6 +303,7 @@ const lockTelegramCourse = async (Course, courseName) => {
   }
   catch (error) {
     console.log("Error " + error);
+    logError(error);
     return error;
   }
 };
@@ -320,6 +327,7 @@ const unlockTelegramCourse = async (Course, courseName) => {
     await sendMessageToTelegram(group.telegramId, "This chat has been unlocked", null, "");
   }
   catch (error) {
+    logError(error);
     return error;
   }
 };

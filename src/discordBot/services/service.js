@@ -1,6 +1,7 @@
 const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
+const { logError } = require("./logger");
 
 require("dotenv").config();
 const GUIDE_CHANNEL_NAME = "guide";
@@ -8,22 +9,6 @@ const GUIDE_CHANNEL_NAME = "guide";
 let invite_url = "";
 
 process.env.NODE_ENV === "production" ? invite_url = `${process.env.BACKEND_SERVER_URL}` : invite_url = `${process.env.BACKEND_SERVER_URL}:${process.env.PORT}`;
-
-const getUnlockedCourse = (name, guild) => {
-  return guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name.toLowerCase().includes(name.toLowerCase()) && !c.name.toLowerCase().includes("🔐"));
-};
-
-const getLockedCourse = (name, guild) => {
-  return guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name.toLowerCase().includes(name.toLowerCase()) && c.name.toLowerCase().includes("🔐"));
-};
-
-const getHiddenCourse = (name, guild) => {
-  return guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name.toLowerCase().includes(name.toLowerCase()) && c.name.toLowerCase().includes("👻"));
-};
-
-const getPublicCourse = (name, guild) => {
-  return guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name.toLowerCase().includes(name.toLowerCase()) && !c.name.toLowerCase().includes("👻"));
-};
 
 const cooldownMap = new Map();
 
@@ -53,7 +38,7 @@ const createInvitation = async (guild, args) => {
   );
   const name = args;
   const category = guild.channels.cache.find(
-    c => c.type === "GUILD_CATEGORY" && c.name.toLowerCase().includes(name.toLowerCase()),
+    c => c.type === "GUILD_CATEGORY" && getCourseNameFromCategory(c.name.toLowerCase()) === name.toLowerCase(),
   );
   const course = guild.channels.cache.find(
     (c => c.parent === category),
@@ -77,6 +62,7 @@ const findCategoryWithCourseName = (courseString, guild) => {
     return category;
   }
   catch (error) {
+    logError(error);
     // console.log(error);
   }
 };
@@ -108,6 +94,15 @@ const handleCooldown = (courseName) => {
   }, cooldownTimeMs);
 };
 
+const getChannelObject = (roleName, channelName, category) => {
+  roleName = roleName.replace(/ /g, "-");
+  return {
+    name: `${roleName}_${channelName}`,
+    parent: category,
+    options: { type: "GUILD_TEXT", parent: category, permissionOverwrites: [] },
+  };
+};
+
 const findOrCreateChannel = async (channelObject, guild) => {
   const { name, options } = channelObject;
   const alreadyExists = guild.channels.cache.find(
@@ -119,24 +114,6 @@ const findOrCreateChannel = async (channelObject, guild) => {
     return alreadyExists;
   }
   return await guild.channels.create(name, options);
-};
-
-const setCoursePositionABC = async (guild, courseString) => {
-  let first = 9999;
-  const result = guild.channels.cache
-    .filter(c => c.type === "GUILD_CATEGORY" && (c.name.startsWith("📚") || c.name.startsWith("👻") || c.name.startsWith("🔐")))
-    .map((c) => {
-      const categoryName = c.name.split(" ")[1];
-      if (first > c.position) first = c.position;
-      return categoryName;
-    }).sort((a, b) => a.localeCompare(b));
-
-  const course = courseString.split(" ")[1];
-
-  const category = guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name.toLowerCase() === courseString.toLowerCase());
-  if (category) {
-    await category.edit({ position: result.indexOf(course) + first });
-  }
 };
 
 const deletecommand = async (client, commandToDeleteName) => {
@@ -157,15 +134,6 @@ const containsEmojis = (text) => {
   return result;
 };
 
-const isCourseCategory = (channel) => {
-  if (channel && channel.name) {
-    const result = emojiRegex.test(channel.name);
-    emojiRegex.lastIndex = 0;
-    return result;
-  }
-  return false;
-};
-
 const getCourseNameFromCategory = (category) => {
   let trimmedName = "";
   if (category.name) {
@@ -177,20 +145,9 @@ const getCourseNameFromCategory = (category) => {
   return trimmedName;
 };
 
-const findAllCourseNames = (guild) => {
-  const courseNames = [];
-
-  guild.channels.cache.forEach(channel => {
-    if (isCourseCategory(channel)) {
-      courseNames.push(getCourseNameFromCategory(channel));
-    }
-  });
-  return courseNames;
-};
-
-const findAndUpdateInstructorRole = async (name, guild, courseAdminRole) => {
+const findAndUpdateInstructorRole = async (name, guild, adminRole) => {
   const oldInstructorRole = guild.roles.cache.find((role) => role.name !== name && role.name.includes(name));
-  oldInstructorRole.setName(`${name} ${courseAdminRole}`);
+  oldInstructorRole.setName(`${name} ${adminRole}`);
 };
 
 const downloadImage = async (course) => {
@@ -219,14 +176,15 @@ const downloadImage = async (course) => {
     });
   }
   catch (error) {
+    logError(error);
     return;
   }
 };
 
-const listCourseInstructors = async (guild, roleString, courseAdminRole) => {
+const listCourseInstructors = async (guild, roleString, adminRole) => {
 
   const facultyRole = await guild.roles.cache.find(r => r.name === "faculty");
-  const instructorRole = await guild.roles.cache.find(r => r.name === `${roleString} ${courseAdminRole}`);
+  const instructorRole = await guild.roles.cache.find(r => r.name === `${roleString} ${adminRole}`);
   const members = await guild.members.fetch();
   let adminsString = "";
   members.forEach(m => {
@@ -255,19 +213,90 @@ const listCourseInstructors = async (guild, roleString, courseAdminRole) => {
   return adminsString;
 };
 
-const updateInviteLinks = async (guild, courseAdminRole, facultyRole, client) => {
+const updateInviteLinks = async (guild, adminRole, facultyRole, client) => {
   const announcementChannels = guild.channels.cache.filter(c => c.name.includes("announcement"));
-  announcementChannels.forEach(async aChannel => {
+  await Promise.all(announcementChannels.map(async aChannel => {
     const pinnedMessages = await aChannel.messages.fetchPinned();
     const invMessage = pinnedMessages.find(msg => msg.author === client.user && msg.content.includes("Invitation link for"));
     const courseName = getCourseNameFromCategory(aChannel.parent);
     let updatedMsg = createCourseInvitationLink(courseName);
-    const instructors = await listCourseInstructors(guild, courseName, courseAdminRole, facultyRole);
+    const instructors = await listCourseInstructors(guild, courseName, adminRole, facultyRole);
     if (instructors !== "") {
       updatedMsg = updatedMsg + "\nInstructors for the course:" + instructors;
     }
     await invMessage.edit(updatedMsg);
-  });
+  }));
+};
+
+const getCategoryChannelPermissionOverwrites = (guild, admin, student) => ([
+  {
+    id: guild.id,
+    deny: ["VIEW_CHANNEL"],
+  },
+  {
+    id: guild.me.roles.highest,
+    allow: ["VIEW_CHANNEL"],
+  },
+  {
+    id: admin.id,
+    allow: ["VIEW_CHANNEL"],
+  },
+  {
+    id: student.id,
+    allow: ["VIEW_CHANNEL"],
+  },
+]);
+
+const getDefaultChannelObjects = async (guild, courseName, student, admin, category) => {
+  courseName = courseName.replace(/ /g, "-");
+
+  return [
+    {
+      name: `${courseName}_announcement`,
+      options: {
+        type: "GUILD_TEXT",
+        description: "Messages from course admins",
+        parent: category,
+        permissionOverwrites: [
+          {
+            id: guild.id,
+            deny: ["VIEW_CHANNEL"],
+          },
+          {
+            id: student,
+            deny: ["SEND_MESSAGES"],
+            allow: ["VIEW_CHANNEL"],
+          },
+          {
+            id: admin,
+            allow: ["VIEW_CHANNEL", "SEND_MESSAGES"],
+          },
+        ],
+      },
+    },
+    {
+      name: `${courseName}_general`,
+      parent: category,
+      options: { type: "GUILD_TEXT", parent: category, permissionOverwrites: [] },
+    },
+    {
+      name: `${courseName}_voice`,
+      parent: category,
+      options: { type: "GUILD_VOICE", parent: category, permissionOverwrites: [] },
+    },
+  ];
+};
+
+const getCategoryObject = (categoryName, permissionOverwrites) => ({
+  name: `📚 ${categoryName}`,
+  options: {
+    type: "GUILD_CATEGORY",
+    permissionOverwrites,
+  },
+});
+
+const getUserWithUserId = (guild, userId) => {
+  return guild.members.cache.get(userId);
 };
 
 module.exports = {
@@ -281,18 +310,16 @@ module.exports = {
   handleCooldown,
   createCourseInvitationLink,
   findOrCreateChannel,
-  setCoursePositionABC,
   deletecommand,
-  isCourseCategory,
   getCourseNameFromCategory,
-  findAllCourseNames,
   findAndUpdateInstructorRole,
-  getHiddenCourse,
-  getLockedCourse,
-  getPublicCourse,
-  getUnlockedCourse,
   listCourseInstructors,
   updateInviteLinks,
   downloadImage,
   containsEmojis,
+  getUserWithUserId,
+  getChannelObject,
+  getCategoryChannelPermissionOverwrites,
+  getDefaultChannelObjects,
+  getCategoryObject,
 };

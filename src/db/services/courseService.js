@@ -1,4 +1,4 @@
-const { findChannelWithNameAndType } = require("../../discordBot/services/service");
+const { findChannelWithNameAndType, getCourseNameFromCategory, findCategoryWithCourseName } = require("../../discordBot/services/service");
 const { Sequelize } = require("sequelize");
 const GUIDE_CHANNEL_NAME = "guide";
 
@@ -85,6 +85,13 @@ const findCourseFromDb = async (courseName, Course) => {
   });
 };
 
+const findCourseFromDbById = async (courseId, Course) => {
+  return await Course.findOne({
+    where:
+      { id: courseId },
+  });
+};
+
 const findCoursesFromDb = async (order, Course, state) => {
   const filter = {
     true: { private: true },
@@ -163,6 +170,42 @@ const updateGuide = async (guild, Course) => {
   await updateGuideMessage(message, Course);
 };
 
+const isCourseCategory = async (channel, Course) => {
+  if (channel && channel.name) {
+    const course = await findCourseFromDb(getCourseNameFromCategory(channel.name), Course);
+    return course ? true : false;
+  }
+};
+
+const findAllCourseNames = async (Course) => {
+  const courseNames = [];
+  const courses = await Course.findAll();
+  for (const c of courses) {
+    courseNames.push(c.name);
+  }
+  return courseNames;
+};
+
+const setCoursePositionABC = async (guild, courseString, Course) => {
+  let first = 9999;
+  const categoryNames = await findAllCourseNames(Course);
+  categoryNames.sort((a, b) => a.localeCompare(b));
+  const categories = [];
+  categoryNames.forEach(cat => {
+    const guildCat = findCategoryWithCourseName(cat, guild);
+    if (guildCat) {
+      categories.push(guildCat);
+      if (first > guildCat.position) first = guildCat.position;
+    }
+  });
+  const course = courseString.split(" ")[1];
+
+  const category = findCategoryWithCourseName(course, guild);
+  if (category) {
+    await category.edit({ position: categories.indexOf(category) + first });
+  }
+};
+
 module.exports = {
   setCourseToPrivate,
   setCourseToPublic,
@@ -176,4 +219,8 @@ module.exports = {
   findCourseNickNameFromDbWithCourseCode,
   updateGuide,
   updateGuideMessage,
+  isCourseCategory,
+  findAllCourseNames,
+  findCourseFromDbById,
+  setCoursePositionABC,
 };

@@ -18,6 +18,10 @@ const createChannelToDatabase = async (channelAttributes, Channel) => {
   }
 };
 
+const createDefaultChannelsToDatabase = async (channelObjects, Channel) => {
+  await Channel.bulkCreate(channelObjects);
+};
+
 const removeChannelFromDb = async (channelName, Channel) => {
   const channel = await Channel.findOne({
     where:
@@ -26,13 +30,21 @@ const removeChannelFromDb = async (channelName, Channel) => {
   if (channel) {
     await Channel.destroy({
       where:
-        { name: { [Sequelize.Op.iLike]: channelName } },
+        { name: channelName },
     });
   }
 };
 
 const findChannelsByCourse = async (id, Channel) => {
   return await Channel.findAll({
+    where: {
+      courseId: id,
+    },
+  });
+};
+
+const countChannelsByCourse = async (id, Channel) => {
+  return await Channel.count({
     where: {
       courseId: id,
     },
@@ -60,6 +72,8 @@ module.exports = {
   createChannelToDatabase,
   removeChannelFromDb,
   findChannelsByCourse,
+  countChannelsByCourse,
   editChannelNames,
   saveChannelTopicToDb,
+  createDefaultChannelsToDatabase,
 };

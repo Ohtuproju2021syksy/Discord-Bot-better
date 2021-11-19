@@ -1,6 +1,5 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const {
-  setCoursePositionABC,
   findCategoryWithCourseName,
   createCourseInvitationLink,
   findChannelWithNameAndType,
@@ -8,13 +7,14 @@ const {
   handleCooldown,
   checkCourseCooldown,
   getCourseNameFromCategory,
-  isCourseCategory,
   containsEmojis } = require("../../services/service");
 
 const {
   findCourseFromDb,
   findCourseFromDbWithFullName,
-  updateGuide } = require("../../../db/services/courseService");
+  updateGuide,
+  isCourseCategory,
+  setCoursePositionABC } = require("../../../db/services/courseService");
 const { editChannelNames } = require("../../../db/services/channelService");
 const { sendEphemeral, editEphemeral, editErrorEphemeral, confirmChoice } = require("../../services/message");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
@@ -88,7 +88,7 @@ const changeCourseCode = async (interaction, client, models, courseName, courseC
       await changeInvitationLink(channelAnnouncement, interaction);
 
       const newCategory = findCategoryWithCourseName(trimmedNewCourseName.toLowerCase(), guild);
-      await setCoursePositionABC(guild, newCategory.name);
+      await setCoursePositionABC(guild, newCategory.name, models.Course);
       await editChannelNames(databaseValue.id, previousCourseName, trimmedNewCourseName.toLowerCase(), models.Channel);
       return true;
     }
@@ -129,7 +129,7 @@ const changeCourseNick = async (interaction, client, models, courseName, courseC
   await changeCourseRoles(courseName, trimmedNewCourseName, guild);
   await changeInvitationLink(channelAnnouncement, interaction);
   const newCategory = findCategoryWithCourseName(trimmedNewCourseName, guild);
-  await setCoursePositionABC(guild, newCategory.name);
+  await setCoursePositionABC(guild, newCategory.name, models.Course);
   await editChannelNames(databaseValue.id, previousCourseName, trimmedNewCourseName, models.Channel);
   return true;
 };
@@ -138,7 +138,7 @@ const execute = async (interaction, client, models) => {
   await sendEphemeral(interaction, "Editing...");
   const guild = client.guild;
   const interactionChannel = guild.channels.cache.get(interaction.channelId);
-  if (!isCourseCategory(interactionChannel.parent)) {
+  if (!await isCourseCategory(interactionChannel.parent, models.Course)) {
     return await editErrorEphemeral(interaction, "This is not a course category, can not execute the command");
   }
 
