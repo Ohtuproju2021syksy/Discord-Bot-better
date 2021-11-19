@@ -41,7 +41,7 @@ const execute = async (interaction, client, models) => {
     await setCourseToLocked(courseName, models.Course, guild);
     await lockTelegramCourse(models.Course, courseName);
     await client.emit("COURSES_CHANGED", models.Course);
-    await updateGuide(client.guild, models.Course);
+    await updateGuide(client.guild, models);
     await editEphemeral(interaction, `This course ${courseName} is now locked.`);
     handleCooldown(courseName);
   }

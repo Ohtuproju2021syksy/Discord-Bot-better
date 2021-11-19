@@ -9,14 +9,12 @@ const {
   findChannelWithNameAndType } = require("../../src/discordBot/services/service");
 const { updateGuideMessage, createCourseToDatabase, removeCourseFromDb } = require("../../src/db/services/courseService");
 
-const createGuidePinnedMessage = async (guild) => {
+const createGuidePinnedMessage = async () => {
   const rows = courses
     .map((course) => {
       const code = course.code;
       const fullname = course.fullName;
-      const count = guild.roles.cache.find(
-        (role) => role.name === course.name,
-      )?.members.size;
+      const count = 1;
       return `  - ${code} - ${fullname} 👤${count}`;
     });
 
@@ -56,6 +54,23 @@ const Course = {
     .mockImplementationOnce(() => false),
   findAll: jest.fn(() => courses),
   destroy: jest.fn(),
+};
+
+const CourseMember = {
+  create: jest.fn(),
+  findOne: jest
+    .fn(() => true)
+    .mockImplementationOnce(() => false)
+    .mockImplementationOnce(() => false),
+  findAll: jest.fn(() => null),
+  count: jest
+    .fn()
+    .mockImplementationOnce(() => 1),
+  destroy: jest.fn(),
+};
+
+const models = {
+  Course, CourseMember,
 };
 
 const { client } = require("../mocks/mockSlashClient");
@@ -123,7 +138,7 @@ describe("Service", () => {
     client.guild.roles.cache = [role];
     const msg = { guild: client.guild, pin: jest.fn(), edit: jest.fn() };
     const guideMessage = await createGuidePinnedMessage(client.guild, Course);
-    await updateGuideMessage(msg, Course);
+    await updateGuideMessage(msg, models);
     expect(msg.edit).toHaveBeenCalledTimes(1);
     expect(msg.edit).toHaveBeenCalledWith(guideMessage);
     client.guild.channels.cache = [];

@@ -39,7 +39,7 @@ const execute = async (interaction, client, models) => {
   await removeCourseMemberFromDb(user.id, course.id, models.CourseMember);
 
   await editEphemeral(interaction, `You have been removed from the ${roleString} course.`);
-  await updateGuide(client.guild, models.Course);
+  await updateGuide(client.guild, models);
 };
 
 module.exports = {

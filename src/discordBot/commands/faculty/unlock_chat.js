@@ -40,7 +40,7 @@ const execute = async (interaction, client, models) => {
     await unlockTelegramCourse(models.Course, courseName);
     await setCourseToUnlocked(courseName, models.Course, guild);
     await client.emit("COURSES_CHANGED", models.Course);
-    await updateGuide(client.guild, models.Course);
+    await updateGuide(client.guild, models);
     await editEphemeral(interaction, `This course ${courseName} is now unlocked.`);
     handleCooldown(courseName);
   }
