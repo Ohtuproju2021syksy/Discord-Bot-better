@@ -215,7 +215,7 @@ const listCourseInstructors = async (guild, roleString, adminRole) => {
 
 const updateInviteLinks = async (guild, adminRole, facultyRole, client) => {
   const announcementChannels = guild.channels.cache.filter(c => c.name.includes("announcement"));
-  announcementChannels.forEach(async aChannel => {
+  await Promise.all(announcementChannels.map(async aChannel => {
     const pinnedMessages = await aChannel.messages.fetchPinned();
     const invMessage = pinnedMessages.find(msg => msg.author === client.user && msg.content.includes("Invitation link for"));
     const courseName = getCourseNameFromCategory(aChannel.parent);
@@ -225,7 +225,7 @@ const updateInviteLinks = async (guild, adminRole, facultyRole, client) => {
       updatedMsg = updatedMsg + "\nInstructors for the course:" + instructors;
     }
     await invMessage.edit(updatedMsg);
-  });
+  }));
 };
 
 const getCategoryChannelPermissionOverwrites = (guild, admin, student) => ([
