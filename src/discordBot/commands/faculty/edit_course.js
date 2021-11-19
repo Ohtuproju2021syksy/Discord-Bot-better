@@ -179,7 +179,7 @@ const execute = async (interaction, client, models) => {
 
   if (changeSuccess) {
     await client.emit("COURSES_CHANGED", models.Course);
-    await updateGuide(client.guild, models.Course);
+    await updateGuide(client.guild, models);
     await editEphemeral(interaction, "Course information has been changed");
     const nameToCoolDown = getCourseNameFromCategory(interactionChannel.parent, guild);
     handleCooldown(nameToCoolDown);

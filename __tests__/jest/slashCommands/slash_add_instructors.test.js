@@ -16,7 +16,7 @@ jest.mock("../../../src/db/services/courseMemberService");
 
 getCourseNameFromCategory.mockImplementation(() => "test");
 findUserByDiscordId.mockImplementation(() => { return { id: 1 }; });
-findCourseFromDb.mockImplementation(() => { return { id: 1 }; });
+findCourseFromDb.mockImplementation(() => { return { id: 1, name: "test" }; });
 findCourseFromDb.mockImplementationOnce(() => null);
 findCourseMember.mockImplementation(() => { return { id: 1, instructor: false, save: () => null }; });
 findCourseMember.mockImplementationOnce(() => null);
