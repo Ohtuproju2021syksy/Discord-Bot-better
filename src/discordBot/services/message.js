@@ -36,17 +36,6 @@ const sendErrorReportNoInteraction = async (telegramId, member, channel, client,
   await commandsChannel.send({ content: error });
 };
 
-const sendPullDateMessage = async (client) => {
-  const commandsChannel = client.guild.channels.cache.find((c) => validateChannel(c));
-  if (!commandsChannel.lastPinTimestamp) {
-    const msg = await commandsChannel.send("initial");
-    await msg.pin();
-  }
-  const messages = await commandsChannel.messages.fetchPinned(true);
-  const message = messages.first();
-  await message.edit(`Latest version pulled on ${new Date()}`);
-};
-
 const sendErrorEphemeral = async (interaction, msg) => {
   if (interaction.deferred || interaction.replied) {
     await interaction.editReply({ content: `Error: ${msg}`, ephemeral: true });
@@ -224,5 +213,4 @@ module.exports = {
   sendFollowUpEphemeral,
   confirmChoice,
   confirmChoiceNoInteraction,
-  sendPullDateMessage,
 };
