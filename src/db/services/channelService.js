@@ -1,5 +1,4 @@
 const { Sequelize } = require("sequelize");
-const { findOrCreateChannel, getChannelObject, findCategoryWithCourseName } = require("../../discordBot/services/service");
 
 const findChannelFromDbByName = async (channelName, Channel) => {
   return await Channel.findOne({
@@ -17,6 +16,10 @@ const createChannelToDatabase = async (channelAttributes, Channel) => {
   if (!alreadyinuse) {
     await Channel.create(channelAttributes);
   }
+};
+
+const createDefaultChannelsToDatabase = async (channelObjects, Channel) => {
+  await Channel.bulkCreate(channelObjects);
 };
 
 const removeChannelFromDb = async (channelName, Channel) => {
@@ -64,25 +67,6 @@ const saveChannelTopicToDb = async (channelName, newTopic, Channel) => {
     { where: { name: channelName } });
 };
 
-const initChannelHooks = (guild, Channel) => {
-  Channel.addHook("afterBulkDestroy", (channel) => {
-    guild.channels.cache.find(c => c.name === channel.where.name)?.delete();
-  });
-
-  Channel.addHook("afterCreate", async (channel) => {
-    if (!channel.defaultChannel) {
-      const params = channel.name.split("_");
-      const courseName = params[0];
-      const channelName = params.slice(1).join("_");
-
-      const category = findCategoryWithCourseName(courseName, guild);
-      const channelObject = getChannelObject(courseName, channelName, category);
-
-      await findOrCreateChannel(channelObject, guild);
-    }
-  });
-};
-
 module.exports = {
   findChannelFromDbByName,
   createChannelToDatabase,
@@ -91,5 +75,5 @@ module.exports = {
   countChannelsByCourse,
   editChannelNames,
   saveChannelTopicToDb,
-  initChannelHooks,
+  createDefaultChannelsToDatabase,
 };

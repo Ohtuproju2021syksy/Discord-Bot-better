@@ -1,4 +1,4 @@
-const { execute } = require("../../../src/discordBot/commands/faculty/add_instructors");
+const { execute } = require("../../../src/discordBot/commands/faculty/remove_instructors");
 const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../../src/discordBot/services/message");
 const { getCourseNameFromCategory, getUserWithUserId } = require("../../../src/discordBot/services/service");
 const { findUserByDiscordId } = require("../../../src/db/services/userService");
@@ -26,13 +26,13 @@ getUserWithUserId.mockImplementation(() => defaultAdminInteraction.member.user);
 defaultAdminInteraction.options = { getString: jest.fn(() => { return "<@!3>"; }) };
 defaultTeacherInteraction.options = { getUser: jest.fn(() => { return { id: 2 }; }) };
 
-const initialResponse = "Adding instructors...";
+const initialResponse = "Removing instructors...";
 
 afterEach(() => {
   jest.clearAllMocks();
 });
 
-describe("slash add instructor command", () => {
+describe("slash remove instructor command", () => {
   test("Cannot use command if channel has no parent", async () => {
     const client = defaultTeacherInteraction.client;
     const response = "Course not found, execution stopped.";
@@ -75,14 +75,14 @@ describe("slash add instructor command", () => {
     expect(editErrorEphemeral).toHaveBeenCalledWith(defaultAdminInteraction, response);
   });
 
-  test("instructor role can be given", async () => {
+  test("instructor role can be removed", async () => {
     const roleString = "test";
     const client = defaultAdminInteraction.client;
-    const response = `Gave role '${roleString} ${courseAdminRole}' to all users listed.`;
+    const response = `Removed role '${roleString} ${courseAdminRole}' from all users listed.`;
     client.guild.roles.create({ name: `${roleString} ${courseAdminRole}`, members: [] });
     await execute(defaultAdminInteraction, client, models);
     const admin = client.guild.members.cache.get(3);
-    expect(admin.roles.add).toHaveBeenCalledTimes(1);
+    expect(admin.roles.remove).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultAdminInteraction, initialResponse);
     expect(findCourseFromDb).toHaveBeenCalledTimes(1);

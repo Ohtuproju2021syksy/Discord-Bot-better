@@ -1,4 +1,4 @@
-const { findChannelWithNameAndType, getCourseNameFromCategory } = require("../../discordBot/services/service");
+const { findChannelWithNameAndType, getCourseNameFromCategory, findCategoryWithCourseName } = require("../../discordBot/services/service");
 const { Sequelize } = require("sequelize");
 const GUIDE_CHANNEL_NAME = "guide";
 
@@ -82,6 +82,13 @@ const findCourseFromDb = async (courseName, Course) => {
   return await Course.findOne({
     where:
       { name: { [Sequelize.Op.iLike]: courseName } },
+  });
+};
+
+const findCourseFromDbById = async (courseId, Course) => {
+  return await Course.findOne({
+    where:
+      { id: courseId },
   });
 };
 
@@ -179,6 +186,23 @@ const findAllCourseNames = async (Course) => {
   return courseNames;
 };
 
+const setCoursePositionABC = async (guild, courseString, Course) => {
+  let first = 9999;
+  const result = await findAllCourseNames(Course);
+  result.sort((a, b) => a.localeCompare(b));
+  result.map((c) => {
+    const channel = findCategoryWithCourseName(c, guild);
+    if (first > channel.position) first = channel.position;
+    return c;
+  });
+  const course = courseString.split(" ")[1];
+
+  const category = findCategoryWithCourseName(course, guild);
+  if (category) {
+    await category.edit({ position: result.indexOf(course) + first });
+  }
+};
+
 module.exports = {
   setCourseToPrivate,
   setCourseToPublic,
@@ -194,4 +218,6 @@ module.exports = {
   updateGuideMessage,
   isCourseCategory,
   findAllCourseNames,
+  findCourseFromDbById,
+  setCoursePositionABC,
 };

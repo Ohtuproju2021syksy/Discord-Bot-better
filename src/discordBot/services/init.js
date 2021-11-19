@@ -1,7 +1,7 @@
 const { findOrCreateRoleWithName } = require("./service");
 const { facultyRole, githubRepo } = require("../../../config.json");
 const { updateGuide } = require("../../db/services/courseService");
-const { initChannelHooks } = require("../../db/services/channelService");
+const { initHooks } = require("../../db/hookInit");
 const { sendPullDateMessage } = require("./message");
 
 const findOrCreateChannel = async (channelObject, guild) => {
@@ -66,7 +66,7 @@ const setInitialGuideMessage = async (guild, channelName, Course) => {
 };
 
 const initializeApplicationContext = async (client, models) => {
-  initChannelHooks(client.guild, models.Channel);
+  initHooks(client.guild, models);
   await initRoles(client.guild);
   await initChannels(client.guild, client);
   await setInitialGuideMessage(client.guild, "guide", models.Course);

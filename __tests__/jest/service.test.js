@@ -5,7 +5,6 @@ const {
   findChannelWithId,
   msToMinutesAndSeconds,
   findOrCreateChannel,
-  setCoursePositionABC,
   getCourseNameFromCategory,
   findChannelWithNameAndType } = require("../../src/discordBot/services/service");
 const { updateGuideMessage, createCourseToDatabase, removeCourseFromDb } = require("../../src/db/services/courseService");
@@ -217,14 +216,6 @@ describe("Service", () => {
     const guild = client.guild;
     await findOrCreateChannel(channelObject, guild);
     expect(guild.channels.create).toHaveBeenCalledTimes(0);
-  });
-
-  test("setCourse positions", async () => {
-    client.guild.channels.init();
-    client.guild.channels.create("📚 testA", { type: "GUILD_CATEGORY" });
-    const categoryA = client.guild.channels.cache.find(c => c.name === "📚 testA");
-    setCoursePositionABC(client.guild, "📚 testA");
-    expect(categoryA.edit).toHaveBeenCalledTimes(1);
   });
 
   test("trimmer returs correct string public", async () => {

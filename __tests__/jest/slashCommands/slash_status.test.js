@@ -6,6 +6,7 @@ const {
   listCourseInstructors } = require("../../../src/discordBot/services/service");
 const { findCourseFromDb, isCourseCategory } = require("../../../src/db/services/courseService");
 const { findChannelsByCourse } = require("../../../src/db/services/channelService");
+const { findAllCourseMembers } = require("../../../src/db/services/courseMemberService");
 
 const models = require("../../mocks/mockModels");
 
@@ -13,6 +14,7 @@ jest.mock("../../../src/discordBot/services/message");
 jest.mock("../../../src/discordBot/services/service");
 jest.mock("../../../src/db/services/courseService");
 jest.mock("../../../src/db/services/channelService");
+jest.mock("../../../src/db/services/courseMemberService");
 
 
 const course = { name: "test", fullName: "test course", code: "101", private: false };
@@ -25,6 +27,9 @@ findCourseFromDb.mockImplementation(() => course);
 findChannelsByCourse.mockImplementation(() => [channel]);
 
 createCourseInvitationLink.mockImplementation(() => url);
+
+const courseMembersInstanceMock = { length: undefined };
+findAllCourseMembers.mockImplementation(() => courseMembersInstanceMock);
 
 const { defaultTeacherInteraction } = require("../../mocks/mockInteraction");
 

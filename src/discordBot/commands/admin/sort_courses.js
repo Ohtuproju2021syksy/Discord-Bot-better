@@ -1,22 +1,24 @@
-const execute = async (message) => {
+const { findAllCourseNames } = require("../../../db/services/courseService");
+const { findCategoryWithCourseName } = require("../../services/service");
+
+const execute = async (message, args, models) => {
   if (message.member.permissions.has("ADMINISTRATOR")) {
     const guild = message.client.guild;
 
     let first = 9999;
 
-    const result = guild.channels.cache
-      .filter(c => c.type === "GUILD_CATEGORY" && (c.name.startsWith("📚") || c.name.startsWith("👻") || c.name.startsWith("🔐")))
-      .map((c) => {
-        const categoryName = c.name.split(" ")[1];
-        if (first > c.position) first = c.position;
-        return categoryName;
-      }).sort((a, b) => a.localeCompare(b));
-
+    const result = await findAllCourseNames(models.Course);
+    result.sort((a, b) => a.localeCompare(b));
+    result.map((c) => {
+      const channel = findCategoryWithCourseName(c, guild);
+      if (first > channel.position) first = channel.position;
+      return c;
+    });
     let category;
 
     for (let index = 0; index < result.length; index++) {
       const courseString = result[index];
-      category = guild.channels.cache.find(c => c.type === "GUILD_CATEGORY" && c.name.includes(courseString));
+      category = findCategoryWithCourseName(courseString, guild);
       await category.edit({ position: index + first });
     }
   }
