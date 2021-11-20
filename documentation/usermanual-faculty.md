@@ -96,8 +96,11 @@ Once the course is created, it can be locked. This means that only instructors a
 
 To make the course unlocked again use the `/unlock_chat` command followed by the course name, e.g. `/unlock_chat wepa`.
 
-## How to add instructor to a course
-Students can use the `/instructors` command on a course and see all the instructors on that course. _Faculty_ members and the ones who already have the _course instructor_ role can give other users this course instructor role. The command is `/add_instructor` the value to give is the username you want to give the instructor role. Use this command inside the course you want the role to be.
+## How to add instructors to a course
+Students can use the `/instructors` command on a course and see all the instructors on that course. _Faculty_ members can give other users this course instructor role. To give instructor role to users, use `/add_instructors` command on a course channel. You can give the course instructor role to multiple people at once; e.g. `/add_instructors @user1 @user2`.
+
+## How to remove instructors from a course
+To remove instructor role from users, use `/remove_instructors` command on a course channel. You can remove the course instructor role from multiple people at once; e.g. `/remove_instructors @user1 @user2`.
 
 ## How to edit course name information
 
@@ -110,6 +113,7 @@ The `/edit_topic` command allows you to create or edit the information in the to
 ## How to create a poll
 
 The `/create_poll` command allows you to create a poll that is placed in the same channel that you use the command in. It has 3 required arguments _title_, _duration_ and _answers_. Duration is given in minutes (14 minutes at most), for example "3" means 3 minutes. After the duration the poll closes automatically. _answers_ is the list of all possible answers to the poll, separated by " | ". For example "Java | Python" creates 2 answer options "Java" and "Python". Optional argument _description_ let's you create additional description for the poll, like additional instructions. You can close the poll manually by clicking the **Close Poll** -button that appears to the original `/create_poll` message. After the poll closes it shows the results, including how much each option was voted and which option/options got the most amount of votes.
+
 ## Disabling the bridge on a text channel
 
 Users with faculty rights can disable the bridge between a certain course channel and Telegram. This can be used e.g. on off-topic course channels where there's a lot of discussion that could flood the Telegram chat with messages not directly related to the course. Note that the bridge can be disabled only on non-default channels, that is channels which were created individually with `/create_channel` after the course was created. You can check in which channels the bridge is disabled with the command `/status`. 
@@ -120,7 +124,7 @@ To enable the bridge on a channel, write the command `/enable_bridge` on that ch
 
 Command | Explanation | Arguments
 --------|-------------|----------:
-[/add_instructor](./commands/faculty/add_instructor.md) | Give instructor role to another user, e.g., /add_instructor @username. | :heavy_check_mark:
+[/add_instructors](./commands/faculty/add_instructors.md) | Give instructor role to (multiple) users, e.g., /add_instructors @user1 @user2. | :heavy_check_mark:
 [/create_channel](./commands/faculty/create_channel.md) | Create new text channel inside a course, e.g., /create_channel feedback. | :heavy_check_mark:
 [/create_course](./commands/faculty/create_course.md) | Create a new course | :heavy_check_mark:
 [/create_poll](./commands/faculty/create_poll.md) | Create a new poll | :heavy_check_mark:
@@ -132,6 +136,7 @@ Command | Explanation | Arguments
 [/enable_bridge](./commands/faculty/enable_bridge.md) | Enable the bridge between Telegram and the (non-default) course channel it is used in. | :x:
 [/hide_course](./commands/faculty/hide_course.md)| Make given course private, e.g., /hide_course weba. | :heavy_check_mark:
 [/lock_chat](./commands/faculty/lock_chat.md) | Lock the chat (meaning only instructors and faculty can post messages) of a given course | :heavy_check_mark:
+[/remove_instructors](./commands/faculty/remove_instructors.md) | Remove instructor role from (multiple) users, e.g., /remove_instructors @user1 @user2. | :heavy_check_mark:
 [/status](./commands/faculty/status.md) | Used in course channel returns general info about the course | :heavy_check_mark:
 [/unhide_course](./commands/faculty/unhide_course.md) | Make given course public, e.g., /unhide_course weba. | :heavy_check_mark:
 [/unlock_chat](./commands/faculty/unlock_chat.md) | Unlock the chat of a given course | :heavy_check_mark:
