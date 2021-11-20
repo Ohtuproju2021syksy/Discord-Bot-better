@@ -30,17 +30,9 @@ const execute = async (interaction, client, models) => {
     return await editErrorEphemeral(interaction, `Command cooldown [mm:ss]: you need to wait ${time}!`);
   }
   else {
-    const category = findCategoryWithCourseName(courseName, guild);
-    if (categoryInstance.locked) {
-      await category.setName(`📚🔐 ${courseName}`);
-    }
-    else {
-      await category.setName(`📚 ${courseName}`);
-    }
     await editEphemeral(interaction, `This course ${courseName} is now public.`);
     await setCourseToPublic(courseName, models.Course);
     await client.emit("COURSES_CHANGED", models.Course);
-    await updateGuide(client.guild, models);
     handleCooldown(courseName);
   }
 };

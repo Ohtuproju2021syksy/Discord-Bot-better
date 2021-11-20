@@ -20,25 +20,7 @@ const { sendEphemeral, editEphemeral, editErrorEphemeral, confirmChoice } = requ
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
 
 const changeCourseNames = async (previousCourseName, newCourseName, channel, courseCategory, guild) => {
-  const categoryEmojis = courseCategory.name.replace(getCourseNameFromCategory(courseCategory), "").trim();
-  await courseCategory.setName(`${categoryEmojis} ${newCourseName}`);
-
-  const trimmedCourseName = newCourseName.replace(/ /g, "-");
-
-  await Promise.all(guild.channels.cache
-    .filter(c => c.parent === channel.parent)
-    .map(async ch => {
-      let newName;
-      if (ch.name.includes(previousCourseName)) {
-        newName = ch.name.replace(previousCourseName, trimmedCourseName);
-      }
-      else {
-        newName = ch.name.replace(previousCourseName.toLowerCase(), trimmedCourseName);
-      }
-      await ch.setName(newName);
-    },
-    ));
-  return true;
+  console.log("exasd");
 };
 
 
@@ -115,6 +97,7 @@ const changeCourseNick = async (interaction, client, models, courseName, courseC
   const guild = client.guild;
   const channelAnnouncement = guild.channels.cache.find(c => c.parent === interactionChannel.parent && c.name.includes("_announcement"));
   const databaseValue = await findCourseFromDb(courseName, models.Course);
+
   const trimmedNewCourseName = newValue.replace(/\s/g, "").toLowerCase();
 
   if (findChannelWithNameAndType(trimmedNewCourseName, "GUILD_CATEGORY", guild) && databaseValue.name.toLowerCase() !== trimmedNewCourseName.toLowerCase()) {
@@ -123,7 +106,6 @@ const changeCourseNick = async (interaction, client, models, courseName, courseC
   }
 
   const previousCourseName = databaseValue.name.replace(/ /g, "-");
-  await changeCourseNames(previousCourseName, trimmedNewCourseName, interactionChannel, courseCategory, guild);
   databaseValue.name = trimmedNewCourseName;
   await databaseValue.save();
   await changeCourseRoles(courseName, trimmedNewCourseName, guild);
