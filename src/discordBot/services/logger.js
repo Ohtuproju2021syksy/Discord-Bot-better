@@ -32,7 +32,7 @@ if (process.env.NODE_ENV === "production") {
   });
 
   logger.rejections.handle(
-    paperTrailTransport
+    paperTrailTransport,
   );
 
   winstonPapertrail.on("connect", function() {
