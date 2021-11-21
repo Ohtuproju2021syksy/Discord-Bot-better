@@ -20,8 +20,7 @@ if (process.env.NODE_ENV === "production") {
     return info;
   });
 
-
-  logger = createLogger({
+  const logger = createLogger({
     format: format.combine(
       format.errors({ stack: true }),
       format.splat(),
@@ -32,12 +31,9 @@ if (process.env.NODE_ENV === "production") {
     transports: [ paperTrailTransport ],
   });
 
-  if (process.env.NODE_ENV === "development") {
-    logger.add(new transports.Console({
-      format: format.simple(),
-    }));
-    logger.remove(paperTrailTransport);
-  }
+  logger.rejections.handle(
+    paperTrailTransport
+  );
 
   winstonPapertrail.on("connect", function() {
     logger.info("Logger connected to Papertrail");
