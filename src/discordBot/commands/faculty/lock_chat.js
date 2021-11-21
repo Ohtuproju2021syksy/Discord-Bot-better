@@ -2,13 +2,11 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 const {
   msToMinutesAndSeconds,
   handleCooldown,
-  checkCourseCooldown,
-  findCategoryWithCourseName } = require("../../services/service");
+  checkCourseCooldown } = require("../../services/service");
 const { findCourseFromDb } = require("../../../db/services/courseService");
-const { updateGuide, setCourseToLocked } = require("../../../db/services/courseService");
+const { setCourseToLocked } = require("../../../db/services/courseService");
 const { sendEphemeral, editEphemeral, editErrorEphemeral, confirmChoice } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
-const { lockTelegramCourse } = require("../../../bridge/service");
 
 const execute = async (interaction, client, models) => {
   await sendEphemeral(interaction, "Locking course...");

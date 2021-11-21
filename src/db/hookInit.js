@@ -7,11 +7,20 @@ const {
   getCategoryObject,
   getCategoryChannelPermissionOverwrites,
   createInvitation,
-  co } = require("../discordBot/services/service");
-const { findCourseFromDbById, updateGuide, setCoursePositionABC, setCourseToLocked, setCourseToUnlocked } = require("./services/courseService");
-const { lockTelegramCourse, unlockTelegramCourse } = require("../bridge/service");
+  lockTelegramCourse,
+  unlockTelegramCourse } = require("../discordBot/services/service");
+const { findCourseFromDbById,
+  updateGuide,
+  setCoursePositionABC,
+  changeCourseRoles,
+  changeInvitationLink,
+  setEmojisLock,
+  setEmojisUnlock,
+  setEmojisHide,
+  setEmojisUnhide } = require("./services/courseService");
 const { courseAdminRole } = require("../../config.json");
 const { Op } = require("sequelize");
+const { editChannelNames } = require("../db/services/channelService");
 
 const initHooks = (guild, models) => {
   initChannelHooks(guild, models);
@@ -57,11 +66,6 @@ const initChannelHooks = (guild, models) => {
   });
 
   channelModel.addHook("afterUpdate", async (channel) => {
-    console.log("CHANNEL CHANGED");
-    console.log(channel);
-    console.log(channel._previousDataValues);
-    // console.log("PARENT: ", channel.parent);
-
     if (channel._changed.has("name")) {
       const previousCourseName = channel._previousDataValues.name.split("_")[0];
       const trimmedCourseName = channel.name.split("_")[0];
@@ -104,67 +108,38 @@ const initCourseHooks = (guild, models) => {
   });
 
   models.Course.addHook("afterUpdate", async (course) => {
-    console.log(course._previousDataValues);
-    console.log(course._changed);
     const changedValue = course._changed;
     const courseName = course.name;
-    console.log(courseName);
+    const previousCourseName = course._previousDataValues.name;
     let category = findCategoryWithCourseName(courseName, guild);
-    console.log(category);
+    const hidden = course.private;
+    const locked = course.locked;
 
     if (changedValue.has("locked")) {
-      console.log("LOCK CHANGED");
-      if (course._previousDataValues.locked) {
-        if (course._previousDataValues.private) {
-          await category.setName(`👻 ${courseName}`);
-        }
-        else {
-          await category.setName(`📚 ${courseName}`);
-        }
-        await unlockTelegramCourse(models.Course, courseName);
+      if (locked) {
+        await lockTelegramCourse(models.Course, courseName);
+        await setEmojisLock(category, hidden, courseName, models);
       }
       else {
-        if (course._previousDataValues.private) {
-          await category.setName(`👻🔐 ${courseName}`);
-        }
-        else {
-          await category.setName(`📚🔐 ${courseName}`);
-        }
-        await lockTelegramCourse(models.Course, courseName);
+        await unlockTelegramCourse(models.Course, courseName);
+        await setEmojisUnlock(category, hidden, courseName, models);
       }
     }
     else if (changedValue.has("private")) {
-      console.log("PRIVATE CHANGED");
-      if (course._previousDataValues.private) {
-        if (course._previousDataValues.locked) {
-          await category.setName(`📚🔐 ${courseName}`);
-        }
-        else {
-          await category.setName(`📚 ${courseName}`);
-        }
-      }
-      else if (course._previousDataValues.locked) {
-        await category.setName(`👻🔐 ${courseName}`);
-      }
-      else {
-        await category.setName(`👻 ${courseName}`);
-      }
-    }
-    else if (changedValue.has("code")) {
-      console.log("CODE CHANGED");
-    }
-    else if (changedValue.has("fullName")) {
-      console.log("FULLNAME CHANGED");
+      hidden ?
+        await setEmojisHide(category, locked, courseName)
+        : await setEmojisUnhide(category, locked, courseName);
     }
     else if (changedValue.has("name")) {
-      console.log("NAME CHANGED");
-      // const channelAnnouncement = guild.channels.cache.find(c => c.name === `${courseName}_announcement`);
-      const previousCourseName = course._previousDataValues.name;
       category = findCategoryWithCourseName(previousCourseName, guild);
+      const channelAnnouncement = guild.channels.cache.find(c => c.name === `${previousCourseName}_announcement`);
       const categoryEmojis = category.name.replace(previousCourseName, "").trim();
       await category.setName(`${categoryEmojis} ${courseName}`);
+      await changeCourseRoles(previousCourseName, courseName, guild);
+      await setCoursePositionABC(guild, `${categoryEmojis} ${courseName}`, models.Course);
+      await editChannelNames(course.id, previousCourseName, courseName, models.Channel);
+      await changeInvitationLink(channelAnnouncement);
     }
-
     await updateGuide(guild, models);
   });
 };

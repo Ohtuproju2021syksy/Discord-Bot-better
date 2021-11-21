@@ -2,16 +2,14 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 const {
   msToMinutesAndSeconds,
   handleCooldown,
-  checkCourseCooldown,
-  findCategoryWithCourseName } = require("../../services/service");
-const { updateGuide, setCourseToPrivate, findCourseFromDb } = require("../../../db/services/courseService");
+  checkCourseCooldown } = require("../../services/service");
+const { setCourseToPrivate, findCourseFromDb } = require("../../../db/services/courseService");
 const { sendEphemeral, editErrorEphemeral, editEphemeral, confirmChoice } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
 
 const execute = async (interaction, client, models) => {
   await sendEphemeral(interaction, "Hiding course...");
   const courseName = interaction.options.getString("course").trim();
-  const guild = client.guild;
 
   const confirm = await confirmChoice(interaction, "Hide course: " + courseName);
   if (!confirm) {

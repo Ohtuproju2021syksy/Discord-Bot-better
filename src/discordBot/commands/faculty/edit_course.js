@@ -1,55 +1,20 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const {
-  findCategoryWithCourseName,
-  createCourseInvitationLink,
   findChannelWithNameAndType,
   msToMinutesAndSeconds,
   handleCooldown,
   checkCourseCooldown,
   getCourseNameFromCategory,
   containsEmojis } = require("../../services/service");
-
 const {
   findCourseFromDb,
   findCourseFromDbWithFullName,
-  updateGuide,
-  isCourseCategory,
-  setCoursePositionABC } = require("../../../db/services/courseService");
-const { editChannelNames } = require("../../../db/services/channelService");
+  isCourseCategory } = require("../../../db/services/courseService");
 const { sendEphemeral, editEphemeral, editErrorEphemeral, confirmChoice } = require("../../services/message");
-const { courseAdminRole, facultyRole } = require("../../../../config.json");
-
-const changeCourseNames = async (previousCourseName, newCourseName, channel, courseCategory, guild) => {
-  console.log("exasd");
-};
-
-
-const changeCourseRoles = async (courseName, newValue, guild) => {
-  await Promise.all(guild.roles.cache
-    .filter(r => (r.name === `${courseName} ${courseAdminRole}` || r.name === courseName))
-    .map(async role => {
-      if (role.name.includes("instructor")) {
-        role.setName(`${newValue} instructor`);
-      }
-      else {
-        role.setName(newValue);
-      }
-    },
-    ));
-};
-
-const changeInvitationLink = async (channelAnnouncement, interaction) => {
-  const pinnedMessages = await channelAnnouncement.messages.fetchPinned();
-  const invMessage = pinnedMessages.find(msg => msg.author.id === interaction.applicationId && msg.content.includes("Invitation link for"));
-  const courseName = channelAnnouncement.parent.name.replace(/([\uE000-\uF8FF]|\uD83C[\uDF00-\uDFFF]|\uD83D[\uDC00-\uDDFF])/g, "").trim();
-
-  const updatedMsg = createCourseInvitationLink(courseName);
-  await invMessage.edit(updatedMsg);
-};
+const { facultyRole } = require("../../../../config.json");
 
 const changeCourseCode = async (interaction, client, models, courseName, courseCategory, newValue, interactionChannel) => {
   const guild = client.guild;
-  const channelAnnouncement = guild.channels.cache.find(c => c.parent === interactionChannel.parent && c.name.includes("_announcement"));
 
   const databaseValue = await findCourseFromDb(courseName, models.Course);
   const trimmedNewCourseName = newValue.replace(/\s/g, "");
@@ -59,19 +24,9 @@ const changeCourseCode = async (interaction, client, models, courseName, courseC
       return false;
     }
     else {
-      const previousCourseName = databaseValue.name.replace(/ /g, "-");
-      await changeCourseNames(previousCourseName, trimmedNewCourseName.toLowerCase(), interactionChannel, courseCategory, guild);
-
       databaseValue.code = trimmedNewCourseName;
       databaseValue.name = trimmedNewCourseName.toLowerCase();
       await databaseValue.save();
-
-      await changeCourseRoles(courseName, trimmedNewCourseName.toLowerCase(), guild);
-      await changeInvitationLink(channelAnnouncement, interaction);
-
-      const newCategory = findCategoryWithCourseName(trimmedNewCourseName.toLowerCase(), guild);
-      await setCoursePositionABC(guild, newCategory.name, models.Course);
-      await editChannelNames(databaseValue.id, previousCourseName, trimmedNewCourseName.toLowerCase(), models.Channel);
       return true;
     }
 
@@ -95,7 +50,6 @@ const changeCourseName = async (interaction, models, courseName, newValue) => {
 
 const changeCourseNick = async (interaction, client, models, courseName, courseCategory, newValue, interactionChannel) => {
   const guild = client.guild;
-  const channelAnnouncement = guild.channels.cache.find(c => c.parent === interactionChannel.parent && c.name.includes("_announcement"));
   const databaseValue = await findCourseFromDb(courseName, models.Course);
 
   const trimmedNewCourseName = newValue.replace(/\s/g, "").toLowerCase();
@@ -105,14 +59,8 @@ const changeCourseNick = async (interaction, client, models, courseName, courseC
     return false;
   }
 
-  const previousCourseName = databaseValue.name.replace(/ /g, "-");
   databaseValue.name = trimmedNewCourseName;
   await databaseValue.save();
-  await changeCourseRoles(courseName, trimmedNewCourseName, guild);
-  await changeInvitationLink(channelAnnouncement, interaction);
-  const newCategory = findCategoryWithCourseName(trimmedNewCourseName, guild);
-  await setCoursePositionABC(guild, newCategory.name, models.Course);
-  await editChannelNames(databaseValue.id, previousCourseName, trimmedNewCourseName, models.Channel);
   return true;
 };
 
@@ -161,7 +109,6 @@ const execute = async (interaction, client, models) => {
 
   if (changeSuccess) {
     await client.emit("COURSES_CHANGED", models.Course);
-    await updateGuide(client.guild, models);
     await editEphemeral(interaction, "Course information has been changed");
     const nameToCoolDown = getCourseNameFromCategory(interactionChannel.parent, guild);
     handleCooldown(nameToCoolDown);
