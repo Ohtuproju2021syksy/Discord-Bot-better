@@ -17,6 +17,7 @@ Command | Description | Example
 
 Command | Description | Example
 --- |--- | ---
+[/add_instructors](./commands/faculty/add_instructors.md) | Give instructor role to (multiple) users. | `/add_instructors @user1 @user2`
 `/create_channel` | Add a text channel for the course. Must be used inside a course. | `/create_channel questions`
 `/create_course ` | Create a given course channel | `/create_course ohpe ohjelmoinnin perusteet`
 `/create_poll ` | Create a poll | `/create_poll Question 10 answer1 | answer 2 | answer 3`
@@ -31,12 +32,6 @@ Command | Description | Example
 `/status` | Get full status of course. Must be used inside a course. | `/status`
 `/unhide_course` | Make the given course public, enabling joining with `/join`. | `/unhide_course ohpe`
 `/unlock_chat` | Unlock the given course, enabling messaging by regular users. | `/unlock_chat ohpe`
-
-### Instructor commands
-
-Command | Description | Example
---- |--- | ---
-`/add_instructor` | Make the given user a course instructor for the current course. Must be used inside a course. | `/add_instructor @user`
 
 ### Commands for everyone
 
