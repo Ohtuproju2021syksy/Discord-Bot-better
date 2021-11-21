@@ -20,7 +20,7 @@ if (process.env.NODE_ENV === "production") {
     return info;
   });
 
-  const logger = createLogger({
+  logger = createLogger({
     format: format.combine(
       format.errors({ stack: true }),
       format.splat(),
