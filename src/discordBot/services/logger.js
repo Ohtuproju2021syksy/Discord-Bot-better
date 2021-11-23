@@ -1,4 +1,4 @@
-const { createLogger, format, transports } = require("winston");
+const { createLogger, format } = require("winston");
 const { PapertrailConnection, PapertrailTransport } = require("winston-papertrail");
 
 let logger;
@@ -20,7 +20,6 @@ if (process.env.NODE_ENV === "production") {
     return info;
   });
 
-
   logger = createLogger({
     format: format.combine(
       format.errors({ stack: true }),
@@ -32,12 +31,9 @@ if (process.env.NODE_ENV === "production") {
     transports: [ paperTrailTransport ],
   });
 
-  if (process.env.NODE_ENV === "development") {
-    logger.add(new transports.Console({
-      format: format.simple(),
-    }));
-    logger.remove(paperTrailTransport);
-  }
+  logger.rejections.handle(
+    paperTrailTransport,
+  );
 
   winstonPapertrail.on("connect", function() {
     logger.info("Logger connected to Papertrail");
