@@ -1,4 +1,4 @@
-const { createLogger, format, transports } = require("winston");
+const { createLogger, format } = require("winston");
 const { PapertrailConnection, PapertrailTransport } = require("winston-papertrail");
 
 let logger;
