@@ -6,9 +6,8 @@ const {
   findOrCreateRoleWithName,
   getCategoryObject,
   getCategoryChannelPermissionOverwrites,
-  createInvitation,
-  lockTelegramCourse,
-  unlockTelegramCourse } = require("../discordBot/services/service");
+  createInvitation } = require("../discordBot/services/service");
+const { lockTelegramCourse, unlockTelegramCourse } = require("../bridge/service");
 const { findCourseFromDbById,
   updateGuide,
   setCoursePositionABC,
@@ -18,13 +17,14 @@ const { findCourseFromDbById,
   setEmojisUnlock,
   setEmojisHide,
   setEmojisUnhide } = require("./services/courseService");
-const { courseAdminRole } = require("../../config.json");
+const { courseAdminRole, facultyRole } = require("../../config.json");
 const { Op } = require("sequelize");
 const { editChannelNames } = require("../db/services/channelService");
 
 const initHooks = (guild, models) => {
   initChannelHooks(guild, models);
   initCourseHooks(guild, models);
+  initUserHooks(guild, models);
 };
 
 const initChannelHooks = (guild, models) => {
@@ -141,6 +141,29 @@ const initCourseHooks = (guild, models) => {
       await changeInvitationLink(channelAnnouncement);
     }
     await updateGuide(guild, models);
+  });
+};
+
+const initUserHooks = (guild, models) => {
+  models.User.addHook("afterUpdate", async (user) => {
+    const changedValue = user._changed;
+    const userDiscoId = user.discordId;
+
+    if (changedValue.has("admin")) {
+      const adminRole = guild.roles.cache.find(r => r.name === "admin");
+      const userDisco = guild.members.cache.get(userDiscoId);
+      user.admin
+        ? userDisco.roles.add(adminRole)
+        : userDisco.roles.remove(adminRole);
+    }
+
+    if (changedValue.has("faculty")) {
+      const facultyRoleObject = guild.roles.cache.find(r => r.name === facultyRole);
+      const userDisco = guild.members.cache.get(userDiscoId);
+      user.faculty
+        ? userDisco.roles.add(facultyRoleObject)
+        : userDisco.roles.remove(facultyRoleObject);
+    }
   });
 };
 

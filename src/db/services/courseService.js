@@ -1,8 +1,6 @@
 const { findChannelWithNameAndType,
   getCourseNameFromCategory,
   findCategoryWithCourseName,
-  lockTelegramCourse,
-  unlockTelegramCourse,
   createCourseInvitationLink,
 } = require("../../discordBot/services/service");
 const { findCourseMemberCount } = require("./courseMemberService");
