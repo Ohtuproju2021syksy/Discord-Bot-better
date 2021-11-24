@@ -6,17 +6,17 @@ const {
   findOrCreateRoleWithName,
   getCategoryObject,
   getCategoryChannelPermissionOverwrites,
-  createInvitation } = require("../discordBot/services/service");
-const { lockTelegramCourse, unlockTelegramCourse } = require("../bridge/service");
-const { findCourseFromDbById,
-  updateGuide,
-  setCoursePositionABC,
+  createInvitation,
   changeCourseRoles,
   changeInvitationLink,
   setEmojisLock,
   setEmojisUnlock,
   setEmojisHide,
-  setEmojisUnhide } = require("./services/courseService");
+  setEmojisUnhide } = require("../discordBot/services/service");
+const { lockTelegramCourse, unlockTelegramCourse } = require("../bridge/service");
+const { findCourseFromDbById,
+  updateGuide,
+  setCoursePositionABC } = require("./services/courseService");
 const { courseAdminRole, facultyRole } = require("../../config.json");
 const { Op } = require("sequelize");
 const { editChannelNames } = require("../db/services/channelService");

@@ -1,12 +1,10 @@
 const { findChannelWithNameAndType,
   getCourseNameFromCategory,
   findCategoryWithCourseName,
-  createCourseInvitationLink,
 } = require("../../discordBot/services/service");
 const { findCourseMemberCount } = require("./courseMemberService");
 const { Sequelize } = require("sequelize");
 const GUIDE_CHANNEL_NAME = "guide";
-const { courseAdminRole } = require("../../../config.json");
 
 let invite_url = "";
 
@@ -208,43 +206,7 @@ const setCoursePositionABC = async (guild, courseString, Course) => {
     await category.edit({ position: categories.indexOf(category) + first });
   }
 };
-const changeCourseRoles = async (courseName, newValue, guild) => {
-  await Promise.all(guild.roles.cache
-    .filter(r => (r.name === `${courseName} ${courseAdminRole}` || r.name === courseName))
-    .map(async role => {
-      if (role.name.includes("instructor")) {
-        role.setName(`${newValue} instructor`);
-      }
-      else {
-        role.setName(newValue);
-      }
-    },
-    ));
-};
 
-const changeInvitationLink = async (channelAnnouncement) => {
-  const pinnedMessages = await channelAnnouncement.messages.fetchPinned();
-  const invMessage = pinnedMessages.find(msg => msg.author.bot && msg.content.includes("Invitation link for the course"));
-  const courseName = channelAnnouncement.parent.name.replace(/([\uE000-\uF8FF]|\uD83C[\uDF00-\uDFFF]|\uD83D[\uDC00-\uDDFF])/g, "").trim();
-  const updatedMsg = createCourseInvitationLink(courseName);
-  await invMessage.edit(updatedMsg);
-};
-
-const setEmojisLock = async (category, hidden, courseName) => {
-  hidden ? await category.setName(`👻🔐 ${courseName}`) : await category.setName(`📚🔐 ${courseName}`);
-};
-
-const setEmojisUnlock = async (category, hidden, courseName) => {
-  hidden ? await category.setName(`👻 ${courseName}`) : await category.setName(`📚 ${courseName}`);
-};
-
-const setEmojisHide = async (category, locked, courseName) => {
-  locked ? await category.setName(`👻🔐 ${courseName}`) : await category.setName(`👻 ${courseName}`);
-};
-
-const setEmojisUnhide = async (category, locked, courseName) => {
-  locked ? await category.setName(`📚🔐 ${courseName}`) : await category.setName(`📚 ${courseName}`);
-};
 
 module.exports = {
   setCourseToPrivate,
@@ -263,10 +225,4 @@ module.exports = {
   findAllCourseNames,
   findCourseFromDbById,
   setCoursePositionABC,
-  changeCourseRoles,
-  changeInvitationLink,
-  setEmojisLock,
-  setEmojisUnlock,
-  setEmojisHide,
-  setEmojisUnhide,
 };
