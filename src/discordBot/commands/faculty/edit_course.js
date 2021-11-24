@@ -92,8 +92,6 @@ const execute = async (interaction, client, models) => {
     return await editErrorEphemeral(interaction, `Command cooldown [mm:ss]: you need to wait ${time}.`);
   }
 
-  const courseCategory = findChannelWithNameAndType(getCourseNameFromCategory(interactionChannel.parent), "GUILD_CATEGORY", guild);
-
   let changeSuccess = false;
   if (choice === "code") {
     changeSuccess = await changeCourseCode(interaction, client, models, courseName, newValue);
