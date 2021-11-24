@@ -67,22 +67,9 @@ const initChannelHooks = (guild, models) => {
 
   channelModel.addHook("afterUpdate", async (channel) => {
     if (channel._changed.has("name")) {
-      const previousCourseName = channel._previousDataValues.name.split("_")[0];
-      const trimmedCourseName = channel.name.split("_")[0];
-
-      await Promise.all(guild.channels.cache
-        .filter(c => c.name === channel._previousDataValues.name)
-        .map(async ch => {
-          let newName;
-          if (ch.name.includes(previousCourseName)) {
-            newName = ch.name.replace(previousCourseName, trimmedCourseName);
-          }
-          else {
-            newName = ch.name.replace(previousCourseName.toLowerCase(), trimmedCourseName);
-          }
-          await ch.setName(newName);
-        },
-        ));
+      const channelObject = guild.channels.cache
+        .find(c => c.name === channel._previousDataValues.name);
+      await channelObject.setName(channel.name);
     }
   });
 };
