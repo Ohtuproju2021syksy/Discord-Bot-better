@@ -2,9 +2,8 @@ const { execute } = require("../../../src/discordBot/commands/faculty/hide_cours
 const { editEphemeral, editErrorEphemeral, sendEphemeral, confirmChoice } = require("../../../src/discordBot/services/message");
 const {
   msToMinutesAndSeconds,
-  checkCourseCooldown,
-  findCategoryWithCourseName } = require("../../../src/discordBot/services/service");
-const { updateGuide, setCourseToPrivate, findCourseFromDb } = require("../../../src/db/services/courseService");
+  checkCourseCooldown } = require("../../../src/discordBot/services/service");
+const { setCourseToPrivate, findCourseFromDb } = require("../../../src/db/services/courseService");
 
 jest.mock("../../../src/discordBot/services/message");
 jest.mock("../../../src/discordBot/services/service");
@@ -29,8 +28,6 @@ const Course = {
   destroy: jest.fn(),
 };
 
-findCategoryWithCourseName.mockImplementation((name) => { return { name: name, setName: jest.fn() }; });
-
 describe("slash hide command", () => {
   test("hide command with invalid course name responds with correct ephemeral", async () => {
     const client = defaultTeacherInteraction.client;
@@ -42,7 +39,6 @@ describe("slash hide command", () => {
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
     expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
     expect(editErrorEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
-    expect(updateGuide).toHaveBeenCalledTimes(0);
   });
 
   test("hide command with valid course name responds with correct ephemeral", async () => {
@@ -52,14 +48,12 @@ describe("slash hide command", () => {
     await execute(defaultTeacherInteraction, client, Course);
     expect(confirmChoice).toHaveBeenCalledTimes(1);
     expect(findCourseFromDb).toHaveBeenCalledTimes(1);
-    expect(findCategoryWithCourseName).toHaveBeenCalledTimes(1);
     expect(setCourseToPrivate).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
     expect(editEphemeral).toHaveBeenCalledTimes(1);
     expect(editEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
     expect(client.emit).toHaveBeenCalledTimes(1);
-    expect(updateGuide).toHaveBeenCalledTimes(1);
   });
 
   test("hide command with cooldown", async () => {
@@ -74,6 +68,5 @@ describe("slash hide command", () => {
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
     expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
     expect(client.emit).toHaveBeenCalledTimes(0);
-    expect(updateGuide).toHaveBeenCalledTimes(0);
   });
 });
