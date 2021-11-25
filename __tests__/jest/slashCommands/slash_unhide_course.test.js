@@ -1,11 +1,13 @@
 const { execute } = require("../../../src/discordBot/commands/faculty/unhide_course");
-const { sendEphemeral, editErrorEphemeral, editEphemeral, confirmChoice } = require("../../../src/discordBot/services/message");
+const { sendEphemeral, editErrorEphemeral, editEphemeral } = require("../../../src/discordBot/services/message");
+const { confirmChoice } = require("../../../src/discordBot/services/confirm");
 const {
   msToMinutesAndSeconds,
   checkCourseCooldown } = require("../../../src/discordBot/services/service");
 const { setCourseToPublic, findCourseFromDb } = require("../../../src/db/services/courseService");
 
 jest.mock("../../../src/discordBot/services/message");
+jest.mock("../../../src/discordBot/services/confirm");
 jest.mock("../../../src/discordBot/services/service");
 jest.mock("../../../src/db/services/courseService");
 

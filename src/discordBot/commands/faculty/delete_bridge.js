@@ -1,5 +1,6 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { sendEphemeral, editEphemeral, confirmChoice } = require("../../services/message");
+const { sendEphemeral, editEphemeral } = require("../../services/message");
+const { confirmChoice } = require("../../services/confirm");
 const { facultyRole } = require("../../../../config.json");
 const { findCourseFromDb } = require("../../../db/services/courseService");
 const { sendMessageToTelegram } = require("../../../bridge/service");

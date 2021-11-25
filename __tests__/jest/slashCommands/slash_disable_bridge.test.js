@@ -1,10 +1,12 @@
 const { execute } = require("../../../src/discordBot/commands/faculty/disable_bridge");
-const { editEphemeral, editErrorEphemeral, sendEphemeral, confirmChoice } = require("../../../src/discordBot/services/message");
+const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../../src/discordBot/services/message");
+const { confirmChoice } = require("../../../src/discordBot/services/confirm");
 const { findCourseFromDb, isCourseCategory } = require("../../../src/db/services/courseService");
 const { findChannelFromDbByName } = require("../../../src/db/services/channelService");
 
 const models = require("../../mocks/mockModels");
 jest.mock("../../../src/discordBot/services/message");
+jest.mock("../../../src/discordBot/services/confirm");
 jest.mock("../../../src/db/services/courseService");
 jest.mock("../../../src/db/services/channelService");
 jest.mock("../../../src/discordBot/services/service");

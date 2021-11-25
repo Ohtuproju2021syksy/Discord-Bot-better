@@ -4,7 +4,8 @@ const {
   handleCooldown,
   checkCourseCooldown } = require("../../services/service");
 const { setCourseToPrivate, findCourseFromDb } = require("../../../db/services/courseService");
-const { sendEphemeral, editErrorEphemeral, editEphemeral, confirmChoice } = require("../../services/message");
+const { sendEphemeral, editErrorEphemeral, editEphemeral } = require("../../services/message");
+const { confirmChoice } = require("../../services/confirm");
 const { facultyRole } = require("../../../../config.json");
 
 const execute = async (interaction, client, models) => {
