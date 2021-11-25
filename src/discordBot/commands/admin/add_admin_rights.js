@@ -19,10 +19,6 @@ const execute = async (message, args, models) => {
 
     user.admin = true;
     await user.save();
-
-    const adminRole = guild.roles.cache.find(r => r.name === "admin");
-    const userDisco = guild.members.cache.get(userId);
-    userDisco.roles.add(adminRole);
   }
 };
 

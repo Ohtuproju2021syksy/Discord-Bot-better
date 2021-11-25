@@ -1,4 +1,7 @@
-const { findChannelWithNameAndType, getCourseNameFromCategory, findCategoryWithCourseName } = require("../../discordBot/services/service");
+const { findChannelWithNameAndType,
+  getCourseNameFromCategory,
+  findCategoryWithCourseName,
+} = require("../../discordBot/services/service");
 const { findCourseMemberCount } = require("./courseMemberService");
 const { Sequelize } = require("sequelize");
 const GUIDE_CHANNEL_NAME = "guide";
@@ -203,6 +206,7 @@ const setCoursePositionABC = async (guild, courseString, Course) => {
     await category.edit({ position: categories.indexOf(category) + first });
   }
 };
+
 
 module.exports = {
   setCourseToPrivate,
