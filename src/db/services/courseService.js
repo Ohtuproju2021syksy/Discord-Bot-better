@@ -22,7 +22,6 @@ const setCourseToPrivate = async (courseName, Course) => {
 };
 
 const setCourseToPublic = async (courseName, Course) => {
-  console.log(Course);
   const course = await Course.findOne({
     where:
       { name: { [Sequelize.Op.iLike]: courseName } },
