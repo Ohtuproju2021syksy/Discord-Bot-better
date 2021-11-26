@@ -7,24 +7,26 @@ const {
   getCategoryObject,
   getCategoryChannelPermissionOverwrites,
   createInvitation,
-  lockTelegramCourse,
-  unlockTelegramCourse } = require("../discordBot/services/service");
-const { findCourseFromDbById,
-  updateGuide,
-  setCoursePositionABC,
   changeCourseRoles,
   changeInvitationLink,
   setEmojisLock,
   setEmojisUnlock,
   setEmojisHide,
-  setEmojisUnhide } = require("./services/courseService");
-const { courseAdminRole } = require("../../config.json");
+  setEmojisUnhide } = require("../discordBot/services/service");
+const { lockTelegramCourse, unlockTelegramCourse } = require("../bridge/service");
+const { findCourseFromDbById,
+  updateGuide,
+  setCoursePositionABC } = require("./services/courseService");
+const { findUserByDbId } = require("./services/userService");
+const { courseAdminRole, facultyRole } = require("../../config.json");
 const { Op } = require("sequelize");
 const { editChannelNames } = require("../db/services/channelService");
 
 const initHooks = (guild, models) => {
   initChannelHooks(guild, models);
   initCourseHooks(guild, models);
+  initUserHooks(guild, models);
+  initCourseMemberHooks(guild, models);
 };
 
 const initChannelHooks = (guild, models) => {
@@ -67,22 +69,9 @@ const initChannelHooks = (guild, models) => {
 
   channelModel.addHook("afterUpdate", async (channel) => {
     if (channel._changed.has("name")) {
-      const previousCourseName = channel._previousDataValues.name.split("_")[0];
-      const trimmedCourseName = channel.name.split("_")[0];
-
-      await Promise.all(guild.channels.cache
-        .filter(c => c.name === channel._previousDataValues.name)
-        .map(async ch => {
-          let newName;
-          if (ch.name.includes(previousCourseName)) {
-            newName = ch.name.replace(previousCourseName, trimmedCourseName);
-          }
-          else {
-            newName = ch.name.replace(previousCourseName.toLowerCase(), trimmedCourseName);
-          }
-          await ch.setName(newName);
-        },
-        ));
+      const channelObject = guild.channels.cache
+        .find(c => c.name === channel._previousDataValues.name);
+      await channelObject.setName(channel.name);
     }
   });
 };
@@ -140,6 +129,40 @@ const initCourseHooks = (guild, models) => {
       await editChannelNames(course.id, previousCourseName, courseName, models.Channel);
       await changeInvitationLink(channelAnnouncement);
     }
+    await updateGuide(guild, models);
+  });
+};
+
+const initUserHooks = (guild, models) => {
+  models.User.addHook("afterUpdate", async (user) => {
+    const changedValue = user._changed;
+    const userDiscoId = user.discordId;
+
+    if (changedValue.has("admin")) {
+      const adminRole = guild.roles.cache.find(r => r.name === "admin");
+      const userDisco = guild.members.cache.get(userDiscoId);
+      user.admin
+        ? userDisco.roles.add(adminRole)
+        : userDisco.roles.remove(adminRole);
+    }
+
+    if (changedValue.has("faculty")) {
+      const facultyRoleObject = guild.roles.cache.find(r => r.name === facultyRole);
+      const userDisco = guild.members.cache.get(userDiscoId);
+      user.faculty
+        ? userDisco.roles.add(facultyRoleObject)
+        : userDisco.roles.remove(facultyRoleObject);
+    }
+  });
+};
+
+const initCourseMemberHooks = (guild, models) => {
+  models.CourseMember.addHook("afterCreate", async (courseMember) => {
+    const user = await findUserByDbId(courseMember.userId, models.User);
+    const course = await findCourseFromDbById(courseMember.courseId, models.Course);
+    const member = guild.members.cache.get(user.discordId);
+    const courseRole = guild.roles.cache.find(r => r.name === course.name);
+    await member.roles.add(courseRole);
     await updateGuide(guild, models);
   });
 };

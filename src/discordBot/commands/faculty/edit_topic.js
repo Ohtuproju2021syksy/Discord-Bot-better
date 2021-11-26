@@ -4,7 +4,8 @@ const {
   checkCourseCooldown,
   msToMinutesAndSeconds,
   getCourseNameFromCategory } = require("../../services/service");
-const { editErrorEphemeral, sendEphemeral, editEphemeral, confirmChoice } = require("../../services/message");
+const { editErrorEphemeral, sendEphemeral, editEphemeral } = require("../../services/message");
+const { confirmChoice } = require("../../services/confirm");
 const { facultyRole } = require("../../../../config.json");
 const { saveChannelTopicToDb } = require("../../../db/services/channelService");
 const { isCourseCategory } = require("../../../db/services/courseService");

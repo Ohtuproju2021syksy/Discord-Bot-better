@@ -2,7 +2,8 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 const { getCourseNameFromCategory } = require("../../services/service");
 const { findChannelFromDbByName } = require("../../../db/services/channelService");
 const { findCourseFromDb, isCourseCategory } = require("../../../db/services/courseService");
-const { sendEphemeral, editErrorEphemeral, editEphemeral, confirmChoice } = require("../../services/message");
+const { sendEphemeral, editErrorEphemeral, editEphemeral } = require("../../services/message");
+const { confirmChoice } = require("../../services/confirm");
 const { facultyRole } = require("../../../../config.json");
 
 const execute = async (interaction, client, models) => {

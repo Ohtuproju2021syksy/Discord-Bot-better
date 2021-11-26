@@ -6,6 +6,14 @@ const findUserByDiscordId = async (id, User) => {
   });
 };
 
+const findUserByDbId = async (id, User) => {
+  return await User.findOne({
+    where:{
+      id: id,
+    },
+  });
+};
+
 const createUserToDatabase = async (discordId, username, User) => {
   const alreadyinuse = await findUserByDiscordId(discordId, User);
   if (!alreadyinuse) {
@@ -32,4 +40,9 @@ const saveFacultyRoleToDb = async (discordId, User) => {
   }
 };
 
-module.exports = { findUserByDiscordId, createUserToDatabase, removeUserFromDb, saveFacultyRoleToDb };
+module.exports = {
+  findUserByDiscordId,
+  createUserToDatabase,
+  removeUserFromDb,
+  saveFacultyRoleToDb,
+  findUserByDbId };

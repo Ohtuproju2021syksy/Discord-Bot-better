@@ -14,7 +14,13 @@
     "coveragePathIgnorePatterns": [
       "/src/bridge/",
       "/node_modules/",
-      "__tests__"
+      "__tests__",
+      "/src/db/hookInit.js",
+      "/src/discordBot/services/command.js",
+      "/src/discordBot/services/logger.js",
+      "src/discordBot/services/confirm.js",
+      "src/discordBot/commands/faculty/create_poll.js",
+      "src/discordBot/commands/admin/update_database.js"
     ],
     "testRegex": "./__tests__/jest"
   },

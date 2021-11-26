@@ -10,10 +10,11 @@ const {
   findCourseFromDb,
   findCourseFromDbWithFullName,
   isCourseCategory } = require("../../../db/services/courseService");
-const { sendEphemeral, editEphemeral, editErrorEphemeral, confirmChoice } = require("../../services/message");
+const { sendEphemeral, editEphemeral, editErrorEphemeral } = require("../../services/message");
+const { confirmChoice } = require("../../services/confirm");
 const { facultyRole } = require("../../../../config.json");
 
-const changeCourseCode = async (interaction, client, models, courseName, courseCategory, newValue, interactionChannel) => {
+const changeCourseCode = async (interaction, client, models, courseName, newValue) => {
   const guild = client.guild;
 
   const databaseValue = await findCourseFromDb(courseName, models.Course);
@@ -48,7 +49,7 @@ const changeCourseName = async (interaction, models, courseName, newValue) => {
 };
 
 
-const changeCourseNick = async (interaction, client, models, courseName, courseCategory, newValue, interactionChannel) => {
+const changeCourseNick = async (interaction, client, models, courseName, newValue) => {
   const guild = client.guild;
   const databaseValue = await findCourseFromDb(courseName, models.Course);
 
@@ -92,11 +93,9 @@ const execute = async (interaction, client, models) => {
     return await editErrorEphemeral(interaction, `Command cooldown [mm:ss]: you need to wait ${time}.`);
   }
 
-  const courseCategory = findChannelWithNameAndType(getCourseNameFromCategory(interactionChannel.parent), "GUILD_CATEGORY", guild);
-
   let changeSuccess = false;
   if (choice === "code") {
-    changeSuccess = await changeCourseCode(interaction, client, models, courseName, courseCategory, newValue, interactionChannel);
+    changeSuccess = await changeCourseCode(interaction, client, models, courseName, newValue);
   }
 
   if (choice === "name") {
@@ -104,7 +103,7 @@ const execute = async (interaction, client, models) => {
   }
 
   if (choice === "nick") {
-    changeSuccess = await changeCourseNick(interaction, client, models, courseName, courseCategory, newValue, interactionChannel);
+    changeSuccess = await changeCourseNick(interaction, client, models, courseName, newValue);
   }
 
   if (changeSuccess) {
