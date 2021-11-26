@@ -1,7 +1,8 @@
 const { execute } = require("../../../src/discordBot/commands/faculty/disable_bridge");
 const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../../src/discordBot/services/message");
 const { confirmChoice } = require("../../../src/discordBot/services/confirm");
-const { findCourseFromDb, isCourseCategory } = require("../../../src/db/services/courseService");
+const { findCourseFromDb } = require("../../../src/db/services/courseService");
+const { isCourseCategory } = require("../../../src/discordBot/services/service");
 const { findChannelFromDbByName } = require("../../../src/db/services/channelService");
 
 const models = require("../../mocks/mockModels");

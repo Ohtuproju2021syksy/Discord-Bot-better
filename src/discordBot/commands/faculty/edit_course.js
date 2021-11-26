@@ -5,11 +5,11 @@ const {
   handleCooldown,
   checkCourseCooldown,
   getCourseNameFromCategory,
-  containsEmojis } = require("../../services/service");
+  containsEmojis,
+  isCourseCategory } = require("../../services/service");
 const {
   findCourseFromDb,
-  findCourseFromDbWithFullName,
-  isCourseCategory } = require("../../../db/services/courseService");
+  findCourseFromDbWithFullName } = require("../../../db/services/courseService");
 const { sendEphemeral, editEphemeral, editErrorEphemeral } = require("../../services/message");
 const { confirmChoice } = require("../../services/confirm");
 const { facultyRole } = require("../../../../config.json");

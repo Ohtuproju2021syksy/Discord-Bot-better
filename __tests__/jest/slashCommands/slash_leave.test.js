@@ -1,6 +1,7 @@
 const { execute } = require("../../../src/discordBot/commands/student/leave");
 const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../../src/discordBot/services/message");
-const { updateGuide, findCourseFromDb } = require("../../../src/db/services/courseService");
+const { findCourseFromDb } = require("../../../src/db/services/courseService");
+const { updateGuide } = require("../../../src/discordBot/services/service");
 const { findUserByDiscordId } = require("../../../src/db/services/userService");
 const models = require("../../mocks/mockModels");
 

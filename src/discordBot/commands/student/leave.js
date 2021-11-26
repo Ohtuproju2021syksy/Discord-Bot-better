@@ -1,5 +1,6 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { updateGuide, findCourseFromDb } = require("../../../db/services/courseService");
+const { updateGuide } = require("../../services/service");
+const { findCourseFromDb } = require("../../../db/services/courseService");
 const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../services/message");
 const { courseAdminRole } = require("../../../../config.json");
 const { findUserByDiscordId } = require("../../../db/services/userService");

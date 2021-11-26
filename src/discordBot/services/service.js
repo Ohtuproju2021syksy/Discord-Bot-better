@@ -3,6 +3,8 @@ const fs = require("fs");
 const path = require("path");
 const { logError } = require("./logger");
 const { courseAdminRole } = require("../../../config.json");
+const { findCoursesFromDb, findAllCourseNames, findCourseFromDb } = require("../../db/services/courseService");
+const { findCourseMemberCount } = require("../../db/services/courseMemberService");
 
 require("dotenv").config();
 const GUIDE_CHANNEL_NAME = "guide";
@@ -257,6 +259,78 @@ const updateInviteLinks = async (guild, adminRole, facultyRole, client) => {
   }));
 };
 
+const updateGuide = async (guild, models) => {
+  const channel = guild.channels.cache.find(
+    (c) => c.name === GUIDE_CHANNEL_NAME,
+  );
+  const messages = await channel.messages.fetchPinned(true);
+  const message = messages.first();
+  await updateGuideMessage(message, models);
+};
+
+const updateGuideMessage = async (message, models) => {
+  const courseData = await findCoursesFromDb("code", models.Course, false);
+  const rows = await Promise.all(courseData
+    .map(async (course) => {
+      const regExp = /[^0-9]*/;
+      const fullname = course.fullName;
+      const matches = regExp.exec(course.code)?.[0];
+      const code = matches ? matches + course.code.slice(matches.length) : course.code;
+      const count = await findCourseMemberCount(course.id, models.CourseMember);
+      return `  - ${code} - ${fullname} 👤${count}`;
+    }));
+
+  const newContent = `
+Käytössäsi on seuraavia komentoja:
+  - \`/join\` jolla voit liittyä kurssille
+  - \`/leave\` jolla voit poistua kurssilta
+Kirjoittamalla \`/join\` tai \`/leave\` botti antaa listan kursseista.
+
+You have the following commands available:
+  - \`/join\` which you can use to join a course
+  - \`/leave\` which you can use to leave a course
+The bot gives a list of the courses if you type \`/join\` or \`/leave\`.
+
+Kurssit / Courses:
+${rows.join("\n")}
+
+In course specific channels you can also list instructors with the command \`/instructors\`
+
+See more with \`/help\` command.
+
+Invitation link for the server ${invite_url}
+`;
+
+  await message.edit(newContent);
+};
+
+const isCourseCategory = async (channel, Course) => {
+  if (channel && channel.name) {
+    const course = await findCourseFromDb(getCourseNameFromCategory(channel.name), Course);
+    return course ? true : false;
+  }
+};
+
+const setCoursePositionABC = async (guild, courseString, Course) => {
+  let first = 9999;
+  const categoryNames = await findAllCourseNames(Course);
+  categoryNames.sort((a, b) => a.localeCompare(b));
+  const categories = [];
+  categoryNames.forEach(cat => {
+    const guildCat = findCategoryWithCourseName(cat, guild);
+    if (guildCat) {
+      categories.push(guildCat);
+      if (first > guildCat.position) first = guildCat.position;
+    }
+  });
+  const course = courseString.split(" ")[1];
+
+  const category = findCategoryWithCourseName(course, guild);
+  if (category) {
+    await category.edit({ position: categories.indexOf(category) + first });
+  }
+};
+
 const getCategoryChannelPermissionOverwrites = (guild, admin, student) => ([
   {
     id: guild.id,
@@ -396,4 +470,8 @@ module.exports = {
   setEmojisUnlock,
   setEmojisHide,
   setEmojisUnhide,
+  updateGuide,
+  updateGuideMessage,
+  setCoursePositionABC,
+  isCourseCategory,
 };

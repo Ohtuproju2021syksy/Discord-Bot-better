@@ -4,8 +4,9 @@ const {
   createCourseInvitationLink,
   downloadImage,
   listCourseInstructors,
+  isCourseCategory,
 } = require("../../services/service");
-const { findCourseFromDb, isCourseCategory } = require("../../../db/services/courseService");
+const { findCourseFromDb } = require("../../../db/services/courseService");
 const { findChannelsByCourse } = require("../../../db/services/channelService");
 const { editErrorEphemeral, sendEphemeral, editEphemeralForStatus } = require("../../services/message");
 const { facultyRole, courseAdminRole } = require("../../../../config.json");

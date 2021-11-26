@@ -9,8 +9,9 @@ const {
   findOrCreateChannel,
   getCourseNameFromCategory,
   findChannelWithNameAndType,
-  getWorkshopInfo } = require("../../src/discordBot/services/service");
-const { updateGuideMessage, createCourseToDatabase, removeCourseFromDb } = require("../../src/db/services/courseService");
+  getWorkshopInfo,
+  updateGuideMessage } = require("../../src/discordBot/services/service");
+const { createCourseToDatabase, removeCourseFromDb } = require("../../src/db/services/courseService");
 const { data } = require("../mocks/workshopData.json");
 
 const createGuidePinnedMessage = async () => {

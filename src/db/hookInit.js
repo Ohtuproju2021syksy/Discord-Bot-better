@@ -12,11 +12,11 @@ const {
   setEmojisLock,
   setEmojisUnlock,
   setEmojisHide,
-  setEmojisUnhide } = require("../discordBot/services/service");
+  setEmojisUnhide,
+  setCoursePositionABC,
+  updateGuide } = require("../discordBot/services/service");
 const { lockTelegramCourse, unlockTelegramCourse } = require("../bridge/service");
-const { findCourseFromDbById,
-  updateGuide,
-  setCoursePositionABC } = require("./services/courseService");
+const { findCourseFromDbById } = require("./services/courseService");
 const { findUserByDbId } = require("./services/userService");
 const { courseAdminRole, facultyRole } = require("../../config.json");
 const { Op } = require("sequelize");
