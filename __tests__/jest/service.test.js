@@ -277,7 +277,6 @@ describe("Service", () => {
       Description: Ohjaus järjestetään zoomissa\n`);
 
     const result = await getWorkshopInfo("TKT-101");
-    console.log(result);
     expect(result).toBe(returnedValue);
   });
 
@@ -289,7 +288,6 @@ describe("Service", () => {
     );
 
     const result = await getWorkshopInfo("TKT-101");
-    console.log(result);
     expect(result).toBe("No workshops for this course. Please contact the course admin.");
   });
 });

@@ -8,7 +8,7 @@ const {
   getCategoryChannelPermissionOverwrites,
   createInvitation,
   changeCourseRoles,
-  changeInvitationLink,
+  updateAnnouncementChannelMessage,
   setEmojisLock,
   setEmojisUnlock,
   setEmojisHide,
@@ -127,7 +127,7 @@ const initCourseHooks = (guild, models) => {
       await changeCourseRoles(previousCourseName, courseName, guild);
       await setCoursePositionABC(guild, `${categoryEmojis} ${courseName}`, models.Course);
       await editChannelNames(course.id, previousCourseName, courseName, models.Channel);
-      await changeInvitationLink(channelAnnouncement);
+      await updateAnnouncementChannelMessage(guild, channelAnnouncement);
     }
     await updateGuide(guild, models);
   });
@@ -163,6 +163,23 @@ const initCourseMemberHooks = (guild, models) => {
     const member = guild.members.cache.get(user.discordId);
     const courseRole = guild.roles.cache.find(r => r.name === course.name);
     await member.roles.add(courseRole);
+    await updateGuide(guild, models);
+  });
+
+  models.CourseMember.addHook("afterBulkDestroy", async (courseMember) => {
+    const user = await findUserByDbId(courseMember.where.userId, models.User);
+    const course = await findCourseFromDbById(courseMember.where.courseId, models.Course);
+    const member = guild.members.cache.get(user.discordId);
+    const courseRoles = guild.roles.cache
+      .filter(role => (role.name === `${course.name} ${courseAdminRole}` || role.name === course.name))
+      .map(role => role.name);
+
+    await Promise.all(member.roles.cache
+      .filter(role => courseRoles.includes(role.name))
+      .map(async role => await member.roles.remove(role)));
+    await member.fetch(true);
+    const announcementChannel = guild.channels.cache.find(c => c.name === `${course.name}_announcement`);
+    await updateAnnouncementChannelMessage(guild, announcementChannel);
     await updateGuide(guild, models);
   });
 };
