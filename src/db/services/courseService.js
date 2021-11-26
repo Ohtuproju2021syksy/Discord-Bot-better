@@ -22,6 +22,7 @@ const setCourseToPrivate = async (courseName, Course) => {
 };
 
 const setCourseToPublic = async (courseName, Course) => {
+  console.log(Course);
   const course = await Course.findOne({
     where:
       { name: { [Sequelize.Op.iLike]: courseName } },
@@ -32,29 +33,24 @@ const setCourseToPublic = async (courseName, Course) => {
   }
 };
 
-const setCourseToLocked = async (courseName, Course, guild) => {
+const setCourseToLocked = async (courseName, Course) => {
   const course = await Course.findOne({
     where:
       { name: { [Sequelize.Op.iLike]: courseName } },
   });
   if (course) {
     course.locked = true;
-    const category = findChannelWithNameAndType(courseName, "GUILD_CATEGORY", guild);
-    category.permissionOverwrites.create(guild.roles.cache.find(r => r.name.toLowerCase().includes(courseName.toLowerCase())), { VIEW_CHANNEL: true, SEND_MESSAGES: false });
-    category.permissionOverwrites.create(guild.roles.cache.find(r => r.name === "faculty"), { SEND_MESSAGES: true });
     await course.save();
   }
 };
 
-const setCourseToUnlocked = async (courseName, Course, guild) => {
+const setCourseToUnlocked = async (courseName, Course) => {
   const course = await Course.findOne({
     where:
       { name: { [Sequelize.Op.iLike]: courseName } },
   });
   if (course) {
     course.locked = false;
-    const category = findChannelWithNameAndType(courseName, "GUILD_CATEGORY", guild);
-    category.permissionOverwrites.create(guild.roles.cache.find(r => r.name.toLowerCase().includes(courseName.toLowerCase())), { VIEW_CHANNEL: true, SEND_MESSAGES: true });
     await course.save();
   }
 };
