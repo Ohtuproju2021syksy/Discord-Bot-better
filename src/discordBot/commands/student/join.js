@@ -1,48 +1,31 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { editEphemeral, editErrorEphemeral, sendEphemeral, sendReplyMessage } = require("../../services/message");
-const { updateGuide, findCourseFromDb } = require("../../../db/services/courseService");
-const { courseAdminRole } = require("../../../../config.json");
+const { findCourseFromDb } = require("../../../db/services/courseService");
 const { findUserByDiscordId, createUserToDatabase } = require("../../../db/services/userService");
-const { createCourseMemberToDatabase } = require("../../../db/services/courseMemberService");
+const { createCourseMemberToDatabase, findAllCourseMembersByUser } = require("../../../db/services/courseMemberService");
 const joinedUsersCounter = require("../../../promMetrics/joinedUsersCounter");
 
 const execute = async (interaction, client, models) => {
   let roleString = "";
-  let message = "";
-  let course;
   const guild = client.guild;
   const guideChannel = guild.channels.cache.find((c) => c.name === "guide");
   const copyPasteGuideReply = "You can try typing `/join` and I'll offer you a helpful list of courses to click from.\n" +
-    "Please also read <#" + guideChannel + "> for more info on commands and available courses.\n" +
-    "You can also type `/help` to view a helpful *(pun intended)* list of commands.\n" +
-    "Note that you have to **manually** type the commands; I rarely understand copy-pasted commands!";
+  "Please also read <#" + guideChannel + "> for more info on commands and available courses.\n" +
+  "You can also type `/help` to view a helpful *(pun intended)* list of commands.\n" +
+  "Note that you have to **manually** type the commands; I rarely understand copy-pasted commands!";
   const channel = interaction.channel;
 
   if (interaction.options) {
     // Interaction was a slash command
     await sendEphemeral(interaction, "Joining course...");
     roleString = interaction.options.getString("course").trim();
-    message = `You have been added to the ${roleString} course.`;
   }
   else {
     // Command was copypasted or failed to register as an interaction
     roleString = interaction.roleString;
-    course = await findCourseFromDb(roleString, models.Course);
-    if (!course || course.private) {
-      return await sendReplyMessage(interaction, channel, "Hey, <@" + interaction.author + ">, I couldn't find a course with name **" + roleString + "**.\n" + copyPasteGuideReply);
-    }
-    const fullName = course.fullName;
-    message = "Hey, <@" + interaction.author + ">, I added you to **" + fullName + "**, hopefully I got that correct.\n" + copyPasteGuideReply;
   }
-
-  const member = guild.members.cache.get(interaction.member.user.id);
-  const courseRole = guild.roles.cache.find(r => r.name === roleString);
-
-  const courseRoles = guild.roles.cache
-    .filter(r => (r.name === `${roleString} ${courseAdminRole}` || r.name === `${roleString}`))
-    .map(r => r.name);
-
-  if (!courseRoles.length) {
+  const course = await findCourseFromDb(roleString, models.Course);
+  if (!course || course.private) {
     if (interaction.options) {
       return await editErrorEphemeral(interaction, `Invalid course name: ${roleString}`);
     }
@@ -50,7 +33,17 @@ const execute = async (interaction, client, models) => {
       return await sendReplyMessage(interaction, channel, "Hey, <@" + interaction.author + ">. The course name **" + roleString + "** you gave was invalid.\n" + copyPasteGuideReply);
     }
   }
-  if (member.roles.cache.some(r => courseRoles.includes(r.name))) {
+
+  let user = await findUserByDiscordId(interaction.member.user.id, models.User);
+  if (!user) {
+    await createUserToDatabase(interaction.member.user.id, interaction.member.user.username, models.User);
+    user = await findUserByDiscordId(interaction.member.user.id, models.User);
+  }
+
+  const courseMembers = await findAllCourseMembersByUser(user.id, models.CourseMember);
+  const coursesJoinedByUser = courseMembers.map(cm => cm.courseId);
+
+  if (coursesJoinedByUser.includes(course.id)) {
     if (interaction.options) {
       return await editErrorEphemeral(interaction, `You are already on the ${roleString} course.`);
     }
@@ -59,25 +52,18 @@ const execute = async (interaction, client, models) => {
     }
   }
 
-  let user = await findUserByDiscordId(interaction.member.user.id, models.User);
-  if (!course) {
-    course = await findCourseFromDb(roleString, models.Course);
-  }
-  if (!user) {
-    await createUserToDatabase(interaction.member.user.id, interaction.member.user.username, models.User);
-    user = await findUserByDiscordId(interaction.member.user.id, models.User);
-  }
-
   await createCourseMemberToDatabase(user.id, course.id, models.CourseMember);
 
-  await member.roles.add(courseRole);
+  let message = "";
   if (interaction.options) {
+    message = `You have been added to the ${roleString} course.`;
     await editEphemeral(interaction, message);
   }
   else {
+    message = "Hey, <@" + interaction.author + ">, I added you to **" + course.fullName + "**, hopefully I got that correct.\n" + copyPasteGuideReply;
     await sendReplyMessage(interaction, channel, message);
   }
-  await updateGuide(guild, models);
+
   joinedUsersCounter.inc({ course: roleString });
 };
 

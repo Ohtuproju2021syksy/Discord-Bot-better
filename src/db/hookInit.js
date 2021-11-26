@@ -17,6 +17,7 @@ const { lockTelegramCourse, unlockTelegramCourse } = require("../bridge/service"
 const { findCourseFromDbById,
   updateGuide,
   setCoursePositionABC } = require("./services/courseService");
+const { findUserByDbId } = require("./services/userService");
 const { courseAdminRole, facultyRole } = require("../../config.json");
 const { Op } = require("sequelize");
 const { editChannelNames } = require("../db/services/channelService");
@@ -25,6 +26,7 @@ const initHooks = (guild, models) => {
   initChannelHooks(guild, models);
   initCourseHooks(guild, models);
   initUserHooks(guild, models);
+  initCourseMemberHooks(guild, models);
 };
 
 const initChannelHooks = (guild, models) => {
@@ -151,6 +153,17 @@ const initUserHooks = (guild, models) => {
         ? userDisco.roles.add(facultyRoleObject)
         : userDisco.roles.remove(facultyRoleObject);
     }
+  });
+};
+
+const initCourseMemberHooks = (guild, models) => {
+  models.CourseMember.addHook("afterCreate", async (courseMember) => {
+    const user = await findUserByDbId(courseMember.userId, models.User);
+    const course = await findCourseFromDbById(courseMember.courseId, models.Course);
+    const member = guild.members.cache.get(user.discordId);
+    const courseRole = guild.roles.cache.find(r => r.name === course.name);
+    await member.roles.add(courseRole);
+    await updateGuide(guild, models);
   });
 };
 
