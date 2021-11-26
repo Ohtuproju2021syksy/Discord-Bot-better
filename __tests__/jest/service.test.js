@@ -1,3 +1,5 @@
+const axios = require("axios");
+jest.mock("axios");
 const {
   findOrCreateRoleWithName,
   createInvitation,
@@ -6,8 +8,10 @@ const {
   msToMinutesAndSeconds,
   findOrCreateChannel,
   getCourseNameFromCategory,
-  findChannelWithNameAndType } = require("../../src/discordBot/services/service");
+  findChannelWithNameAndType,
+  getWorkshopInfo } = require("../../src/discordBot/services/service");
 const { updateGuideMessage, createCourseToDatabase, removeCourseFromDb } = require("../../src/db/services/courseService");
+const { data } = require("../mocks/workshopData.json");
 
 const createGuidePinnedMessage = async () => {
   const rows = courses
@@ -101,7 +105,7 @@ describe("Service", () => {
     expect(client.guild.roles.cache.size).toBe(1);
   });
 
-  test("Dublicated role cannot be created", async () => {
+  test("Duplicated role cannot be created", async () => {
     const roleName = "test";
     await findOrCreateRoleWithName(roleName, client.guild);
     await findOrCreateRoleWithName(roleName, client.guild);
@@ -247,5 +251,45 @@ describe("Service", () => {
     const channel = { name: privateCategoryName };
     const result = getCourseNameFromCategory(channel);
     expect(result).toBe(category);
+  });
+
+  test("Get workshops info returns proper info for course that exists", async () => {
+    axios.get.mockImplementationOnce(() =>
+      Promise.resolve({
+        data: data,
+      }),
+    );
+    let returnedValue = "";
+    returnedValue = returnedValue.concat(`**Monday, November 29, 2021**
+      Between: 14:00 - 16:00
+      Location: BK107
+      Instructor: Kalle Ilves
+      \n`);
+    returnedValue = returnedValue.concat(`**Wednesday, December 1, 2021**
+      Between: 14:00 - 16:00
+      Location: BK107
+      Instructor: Markus Kaihola
+      \n`);
+    returnedValue = returnedValue.concat(`**Thursday, December 2, 2021**
+      Between: 14:00 - 16:00
+      Location: Remote
+      Instructor: Matti Luukkainen
+      Description: Ohjaus järjestetään zoomissa\n`);
+
+    const result = await getWorkshopInfo("TKT-101");
+    console.log(result);
+    expect(result).toBe(returnedValue);
+  });
+
+  test("Get workshops info returns proper info for course that doesn't exist", async () => {
+    axios.get.mockImplementationOnce(() =>
+      Promise.resolve({
+        data: [],
+      }),
+    );
+
+    const result = await getWorkshopInfo("TKT-101");
+    console.log(result);
+    expect(result).toBe("No workshops for this course. Please contact the course admin.");
   });
 });

@@ -1,0 +1,75 @@
+{ "data": [
+    {
+       "id":"7",
+       "sessionDate":"2021-11-29",
+       "startTime":"14:00:00",
+       "endTime":"16:00:00",
+       "instructionLocation":{
+          "id":"1",
+          "name":"BK107",
+          "createdAt":"2021-11-05T09:53:27.065Z",
+          "updatedAt":"2021-11-05T09:53:27.065Z"
+       },
+       "description":null,
+       "instructionLocationId":"1",
+       "userId":"1",
+       "createdAt":"2021-11-02T14:46:08.176Z",
+       "updatedAt":"2021-11-02T14:46:08.176Z",
+       "user":{
+          "id":"1",
+          "firstName":"Kalle",
+          "lastName":"Ilves",
+          "fullName":"Kalle Ilves",
+          "displayName":"Kalle Ilves"
+       }
+    },
+    {
+       "id":"30",
+       "sessionDate":"2021-12-01",
+       "startTime":"14:00:00",
+       "endTime":"16:00:00",
+       "instructionLocation":{
+          "id":"1",
+          "name":"BK107",
+          "createdAt":"2021-11-05T09:53:27.065Z",
+          "updatedAt":"2021-11-05T09:53:27.065Z"
+       },
+       "description":"",
+       "instructionLocationId":"1",
+       "userId":"11",
+       "createdAt":"2021-11-08T10:30:36.156Z",
+       "updatedAt":"2021-11-08T10:30:36.156Z",
+       "user":{
+          "id":"11",
+          "firstName":"Markus",
+          "lastName":"Kaihola",
+          "fullName":"Markus Kaihola",
+          "displayName":"Markus Kaihola"
+       }
+    },
+    {
+       "id":"16",
+       "sessionDate":"2021-12-02",
+       "startTime":"14:00:00",
+       "endTime":"16:00:00",
+       "instructionLocation":{
+          "id":"3",
+          "name":"Remote",
+          "createdAt":"2021-11-05T09:53:27.065Z",
+          "updatedAt":"2021-11-05T09:53:27.065Z"
+       },
+       "description":"Ohjaus järjestetään zoomissa",
+       "instructionLocationId":"3",
+       "userId":"4",
+       "createdAt":"2021-11-04T13:32:01.925Z",
+       "updatedAt":"2021-11-04T13:32:01.925Z",
+       "user":{
+          "id":"4",
+          "firstName":"Matti",
+          "lastName":"Luukkainen",
+          "fullName":"Matti Luukkainen",
+          "displayName":"Matti Luukkainen"
+       }
+    }
+ ]
+}

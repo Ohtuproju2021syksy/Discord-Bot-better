@@ -162,9 +162,7 @@ const downloadImage = async (course) => {
   const writer = fs.createWriteStream(filepath);
 
   try {
-    const response = await axios({
-      url,
-      method: "GET",
+    const response = await axios.get(url, {
       responseType: "stream",
       headers: { "Authorization": `Bearer ${process.env.GRAFANA_TOKEN}` },
     });
@@ -174,6 +172,36 @@ const downloadImage = async (course) => {
       writer.on("finish", resolve);
       writer.on("error", reject);
     });
+  }
+  catch (error) {
+    logError(error);
+    return;
+  }
+};
+
+const getWorkshopInfo = async (courseCode) => {
+  const startDate = new Date();
+  const endDate = new Date(startDate.getTime() + 7 * 24 * 60 * 60 * 1000);
+  const url = `https://study.cs.helsinki.fi/pajat2/api/public/instruction-sessions?from=${startDate.toISOString().split("T")[0]}&to=${endDate.toISOString().split("T")[0]}&courseCodes=${courseCode}`;
+
+  try {
+    const response = await axios.get(url);
+    if (response.data.length === 0) {
+      return "No workshops for this course. Please contact the course admin.";
+    }
+    let msg = "";
+    response.data.forEach((s) => {
+      let description;
+      (s.description !== null && s.description !== "") ? description = `Description: ${s.description}\n` : description = "\n";
+      const startTime = s.startTime.split(":");
+      const endTime = s.endTime.split(":");
+      msg = msg.concat(`**${new Date(s.sessionDate).toLocaleString("en-US", { dateStyle: "full" })}**
+      Between: ${startTime[0]}:${startTime[1]} - ${endTime[0]}:${endTime[1]}
+      Location: ${s.instructionLocation.name}
+      Instructor: ${s.user.fullName}
+      ${description}`);
+    });
+    return msg;
   }
   catch (error) {
     logError(error);
@@ -322,4 +350,5 @@ module.exports = {
   getCategoryChannelPermissionOverwrites,
   getDefaultChannelObjects,
   getCategoryObject,
+  getWorkshopInfo,
 };
