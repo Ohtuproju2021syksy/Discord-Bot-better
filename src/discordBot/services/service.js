@@ -229,18 +229,6 @@ const listCourseInstructors = async (guild, roleString) => {
       }
     }
   });
-
-  members.forEach(m => {
-    const roles = m._roles;
-    if (!roles.some(r => r === facultyRoleObject.id) && roles.some(r => r === instructorRole.id)) {
-      if (adminsString === "") {
-        adminsString = "<@" + m.user.id + ">";
-      }
-      else {
-        adminsString = adminsString + ", " + "<@" + m.user.id + ">";
-      }
-    }
-  });
   return adminsString;
 };
 

@@ -1,6 +1,6 @@
 const findCourseMember = async (userId, courseId, CourseMember) => {
   return await CourseMember.findOne({
-    where:{
+    where: {
       userId: userId,
       courseId: courseId,
     },
@@ -9,7 +9,7 @@ const findCourseMember = async (userId, courseId, CourseMember) => {
 
 const findAllCourseMembers = async (courseId, CourseMember) => {
   return await CourseMember.findAll({
-    where:{
+    where: {
       courseId: courseId,
     },
   });
@@ -17,7 +17,7 @@ const findAllCourseMembers = async (courseId, CourseMember) => {
 
 const findCourseMemberCount = async (courseId, CourseMember) => {
   return await CourseMember.count({
-    where:{
+    where: {
       courseId: courseId,
     },
   });
@@ -25,7 +25,7 @@ const findCourseMemberCount = async (courseId, CourseMember) => {
 
 const findAllCourseMembersByUser = async (userId, CourseMember) => {
   return await CourseMember.findAll({
-    where:{
+    where: {
       userId: userId,
     },
   });
@@ -43,7 +43,7 @@ const removeCourseMemberFromDb = async (userId, courseId, CourseMember) => {
   const coursemember = await findCourseMember(userId, courseId, CourseMember);
   if (coursemember) {
     return await CourseMember.destroy({
-      where:{
+      where: {
         userId: userId,
         courseId: courseId,
       },
@@ -57,4 +57,5 @@ module.exports = {
   createCourseMemberToDatabase,
   removeCourseMemberFromDb,
   findCourseMemberCount,
-  findAllCourseMembersByUser };
+  findAllCourseMembersByUser,
+};

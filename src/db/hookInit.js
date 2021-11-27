@@ -14,7 +14,8 @@ const {
   setEmojisHide,
   setEmojisUnhide,
   setCoursePositionABC,
-  updateGuide } = require("../discordBot/services/service");
+  updateGuide,
+  updateInviteLinks } = require("../discordBot/services/service");
 const { lockTelegramCourse, unlockTelegramCourse } = require("../bridge/service");
 const { findCourseFromDbById } = require("./services/courseService");
 const { findUserByDbId } = require("./services/userService");
@@ -72,6 +73,11 @@ const initChannelHooks = (guild, models) => {
       const channelObject = guild.channels.cache
         .find(c => c.name === channel._previousDataValues.name);
       await channelObject.setName(channel.name);
+    }
+
+    if (channel._changed.has("topic")) {
+      const channelObject = guild.channels.cache.find(c => c.name === channel.name);
+      await channelObject.setTopic(channel.topic);
     }
   });
 };
@@ -184,6 +190,12 @@ const initCourseMemberHooks = (guild, models) => {
     const announcementChannel = guild.channels.cache.find(c => c.name === `${course.name}_announcement`);
     await updateAnnouncementChannelMessage(guild, announcementChannel);
     await updateGuide(guild, models);
+  });
+
+  models.CourseMember.addHook("afterUpdate", async (courseMember) => {
+    if (courseMember._changed.has("instructor")) {
+      await updateInviteLinks(guild);
+    }
   });
 };
 
