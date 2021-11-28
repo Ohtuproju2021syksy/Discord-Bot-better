@@ -2,7 +2,11 @@
 
 ### About Discord
 
-The Discord group (course channel) is for peer support for students. We recommend that you use the group with either browser-based version of Discord or Discord application (desktop app or mobile app).
+To learn more about Discord in general, head over to their [official website](https://discord.com/). You can also check the [Beginner's Guide to Discord](https://support.discord.com/hc/en-us/articles/360045138571-Beginner-s-Guide-to-Discord#h_d33e3809-909b-4720-899d-db26c17bafa9).
+
+The Department of Computer Science has a Discord server for course support. The server contains categories for courses where students can ask for help and offer peer support for other students. The server also has a bot that can help you with several things, including creating course categories, adding instructors for a course, editing course visibility, and more.
+
+We recommend that you use the Discord application (desktop app or mobile app). If you can't or don't want to download the application, you can use a browser-based version of Discord instead.
 
 ### Create your Discord account
 
@@ -20,13 +24,11 @@ You can join to the Helsinki University Discord server in two different ways. Jo
 
 ![commands](./images/courselink.png)
 
-### How to use Discord
+### How to use the bot
 
-Discord is a very versalite communication platform and if you want to learn more about how to use it check [Beginner's Guide to Discord](https://support.discord.com/hc/en-us/articles/360045138571-Beginner-s-Guide-to-Discord#h_d33e3809-909b-4720-899d-db26c17bafa9).
+The Discord server has a bot that can help you with many things. Interaction with bot is achieved with Discord's slash commands.
 
-We have created an assistant Bot that helps you. Here are instructions on how you can use it.
-
-Commands can be used by typing to the bottom area `/` and after that the command you want to use. You can see all the available commands on the list that opens after typing `/` (shows on white text) or using the command `/help`.
+Commands can be used by typing `/<command_name>` into the message area at the bottom of the application. You can see all the available commands as a list that opens after typing `/`. **Note that you have to manually type the commands; the bot rarely understands copy-pasted commands!**
 
 ### Authentication
 
@@ -151,6 +153,7 @@ Command | Explanation | Arguments
 [/instructors](./commands/general/instructors.md) | Used in course channel returns a list of course instructors. Can be used anywhere when a parameter is given. | :o:
 [/join](./commands/general/join.md) | Joins you into the course given, e.g., /join ohpe. | :heavy_check_mark:
 [/leave](./commands/general/leave.md) | Remove you from the course given, e.g., /leave ohpe. | :heavy_check_mark:
+[/workshops](./commands/general/workshops.md) | Get workshop info for the course. | :x:
 
 :o: means that the command can be used with or without arguments
 

@@ -1,10 +1,12 @@
 const { execute } = require("../../../src/discordBot/commands/faculty/delete_channel");
-const { sendEphemeral, editEphemeral, editErrorEphemeral, confirmChoice } = require("../../../src/discordBot/services/message");
+const { sendEphemeral, editEphemeral, editErrorEphemeral } = require("../../../src/discordBot/services/message");
+const { confirmChoice } = require("../../../src/discordBot/services/confirm");
 const { removeChannelFromDb, findChannelFromDbByName } = require("../../../src/db/services/channelService");
 const { findCourseFromDb } = require("../../../src/db/services/courseService");
 const { getCourseNameFromCategory } = require("../../../src/discordBot/services/service");
 
 jest.mock("../../../src/discordBot/services/message");
+jest.mock("../../../src/discordBot/services/confirm");
 jest.mock("../../../src/db/services/channelService");
 jest.mock("../../../src/db/services/courseService");
 

@@ -1,5 +1,5 @@
 const { findUserByDiscordId } = require("../../../db/services/userService");
-const { confirmChoiceNoInteraction } = require("../../services/message");
+const { confirmChoiceNoInteraction } = require("../../services/confirm");
 
 const execute = async (message, args, models) => {
   if (message.member.permissions.has("ADMINISTRATOR")) {

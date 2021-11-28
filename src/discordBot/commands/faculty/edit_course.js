@@ -5,12 +5,13 @@ const {
   handleCooldown,
   checkCourseCooldown,
   getCourseNameFromCategory,
-  containsEmojis } = require("../../services/service");
+  containsEmojis,
+  isCourseCategory } = require("../../services/service");
 const {
   findCourseFromDb,
-  findCourseFromDbWithFullName,
-  isCourseCategory } = require("../../../db/services/courseService");
-const { sendEphemeral, editEphemeral, editErrorEphemeral, confirmChoice } = require("../../services/message");
+  findCourseFromDbWithFullName } = require("../../../db/services/courseService");
+const { sendEphemeral, editEphemeral, editErrorEphemeral } = require("../../services/message");
+const { confirmChoice } = require("../../services/confirm");
 const { facultyRole } = require("../../../../config.json");
 
 const changeCourseCode = async (interaction, client, models, courseName, newValue) => {
