@@ -116,6 +116,7 @@ const initCourseHooks = (guild, models) => {
         await setEmojisLock(category, hidden, courseName, models);
         category.permissionOverwrites.create(guild.roles.cache.find(r => r.name.toLowerCase().includes(courseName.toLowerCase())), { VIEW_CHANNEL: true, SEND_MESSAGES: false });
         category.permissionOverwrites.create(guild.roles.cache.find(r => r.name === "faculty"), { SEND_MESSAGES: true });
+        category.permissionOverwrites.create(guild.roles.cache.find(r => r.name === "admin"), { SEND_MESSAGES: true });
       }
       else {
         await unlockTelegramCourse(models.Course, courseName);
