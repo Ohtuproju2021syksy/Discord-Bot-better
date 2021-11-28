@@ -1,10 +1,15 @@
 const { Sequelize } = require("sequelize");
 
-const setCourseToPrivate = async (courseName, Course) => {
-  const course = await Course.findOne({
+const findCourseFromDb = async (courseName, Course) => {
+  return await Course.findOne({
     where:
       { name: { [Sequelize.Op.iLike]: courseName } },
   });
+};
+
+const setCourseToPrivate = async (courseName, Course) => {
+  const course = await findCourseFromDb(courseName, Course);
+
   if (course) {
     course.private = true;
     await course.save();
@@ -12,10 +17,8 @@ const setCourseToPrivate = async (courseName, Course) => {
 };
 
 const setCourseToPublic = async (courseName, Course) => {
-  const course = await Course.findOne({
-    where:
-      { name: { [Sequelize.Op.iLike]: courseName } },
-  });
+  const course = await findCourseFromDb(courseName, Course);
+
   if (course) {
     course.private = false;
     await course.save();
@@ -23,10 +26,8 @@ const setCourseToPublic = async (courseName, Course) => {
 };
 
 const setCourseToLocked = async (courseName, Course) => {
-  const course = await Course.findOne({
-    where:
-      { name: { [Sequelize.Op.iLike]: courseName } },
-  });
+  const course = await findCourseFromDb(courseName, Course);
+
   if (course) {
     course.locked = true;
     await course.save();
@@ -34,10 +35,8 @@ const setCourseToLocked = async (courseName, Course) => {
 };
 
 const setCourseToUnlocked = async (courseName, Course) => {
-  const course = await Course.findOne({
-    where:
-      { name: { [Sequelize.Op.iLike]: courseName } },
-  });
+  const course = await findCourseFromDb(courseName, Course);
+
   if (course) {
     course.locked = false;
     await course.save();
@@ -45,33 +44,22 @@ const setCourseToUnlocked = async (courseName, Course) => {
 };
 
 const createCourseToDatabase = async (courseCode, courseFullName, courseName, Course) => {
-  const alreadyinuse = await Course.findOne({
-    where:
-      { name: { [Sequelize.Op.iLike]: courseName } },
-  });
-  if (!alreadyinuse) {
+  const course = await findCourseFromDb(courseName, Course);
+
+  if (!course) {
     return await Course.create({ code: courseCode, fullName: courseFullName, name: courseName, private: false });
   }
 };
 
 const removeCourseFromDb = async (courseName, Course) => {
-  const course = await Course.findOne({
-    where:
-      { name: { [Sequelize.Op.iLike]: courseName } },
-  });
+  const course = await findCourseFromDb(courseName, Course);
+
   if (course) {
     await Course.destroy({
       where:
         { name: { [Sequelize.Op.iLike]: courseName } },
     });
   }
-};
-
-const findCourseFromDb = async (courseName, Course) => {
-  return await Course.findOne({
-    where:
-      { name: { [Sequelize.Op.iLike]: courseName } },
-  });
 };
 
 const findCourseFromDbById = async (courseId, Course) => {

@@ -60,6 +60,18 @@ describe("userService", () => {
     });
   });
 
+  test("create user to database won't save if already exists", async () => {
+    const result = await createUserToDatabase(10, "JonDoe", userModelMock);
+    expect(result).toBe(userModelInstanceMock);
+    expect(userModelMock.findOne).toHaveBeenCalledTimes(1);
+    expect(userModelMock.findOne).toHaveBeenCalledWith({
+      where:
+        { discordId: 10 },
+    });
+    expect(userModelMock.create).toHaveBeenCalledTimes(0);
+
+  });
+
   test("remove user from database", async () => {
     await removeUserFromDb(10, userModelMock);
     expect(userModelMock.findOne).toHaveBeenCalledTimes(1);
@@ -74,6 +86,17 @@ describe("userService", () => {
     });
   });
 
+  test("remove user from database won't remove if user doesn't exist", async () => {
+    userModelMock.findOne.mockResolvedValueOnce(null);
+    await removeUserFromDb(10, userModelMock);
+    expect(userModelMock.findOne).toHaveBeenCalledTimes(1);
+    expect(userModelMock.findOne).toHaveBeenCalledWith({
+      where:
+        { discordId: 10 },
+    });
+    expect(userModelMock.destroy).toHaveBeenCalledTimes(0);
+  });
+
   test("add faculty role to database", async () => {
     await saveFacultyRoleToDb(10, userModelMock);
     expect(userModelMock.findOne).toHaveBeenCalledTimes(1);
@@ -85,6 +108,17 @@ describe("userService", () => {
     expect(userModelInstanceMock.update).toHaveBeenCalledWith({
       faculty: true,
     });
+  });
+
+  test("add faculty role to database won't save if user doesn't exist", async () => {
+    userModelMock.findOne.mockResolvedValueOnce(null);
+    await saveFacultyRoleToDb(10, userModelMock);
+    expect(userModelMock.findOne).toHaveBeenCalledTimes(1);
+    expect(userModelMock.findOne).toHaveBeenCalledWith({
+      where:
+        { discordId: 10 },
+    });
+    expect(userModelInstanceMock.update).toHaveBeenCalledTimes(0);
   });
 
 });
