@@ -1,14 +1,16 @@
 const { execute } = require("../../../src/discordBot/commands/faculty/edit_topic");
-const { sendEphemeral, editErrorEphemeral, editEphemeral, confirmChoice } = require("../../../src/discordBot/services/message");
+const { sendEphemeral, editErrorEphemeral, editEphemeral } = require("../../../src/discordBot/services/message");
+const { confirmChoice } = require("../../../src/discordBot/services/confirm");
 const { saveChannelTopicToDb } = require("../../../src/db/services/channelService");
-const { isCourseCategory } = require("../../../src/db/services/courseService");
 const {
   getCourseNameFromCategory,
   handleCooldown,
   msToMinutesAndSeconds,
-  checkCourseCooldown } = require("../../../src/discordBot/services/service");
+  checkCourseCooldown,
+  isCourseCategory } = require("../../../src/discordBot/services/service");
 
 jest.mock("../../../src/discordBot/services/message");
+jest.mock("../../../src/discordBot/services/confirm");
 jest.mock("../../../src/discordBot/services/service");
 jest.mock("../../../src/db/services/channelService");
 jest.mock("../../../src/db/services/courseService");

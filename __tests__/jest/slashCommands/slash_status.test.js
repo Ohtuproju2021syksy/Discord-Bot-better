@@ -3,8 +3,9 @@ const { sendEphemeral, editErrorEphemeral, editEphemeralForStatus } = require(".
 const {
   getCourseNameFromCategory,
   createCourseInvitationLink,
-  listCourseInstructors } = require("../../../src/discordBot/services/service");
-const { findCourseFromDb, isCourseCategory } = require("../../../src/db/services/courseService");
+  listCourseInstructors,
+  isCourseCategory } = require("../../../src/discordBot/services/service");
+const { findCourseFromDb } = require("../../../src/db/services/courseService");
 const { findChannelsByCourse } = require("../../../src/db/services/channelService");
 const { findAllCourseMembers } = require("../../../src/db/services/courseMemberService");
 

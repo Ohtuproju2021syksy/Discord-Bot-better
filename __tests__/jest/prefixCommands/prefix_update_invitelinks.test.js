@@ -1,6 +1,5 @@
 const { execute } = require("../../../src/discordBot/commands/admin/update_invitelinks");
-const { createCourseInvitationLink, getCourseNameFromCategory, updateInviteLinks } = require("../../../src/discordBot/services/service");
-const { courseAdminRole, facultyRole } = require("../../../config.json");
+const { getCourseNameFromCategory, updateInviteLinks } = require("../../../src/discordBot/services/service");
 
 jest.mock("../../../src/discordBot/services/service");
 
@@ -18,13 +17,13 @@ describe("prefix update_invitelinks command", () => {
   test("if user does not have administrator permission do nothing", async () => {
     messageInCommandsChannel.member = student;
     await execute(messageInCommandsChannel);
-    expect(createCourseInvitationLink).toHaveBeenCalledTimes(0);
+    expect(updateInviteLinks).toHaveBeenCalledTimes(0);
   });
 
   test("if user has administrator permission update roles", async () => {
     messageInCommandsChannel.member = teacher;
     await execute(messageInCommandsChannel);
     expect(updateInviteLinks).toHaveBeenCalledTimes(1);
-    expect(updateInviteLinks).toHaveBeenCalledWith(messageInCommandsChannel.guild, courseAdminRole, facultyRole, messageInCommandsChannel.client);
+    expect(updateInviteLinks).toHaveBeenCalledWith(messageInCommandsChannel.guild);
   });
 });
