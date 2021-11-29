@@ -31,6 +31,13 @@ describe("courseService", () => {
     expect(userModelInstanceMock.private).toEqual(true);
   });
 
+  test("setting nonexistent course to private won't do anything", async () => {
+    userModelMock.findOne.mockResolvedValueOnce(null);
+    await setCourseToPrivate("test", userModelMock);
+    expect(userModelMock.findOne).toHaveBeenCalledTimes(1);
+    expect(userModelInstanceMock.save).toHaveBeenCalledTimes(0);
+  });
+
   test("can set course to public", async () => {
     userModelInstanceMock.private = true;
     await setCourseToPublic("test", userModelMock);
@@ -39,11 +46,25 @@ describe("courseService", () => {
     expect(userModelInstanceMock.private).toEqual(false);
   });
 
+  test("setting nonexistent course to public won't do anything", async () => {
+    userModelMock.findOne.mockResolvedValueOnce(null);
+    await setCourseToPublic("test", userModelMock);
+    expect(userModelMock.findOne).toHaveBeenCalledTimes(1);
+    expect(userModelInstanceMock.save).toHaveBeenCalledTimes(0);
+  });
+
   test("can lock course", async () => {
     await setCourseToLocked("test", userModelMock);
     expect(userModelMock.findOne).toHaveBeenCalledTimes(1);
     expect(userModelInstanceMock.save).toHaveBeenCalledTimes(1);
     expect(userModelInstanceMock.locked).toEqual(true);
+  });
+
+  test("setting nonexistent course to locked won't do anything", async () => {
+    userModelMock.findOne.mockResolvedValueOnce(null);
+    await setCourseToLocked("test", userModelMock);
+    expect(userModelMock.findOne).toHaveBeenCalledTimes(1);
+    expect(userModelInstanceMock.save).toHaveBeenCalledTimes(0);
   });
 
   test("can unlock course", async () => {
@@ -54,6 +75,13 @@ describe("courseService", () => {
     expect(userModelInstanceMock.locked).toEqual(false);
   });
 
+  test("setting nonexistent course to unlocked won't do anything", async () => {
+    userModelMock.findOne.mockResolvedValueOnce(null);
+    await setCourseToUnlocked("test", userModelMock);
+    expect(userModelMock.findOne).toHaveBeenCalledTimes(1);
+    expect(userModelInstanceMock.save).toHaveBeenCalledTimes(0);
+  });
+
   test("can create course", async () => {
     userModelMock.findOne.mockResolvedValueOnce(null);
     await createCourseToDatabase("TKT202", "Logarithms", "Logo", userModelMock);
@@ -61,10 +89,23 @@ describe("courseService", () => {
     expect(userModelMock.create).toHaveBeenCalledTimes(1);
   });
 
+  test("creating won't save if course already exists", async () => {
+    await createCourseToDatabase("TKT-test", "test course", "test", userModelMock);
+    expect(userModelMock.findOne).toHaveBeenCalledTimes(1);
+    expect(userModelMock.create).toHaveBeenCalledTimes(0);
+  });
+
   test("can remove course", async () => {
     await removeCourseFromDb("test", userModelMock);
     expect(userModelMock.findOne).toHaveBeenCalledTimes(1);
     expect(userModelMock.destroy).toHaveBeenCalledTimes(1);
+  });
+
+  test("removing nonexistent course won't do anything", async () => {
+    userModelMock.findOne.mockResolvedValueOnce(null);
+    await removeCourseFromDb("test", userModelMock);
+    expect(userModelMock.findOne).toHaveBeenCalledTimes(1);
+    expect(userModelMock.destroy).toHaveBeenCalledTimes(0);
   });
 
   test("can find course from db", async () => {
