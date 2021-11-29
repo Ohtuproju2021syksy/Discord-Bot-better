@@ -102,6 +102,24 @@ const initCourseHooks = (guild, models) => {
     await updateGuide(guild, models);
   });
 
+  models.Course.addHook("afterCreate", async (course) => {
+    const courseModel = models.Course;
+    const student = await findOrCreateRoleWithName(course.name, guild);
+    const admin = await findOrCreateRoleWithName(`${course.name} ${courseAdminRole}`, guild);
+    const categoryObject = getCategoryObject(course.name, getCategoryChannelPermissionOverwrites(guild, admin, student));
+    const category = await findOrCreateChannel(categoryObject, guild);
+
+    const channelObjects = await getDefaultChannelObjects(guild, course.name, student, admin, category);
+    await Promise.all(channelObjects.map(
+      async channelObject => await findOrCreateChannel(channelObject, guild),
+    ));
+
+    await setCoursePositionABC(guild, categoryObject.name, courseModel);
+    await createInvitation(guild, course.name);
+    await guild.client.emit("COURSES_CHANGED", courseModel);
+    await updateGuide(guild, models);
+  });
+
   models.Course.addHook("afterUpdate", async (course) => {
     const changedValue = course._changed;
     const courseName = course.name;

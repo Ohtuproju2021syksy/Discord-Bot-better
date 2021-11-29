@@ -11,7 +11,6 @@ router.get("/", async (req, res) => {
   catch (error) {
     logError(error);
   }
-
 });
 
 router.get("/:id", async (req, res) => {
