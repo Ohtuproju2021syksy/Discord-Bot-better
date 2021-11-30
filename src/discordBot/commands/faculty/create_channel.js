@@ -10,7 +10,7 @@ const execute = async (interaction, client, models) => {
 
   const courseModel = models.Course;
   const channelModel = models.Channel;
-  const channelName = interaction.options.getString("channel").trim().replace(/ /g, "-");
+  const channelName = interaction.options.getString("channel").trim().replace(/ /g, "-").toLowerCase();
 
   const guild = client.guild;
   const channel = guild.channels.cache.get(interaction.channelId);

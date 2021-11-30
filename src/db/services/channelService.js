@@ -67,6 +67,19 @@ const saveChannelTopicToDb = async (channelName, newTopic, Channel) => {
     { where: { name: channelName } });
 };
 
+const getChannelByDiscordId = async (id, Channel) => {
+  await Channel.findOne({
+    where:
+      { discordId: id },
+  });
+};
+
+const saveChannelIdWithName = async (id, channelName, Channel) => {
+  await Channel.update(
+    { discordId: id },
+    { where: { name: channelName } });
+};
+
 module.exports = {
   findChannelFromDbByName,
   createChannelToDatabase,
@@ -76,4 +89,6 @@ module.exports = {
   editChannelNames,
   saveChannelTopicToDb,
   createDefaultChannelsToDatabase,
+  getChannelByDiscordId,
+  saveChannelIdWithName,
 };
