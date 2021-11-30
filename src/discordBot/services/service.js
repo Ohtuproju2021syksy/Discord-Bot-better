@@ -44,7 +44,7 @@ const createInvitation = async (guild, args) => {
     c => c.type === "GUILD_CATEGORY" && getCourseNameFromCategory(c.name.toLowerCase()) === name.toLowerCase(),
   );
   const course = guild.channels.cache.find(
-    (c => c.parent === category),
+    (c => c.parent === category && c.name === `${name}_announcement`),
   );
   let invitationlink;
   if (args === GUIDE_CHANNEL_NAME) {
@@ -54,7 +54,6 @@ const createInvitation = async (guild, args) => {
   else {
     invitationlink = createCourseInvitationLink(args);
   }
-
   const message = await course.send(invitationlink);
   await message.pin();
 };

@@ -137,7 +137,9 @@ const handleBridgeMessage = async (message, courseName, Course) => {
   if (message.author.bot) return;
   const sender = message.member.displayName;
   let channel = ":";
-
+  if (!message.channel.name.includes(`${group.name}_`)) {
+    return;
+  }
   if (!message.channel.name.includes("general")) {
     channel = escapeChars(" on " + (message.channel.name.split(courseName.toLowerCase().replace(" ", "-"))[1]).substring(1) + " channel:\n");
   }
