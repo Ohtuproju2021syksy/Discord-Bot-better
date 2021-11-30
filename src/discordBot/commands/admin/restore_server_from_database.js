@@ -17,20 +17,19 @@ const { courseAdminRole, facultyRole } = require("../../../../config.json");
 const execute = async (message, args, models) => {
   if (message.member.permissions.has("ADMINISTRATOR")) {
     const guild = message.client.guild;
-    /* const confirm = await confirmChoiceNoInteraction(message, "Restore EVERYTHING from database?", guild);
+    const confirm = await confirmChoiceNoInteraction(message, "Restore EVERYTHING from database?", guild);
     if (!confirm) {
       return;
     }
     const confirm2 = await confirmChoiceNoInteraction(message, "Are you ABSOLUTELY sure?", guild);
     if (!confirm2) {
       return;
-    } */
+    }
     await restoreCategories(guild, models);
     await restoreChannels(guild, models);
-    /* await restoreUsers(guild, models);
+    await restoreUsers(guild, models);
     await restoreCourseMembers(guild, models);
     await deleteExtraChannels(guild, models);
-    await rearrangeCategories(guild, models); */
 
     await updateGuide(guild, models);
   }
@@ -46,13 +45,17 @@ const restoreCategories = async (guild, models) => {
     const categoryFound = await channelCache.get(currentCourse.categoryId);
 
     if (categoryFound) {
-      await categoryFound.setName(emojiName(currentCourse, currentCourse).name);
+      await findOrCreateRoleWithName(currentCourse.name, guild);
+      await findOrCreateRoleWithName(`${currentCourse.name} ${courseAdminRole}`, guild);
+      emojiName(currentCourse, currentCourse);
+      await categoryFound.setName(currentCourse.name);
 
       if (currentCourse.locked) {
         await categoryFound.permissionOverwrites.create(guild.roles.cache.find(r => r.name.toLowerCase().includes(courseName.toLowerCase())), { VIEW_CHANNEL: true, SEND_MESSAGES: false });
         await categoryFound.permissionOverwrites.create(guild.roles.cache.find(r => r.name === "faculty"), { SEND_MESSAGES: true });
         await categoryFound.permissionOverwrites.create(guild.roles.cache.find(r => r.name === "admin"), { SEND_MESSAGES: true });
       }
+      await setCoursePositionABC(guild, currentCourse.name, models.Course);
     }
     else {
       const student = await findOrCreateRoleWithName(currentCourse.name, guild);
@@ -68,8 +71,8 @@ const restoreCategories = async (guild, models) => {
         await category.permissionOverwrites.create(guild.roles.cache.find(r => r.name === "faculty"), { SEND_MESSAGES: true });
         await category.permissionOverwrites.create(guild.roles.cache.find(r => r.name === "admin"), { SEND_MESSAGES: true });
       }
+      await setCoursePositionABC(guild, categoryObject.name, models.Course);
     }
-    await await setCoursePositionABC(guild, emojiName(currentCourse, currentCourse).name, models.Course);
   }
 };
 
@@ -201,16 +204,16 @@ const deleteExtraChannels = async (guild, models) => {
 };
 
 const emojiName = (categoryObject, currentCourse) => {
-  if (!currentCourse.locked && !currentCourse.hidden) {
+  if (!currentCourse.locked && !currentCourse.private) {
     categoryObject.name = "📚 " + currentCourse.name;
   }
-  else if (currentCourse.locked && !currentCourse.hidden) {
-    categoryObject.name = "📚🔐 " + currentCourse.name;
-  }
-  else if (!currentCourse.locked && currentCourse.hidden) {
+  else if (!currentCourse.locked && currentCourse.private) {
     categoryObject.name = "👻 " + currentCourse.name;
   }
-  else if (currentCourse.locked && currentCourse.hidden) {
+  else if (currentCourse.locked && !currentCourse.private) {
+    categoryObject.name = "📚🔐 " + currentCourse.name;
+  }
+  else if (currentCourse.locked && currentCourse.private) {
     categoryObject.name = "👻🔐 " + currentCourse.name;
   }
   return categoryObject;
