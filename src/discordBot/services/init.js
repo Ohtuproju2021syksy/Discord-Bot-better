@@ -1,6 +1,6 @@
 const { findOrCreateRoleWithName } = require("./service");
 const { facultyRole, githubRepo } = require("../../../config.json");
-const { updateGuide } = require("../../db/services/courseService");
+const { updateGuide } = require("../../discordBot/services/service");
 const { initHooks } = require("../../db/hookInit");
 const { sendPullDateMessage } = require("./message");
 

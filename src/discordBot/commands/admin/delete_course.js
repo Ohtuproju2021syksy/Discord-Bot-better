@@ -1,5 +1,5 @@
 const { removeCourseFromDb, findCourseFromDb } = require("../../../db/services/courseService");
-const { confirmChoiceNoInteraction } = require("../../services/message");
+const { confirmChoiceNoInteraction } = require("../../services/confirm");
 
 const execute = async (message, args, models) => {
   if (message.member.permissions.has("ADMINISTRATOR")) {

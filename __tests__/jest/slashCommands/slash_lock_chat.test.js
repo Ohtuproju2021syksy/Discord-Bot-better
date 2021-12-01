@@ -1,15 +1,14 @@
 const { execute } = require("../../../src/discordBot/commands/faculty/lock_chat");
-const { editEphemeral, editErrorEphemeral, sendEphemeral, confirmChoice } = require("../../../src/discordBot/services/message");
+const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../../src/discordBot/services/message");
+const { confirmChoice } = require("../../../src/discordBot/services/confirm");
 const {
   msToMinutesAndSeconds,
-  checkCourseCooldown,
-  findCategoryWithCourseName } = require("../../../src/discordBot/services/service");
-const { updateGuide, setCourseToLocked, findCourseFromDb } = require("../../../src/db/services/courseService");
-
-const { lockTelegramCourse } = require("../../../src/bridge/service");
+  checkCourseCooldown } = require("../../../src/discordBot/services/service");
+const { setCourseToLocked, findCourseFromDb } = require("../../../src/db/services/courseService");
 
 jest.mock("../../../src/bridge/service");
 jest.mock("../../../src/discordBot/services/message");
+jest.mock("../../../src/discordBot/services/confirm");
 jest.mock("../../../src/discordBot/services/service");
 jest.mock("../../../src/db/services/courseService");
 
@@ -32,8 +31,6 @@ const Course = {
   destroy: jest.fn(),
 };
 
-findCategoryWithCourseName.mockImplementation((name) => { return { name: name, setName: jest.fn() }; });
-
 describe("slash lock_chat command", () => {
   test("lock_chat command with invalid course name responds with correct ephemeral", async () => {
     const client = defaultTeacherInteraction.client;
@@ -45,7 +42,6 @@ describe("slash lock_chat command", () => {
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
     expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
     expect(editErrorEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
-    expect(updateGuide).toHaveBeenCalledTimes(0);
   });
 
   test("lock_chat command with valid course name responds with correct ephemeral", async () => {
@@ -55,15 +51,12 @@ describe("slash lock_chat command", () => {
     await execute(defaultTeacherInteraction, client, Course);
     expect(confirmChoice).toHaveBeenCalledTimes(1);
     expect(findCourseFromDb).toHaveBeenCalledTimes(1);
-    expect(findCategoryWithCourseName).toHaveBeenCalledTimes(1);
     expect(setCourseToLocked).toHaveBeenCalledTimes(1);
-    expect(lockTelegramCourse).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
     expect(editEphemeral).toHaveBeenCalledTimes(1);
     expect(editEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, response);
     expect(client.emit).toHaveBeenCalledTimes(1);
-    expect(updateGuide).toHaveBeenCalledTimes(1);
   });
 
   test("slash command with cooldown", async () => {
@@ -78,6 +71,5 @@ describe("slash lock_chat command", () => {
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);
     expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
     expect(client.emit).toHaveBeenCalledTimes(0);
-    expect(updateGuide).toHaveBeenCalledTimes(0);
   });
 });
