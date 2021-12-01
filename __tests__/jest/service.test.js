@@ -164,7 +164,8 @@ describe("Service", () => {
     const msg = { pin: jest.fn() };
     const invite = { code: 1 };
     const guide = { name: "guide", type: "GUILD_TEXT", createInvite: jest.fn(() => invite), send: jest.fn(() => msg) };
-    client.guild.channels.cache = [guide];
+    const testAnnouncement = { name: "test_announcement", type: "GUILD_TEXT", send: jest.fn(() => msg) };
+    client.guild.channels.cache = [guide, testAnnouncement];
     await createInvitation(client.guild, "test");
     expect(guide.createInvite).toHaveBeenCalledTimes(0);
     expect(msg.pin).toHaveBeenCalledTimes(1);
