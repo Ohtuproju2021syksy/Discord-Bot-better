@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { getCourseNameFromCategory, updateInviteLinks, getUserWithUserId } = require("../../services/service");
+const { getCourseNameFromCategory, updateAnnouncementChannelMessage, getUserWithUserId } = require("../../services/service");
 const { findUserByDiscordId } = require("../../../db/services/userService");
 const { findCourseFromDb } = require("../../../db/services/courseService");
 const { findCourseMember } = require("../../../db/services/courseMemberService");
@@ -54,7 +54,8 @@ const execute = async (interaction, client, models) => {
 
     await memberToPromote.roles.add(instructorRole);
   }
-  await updateInviteLinks(guild, courseAdminRole, facultyRole, client);
+  const announcementChannel = guild.channels.cache.find(c => c.name === `${parentCourse.name}_announcement`);
+  await updateAnnouncementChannelMessage(guild, announcementChannel);
   return await editEphemeral(interaction, `Gave role '${instructorRole.name}' to all users listed.`);
 };
 

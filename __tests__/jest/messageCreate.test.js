@@ -1,5 +1,6 @@
 require("dotenv").config();
 const { execute } = require("../../src/discordBot/events/messageCreate");
+const { execute: joinCommand } = require("../../src/discordBot/commands/student/join");
 const sort = require("../../src/discordBot/commands/admin/sort_courses");
 const delete_command = require("../../src/discordBot/commands/admin/delete_command");
 const delete_course = require("../../src/discordBot/commands/admin/delete_course");
@@ -14,6 +15,15 @@ jest.mock("../../src/discordBot/commands/admin/delete_course");
 jest.mock("../../src/discordBot/services/message");
 jest.mock("../../src/discordBot/services/service");
 jest.mock("../../src/db/services/courseService");
+jest.mock("../../src/db/services/userService");
+jest.mock("../../src/discordBot/commands/student/join", () => {
+  const originalModule = jest.requireActual("../../src/discordBot/commands/student/join");
+
+  return {
+    ...originalModule,
+    execute: jest.fn().mockImplementation(() => true),
+  };
+});
 
 const prefix = process.env.PREFIX;
 
@@ -47,7 +57,7 @@ describe("prefix commands", () => {
     messageInCommandsChannel.content = "/join test";
     const client = messageInCommandsChannel.client;
     await execute(messageInCommandsChannel, client, models);
-    expect(findCourseFromDb).toHaveBeenCalledTimes(1);
+    expect(joinCommand).toHaveBeenCalledTimes(1);
     expect(messageInCommandsChannel.channel.send).toHaveBeenCalledTimes(0);
     expect(messageInCommandsChannel.react).toHaveBeenCalledTimes(0);
     expect(messageInCommandsChannel.reply).toHaveBeenCalledTimes(0);

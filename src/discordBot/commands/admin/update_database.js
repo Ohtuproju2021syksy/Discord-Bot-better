@@ -1,6 +1,6 @@
 const { createCourseMemberToDatabase } = require("../../../db/services/courseMemberService");
-const { getCourseNameFromCategory } = require("../../services/service");
-const { findCourseFromDb, isCourseCategory } = require("../../../db/services/courseService");
+const { getCourseNameFromCategory, isCourseCategory } = require("../../services/service");
+const { findCourseFromDb } = require("../../../db/services/courseService");
 const { createChannelToDatabase } = require("../../../db/services/channelService");
 const { createUserToDatabase } = require("../../../db/services/userService");
 const { facultyRole } = require("../../../../config.json");

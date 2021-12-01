@@ -2,6 +2,9 @@ const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
 const { logError } = require("./logger");
+const { findCoursesFromDb, findAllCourseNames, findCourseFromDb } = require("../../db/services/courseService");
+const { findCourseMemberCount } = require("../../db/services/courseMemberService");
+const { courseAdminRole, facultyRole } = require("../../../config.json");
 
 require("dotenv").config();
 const GUIDE_CHANNEL_NAME = "guide";
@@ -147,7 +150,9 @@ const getCourseNameFromCategory = (category) => {
 
 const findAndUpdateInstructorRole = async (name, guild, adminRole) => {
   const oldInstructorRole = guild.roles.cache.find((role) => role.name !== name && role.name.includes(name));
-  oldInstructorRole.setName(`${name} ${adminRole}`);
+  if (oldInstructorRole) {
+    oldInstructorRole.setName(`${name} ${adminRole}`);
+  }
 };
 
 const downloadImage = async (course) => {
@@ -162,9 +167,7 @@ const downloadImage = async (course) => {
   const writer = fs.createWriteStream(filepath);
 
   try {
-    const response = await axios({
-      url,
-      method: "GET",
+    const response = await axios.get(url, {
       responseType: "stream",
       headers: { "Authorization": `Bearer ${process.env.GRAFANA_TOKEN}` },
     });
@@ -181,15 +184,46 @@ const downloadImage = async (course) => {
   }
 };
 
-const listCourseInstructors = async (guild, roleString, adminRole) => {
+const getWorkshopInfo = async (courseCode) => {
+  const startDate = new Date();
+  const endDate = new Date(startDate.getTime() + 7 * 24 * 60 * 60 * 1000);
+  const url = `https://study.cs.helsinki.fi/pajat2/api/public/instruction-sessions?from=${startDate.toISOString().split("T")[0]}&to=${endDate.toISOString().split("T")[0]}&courseCodes=${courseCode}`;
 
-  const facultyRole = await guild.roles.cache.find(r => r.name === "faculty");
-  const instructorRole = await guild.roles.cache.find(r => r.name === `${roleString} ${adminRole}`);
+  try {
+    const response = await axios.get(url);
+    if (response.data.length === 0) {
+      return "No workshops for this course. Please contact the course admin.";
+    }
+    let msg = "";
+    response.data.forEach((s) => {
+      let description;
+      (s.description !== null && s.description !== "") ? description = `Description: ${s.description}\n` : description = "\n";
+      const startTime = s.startTime.split(":");
+      const endTime = s.endTime.split(":");
+      msg = msg.concat(`**${new Date(s.sessionDate).toLocaleString("en-US", { dateStyle: "full" })}**
+      Between: ${startTime[0]}:${startTime[1]} - ${endTime[0]}:${endTime[1]}
+      Location: ${s.instructionLocation.name}
+      Instructor: ${s.user.fullName}
+      ${description}`);
+    });
+    return msg;
+  }
+  catch (error) {
+    logError(error);
+    return;
+  }
+};
+
+const listCourseInstructors = async (guild, roleString) => {
+
+  const facultyRoleObject = await guild.roles.cache.find(r => r.name === facultyRole);
+  const instructorRole = await guild.roles.cache.find(r => r.name === `${roleString} ${courseAdminRole}`);
   const members = await guild.members.fetch();
   let adminsString = "";
+
   members.forEach(m => {
     const roles = m._roles;
-    if (roles.some(r => r === facultyRole.id) && roles.some(r => r === instructorRole.id)) {
+    if (roles.some(r => r === facultyRoleObject.id) && roles.some(r => r === instructorRole.id)) {
       if (adminsString === "") {
         adminsString = "<@" + m.user.id + ">";
       }
@@ -201,7 +235,7 @@ const listCourseInstructors = async (guild, roleString, adminRole) => {
 
   members.forEach(m => {
     const roles = m._roles;
-    if (!roles.some(r => r === facultyRole.id) && roles.some(r => r === instructorRole.id)) {
+    if (!roles.some(r => r === facultyRoleObject.id) && roles.some(r => r === instructorRole.id)) {
       if (adminsString === "") {
         adminsString = "<@" + m.user.id + ">";
       }
@@ -213,19 +247,95 @@ const listCourseInstructors = async (guild, roleString, adminRole) => {
   return adminsString;
 };
 
-const updateInviteLinks = async (guild, adminRole, facultyRole, client) => {
+const updateAnnouncementChannelMessage = async (guild, channelAnnouncement) => {
+  const pinnedMessages = await channelAnnouncement.messages.fetchPinned();
+  const invMessage = pinnedMessages.find(msg => msg.author.bot && msg.content.includes("Invitation link for"));
+  const courseName = getCourseNameFromCategory(channelAnnouncement.parent);
+  let updatedMsg = createCourseInvitationLink(courseName);
+  const instructors = await listCourseInstructors(guild, courseName);
+  if (instructors !== "") {
+    updatedMsg = updatedMsg + "\nInstructors for the course:" + instructors;
+  }
+  await invMessage.edit(updatedMsg);
+};
+
+const updateInviteLinks = async (guild) => {
   const announcementChannels = guild.channels.cache.filter(c => c.name.includes("announcement"));
   await Promise.all(announcementChannels.map(async aChannel => {
-    const pinnedMessages = await aChannel.messages.fetchPinned();
-    const invMessage = pinnedMessages.find(msg => msg.author === client.user && msg.content.includes("Invitation link for"));
-    const courseName = getCourseNameFromCategory(aChannel.parent);
-    let updatedMsg = createCourseInvitationLink(courseName);
-    const instructors = await listCourseInstructors(guild, courseName, adminRole, facultyRole);
-    if (instructors !== "") {
-      updatedMsg = updatedMsg + "\nInstructors for the course:" + instructors;
-    }
-    await invMessage.edit(updatedMsg);
+    await updateAnnouncementChannelMessage(guild, aChannel);
   }));
+};
+
+const updateGuide = async (guild, models) => {
+  const channel = guild.channels.cache.find(
+    (c) => c.name === GUIDE_CHANNEL_NAME,
+  );
+  const messages = await channel.messages.fetchPinned(true);
+  const message = messages.first();
+  await updateGuideMessage(message, models);
+};
+
+const updateGuideMessage = async (message, models) => {
+  const courseData = await findCoursesFromDb("code", models.Course, false);
+  const rows = await Promise.all(courseData
+    .map(async (course) => {
+      const regExp = /[^0-9]*/;
+      const fullname = course.fullName;
+      const matches = regExp.exec(course.code)?.[0];
+      const code = matches ? matches + course.code.slice(matches.length) : course.code;
+      const count = await findCourseMemberCount(course.id, models.CourseMember);
+      return `  - ${code} - ${fullname} 👤${count}`;
+    }));
+
+  const newContent = `
+Käytössäsi on seuraavia komentoja:
+  - \`/join\` jolla voit liittyä kurssille
+  - \`/leave\` jolla voit poistua kurssilta
+Kirjoittamalla \`/join\` tai \`/leave\` botti antaa listan kursseista.
+
+You have the following commands available:
+  - \`/join\` which you can use to join a course
+  - \`/leave\` which you can use to leave a course
+The bot gives a list of the courses if you type \`/join\` or \`/leave\`.
+
+Kurssit / Courses:
+${rows.join("\n")}
+
+In course specific channels you can also list instructors with the command \`/instructors\`
+
+See more with \`/help\` command.
+
+Invitation link for the server ${invite_url}
+`;
+
+  await message.edit(newContent);
+};
+
+const isCourseCategory = async (channel, Course) => {
+  if (channel && channel.name) {
+    const course = await findCourseFromDb(getCourseNameFromCategory(channel.name), Course);
+    return course ? true : false;
+  }
+};
+
+const setCoursePositionABC = async (guild, courseString, Course) => {
+  let first = 9999;
+  const categoryNames = await findAllCourseNames(Course);
+  categoryNames.sort((a, b) => a.localeCompare(b));
+  const categories = [];
+  categoryNames.forEach(cat => {
+    const guildCat = findCategoryWithCourseName(cat, guild);
+    if (guildCat) {
+      categories.push(guildCat);
+      if (first > guildCat.position) first = guildCat.position;
+    }
+  });
+  const course = courseString.split(" ")[1];
+
+  const category = findCategoryWithCourseName(course, guild);
+  if (category) {
+    await category.edit({ position: categories.indexOf(category) + first });
+  }
 };
 
 const getCategoryChannelPermissionOverwrites = (guild, admin, student) => ([
@@ -299,6 +409,36 @@ const getUserWithUserId = async (guild, userId) => {
   return await guild.members.cache.get(userId);
 };
 
+const changeCourseRoles = async (courseName, newValue, guild) => {
+  await Promise.all(guild.roles.cache
+    .filter(r => (r.name === `${courseName} ${courseAdminRole}` || r.name === courseName))
+    .map(async role => {
+      if (role.name.includes("instructor")) {
+        role.setName(`${newValue} instructor`);
+      }
+      else {
+        role.setName(newValue);
+      }
+    },
+    ));
+};
+
+const setEmojisLock = async (category, hidden, courseName) => {
+  hidden ? await category.setName(`👻🔐 ${courseName}`) : await category.setName(`📚🔐 ${courseName}`);
+};
+
+const setEmojisUnlock = async (category, hidden, courseName) => {
+  hidden ? await category.setName(`👻 ${courseName}`) : await category.setName(`📚 ${courseName}`);
+};
+
+const setEmojisHide = async (category, locked, courseName) => {
+  locked ? await category.setName(`👻🔐 ${courseName}`) : await category.setName(`👻 ${courseName}`);
+};
+
+const setEmojisUnhide = async (category, locked, courseName) => {
+  locked ? await category.setName(`📚🔐 ${courseName}`) : await category.setName(`📚 ${courseName}`);
+};
+
 module.exports = {
   findCategoryWithCourseName,
   findOrCreateRoleWithName,
@@ -322,4 +462,15 @@ module.exports = {
   getCategoryChannelPermissionOverwrites,
   getDefaultChannelObjects,
   getCategoryObject,
+  getWorkshopInfo,
+  changeCourseRoles,
+  updateAnnouncementChannelMessage,
+  setEmojisLock,
+  setEmojisUnlock,
+  setEmojisHide,
+  setEmojisUnhide,
+  updateGuide,
+  updateGuideMessage,
+  setCoursePositionABC,
+  isCourseCategory,
 };

@@ -1,45 +1,29 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { updateGuide, findCourseFromDb } = require("../../../db/services/courseService");
+const { findCourseFromDb } = require("../../../db/services/courseService");
 const { editEphemeral, editErrorEphemeral, sendEphemeral } = require("../../services/message");
-const { courseAdminRole } = require("../../../../config.json");
 const { findUserByDiscordId } = require("../../../db/services/userService");
-const { removeCourseMemberFromDb } = require("../../../db/services/courseMemberService");
+const { removeCourseMemberFromDb, findAllCourseMembersByUser } = require("../../../db/services/courseMemberService");
 
 const execute = async (interaction, client, models) => {
   await sendEphemeral(interaction, "Leaving course...");
-  let roleString = "";
+  const roleString = interaction.options.getString("course").trim();
 
-  if (interaction.options) {
-    // Interaction was a slash command
-    roleString = interaction.options.getString("course").trim();
+  const course = await findCourseFromDb(roleString, models.Course);
+  if (!course) {
+    return await editErrorEphemeral(interaction, `Invalid course name: ${roleString}`);
   }
-  else {
-    // Command was copypasted or failed to register as an interaction
-    roleString = interaction.roleString;
-  }
-
-  const guild = client.guild;
-
-  const member = guild.members.cache.get(interaction.member.user.id);
-  const courseRoles = client.guild.roles.cache
-    .filter(role => (role.name === `${roleString} ${courseAdminRole}` || role.name === `${roleString}`))
-    .map(role => role.name);
-
-
-  if (!courseRoles.length) return await editErrorEphemeral(interaction, `Invalid course name: ${roleString}`);
-  if (!member.roles.cache.some((r) => courseRoles.includes(r.name))) return await editErrorEphemeral(interaction, `You are not on a ${roleString} course.`);
-
-  await member.roles.cache
-    .filter(role => courseRoles.includes(role.name))
-    .map(async role => await member.roles.remove(role));
-  await member.fetch(true);
 
   const user = await findUserByDiscordId(interaction.member.user.id, models.User);
-  const course = await findCourseFromDb(roleString, models.Course);
+  const courseMembers = await findAllCourseMembersByUser(user.id, models.CourseMember);
+  const coursesJoinedByUser = courseMembers.map(cm => cm.courseId);
+
+  if (!coursesJoinedByUser.includes(course.id)) {
+    return await editErrorEphemeral(interaction, `You are not on the ${roleString} course.`);
+  }
+
   await removeCourseMemberFromDb(user.id, course.id, models.CourseMember);
 
   await editEphemeral(interaction, `You have been removed from the ${roleString} course.`);
-  await updateGuide(client.guild, models);
 };
 
 module.exports = {

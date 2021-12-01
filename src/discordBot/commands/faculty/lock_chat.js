@@ -2,13 +2,12 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 const {
   msToMinutesAndSeconds,
   handleCooldown,
-  checkCourseCooldown,
-  findCategoryWithCourseName } = require("../../services/service");
+  checkCourseCooldown } = require("../../services/service");
 const { findCourseFromDb } = require("../../../db/services/courseService");
-const { updateGuide, setCourseToLocked } = require("../../../db/services/courseService");
-const { sendEphemeral, editEphemeral, editErrorEphemeral, confirmChoice } = require("../../services/message");
+const { setCourseToLocked } = require("../../../db/services/courseService");
+const { sendEphemeral, editEphemeral, editErrorEphemeral } = require("../../services/message");
+const { confirmChoice } = require("../../services/confirm");
 const { facultyRole } = require("../../../../config.json");
-const { lockTelegramCourse } = require("../../../bridge/service");
 
 const execute = async (interaction, client, models) => {
   await sendEphemeral(interaction, "Locking course...");
@@ -31,17 +30,8 @@ const execute = async (interaction, client, models) => {
     return await editErrorEphemeral(interaction, `Command cooldown [mm:ss]: you need to wait ${time}!`);
   }
   else {
-    const category = findCategoryWithCourseName(courseName, guild);
-    if (categoryInstance.private) {
-      await category.setName(`👻🔐 ${courseName}`);
-    }
-    else {
-      await category.setName(`📚🔐 ${courseName}`);
-    }
     await setCourseToLocked(courseName, models.Course, guild);
-    await lockTelegramCourse(models.Course, courseName);
     await client.emit("COURSES_CHANGED", models.Course);
-    await updateGuide(client.guild, models);
     await editEphemeral(interaction, `This course ${courseName} is now locked.`);
     handleCooldown(courseName);
   }

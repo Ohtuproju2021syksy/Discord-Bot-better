@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { getCourseNameFromCategory, updateInviteLinks, getUserWithUserId } = require("../../services/service");
+const { getCourseNameFromCategory, updateAnnouncementChannelMessage, getUserWithUserId } = require("../../services/service");
 const { findUserByDiscordId } = require("../../../db/services/userService");
 const { findCourseFromDb } = require("../../../db/services/courseService");
 const { findCourseMember } = require("../../../db/services/courseMemberService");
@@ -56,7 +56,8 @@ const execute = async (interaction, client, models) => {
     await memberToDemote.roles.remove(instructorRole);
   }
 
-  await updateInviteLinks(guild, courseAdminRole, facultyRole, client);
+  const announcementChannel = guild.channels.cache.find(c => c.name === `${parentCourse.name}_announcement`);
+  await updateAnnouncementChannelMessage(guild, announcementChannel);
 
   return await editEphemeral(interaction, `Removed role '${instructorRole.name}' from all users listed.`);
 };
