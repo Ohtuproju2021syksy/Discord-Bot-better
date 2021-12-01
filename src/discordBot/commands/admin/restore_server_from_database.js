@@ -40,13 +40,13 @@ const restoreCategories = async (guild, models) => {
   const allCourses = await getAllCourses(models.Course);
 
   for (const course in allCourses) {
+    const student = await findOrCreateRoleWithName(currentCourse.name, guild);
+    const admin = await findOrCreateRoleWithName(`${currentCourse.name} ${courseAdminRole}`, guild);
     const currentCourse = allCourses[course];
     const courseName = currentCourse.name;
     const categoryFound = await channelCache.get(currentCourse.categoryId);
 
     if (categoryFound) {
-      await findOrCreateRoleWithName(currentCourse.name, guild);
-      await findOrCreateRoleWithName(`${currentCourse.name} ${courseAdminRole}`, guild);
       emojiName(currentCourse, currentCourse);
       await categoryFound.setName(currentCourse.name);
 
@@ -55,11 +55,12 @@ const restoreCategories = async (guild, models) => {
         await categoryFound.permissionOverwrites.create(guild.roles.cache.find(r => r.name === "faculty"), { SEND_MESSAGES: true });
         await categoryFound.permissionOverwrites.create(guild.roles.cache.find(r => r.name === "admin"), { SEND_MESSAGES: true });
       }
+      else {
+        await categoryFound.permissionOverwrites.create(guild.roles.cache.find(r => r.name.toLowerCase().includes(courseName.toLowerCase())), { VIEW_CHANNEL: true, SEND_MESSAGES: true });
+      }
       await setCoursePositionABC(guild, currentCourse.name, models.Course);
     }
     else {
-      const student = await findOrCreateRoleWithName(currentCourse.name, guild);
-      const admin = await findOrCreateRoleWithName(`${currentCourse.name} ${courseAdminRole}`, guild);
 
       let categoryObject = getCategoryObject(currentCourse.name, getCategoryChannelPermissionOverwrites(guild, admin, student));
       categoryObject = emojiName(categoryObject, currentCourse);
@@ -89,11 +90,15 @@ const restoreChannels = async (guild, models) => {
       channelFound.name = currentChannel.name;
       const parentChannel = await findCourseFromDbById(currentChannel.courseId, models.Course);
       await channelFound.setParent(parentChannel.categoryId);
+      await channelFound.setTopic(currentChannel.topic);
 
       if (parentChannel.locked) {
         await channelFound.permissionOverwrites.create(guild.roles.cache.find(r => r.name.toLowerCase().includes(parentChannel.name.toLowerCase())), { VIEW_CHANNEL: true, SEND_MESSAGES: false });
         await channelFound.permissionOverwrites.create(guild.roles.cache.find(r => r.name === "faculty"), { SEND_MESSAGES: true });
         await channelFound.permissionOverwrites.create(guild.roles.cache.find(r => r.name === "admin"), { SEND_MESSAGES: true });
+      }
+      else {
+        await channelFound.permissionOverwrites.create(guild.roles.cache.find(r => r.name.toLowerCase().includes(parentChannel.name.toLowerCase())), { VIEW_CHANNEL: true, SEND_MESSAGES: true });
       }
     }
     else {
@@ -146,10 +151,10 @@ const restoreChannels = async (guild, models) => {
 
 const restoreUsers = async (guild, models) => {
   const users = await getAllUsers(models.User);
+  const adminRoleObject = await guild.roles.cache.find(r => r.name === "admin");
+  const facultyRoleObject = await guild.roles.cache.find(r => r.name === facultyRole);
 
   for (const user in users) {
-    const adminRoleObject = await guild.roles.cache.find(r => r.name === "admin");
-    const facultyRoleObject = await guild.roles.cache.find(r => r.name === facultyRole);
     const currentUser = users[user];
     const foundUser = await guild.members.cache.get(currentUser.discordId);
     if (foundUser) {
@@ -162,7 +167,6 @@ const restoreUsers = async (guild, models) => {
       }
     }
   }
-  return;
 };
 
 const restoreCourseMembers = async (guild, models) => {
@@ -177,10 +181,10 @@ const restoreCourseMembers = async (guild, models) => {
       if (foundUser) {
         const courseRole = guild.roles.cache.find(r => r.name === course.name);
         await foundUser.roles.add(courseRole);
-      }
-      if (instructor) {
-        const instructorRole = guild.roles.cache.find(r => r.name === `${course.name} ${courseAdminRole}`);
-        await foundUser.roles.add(instructorRole);
+        if (instructor) {
+          const instructorRole = guild.roles.cache.find(r => r.name === `${course.name} ${courseAdminRole}`);
+          await foundUser.roles.add(instructorRole);
+        }
       }
     }
   }
