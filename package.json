@@ -8,6 +8,8 @@
     "dev": "cross-env NODE_ENV=development nodemon src/index.js",
     "jest": "cross-env NODE_ENV=test jest --coverage --verbose --runInBand --detectOpenHandles",
     "test": "cross-env NODE_ENV=test jest --coverage --runInBand",
+    "build-front-linux": "rm -rf src/server/build/ && cd src/frontend/ && npm run build --prod && cp -r build ../server",
+    "build-front-win": "rd /s /q src\\server\\build\\ && cd src\\frontend\\ && npm run build --prod && xcopy /E /H /C build\\ ..\\server\\build\\",
     "lint": "eslint ."
   },
   "jest": {
@@ -32,8 +34,10 @@
     "@discordjs/builders": "^0.6.0",
     "@discordjs/rest": "^0.1.1-canary.0",
     "axios": "^0.24.0",
+    "base64url": "^3.0.1",
     "connect-flash": "^0.1.1",
     "connect-session-sequelize": "^7.1.1",
+    "cors": "^2.8.5",
     "discord-api-types": "^0.22.0",
     "discord.js": "^13.1.0",
     "dotenv": "^8.2.0",

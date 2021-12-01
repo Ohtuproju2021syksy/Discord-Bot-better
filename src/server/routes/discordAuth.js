@@ -34,10 +34,12 @@ router.get("/", passport.authenticate("discord", {
     await createCourseMemberToDatabase(user.id, course.id, models.CourseMember);
   }
   res.redirect(process.env.DISCORD_SERVER_INVITE);
+  //res.status(200);
 });
 
 router.get("/unauthorized", (req, res) => {
-  res.redirect(process.env.BACKEND_SERVER_URL + "/error.html?error=" + req.flash("error")[0]);
+  res.redirect('/?msg=' + req.flash("error")[0]);
+  //res.redirect('/');
 });
 
 module.exports = router;
