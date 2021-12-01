@@ -150,7 +150,9 @@ const getCourseNameFromCategory = (category) => {
 
 const findAndUpdateInstructorRole = async (name, guild, adminRole) => {
   const oldInstructorRole = guild.roles.cache.find((role) => role.name !== name && role.name.includes(name));
-  oldInstructorRole.setName(`${name} ${adminRole}`);
+  if (oldInstructorRole) {
+    oldInstructorRole.setName(`${name} ${adminRole}`);
+  }
 };
 
 const downloadImage = async (course) => {
