@@ -11,11 +11,6 @@ const App = () => {
     <div>
       <Error message={msg}></Error>
       <Footer></Footer>
-      <Routes>
-        <Route path='/' element={<Error />}>
-        </Route>
-        <Route path='/error' element={<Footer/>} />
-      </Routes>
     </div>
   )
     
