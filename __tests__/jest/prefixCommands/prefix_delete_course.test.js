@@ -46,6 +46,15 @@ describe("prefix remove", () => {
     expect(messageInCommandsChannel.reply).toHaveBeenCalledWith(response);
   });
 
+  test("Does nothing if command is declined", async () => {
+    confirmChoiceNoInteraction.mockImplementationOnce(() => false);
+    messageInCommandsChannel.member = teacher;
+    const courseName = "test";
+    await execute(messageInCommandsChannel, [courseName], Course);
+    expect(confirmChoiceNoInteraction).toHaveBeenCalledTimes(1);
+    expect(removeCourseFromDb).toHaveBeenCalledTimes(0);
+  });
+
   test("remove command with valid course name responds correct ephemeral", async () => {
     messageInCommandsChannel.member = teacher;
     const courseName = "test";

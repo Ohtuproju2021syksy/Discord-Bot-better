@@ -19,6 +19,7 @@ const execute = async (message, args, models) => {
 
     user.admin = false;
     await user.save();
+
   }
 };
 

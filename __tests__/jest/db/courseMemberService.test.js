@@ -79,6 +79,26 @@ describe("courseMemberService", () => {
     expect(courseMemberModelMock.create).toHaveBeenCalledWith({ userId: 2, courseId: 1 });
   });
 
+  test("create new course member doens't create if already exists", async () => {
+    const courseMemberModelInstanceMock2 = {
+      id: 2,
+      instructor: false,
+      userId: 2,
+      courseId: 1,
+    };
+    courseMemberModelMock.findOne.mockResolvedValueOnce(courseMemberModelInstanceMock2);
+    const result = await createCourseMemberToDatabase(2, 1, courseMemberModelMock);
+    expect(result).toBe(courseMemberModelInstanceMock2);
+    expect(courseMemberModelMock.findOne).toHaveBeenCalledTimes(1);
+    expect(courseMemberModelMock.findOne).toHaveBeenCalledWith({
+      where:
+        { userId: 2,
+          courseId: 1,
+        },
+    });
+    expect(courseMemberModelMock.create).toHaveBeenCalledTimes(0);
+  });
+
   test("remove user from course", async () => {
     await removeCourseMemberFromDb(1, 1, courseMemberModelMock);
     expect(courseMemberModelMock.findOne).toHaveBeenCalledTimes(1);
@@ -95,6 +115,19 @@ describe("courseMemberService", () => {
           courseId: 1,
         },
     });
+  });
+
+  test("remove user from course won't remove if doesn't exist", async () => {
+    courseMemberModelMock.findOne.mockResolvedValueOnce(null);
+    await removeCourseMemberFromDb(1, 1, courseMemberModelMock);
+    expect(courseMemberModelMock.findOne).toHaveBeenCalledTimes(1);
+    expect(courseMemberModelMock.findOne).toHaveBeenCalledWith({
+      where:
+        { userId: 1,
+          courseId: 1,
+        },
+    });
+    expect(courseMemberModelMock.destroy).toHaveBeenCalledTimes(0);
   });
 
 });

@@ -70,7 +70,19 @@ describe("channelService", () => {
     expect(channelModelMock.create).toHaveBeenCalledWith(attributes);
   });
 
-  test("create defauilt channels", async () => {
+  test("create a channel to database won't save if already exists", async () => {
+    const attributes = {
+      courseId: 2,
+      name: "kurssi_uusi",
+      defaultChannel: false,
+      voiceChannel: false,
+    };
+    await createChannelToDatabase(attributes, channelModelMock);
+    expect(channelModelMock.findOne).toHaveBeenCalledTimes(1);
+    expect(channelModelMock.create).toHaveBeenCalledTimes(0);
+  });
+
+  test("create default channels", async () => {
     const channelObjects = getDefaultChannelObjects("testi2");
     const defaultChannelObjects = channelObjects.map(channelObject => {
       const voiceChannel = channelObject.type === "GUILD_VOICE";
@@ -94,6 +106,13 @@ describe("channelService", () => {
       where:
         { name: "discotg_general" },
     });
+  });
+
+  test("remove a channel from database won't do anything if channel doesn't exist", async () => {
+    channelModelMock.findOne.mockResolvedValueOnce(null);
+    await removeChannelFromDb("discotg_general", channelModelMock);
+    expect(channelModelMock.findOne).toHaveBeenCalledTimes(1);
+    expect(channelModelMock.destroy).toHaveBeenCalledTimes(0);
   });
 
   test("find all channels by course id", async () => {
