@@ -4,28 +4,8 @@ const {
   createCourseToDatabase,
   findCourseFromDb,
   findCourseFromDbWithFullName } = require("../../../db/services/courseService");
-const { createDefaultChannelsToDatabase } = require("../../../db/services/channelService");
 const { sendErrorEphemeral, sendEphemeral, editEphemeral } = require("../../services/message");
 const { facultyRole } = require("../../../../config.json");
-
-const getDefaultChannelObjects = (courseName) => {
-  courseName = courseName.replace(/ /g, "-");
-
-  return [
-    {
-      name: `${courseName}_announcement`,
-      type: "GUILD_TEXT",
-    },
-    {
-      name: `${courseName}_general`,
-      type: "GUILD_TEXT",
-    },
-    {
-      name: `${courseName}_voice`,
-      type: "GUILD_VOICE",
-    },
-  ];
-};
 
 const execute = async (interaction, client, models) => {
   const courseCode = interaction.options.getString("coursecode").replace(/\s/g, "");
@@ -55,20 +35,7 @@ const execute = async (interaction, client, models) => {
   if (await findCourseFromDb(courseName, models.Course)) return await sendErrorEphemeral(interaction, errorMessage);
   await sendEphemeral(interaction, "Creating course...");
 
-  const course = await createCourseToDatabase(courseCode, courseFullName, courseName, models.Course);
-
-  const channelObjects = getDefaultChannelObjects(courseName);
-  const defaultChannelObjects = channelObjects.map(channelObject => {
-    const voiceChannel = channelObject.type === "GUILD_VOICE";
-    return {
-      courseId: course.id,
-      name: channelObject.name,
-      defaultChannel: true,
-      voiceChannel: voiceChannel,
-    };
-  });
-
-  await createDefaultChannelsToDatabase(defaultChannelObjects, models.Channel);
+  await createCourseToDatabase(courseCode, courseFullName, courseName, models.Course);
   await editEphemeral(interaction, `Created course ${courseName}.`);
 };
 

@@ -2,7 +2,6 @@ const { execute } = require("../../../src/discordBot/commands/faculty/create_cou
 const { sendEphemeral, sendErrorEphemeral, editEphemeral } = require("../../../src/discordBot/services/message");
 const { containsEmojis } = require("../../../src/discordBot/services/service");
 const { findCourseFromDb, findCourseFromDbWithFullName, createCourseToDatabase } = require("../../../src/db/services/courseService");
-const { createDefaultChannelsToDatabase } = require("../../../src/db/services/channelService");
 const models = require("../../mocks/mockModels");
 
 jest.mock("../../../src/discordBot/services/message");
@@ -81,13 +80,6 @@ describe("slash create command", () => {
     await execute(defaultStudentInteraction, client, models);
     expect(createCourseToDatabase).toHaveBeenCalledTimes(1);
     expect(createCourseToDatabase).toHaveBeenCalledWith(courseCode, fullName, courseCode.toLowerCase(), models.Course);
-  });
-
-  test("create channels: category, announcement, general and voice ", async () => {
-    const client = defaultTeacherInteraction.client;
-    await execute(defaultTeacherInteraction, client, models);
-    expect(createDefaultChannelsToDatabase).toHaveBeenCalledTimes(1);
-    expect(createDefaultChannelsToDatabase.mock.calls[0][0]).toHaveLength(3);
   });
 
   test("respond with correct emphemeral", async () => {
