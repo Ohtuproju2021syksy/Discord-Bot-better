@@ -218,9 +218,22 @@ const listCourseInstructors = async (guild, roleString) => {
   const instructorRole = await guild.roles.cache.find(r => r.name === `${roleString} ${courseAdminRole}`);
   const members = await guild.members.fetch();
   let adminsString = "";
+
   members.forEach(m => {
     const roles = m._roles;
     if (roles.some(r => r === facultyRoleObject.id) && roles.some(r => r === instructorRole.id)) {
+      if (adminsString === "") {
+        adminsString = "<@" + m.user.id + ">";
+      }
+      else {
+        adminsString = adminsString + ", " + "<@" + m.user.id + ">";
+      }
+    }
+  });
+
+  members.forEach(m => {
+    const roles = m._roles;
+    if (!roles.some(r => r === facultyRoleObject.id) && roles.some(r => r === instructorRole.id)) {
       if (adminsString === "") {
         adminsString = "<@" + m.user.id + ">";
       }
