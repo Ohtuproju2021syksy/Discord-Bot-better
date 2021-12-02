@@ -30,6 +30,11 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: false,
       unique: false,
     },
+    discordId: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      unique: true,
+    },
   }, {
     timestamps: false,
     freezeTableName: true,

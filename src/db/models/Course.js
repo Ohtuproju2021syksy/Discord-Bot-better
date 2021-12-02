@@ -30,6 +30,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
       unique: false,
     },
+    categoryId: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      unique: true,
+    },
   }, {
     timestamps: false,
     freezeTableName: true,

@@ -23,8 +23,19 @@ const createDiscordUser = async (ctx) => {
   const userId = ctx.message.from.username || "undefined";
   let url;
   const t = await telegramClient.telegram.getUserProfilePhotos(ctx.message.from.id);
-  if (t.photos.length) url = await telegramClient.telegram.getFileLink(t.photos[0][0].file_id);
-  const user = { username: username, avatarUrl: url, userId: userId };
+  try {
+    if (t.photos.length) url = await telegramClient.telegram.getFileLink(t.photos[0][0].file_id);
+  }
+  catch (error) {
+    logError(error);
+  }
+  let user;
+  if (url) {
+    user = { username: username, avatarUrl: url, userId: userId };
+  }
+  else {
+    user = { username: username, userId: userId };
+  }
   return user;
 };
 
