@@ -40,9 +40,9 @@ const restoreCategories = async (guild, models) => {
   const allCourses = await getAllCourses(models.Course);
 
   for (const course in allCourses) {
+    const currentCourse = allCourses[course];
     const student = await findOrCreateRoleWithName(currentCourse.name, guild);
     const admin = await findOrCreateRoleWithName(`${currentCourse.name} ${courseAdminRole}`, guild);
-    const currentCourse = allCourses[course];
     const courseName = currentCourse.name;
     const categoryFound = await channelCache.get(currentCourse.categoryId);
 
@@ -90,7 +90,6 @@ const restoreChannels = async (guild, models) => {
       channelFound.name = currentChannel.name;
       const parentChannel = await findCourseFromDbById(currentChannel.courseId, models.Course);
       await channelFound.setParent(parentChannel.categoryId);
-      await channelFound.setTopic(currentChannel.topic);
 
       if (parentChannel.locked) {
         await channelFound.permissionOverwrites.create(guild.roles.cache.find(r => r.name.toLowerCase().includes(parentChannel.name.toLowerCase())), { VIEW_CHANNEL: true, SEND_MESSAGES: false });
