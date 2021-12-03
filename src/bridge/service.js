@@ -1,5 +1,5 @@
 const { sendErrorReportNoInteraction } = require("../discordBot/services/message");
-const { logError } = require("../discordBot/services/logger");
+const { logError, logNoInteractionError } = require("../discordBot/services/logger");
 let discordClient;
 let telegramClient;
 const keywords = ["crypto", "krypto", "btc", "doge", "btc", "eth", "musk", "money", "$", "usd", "bitcoin", "muskx.co", "coin", "elonmusk", "prize", "еlonmusk", "btc", "cash", "million",
@@ -190,7 +190,7 @@ const handleBridgeMessage = async (message, courseName, Course) => {
     bridgedMessagesCounter.inc({ origin: "discord", course: group.name });
   }
   catch (error) {
-    logError(error);
+    logNoInteractionError(group.telegramId, message.member, message.channel.name, discordClient, error.toString());
     return await sendErrorReportNoInteraction(group.telegramId, message.member, message.channel.name, discordClient, error.toString());
   }
 };

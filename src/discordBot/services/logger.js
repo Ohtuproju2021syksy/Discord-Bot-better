@@ -39,6 +39,14 @@ if (process.env.NODE_ENV === "production") {
     logger.remove(paperTrailTransport);
   }
 
+  logger.rejections.handle(
+    paperTrailTransport,
+  );
+
+  logger.exceptions.handle(
+    paperTrailTransport,
+  );
+
   winstonPapertrail.on("connect", function() {
     logger.info("Logger connected to Papertrail");
   });
@@ -50,6 +58,24 @@ const logError = (error) => {
   }
 };
 
+const logInteractionError = (error, client, interaction) => {
+  if (logger) {
+    const member = client.guild.members.cache.get(interaction.member.user.id);
+    const channel = client.guild.channels.cache.get(interaction.channelId);
+    const msg = `ERROR DETECTED!\nMember: ${member.displayName}\nCommand: ${interaction.commandName}\nChannel: ${channel.name}}`;
+    logger.error(msg);
+    logger.error(error);
+  }
+};
+
+const logNoInteractionError = async (telegramId, member, channel, client, error) => {
+  if (logger) {
+    const msg = `ERROR DETECTED!\nMember: ${member}\nChannel: ${channel}`;
+    logger.error(msg);
+    logger.error(error);
+  }
+};
+
 module.exports = {
-  logError,
+  logError, logInteractionError, logNoInteractionError,
 };
