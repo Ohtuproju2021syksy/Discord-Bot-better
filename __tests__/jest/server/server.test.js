@@ -5,13 +5,13 @@ const { Response } = jest.requireActual("node-fetch");
 const SequelizeMock = require("sequelize-mock");
 const dbMock = new SequelizeMock();
 
-const makeApp = require("../../src/server/app");
+const makeApp = require("../../../src/server/app");
 
 const app = makeApp(dbMock);
 const api = supertest(app);
 
 jest.mock("node-fetch");
-jest.mock("../../src/server/strategies/discordstrategy", () => jest.fn((req, res, next) => next()));
+jest.mock("../../../src/server/strategies/discordstrategy", () => jest.fn((req, res, next) => next()));
 
 afterEach(() => {
   jest.clearAllMocks();
