@@ -3,7 +3,7 @@ const { PapertrailConnection, PapertrailTransport } = require("winston-papertrai
 
 let logger;
 
-if (process.env.NODE_ENV === "production") {
+if (process.env.NODE_ENV !== "test") {
   const winstonPapertrail = new PapertrailConnection({
     host: "logs2.papertrailapp.com",
     port: 10737,
