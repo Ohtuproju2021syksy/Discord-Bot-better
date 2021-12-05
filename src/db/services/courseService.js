@@ -83,6 +83,50 @@ const findCoursesFromDb = async (order, Course, state) => {
   });
 };
 
+const findLockedCoursesFromDb = async (order, Course) => {
+  return await Course.findAll({
+    attributes: ["id", "code", "fullName", "name"],
+    order: [order],
+    where: {
+      locked: true,
+    },
+    raw: true,
+  });
+};
+
+const findUnlockedCoursesFromDb = async (order, Course) => {
+  return await Course.findAll({
+    attributes: ["id", "code", "fullName", "name"],
+    order: [order],
+    where: {
+      locked: false,
+    },
+    raw: true,
+  });
+};
+
+const findPrivateCoursesFromDb = async (order, Course) => {
+  return await Course.findAll({
+    attributes: ["id", "code", "fullName", "name"],
+    order: [order],
+    where: {
+      private: true,
+    },
+    raw: true,
+  });
+};
+
+const findPublicCoursesFromDb = async (order, Course) => {
+  return await Course.findAll({
+    attributes: ["id", "code", "fullName", "name"],
+    order: [order],
+    where: {
+      private: false,
+    },
+    raw: true,
+  });
+};
+
 const findCourseFromDbWithFullName = async (courseFullName, Course) => {
   return await Course.findOne({
     where: {
@@ -122,4 +166,8 @@ module.exports = {
   findCourseNickNameFromDbWithCourseCode,
   findAllCourseNames,
   findCourseFromDbById,
+  findLockedCoursesFromDb,
+  findUnlockedCoursesFromDb,
+  findPrivateCoursesFromDb,
+  findPublicCoursesFromDb,
 };
