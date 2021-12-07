@@ -34,24 +34,23 @@ jobs:
     - uses: actions/setup-node@v1        
       with:
         node-version: '16.8.0'
-    - name: npm install 
-      run: npm install
-    - name: run lint
-      run: npm run lint
-    - name: run jest tests
-      env:
-        DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
-        GUILD_ID: ${{ secrets.GUILD_ID }}
-        BOT_ID: ${{ secrets.BOT_ID }}
-        PREFIX: ${{ secrets.PREFIX }}
-        POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-        PORT: ${{ secrets.PORT }}
-        CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
-        DISCORD_REDIRECT_URL: ${{ secrets.DISCORD_REDIRECT_URL }}
-        DISCORD_SERVER_INVITE: ${{ secrets.DISCORD_SERVER_INVITE }}
-        SESSION_SECRET: ${{ secrets.SESSION_SECRET}}
-        BACKEND_SERVER_URL: ${{ secrets.BACKEND_SERVER_URL }}
-      run: npm test
+    - name: Setup and run tests
+        working-directory: ./backend
+        run: npm install
+        run: npm run lint
+        env:
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+          GUILD_ID: ${{ secrets.GUILD_ID }}
+          BOT_ID: ${{ secrets.BOT_ID }}
+          PREFIX: ${{ secrets.PREFIX }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          PORT: ${{ secrets.PORT }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          DISCORD_REDIRECT_URL: ${{ secrets.DISCORD_REDIRECT_URL }}
+          DISCORD_SERVER_INVITE: ${{ secrets.DISCORD_SERVER_INVITE }}
+          SESSION_SECRET: ${{ secrets.SESSION_SECRET}}
+          BACKEND_SERVER_URL: ${{ secrets.BACKEND_SERVER_URL }}
+        run: npm test
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
       with:

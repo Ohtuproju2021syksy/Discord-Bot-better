@@ -8,7 +8,7 @@ const facultyAuthRoute = require("./routes/authenticateFaculty");
 const metricsRoute = require("./routes/metrics");
 const defaultRouteHandler = require("./routes/defaultRouteHandler");
 const defaultRouteErrorHandler = require("./routes/defaultRouteErrorHandler");
-const cors = require('cors');
+const cors = require("cors");
 const flash = require("connect-flash");
 const path = require("path");
 require("./strategies/discordstrategy");
@@ -33,7 +33,7 @@ module.exports = (sequelize) => {
   store.sync();
 
   app.use(passport.initialize());
-  app.use(passport.session()); 
+  app.use(passport.session());
 
 
   app.use(express.static(path.join(__dirname, "build")));
