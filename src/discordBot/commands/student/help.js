@@ -57,7 +57,7 @@ const handleAllCommands = async (interaction, member, adminData, facultyData, co
 
 const handleSingleCommand = async (interaction, member, commandsReadyToPrint) => {
   const name = interaction.options.getString("command");
-  const command = commandsReadyToPrint.find(c => c.data.name.includes(name));
+  const command = commandsReadyToPrint.find(c => c.data.name.replace("/", "") === name);
 
   if (!command) {
     return await editErrorEphemeral(interaction, "that's not a valid command!");
@@ -104,7 +104,7 @@ const execute = async (interaction, client) => {
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("help")
-    .setDescription("Get what and how to use commands.")
+    .setDescription("Get info on how to use command(s).")
     .setDefaultPermission(true)
     .addStringOption(option =>
       option.setName("command")
@@ -112,5 +112,5 @@ module.exports = {
         .setRequired(false)),
   execute,
   usage: "/help <command name>",
-  description: "Get what and how to use commands.",
+  description: "Get info on how to use command(s).",
 };

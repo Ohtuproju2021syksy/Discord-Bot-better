@@ -6,12 +6,10 @@ const { Routes } = require("discord-api-types/v9");
 const clientId = process.env.BOT_ID;
 const guildId = process.env.GUILD_ID;
 const token = process.env.DISCORD_BOT_TOKEN;
-const { findCoursesFromDb } = require("../../db/services/courseService");
+const { findPrivateCoursesFromDb, findPublicCoursesFromDb, findLockedCoursesFromDb, findUnlockedCoursesFromDb } = require("../../db/services/courseService");
 const { logError } = require("./logger");
 
-const getCourseChoices = async (showPrivate, Course) => {
-  showPrivate = showPrivate ? undefined : false;
-  const courseData = await findCoursesFromDb("name", Course, showPrivate);
+const parseCourseData = (courseData) => {
   const choices = courseData
     .map((c) => {
       const regExp = /[^0-9]*/;
@@ -28,9 +26,17 @@ const getCourseChoices = async (showPrivate, Course) => {
   return choices;
 };
 
+const addOptions = async (command, obj, courseData) => {
+  const parsedChoices = parseCourseData(courseData);
+  parsedChoices.forEach((ch) => obj.data.options[0].addChoice(ch.name, ch.value));
+  const options = obj.data.options;
+  await command.edit({
+    options: options,
+  })
+    .catch(console.error);
+};
+
 const updateDynamicChoices = async (client, commandNames, Course) => {
-  const all = await getCourseChoices(undefined, Course);
-  const pub = await getCourseChoices(false, Course);
   const loadedCommands = await client.guilds.cache.get(guildId)?.commands.fetch();
   const filteredCommands = await loadedCommands.filter((command) => commandNames.includes(command.name));
   filteredCommands.map(async (c) => {
@@ -44,14 +50,21 @@ const updateDynamicChoices = async (client, commandNames, Course) => {
             .setDescription(c.options[0].description)
             .setRequired(true)),
     };
-    obj.data.name === "join" ?
-      pub.forEach((ch) => obj.data.options[0].addChoice(ch.name, ch.value)) :
-      all.forEach((ch) => obj.data.options[0].addChoice(ch.name, ch.value));
-    const options = obj.data.options;
-    await c.edit({
-      options: options,
-    })
-      .catch(console.error);
+    if (obj.data.name === "join" || obj.data.name === "hide_course") {
+      await addOptions(c, obj, await findPublicCoursesFromDb("code", Course));
+    }
+    else if (obj.data.name === "leave") {
+      await addOptions(c, obj, await findPrivateCoursesFromDb("code", Course));
+    }
+    else if (obj.data.name === "unhide_course") {
+      await addOptions(c, obj, await findPrivateCoursesFromDb("code", Course));
+    }
+    else if (obj.data.name === "lock_chat") {
+      await addOptions(c, obj, await findUnlockedCoursesFromDb("code", Course));
+    }
+    else if (obj.data.name === "unlock_chat") {
+      await addOptions(c, obj, await findLockedCoursesFromDb("code", Course));
+    }
   });
 };
 
@@ -144,11 +157,10 @@ const setUpCommands = async (client, Course) => {
   const commands = loadCommands(client);
   if (process.env.NODE_ENV === "production") await deployCommands(commands);
   await setCommandPermissions(client);
-  await updateDynamicChoices(client, ["join", "leave"], Course);
+  await updateDynamicChoices(client, ["join", "leave", "hide_course", "unhide_course", "lock_chat", "unlock_chat"], Course);
 };
 
 module.exports = {
-  getCourseChoices,
   setUpCommands,
   updateDynamicChoices,
 };

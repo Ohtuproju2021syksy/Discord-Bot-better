@@ -6,9 +6,12 @@
 
 Command | Description | Example
 --- |--- | ---
+`!add_admin_rights` | Add admin rights to given user (requires Discord ID of user). | `!add_admin_rights 123456789012345678`
 `!delete_command` | Delete the given slash command. | `!delete help`
 `!delete_course` | Delete the given course channel. | `!delete_course ohpe`
 `!reload_commands` | Reload all slash commands, returning deleted commands, registering new commands, and updating command permissions. | `!reload_commands`
+`!remove_admin_rights` | Remove admin rights from given user (requires Discord ID of user). | `!remove_admin_rights 123456789012345678`
+`!remove_faculty_rights` | Remove faculty rights from given user (requires Discord ID of user). | `!remove_faculty_rights 123456789012345678`
 `!sort_courses` | Sort courses alphabetically. | `!sort_courses`
 `!update_instructors` | Update course instructor roles. | `!update_instructors`
 `!update_invitelinks` | Update course invitation links. | `!update_invitelinks`
@@ -17,7 +20,7 @@ Command | Description | Example
 
 Command | Description | Example
 --- |--- | ---
-[/add_instructors](./commands/faculty/add_instructors.md) | Give instructor role to (multiple) users. | `/add_instructors @user1 @user2`
+`/add_instructors` | Give instructor role to (multiple) users. | `/add_instructors @user1 @user2`
 `/create_channel` | Add a text channel for the course. Must be used inside a course. | `/create_channel questions`
 `/create_course ` | Create a given course channel | `/create_course ohpe ohjelmoinnin perusteet`
 `/create_poll ` | Create a poll | `/create_poll Question 10 answer1 | answer 2 | answer 3`
@@ -42,6 +45,5 @@ Command | Description | Example
 `/help` |  Lists available commands for your role. | `help`
 `/help "command name"` | Shows information on the given command. | `/help courses`
 `/intructors` | Lists the instructors of the course. Must be used inside a course. | `/instructors`
-`/instructors "course name"` | Lists the instructors for the given course. | `/instructors ohpe`
 `/join` | Join the given course. After writing `/join`, the bot will give you a list of courses to choose from. | `/join`
 `/leave` | Leave the given course. After writing `/leave`, the bot will give you a list of courses to choose from. | `/leave`
