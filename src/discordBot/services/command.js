@@ -6,7 +6,7 @@ const { Routes } = require("discord-api-types/v9");
 const clientId = process.env.BOT_ID;
 const guildId = process.env.GUILD_ID;
 const token = process.env.DISCORD_BOT_TOKEN;
-const { findPrivateCoursesFromDb, findPublicCoursesFromDb, findLockedCoursesFromDb, findUnlockedCoursesFromDb } = require("../../db/services/courseService");
+const { findPrivateCoursesFromDb, findPublicCoursesFromDb, findLockedCoursesFromDb, findUnlockedCoursesFromDb, findCoursesFromDb } = require("../../db/services/courseService");
 const { logError } = require("./logger");
 
 const parseCourseData = (courseData) => {
@@ -54,7 +54,7 @@ const updateDynamicChoices = async (client, commandNames, Course) => {
       await addOptions(c, obj, await findPublicCoursesFromDb("code", Course));
     }
     else if (obj.data.name === "leave") {
-      await addOptions(c, obj, await findPrivateCoursesFromDb("code", Course));
+      await addOptions(c, obj, await findCoursesFromDb("code", Course));
     }
     else if (obj.data.name === "unhide_course") {
       await addOptions(c, obj, await findPrivateCoursesFromDb("code", Course));
