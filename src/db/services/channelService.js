@@ -61,12 +61,6 @@ const editChannelNames = async (courseId, previousCourseName, newCourseName, Cha
   await Promise.all(channels);
 };
 
-const saveChannelTopicToDb = async (channelName, newTopic, Channel) => {
-  await Channel.update(
-    { topic: newTopic },
-    { where: { name: channelName } });
-};
-
 module.exports = {
   findChannelFromDbByName,
   createChannelToDatabase,
@@ -74,6 +68,5 @@ module.exports = {
   findChannelsByCourse,
   countChannelsByCourse,
   editChannelNames,
-  saveChannelTopicToDb,
   createDefaultChannelsToDatabase,
 };

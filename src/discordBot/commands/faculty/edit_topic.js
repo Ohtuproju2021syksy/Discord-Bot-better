@@ -8,7 +8,7 @@ const {
 const { editErrorEphemeral, sendEphemeral, editEphemeral } = require("../../services/message");
 const { confirmChoice } = require("../../services/confirm");
 const { facultyRole } = require("../../../../config.json");
-const { saveChannelTopicToDb } = require("../../../db/services/channelService");
+const { findChannelFromDbByName } = require("../../../db/services/channelService");
 
 const execute = async (interaction, client, models) => {
   await sendEphemeral(interaction, "Editing topic...");
@@ -36,8 +36,9 @@ const execute = async (interaction, client, models) => {
     return await editErrorEphemeral(interaction, `Command cooldown [mm:ss]: you need to wait ${time}!`);
   }
 
-  await channel.setTopic(newTopic);
-  await saveChannelTopicToDb(getCourseNameFromCategory(channel.name), newTopic, models.Channel);
+  const channelInstance = await findChannelFromDbByName(channel.name, models.Channel);
+  channelInstance.topic = newTopic;
+  channelInstance.save();
 
   await editEphemeral(interaction, "Channel topic has been changed");
   handleCooldown(categoryName);

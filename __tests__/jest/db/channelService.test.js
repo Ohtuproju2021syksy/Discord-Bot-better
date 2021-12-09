@@ -1,4 +1,4 @@
-const { findChannelFromDbByName, createChannelToDatabase, createDefaultChannelsToDatabase, removeChannelFromDb, findChannelsByCourse, countChannelsByCourse, editChannelNames, saveChannelTopicToDb } = require("../../../src/db/services/channelService");
+const { findChannelFromDbByName, createChannelToDatabase, createDefaultChannelsToDatabase, removeChannelFromDb, findChannelsByCourse, countChannelsByCourse, editChannelNames } = require("../../../src/db/services/channelService");
 
 const channelModelInstanceMock = {
   id: 1,
@@ -143,14 +143,4 @@ describe("channelService", () => {
     expect(channelModelInstanceMock.save).toHaveBeenCalledTimes(1);
     expect(channelModelInstanceMock.name).toBe("tgdisco_general");
   });
-
-  test("save channel topic to database", async () => {
-    await saveChannelTopicToDb("discotg_general", "topic of the chat", channelModelMock);
-    expect(channelModelMock.update).toHaveBeenCalledTimes(1);
-    expect(channelModelMock.update).toHaveBeenCalledWith(
-      { topic: "topic of the chat" },
-      { where: { name: "discotg_general" } },
-    );
-  });
-
 });
