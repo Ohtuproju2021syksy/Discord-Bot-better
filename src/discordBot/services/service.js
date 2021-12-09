@@ -150,11 +150,13 @@ const getCourseNameFromCategory = (category) => {
 
 const findAndUpdateInstructorRole = async (name, guild, adminRole) => {
   const oldInstructorRole = guild.roles.cache.find((role) => role.name !== name && role.name.includes(name));
-  oldInstructorRole.setName(`${name} ${adminRole}`);
+  if (oldInstructorRole) {
+    oldInstructorRole.setName(`${name} ${adminRole}`);
+  }
 };
 
 const downloadImage = async (course) => {
-  const url = `http://95.216.219.139/grafana/render/d-solo/WpYTNiOnz/discord-dashboard?orgId=1&from=now-30d&to=now&var-course=${course}&panelId=2&width=1000&height=500&tz=Europe%2FHelsinki`;
+  const url = `http://95.216.219.139/grafana/render/d-solo/WpYTNiOnz/discord-dashboard?orgId=1&from=now-30d&to=now&var-course=${course}&panelId=5&width=1000&height=500&tz=Europe%2FHelsinki`;
   const directory = path.resolve(__dirname, "../../promMetrics/graph/");
 
   if (!fs.existsSync(directory)) {
@@ -218,9 +220,22 @@ const listCourseInstructors = async (guild, roleString) => {
   const instructorRole = await guild.roles.cache.find(r => r.name === `${roleString} ${courseAdminRole}`);
   const members = await guild.members.fetch();
   let adminsString = "";
+
   members.forEach(m => {
     const roles = m._roles;
     if (roles.some(r => r === facultyRoleObject.id) && roles.some(r => r === instructorRole.id)) {
+      if (adminsString === "") {
+        adminsString = "<@" + m.user.id + ">";
+      }
+      else {
+        adminsString = adminsString + ", " + "<@" + m.user.id + ">";
+      }
+    }
+  });
+
+  members.forEach(m => {
+    const roles = m._roles;
+    if (!roles.some(r => r === facultyRoleObject.id) && roles.some(r => r === instructorRole.id)) {
       if (adminsString === "") {
         adminsString = "<@" + m.user.id + ">";
       }
