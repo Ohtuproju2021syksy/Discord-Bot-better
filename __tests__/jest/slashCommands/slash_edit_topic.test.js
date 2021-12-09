@@ -55,8 +55,6 @@ describe("slash edit_topic command", () => {
     expect(confirmChoice).toHaveBeenCalledTimes(1);
     expect(getCourseNameFromCategory).toHaveBeenCalledTimes(2);
     expect(getCourseNameFromCategory).toHaveBeenCalledWith(channel.parent, client.guild);
-    expect(general.setTopic).toHaveBeenCalledTimes(1);
-    expect(general.setTopic).toHaveBeenCalledWith(newTopic);
     expect(saveChannelTopicToDb).toHaveBeenCalledTimes(1);
     expect(saveChannelTopicToDb).toHaveBeenCalledWith(getCourseNameFromCategory(general.name), newTopic, models.Channel);
     expect(handleCooldown).toHaveBeenCalledTimes(1);

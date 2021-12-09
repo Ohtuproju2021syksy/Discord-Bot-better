@@ -29,5 +29,5 @@ module.exports = {
     .setDefaultPermission(true),
   execute,
   usage: "/workshops",
-  description: "Get workshops information.",
+  description: "Get workshops information.*",
 };
