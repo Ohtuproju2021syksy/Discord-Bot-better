@@ -2,9 +2,15 @@ const { Sequelize } = require("sequelize");
 
 const findChannelFromDbByName = async (channelName, Channel) => {
   return await Channel.findOne({
-    where: {
-      name: channelName,
-    },
+    where:
+      { name: { [Sequelize.Op.iLike]: channelName } },
+  });
+};
+
+const findChannelFromDbByDiscordId = async (discordId, Channel) => {
+  return await Channel.findOne({
+    where:
+      { discordId:  discordId },
   });
 };
 
@@ -30,7 +36,7 @@ const removeChannelFromDb = async (channelName, Channel) => {
   if (channel) {
     await Channel.destroy({
       where:
-        { name: channelName },
+      { name: { [Sequelize.Op.iLike]: channelName } },
     });
   }
 };
@@ -62,13 +68,26 @@ const editChannelNames = async (courseId, previousCourseName, newCourseName, Cha
 };
 
 const saveChannelTopicToDb = async (channelName, newTopic, Channel) => {
-  await Channel.update(
-    { topic: newTopic },
-    { where: { name: channelName } });
+  const channel = await findChannelFromDbByName(channelName, Channel);
+
+  if (channel) {
+    channel.topic = newTopic;
+    await channel.save();
+  }
+};
+
+const editChannelName = async (discordId, newName, Channel) => {
+  const channel = await findChannelFromDbByDiscordId(discordId, Channel);
+
+  if (channel) {
+    channel.name = newName;
+    await channel.save();
+  }
 };
 
 module.exports = {
   findChannelFromDbByName,
+  findChannelFromDbByDiscordId,
   createChannelToDatabase,
   removeChannelFromDb,
   findChannelsByCourse,
@@ -76,4 +95,5 @@ module.exports = {
   editChannelNames,
   saveChannelTopicToDb,
   createDefaultChannelsToDatabase,
+  editChannelName,
 };

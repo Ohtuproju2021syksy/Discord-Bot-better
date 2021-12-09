@@ -36,7 +36,6 @@ const execute = async (interaction, client, models) => {
     return await editErrorEphemeral(interaction, `Command cooldown [mm:ss]: you need to wait ${time}!`);
   }
 
-  await channel.setTopic(newTopic);
   await saveChannelTopicToDb(getCourseNameFromCategory(channel.name), newTopic, models.Channel);
 
   await editEphemeral(interaction, "Channel topic has been changed");
