@@ -139,14 +139,14 @@ const initCourseHooks = (guild, models) => {
         if (locked) {
           await lockTelegramCourse(models.Course, courseName);
           await setEmojisLock(category, hidden, courseName, models);
-          category.permissionOverwrites.create(guild.roles.cache.find(r => r.name.toLowerCase().includes(courseName.toLowerCase())), { VIEW_CHANNEL: true, SEND_MESSAGES: false });
+          category.permissionOverwrites.create(guild.roles.cache.find(r => r.name === course.name), { VIEW_CHANNEL: true, SEND_MESSAGES: false });
           category.permissionOverwrites.create(guild.roles.cache.find(r => r.name === "faculty"), { SEND_MESSAGES: true });
           category.permissionOverwrites.create(guild.roles.cache.find(r => r.name === "admin"), { SEND_MESSAGES: true });
         }
         else {
           await unlockTelegramCourse(models.Course, courseName);
           await setEmojisUnlock(category, hidden, courseName, models);
-          category.permissionOverwrites.create(guild.roles.cache.find(r => r.name.toLowerCase().includes(courseName.toLowerCase())), { VIEW_CHANNEL: true, SEND_MESSAGES: true });
+          category.permissionOverwrites.create(guild.roles.cache.find(r => r.name === course.name), { VIEW_CHANNEL: true, SEND_MESSAGES: true });
         }
       }
       else if (changedValue.has("private")) {
