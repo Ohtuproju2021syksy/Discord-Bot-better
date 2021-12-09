@@ -22,7 +22,7 @@ const { findUserByDbId } = require("./services/userService");
 const { courseAdminRole, facultyRole } = require("../../config.json");
 const { Op } = require("sequelize");
 const { editChannelNames, createDefaultChannelsToDatabase } = require("../db/services/channelService");
-const joinedUsersCounter = require("../../src/promMetrics/joinedUsersCounter");
+const { joinedUsersCounter } = require("../promMetrics/promCounters");
 
 const initHooks = (guild, models) => {
   initChannelHooks(guild, models);
