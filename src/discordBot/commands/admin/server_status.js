@@ -83,7 +83,7 @@ const execute = async (message, args, models) => {
       if (statusMessage === "") {
         statusMessage = "Course has correct name, permissions are right and its channels are correct";
       }
-      message.reply("Course status: " + currentCourse.fullName + "\n" + statusMessage);
+      message.reply("**" + currentCourse.fullName + "** status:\n" + statusMessage);
     }
 
     const allUsers = await getAllUsers(models.User);
