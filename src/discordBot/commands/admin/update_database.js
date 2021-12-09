@@ -1,7 +1,7 @@
 const { createCourseMemberToDatabase } = require("../../../db/services/courseMemberService");
 const { getCourseNameFromCategory, isCourseCategory } = require("../../services/service");
 const { findCourseFromDb } = require("../../../db/services/courseService");
-const { createChannelToDatabase } = require("../../../db/services/channelService");
+const { createChannelToDatabase, findChannelFromDbByName } = require("../../../db/services/channelService");
 const { createUserToDatabase } = require("../../../db/services/userService");
 const { facultyRole } = require("../../../../config.json");
 
@@ -35,11 +35,23 @@ const saveChannelsToDb = async (models, guild) => {
       const defaultChannel = currentChannel.name
         .includes("_general") || currentChannel.name.includes("_announcement") || currentChannel.type === "GUILD_VOICE";
       const voiceChannel = currentChannel.type === "GUILD_VOICE";
-      await createChannelToDatabase({
-        courseId: course.id,
-        name: currentChannel.name,
-        defaultChannel: defaultChannel,
-        voiceChannel: voiceChannel }, models.Channel);
+
+      const channelInstance = await findChannelFromDbByName(currentChannel.name, models.Channel);
+      if (channelInstance) {
+        channelInstance.set({
+          defaultChannel: defaultChannel,
+          voiceChannel: voiceChannel,
+        });
+        channelInstance.save();
+      }
+      else {
+        await createChannelToDatabase({
+          courseId: course.id,
+          name: currentChannel.name,
+          defaultChannel: defaultChannel,
+          voiceChannel: voiceChannel,
+        }, models.Channel);
+      }
     }
   }
 };

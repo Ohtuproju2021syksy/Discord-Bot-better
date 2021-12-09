@@ -22,6 +22,7 @@ const { findUserByDbId } = require("./services/userService");
 const { courseAdminRole, facultyRole } = require("../../config.json");
 const { Op } = require("sequelize");
 const { editChannelNames, createDefaultChannelsToDatabase } = require("../db/services/channelService");
+const joinedUsersCounter = require("../../src/promMetrics/joinedUsersCounter");
 
 const initHooks = (guild, models) => {
   initChannelHooks(guild, models);
@@ -200,6 +201,7 @@ const initCourseMemberHooks = (guild, models) => {
     const courseRole = guild.roles.cache.find(r => r.name === course.name);
     await member.roles.add(courseRole);
     await updateGuide(guild, models);
+    joinedUsersCounter.inc({ course: course.name });
   });
 
   models.CourseMember.addHook("afterBulkDestroy", async (courseMember) => {
