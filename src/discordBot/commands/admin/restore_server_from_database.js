@@ -27,6 +27,7 @@ const execute = async (message, args, models) => {
     }
     await restoreCategories(guild, models);
     await restoreChannels(guild, models);
+    await restorePermissions(guild, models);
     await restoreUsers(guild, models);
     await restoreCourseMembers(guild, models);
     await deleteExtraChannels(guild, models);
@@ -43,21 +44,11 @@ const restoreCategories = async (guild, models) => {
     const currentCourse = allCourses[course];
     const student = await findOrCreateRoleWithName(currentCourse.name, guild);
     const admin = await findOrCreateRoleWithName(`${currentCourse.name} ${courseAdminRole}`, guild);
-    const courseName = currentCourse.name;
     const categoryFound = await channelCache.get(currentCourse.categoryId);
 
     if (categoryFound) {
       emojiName(currentCourse, currentCourse);
       await categoryFound.setName(currentCourse.name);
-
-      if (currentCourse.locked) {
-        await categoryFound.permissionOverwrites.create(guild.roles.cache.find(r => r.name.toLowerCase().includes(courseName.toLowerCase())), { VIEW_CHANNEL: true, SEND_MESSAGES: false });
-        await categoryFound.permissionOverwrites.create(guild.roles.cache.find(r => r.name === "faculty"), { SEND_MESSAGES: true });
-        await categoryFound.permissionOverwrites.create(guild.roles.cache.find(r => r.name === "admin"), { SEND_MESSAGES: true });
-      }
-      else {
-        await categoryFound.permissionOverwrites.create(guild.roles.cache.find(r => r.name.toLowerCase().includes(courseName.toLowerCase())), { VIEW_CHANNEL: true, SEND_MESSAGES: true });
-      }
       await setCoursePositionABC(guild, currentCourse.name, models.Course);
     }
     else {
@@ -67,11 +58,6 @@ const restoreCategories = async (guild, models) => {
       const category = await findOrCreateChannel(categoryObject, guild);
       await saveCourseIdWithName(category.id, currentCourse.name, models.Course);
 
-      if (currentCourse.locked) {
-        await category.permissionOverwrites.create(guild.roles.cache.find(r => r.name.toLowerCase().includes(currentCourse.name.toLowerCase())), { VIEW_CHANNEL: true, SEND_MESSAGES: false });
-        await category.permissionOverwrites.create(guild.roles.cache.find(r => r.name === "faculty"), { SEND_MESSAGES: true });
-        await category.permissionOverwrites.create(guild.roles.cache.find(r => r.name === "admin"), { SEND_MESSAGES: true });
-      }
       await setCoursePositionABC(guild, categoryObject.name, models.Course);
     }
   }
@@ -80,7 +66,6 @@ const restoreCategories = async (guild, models) => {
 const restoreChannels = async (guild, models) => {
   const channelCache = guild.channels.cache;
   const allChannels = await getAllChannels(models.Channel);
-  allChannels.sort((a, b) => a.name.localeCompare(b.name));
 
   for (const channel in allChannels) {
     const currentChannel = allChannels[channel];
@@ -91,26 +76,43 @@ const restoreChannels = async (guild, models) => {
       const parentChannel = await findCourseFromDbById(currentChannel.courseId, models.Course);
       await channelFound.setParent(parentChannel.categoryId);
 
-      if (parentChannel.locked) {
-        await channelFound.permissionOverwrites.create(guild.roles.cache.find(r => r.name.toLowerCase().includes(parentChannel.name.toLowerCase())), { VIEW_CHANNEL: true, SEND_MESSAGES: false });
-        await channelFound.permissionOverwrites.create(guild.roles.cache.find(r => r.name === "faculty"), { SEND_MESSAGES: true });
-        await channelFound.permissionOverwrites.create(guild.roles.cache.find(r => r.name === "admin"), { SEND_MESSAGES: true });
-      }
-      else {
-        await channelFound.permissionOverwrites.create(guild.roles.cache.find(r => r.name.toLowerCase().includes(parentChannel.name.toLowerCase())), { VIEW_CHANNEL: true, SEND_MESSAGES: true });
-      }
     }
     else {
       const parentId = await findCourseFromDbById(currentChannel.courseId, models.Course);
       const parentChannel = await channelCache.get(parentId.dataValues.categoryId);
+      const student = await findOrCreateRoleWithName(parentId.name, guild);
+      const admin = await findOrCreateRoleWithName(`${parentId.name} ${courseAdminRole}`, guild);
 
       if (!currentChannel.voiceChannel) {
-
-        const channelObject = {
-          name: currentChannel.name,
-          parent: parentChannel,
-          options: { type: "GUILD_TEXT", parent: parentChannel, permissionOverwrites: [], topic: currentChannel.topic },
-        };
+        let channelObject;
+        if (currentChannel.name.includes("_announcement")) {
+          channelObject = {
+            name: currentChannel.name,
+            parent: parentChannel,
+            options: { type: "GUILD_TEXT", parent: parentChannel, permissionOverwrites: [
+              {
+                id: guild.id,
+                deny: ["VIEW_CHANNEL"],
+              },
+              {
+                id: student,
+                deny: ["SEND_MESSAGES"],
+                allow: ["VIEW_CHANNEL"],
+              },
+              {
+                id: admin,
+                allow: ["VIEW_CHANNEL", "SEND_MESSAGES"],
+              },
+            ], topic: currentChannel.topic },
+          };
+        }
+        else {
+          channelObject = {
+            name: currentChannel.name,
+            parent: parentChannel,
+            options: { type: "GUILD_TEXT", parent: parentChannel, permissionOverwrites: [], topic: currentChannel.topic },
+          };
+        }
 
         const newChannel = await findOrCreateChannel(channelObject, guild);
         await saveChannelIdWithName(newChannel.id, currentChannel.name, models.Channel);
@@ -120,11 +122,6 @@ const restoreChannels = async (guild, models) => {
           await updateAnnouncementChannelMessage(guild, newChannel);
         }
 
-        if (currentChannel.locked) {
-          await newChannel.permissionOverwrites.create(guild.roles.cache.find(r => r.name.toLowerCase().includes(parentChannel.name.toLowerCase())), { VIEW_CHANNEL: true, SEND_MESSAGES: false });
-          await newChannel.permissionOverwrites.create(guild.roles.cache.find(r => r.name === "faculty"), { SEND_MESSAGES: true });
-          await newChannel.permissionOverwrites.create(guild.roles.cache.find(r => r.name === "admin"), { SEND_MESSAGES: true });
-        }
       }
       else if (currentChannel.voiceChannel) {
 
@@ -137,13 +134,26 @@ const restoreChannels = async (guild, models) => {
         const newChannel = await findOrCreateChannel(channelObject, guild);
         await saveChannelIdWithName(newChannel.id, currentChannel.name, models.Channel);
 
-        if (currentChannel.locked) {
-          await newChannel.permissionOverwrites.create(guild.roles.cache.find(r => r.name.toLowerCase().includes(parentChannel.name.toLowerCase())), { VIEW_CHANNEL: true, SEND_MESSAGES: false });
-          await newChannel.permissionOverwrites.create(guild.roles.cache.find(r => r.name === "faculty"), { SEND_MESSAGES: true });
-          await newChannel.permissionOverwrites.create(guild.roles.cache.find(r => r.name === "admin"), { SEND_MESSAGES: true });
-        }
       }
+    }
+  }
+};
 
+const restorePermissions = async (guild, models) => {
+  const channelCache = guild.channels.cache;
+  const allCourses = await getAllCourses(models.Course);
+
+  for (const course in allCourses) {
+    const currentCourse = allCourses[course];
+    const discordCategory = await channelCache.get(currentCourse.categoryId);
+    if (currentCourse.locked) {
+      discordCategory.permissionOverwrites.create(guild.roles.cache.find(r => r.name.toLowerCase() === `${currentCourse.name}`), { VIEW_CHANNEL: true, SEND_MESSAGES: false });
+      discordCategory.permissionOverwrites.create(guild.roles.cache.find(r => r.name.toLowerCase() === `${currentCourse.name} ${courseAdminRole}`), { VIEW_CHANNEL: true, SEND_MESSAGES: true });
+      discordCategory.permissionOverwrites.create(guild.roles.cache.find(r => r.name === "faculty"), { SEND_MESSAGES: true });
+      discordCategory.permissionOverwrites.create(guild.roles.cache.find(r => r.name === "admin"), { SEND_MESSAGES: true });
+    }
+    else {
+      discordCategory.permissionOverwrites.create(guild.roles.cache.find(r => r.name.toLowerCase() === `${currentCourse.name}`), { VIEW_CHANNEL: true, SEND_MESSAGES: true });
     }
   }
 };

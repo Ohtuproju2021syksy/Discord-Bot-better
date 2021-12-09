@@ -1,0 +1,35 @@
+const { getAllCourses } = require("../../../db/services/courseService");
+const { findChannelsByCourse } = require("../../../db/services/channelService");
+
+
+const execute = async (message, args, models) => {
+  if (message.member.permissions.has("ADMINISTRATOR")) {
+    let statusMessage = "";
+    const allCourses = await getAllCourses(models.Course);
+    for (const course in allCourses) {
+      const currentCourse = allCourses[course];
+
+      statusMessage += "Course: " + currentCourse.name + "\n";
+
+      const courseChannels = await findChannelsByCourse(currentCourse.id, models.Channel);
+
+      for (const channel in courseChannels) {
+        const currentChannel = courseChannels[channel];
+        statusMessage += currentChannel.name + "\n";
+      }
+      statusMessage += "\n";
+    }
+    message.reply("Courses:\n" + statusMessage);
+  }
+};
+
+
+module.exports = {
+  prefix: true,
+  name: "list_courses",
+  description: "List all courses and channels",
+  role: "admin",
+  usage: "!list_courses",
+  args: false,
+  execute,
+};
