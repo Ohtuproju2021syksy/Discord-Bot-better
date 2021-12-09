@@ -1,5 +1,5 @@
 const { sendErrorReportNoInteraction } = require("../discordBot/services/message");
-const { logError } = require("../discordBot/services/logger");
+const { logError, logNoInteractionError } = require("../discordBot/services/logger");
 let discordClient;
 let telegramClient;
 const keywords = ["crypto", "krypto", "btc", "doge", "btc", "eth", "musk", "money", "$", "usd", "bitcoin", "muskx.co", "coin", "elonmusk", "prize", "еlonmusk", "btc", "cash", "million",
@@ -23,8 +23,19 @@ const createDiscordUser = async (ctx) => {
   const userId = ctx.message.from.username || "undefined";
   let url;
   const t = await telegramClient.telegram.getUserProfilePhotos(ctx.message.from.id);
-  if (t.photos.length) url = await telegramClient.telegram.getFileLink(t.photos[0][0].file_id);
-  const user = { username: username, avatarUrl: url, userId: userId };
+  try {
+    if (t.photos.length) url = await telegramClient.telegram.getFileLink(t.photos[0][0].file_id);
+  }
+  catch (error) {
+    logError(error);
+  }
+  let user;
+  if (url) {
+    user = { username: username, avatarUrl: url, userId: userId };
+  }
+  else {
+    user = { username: username, userId: userId };
+  }
   return user;
 };
 
@@ -192,7 +203,7 @@ const handleBridgeMessage = async (message, courseName, Course) => {
     bridgedMessagesCounter.inc({ origin: "discord", course: group.name });
   }
   catch (error) {
-    logError(error);
+    logNoInteractionError(group.telegramId, message.member, message.channel.name, discordClient, error.toString());
     return await sendErrorReportNoInteraction(group.telegramId, message.member, message.channel.name, discordClient, error.toString());
   }
 };

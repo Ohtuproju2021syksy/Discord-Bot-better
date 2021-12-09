@@ -38,7 +38,7 @@ const initChannels = async (guild, client) => {
       options: {
         type: "GUILD_TEXT",
         topic: `User manual for students: ${githubRepo}/blob/main/documentation/usermanual-student.md`,
-        permissionOverwrites: [{ id: guild.id, deny: ["SEND_MESSAGES"], "allow": ["VIEW_CHANNEL"] }, { id: client.user.id, allow: ["SEND_MESSAGES", "VIEW_CHANNEL"] }],
+        permissionOverwrites: [{ id: guild.id, deny: ["SEND_MESSAGES"], allow: ["VIEW_CHANNEL"] }, { id: client.user.id, allow: ["SEND_MESSAGES", "VIEW_CHANNEL"] }],
       },
     },
   ];

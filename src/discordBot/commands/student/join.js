@@ -3,7 +3,6 @@ const { editEphemeral, editErrorEphemeral, sendEphemeral, sendReplyMessage } = r
 const { findCourseFromDb } = require("../../../db/services/courseService");
 const { findUserByDiscordId, createUserToDatabase } = require("../../../db/services/userService");
 const { createCourseMemberToDatabase, findAllCourseMembersByUser } = require("../../../db/services/courseMemberService");
-const joinedUsersCounter = require("../../../promMetrics/joinedUsersCounter");
 
 const execute = async (interaction, client, models) => {
   let roleString = "";
@@ -63,8 +62,6 @@ const execute = async (interaction, client, models) => {
     message = "Hey, <@" + interaction.author + ">, I added you to **" + course.fullName + "**, hopefully I got that correct.\n" + copyPasteGuideReply;
     await sendReplyMessage(interaction, channel, message);
   }
-
-  joinedUsersCounter.inc({ course: roleString });
 };
 
 module.exports = {

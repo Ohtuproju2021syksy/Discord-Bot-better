@@ -79,7 +79,7 @@ Command | Explanation | Arguments
 [/auth](./commands/general/auth.md) | For faculty members with student role to acquire the faculty role. | :x:
 [/courses](./commands/general/courses.md) | Get public course information | :x:
 [/help](./commands/general/help.md) | Get help how to use slash commands. | :o:
-[/instructors](./commands/general/instructors.md) | Get course intructors information. | :o:
+[/instructors](./commands/general/instructors.md) | Get course intructors information. | :x:
 [/join](./commands/general/join.md) | Joins you into the course given, e.g., /join ohpe. | :heavy_check_mark:
 [/leave](./commands/general/leave.md) | Remove you from the course given, e.g., /leave ohpe. | :heavy_check_mark:
 [/workshops](./commands/general/workshops.md) | Get workshop info for the course. | :x:

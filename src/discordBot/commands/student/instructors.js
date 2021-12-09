@@ -7,20 +7,11 @@ const execute = async (interaction, client) => {
   await sendEphemeral(interaction, "Fetching instructors...");
   const guild = client.guild;
 
-  let roleString;
-  if (interaction.options.getString("course")) {
-    roleString = interaction.options.getString("course").toLowerCase().trim();
+  const category = guild.channels.cache.get(interaction.channelId).parent;
+  if (!category) {
+    return await editErrorEphemeral(interaction, "Use the command in a course channel.");
   }
-  else {
-    const category = guild.channels.cache.get(interaction.channelId).parent;
-    if (!category) {
-      return await editErrorEphemeral(interaction, "Provide course name as argument or use the command in course channel.");
-    }
-    else {
-      roleString = getCourseNameFromCategory(category.name);
-    }
-  }
-
+  const roleString = getCourseNameFromCategory(category.name);
 
   const adminsString = await listCourseInstructors(guild, roleString, courseAdminRole, facultyRole);
 
@@ -33,12 +24,8 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName("instructors")
     .setDescription("Prints out the instructors of the course.*")
-    .setDefaultPermission(true)
-    .addStringOption(option =>
-      option.setName("course")
-        .setDescription("Course to print instructors of")
-        .setRequired(false)),
+    .setDefaultPermission(true),
   execute,
-  usage: "/instructors <course name>",
+  usage: "/instructors",
   description: "Prints out the instructors of the course.",
 };
