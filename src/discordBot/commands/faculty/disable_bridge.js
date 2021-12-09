@@ -40,10 +40,10 @@ const execute = async (interaction, client, models) => {
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("disable_bridge")
-    .setDescription("Disables the bridge between this channel and Telegram.")
+    .setDescription("Disables the bridge between the channel the command was used in and Telegram.")
     .setDefaultPermission(false),
   execute,
   usage: "/disable_bridge",
-  description: "Disables the bridge between this channel and Telegram.",
+  description: "Disables the bridge between the channel the command was used in and Telegram.*",
   roles: ["admin", facultyRole],
 };
