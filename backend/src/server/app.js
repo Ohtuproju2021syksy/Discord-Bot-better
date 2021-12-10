@@ -9,6 +9,8 @@ const metricsRoute = require("./routes/metrics");
 const defaultRouteHandler = require("./routes/defaultRouteHandler");
 const defaultRouteErrorHandler = require("./routes/defaultRouteErrorHandler");
 const cors = require("cors");
+const coursesRoute = require("./routes/courses");
+const channelsRoute = require("./routes/channels");
 const flash = require("connect-flash");
 const path = require("path");
 require("./strategies/discordstrategy");
@@ -35,9 +37,8 @@ module.exports = (sequelize) => {
   app.use(passport.initialize());
   app.use(passport.session());
 
-
   app.use(express.static(path.join(__dirname, "build")));
-
+  app.use(express.json());
   app.use("/", defaultRouteHandler);
 
   app.use(flash());
@@ -45,6 +46,8 @@ module.exports = (sequelize) => {
   app.use("/join", discordJoinRoute);
   app.use("/authenticate_faculty", facultyAuthRoute);
   app.use("/metrics", metricsRoute);
+  app.use("/api/courses", coursesRoute);
+  app.use("/api/channels", channelsRoute);
 
   app.use("*", defaultRouteErrorHandler);
 

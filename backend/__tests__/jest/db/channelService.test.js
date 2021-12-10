@@ -1,4 +1,4 @@
-const { findChannelFromDbByName, createChannelToDatabase, createDefaultChannelsToDatabase, removeChannelFromDb, findChannelsByCourse, countChannelsByCourse, editChannelNames, saveChannelTopicToDb } = require("../../../src/db/services/channelService");
+const { findChannelFromDbByName, createChannelToDatabase, createDefaultChannelsToDatabase, removeChannelFromDb, findChannelsByCourse, countChannelsByCourse, editChannelNames, saveChannelTopicToDb, findChannelFromDbById, findChannelsFromDb } = require("../../../src/db/services/channelService");
 
 const channelModelInstanceMock = {
   id: 1,
@@ -52,6 +52,16 @@ describe("channelService", () => {
     expect(channelModelMock.findOne).toHaveBeenCalledWith({
       where: {
         name: "discotg_general",
+      },
+    });
+  });
+
+  test("find channel from db by id", async () => {
+    await findChannelFromDbById(1, channelModelMock);
+    expect(channelModelMock.findOne).toHaveBeenCalledTimes(1);
+    expect(channelModelMock.findOne).toHaveBeenCalledWith({
+      where: {
+        id: 1,
       },
     });
   });
@@ -131,6 +141,11 @@ describe("channelService", () => {
       where:
         { courseId: 3 },
     });
+  });
+
+  test("find all channels from db", async () => {
+    await findChannelsFromDb(channelModelMock);
+    expect(channelModelMock.findAll).toHaveBeenCalledTimes(1);
   });
 
   test("change all channel names", async () => {

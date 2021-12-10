@@ -51,6 +51,22 @@ const countChannelsByCourse = async (id, Channel) => {
   });
 };
 
+const findChannelsFromDb = async (Channel) => {
+  return await Channel.findAll({
+    attributes: ["courseId", "name", "topic", "bridged", "defaultChannel", "voiceChannel"],
+    order: ["courseId"],
+    raw: true,
+  });
+};
+
+const findChannelFromDbById = async (channelId, Channel) => {
+  return await Channel.findOne({
+    where: {
+      id: channelId,
+    },
+  });
+};
+
 const editChannelNames = async (courseId, previousCourseName, newCourseName, Channel) => {
   const channels = await findChannelsByCourse(courseId, Channel);
   channels.map(async (channel) => {
@@ -76,4 +92,6 @@ module.exports = {
   editChannelNames,
   saveChannelTopicToDb,
   createDefaultChannelsToDatabase,
+  findChannelsFromDb,
+  findChannelFromDbById,
 };
