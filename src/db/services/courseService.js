@@ -158,6 +158,13 @@ const saveCourseIdWithName = async (id, courseName, Course) => {
     { where: { name: courseName } });
 };
 
+const getAllCourses = async (Course) => {
+  return await Course.findAll({
+    attributes: ["id", "code", "fullName", "name", "private", "locked", "categoryId"],
+    raw: true,
+  });
+};
+
 module.exports = {
   setCourseToPrivate,
   setCourseToPublic,
@@ -176,4 +183,5 @@ module.exports = {
   findPrivateCoursesFromDb,
   findPublicCoursesFromDb,
   saveCourseIdWithName,
+  getAllCourses,
 };
