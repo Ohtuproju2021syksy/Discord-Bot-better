@@ -9,13 +9,13 @@ const execute = async (message, args, models) => {
     for (const course in allCourses) {
       const currentCourse = allCourses[course];
 
-      statusMessage += "Course: " + currentCourse.name + "\n";
+      statusMessage += "Course: " + currentCourse.name + " " + currentCourse.cateogryId + "\n";
 
       const courseChannels = await findChannelsByCourse(currentCourse.id, models.Channel);
 
       for (const channel in courseChannels) {
         const currentChannel = courseChannels[channel];
-        statusMessage += currentChannel.name + "\n";
+        statusMessage += currentChannel.name + " " + currentChannel.discordId + "\n";
       }
       statusMessage += "\n";
     }
