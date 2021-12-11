@@ -1,7 +1,21 @@
+require("dotenv").config();
 const router = require("express").Router();
 const { findCoursesFromDb, findCourseFromDbById, createCourseToDatabase, removeCourseFromDb } = require("../../db/services/courseService");
 const models = require("../../db/dbInit");
 const { logError } = require("../../discordBot/services/logger");
+const jwt = require("jsonwebtoken");
+
+const verifyRequest = (req) => {
+  const token = req.get("authorization");
+  if (!token) {
+    return false;
+  }
+  const decodedToken = jwt.verify(token, process.env.API_SECRET);
+  if (!decodedToken.username) {
+    return false;
+  }
+  return true;
+};
 
 router.get("/", async (req, res) => {
   try {
@@ -24,6 +38,10 @@ router.get("/:id", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
+  if (!verifyRequest(req)) {
+    return res.status(401).json({ error: "token missing or invalid" });
+  }
+
   try {
     const courseCode = req.body.courseCode;
     const fullName = req.body.fullName;
@@ -38,13 +56,17 @@ router.post("/", async (req, res) => {
 });
 
 router.put("/:id", async (req, res) => {
+  if (!verifyRequest(req)) {
+    return res.status(401).json({ error: "token missing or invalid" });
+  }
+
   try {
     const course = await findCourseFromDbById(req.params.id, models.Course);
-    course.code = req.body.code;
-    course.fullName = req.body.fullName;
-    course.name = req.body.name;
-    course.locked = req.body.locked;
-    course.private = req.body.private;
+    course.code = req.body.code ? req.body.code : course.code;
+    course.fullName = req.body.fullName ? req.body.fullName : course.fullName;
+    course.name = req.body.name ? req.body.name : course.name;
+    course.locked = req.body.locked ? req.body.locked : course.locked;
+    course.private = req.body.private ? req.body.private : course.private;
     await course.save();
     res.json(course).status(200);
   }
@@ -54,6 +76,10 @@ router.put("/:id", async (req, res) => {
 });
 
 router.delete("/:id", async (req, res) => {
+  if (!verifyRequest(req)) {
+    return res.status(401).json({ error: "token missing or invalid" });
+  }
+
   try {
     const { name } = req.body;
     await removeCourseFromDb(name, models.Course);

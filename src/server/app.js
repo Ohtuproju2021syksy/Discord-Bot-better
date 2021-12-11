@@ -10,6 +10,7 @@ const defaultRouteHandler = require("./routes/defaultRouteHandler");
 const defaultRouteErrorHandler = require("./routes/defaultRouteErrorHandler");
 const coursesRoute = require("./routes/courses");
 const channelsRoute = require("./routes/channels");
+const loginRoute = require("./routes/login");
 const flash = require("connect-flash");
 const path = require("path");
 require("./strategies/discordstrategy");
@@ -46,6 +47,7 @@ module.exports = (sequelize) => {
   app.use("/metrics", metricsRoute);
   app.use("/api/courses", coursesRoute);
   app.use("/api/channels", channelsRoute);
+  app.use("/api/login", loginRoute);
 
   app.use("*", defaultRouteErrorHandler);
 
