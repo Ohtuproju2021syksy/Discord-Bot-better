@@ -1,5 +1,5 @@
 const { getAllCourses } = require("../../../db/services/courseService");
-const { findChannelsByCourse } = require("../../../db/services/channelService");
+const { findChannelsByCourse, getAllChannels } = require("../../../db/services/channelService");
 
 
 const execute = async (message, args, models) => {
@@ -19,7 +19,33 @@ const execute = async (message, args, models) => {
       }
       statusMessage += "\n";
     }
-    message.reply("Courses:\n" + statusMessage);
+    if (statusMessage.length >= 2000 && statusMessage < 4000) {
+      message.reply("Courses:\n" + statusMessage.substring(0, 1987));
+      message.reply("Courses:\n" + statusMessage.substring(1988, statusMessage.length - 1));
+    }
+    else if (statusMessage.length < 2000) {
+      message.reply("Courses:\n" + statusMessage);
+    }
+    else {
+      message.reply("Too long message");
+    }
+
+    statusMessage = "";
+    const allChannels = await getAllChannels(models.Channel);
+    for (const channel in allChannels) {
+      const currentChannel = allChannels[channel];
+      statusMessage += currentChannel.name + " " + currentChannel.discordId + "\n";
+    }
+    if (statusMessage.length >= 2000 && statusMessage < 4000) {
+      message.reply("Courses:\n" + statusMessage.substring(0, 1987));
+      message.reply("Courses:\n" + statusMessage.substring(1988, statusMessage.length - 1));
+    }
+    else if (statusMessage.length < 2000) {
+      message.reply("Courses:\n" + statusMessage);
+    }
+    else {
+      message.reply("Too long message");
+    }
   }
 };
 
