@@ -85,6 +85,12 @@ const editChannelName = async (discordId, newName, Channel) => {
   }
 };
 
+const saveChannelIdWithName = async (id, channelName, Channel) => {
+  await Channel.update(
+    { discordId: id },
+    { where: { name: channelName } });
+};
+
 module.exports = {
   findChannelFromDbByName,
   findChannelFromDbByDiscordId,
@@ -96,4 +102,5 @@ module.exports = {
   saveChannelTopicToDb,
   createDefaultChannelsToDatabase,
   editChannelName,
+  saveChannelIdWithName,
 };
