@@ -172,6 +172,13 @@ const handleBridgeMessage = async (message, courseName, Course) => {
     msg = msg.replace("<@!" + userID + ">", userName);
   }
 
+  while (msg.match(/(?<=<@).*?(?=>)/)) {
+    const userID = msg.match(/(?<=<@).*?(?=>)/)[0];
+    let userName = message.guild.members.cache.get(userID);
+    userName ? userName = userName.user.username : userName = "Jon Doe";
+    msg = msg.replace("<@" + userID + ">", userName);
+  }
+
   while (msg.match(/(?<=<@&).*?(?=>)/)) {
     const roleID = msg.match(/(?<=<@&).*?(?=>)/)[0];
     let roleName = message.guild.roles.cache.get(roleID);

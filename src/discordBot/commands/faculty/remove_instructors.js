@@ -37,6 +37,12 @@ const execute = async (interaction, client, models) => {
     users = users.replace("<@!" + userID + ">", "");
   }
 
+  while (users.match(/(?<=<@).*?(?=>)/)) {
+    const userID = users.match(/(?<=<@).*?(?=>)/)[0];
+    userIdList.push(userID);
+    users = users.replace("<@" + userID + ">", "");
+  }
+
   for (let i = 0; i < userIdList.length; i++) {
     const memberToDemote = await getUserWithUserId(guild, userIdList[i]);
     if (memberToDemote.user.bot) {

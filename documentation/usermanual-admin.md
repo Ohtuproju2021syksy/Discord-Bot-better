@@ -68,6 +68,29 @@ To update course instructor roles, use `!update_instructors` inside the _#comman
 
 To update server and course invite links, use `!update_invitelinks` inside the _#commands_ text channel.
 
+### Listing all courses and channels that should exist ###
+
+To see what courses and channels exist in the database, use `!list_courses` inside the _#commands_ text channel.
+
+### Check server status ###
+
+To see if Discord servers categories, channels and roles reflect what database has, use `!server_status` inside the _#commands_ text channel. The command lists all problems that are related to:
+- Category existance, name and permissions
+- Category channel existances, names, placements
+- Category member/instructor role
+- Missing admin/faculty roles
+- Unnecessary channels in Discord Server
+
+### Restoring the Discord server from database ###
+
+If someone has manually modified the Discord server in a way that can't be easily undone, you can use `!restore_server_from_discord` inside the _#commands_ text channel. This command will go through everything in the database and restore Discord server by using the database ase a base form. This command will:
+- Check if all categories exist and if not, create them. Restore names, place in the correct spot on server and create member and instructor roles for the course (if they don't exist)
+- Check if all channels exist and if not, create them. Restore names, place in correct category.
+- Restore permissions on all courses, depending on lock/unlock status
+- Restore admin and faculty statuses
+- Restore course member and instructor roles
+- Delete all extra channels that do not exist in database (only the channels that are placed in valid Course categories, so does not delete default chat/commands/voice/etc.)
+
 ### List of commands
 
 #### Admin specific commands ####
@@ -77,9 +100,12 @@ Command | Explanation | Arguments
 [!add_admin_rights](./command/admin/add_admin_rights.md) | Add admin rights to a user. | :heavy_check_mark:
 [!delete_command](./command/admin/delete_command.md) | Delete the given slash command. | :heavy_check_mark:
 [!delete_course](./command/admin/delete_course.md) | Delete the given course channel. | :heavy_check_mark:
+[!list_courses](./command/admin/list_courses.md) | List all courses and channels in them | :x:
 [!reload_commands](./command/admin/reload_commands.md) | Reload all slash commands, returning deleted commands, registering new commands, and updating command permissions. | :x:
 [!remove_admin_rights](./command/admin/remove_admin_rights.md) | Remove admin rights from a user. | :heavy_check_mark:
 [!remove_faculty_rights](./command/admin/remove_faculty_rights.md) | Remove faculty rights from a user. | :heavy_check_mark:
+[!restore_server_from_database](./command/admin/restore_server_from_database.md) | Restores course/channels/roles from the database. | :x:
+[!server_status](./command/admin/lserver_status.md) | Checks if Discord server categories/channels/roles match database | :x:
 [!sort_courses](./command/admin/sort_courses.md) | Sort courses alphabetically. | :x:
 [!update_instructors](./command/admin/update_instructors.md) | Update course instructor roles. | :x:
 [!update_invitelinks](./command/admin/update_invitelinks.md) | Update course invitation links. | :x:
