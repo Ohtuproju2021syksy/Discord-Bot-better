@@ -35,7 +35,7 @@ const initChannelHooks = (guild, models) => {
   const channelModel = models.Channel;
   const courseModel = models.Course;
   channelModel.addHook("afterBulkDestroy", (channel) => {
-    guild.channels.cache.find(c => c.name === channel.where.name)?.delete();
+    guild.channels.cache.find(c => c.name === channel.where.name[Op.iLike])?.delete();
   });
 
   channelModel.addHook("afterCreate", async (channel) => {

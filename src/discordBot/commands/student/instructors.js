@@ -27,5 +27,5 @@ module.exports = {
     .setDefaultPermission(true),
   execute,
   usage: "/instructors",
-  description: "Prints out the instructors of the course.",
+  description: "Prints out the instructors of the course.*",
 };
