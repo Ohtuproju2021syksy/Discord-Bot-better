@@ -1,5 +1,5 @@
 const { getAllCourses } = require("../../../db/services/courseService");
-const { findChannelsByCourse } = require("../../../db/services/channelService");
+const { findChannelsByCourse, getAllChannels } = require("../../../db/services/channelService");
 
 
 const execute = async (message, args, models) => {
@@ -20,6 +20,13 @@ const execute = async (message, args, models) => {
       statusMessage += "\n";
     }
     message.reply("Courses:\n" + statusMessage);
+    statusMessage = "";
+    const allChannels = await getAllChannels(models.Channel);
+    for (const channel in allChannels) {
+      const currentChannel = allChannels[channel];
+      statusMessage += currentChannel.name + " " + currentChannel.discordId + "\n";
+    }
+    message.reply("Channels:\n" + statusMessage);
   }
 };
 
