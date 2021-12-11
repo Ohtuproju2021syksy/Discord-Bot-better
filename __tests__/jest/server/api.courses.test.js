@@ -29,9 +29,9 @@ afterEach(() => {
 describe("api/courses", () => {
   test("Default url returns courses", async () => {
     const expectedResponse = [{ id: 1, code: "TKT101", fullname: "Test course", name: "tk" }];
-      fetch.mockResolvedValueOnce(new Response(JSON.stringify(expectedResponse)));
-      await api
-        .get("/api/courses")
-        .expect(200);
+    fetch.mockResolvedValueOnce(new Response(JSON.stringify(expectedResponse)));
+    await api
+      .get("/api/courses")
+      .expect(200);
   });
 });
