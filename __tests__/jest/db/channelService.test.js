@@ -1,4 +1,4 @@
-const { findChannelFromDbByName, createChannelToDatabase, createDefaultChannelsToDatabase, removeChannelFromDb, findChannelsByCourse, countChannelsByCourse, editChannelNames } = require("../../../src/db/services/channelService");
+const { findChannelFromDbByName, createChannelToDatabase, createDefaultChannelsToDatabase, removeChannelFromDb, findChannelsByCourse, countChannelsByCourse, editChannelNames, saveChannelTopicToDb } = require("../../../src/db/services/channelService");
 
 const channelModelInstanceMock = {
   id: 1,

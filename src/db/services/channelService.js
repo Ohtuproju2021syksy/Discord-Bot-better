@@ -110,4 +110,5 @@ module.exports = {
   editChannelName,
   saveChannelIdWithName,
   getAllChannels,
+  saveChannelTopicToDb,
 };

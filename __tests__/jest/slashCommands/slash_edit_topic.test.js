@@ -1,7 +1,7 @@
 const { execute } = require("../../../src/discordBot/commands/faculty/edit_topic");
 const { sendEphemeral, editErrorEphemeral, editEphemeral } = require("../../../src/discordBot/services/message");
 const { confirmChoice } = require("../../../src/discordBot/services/confirm");
-const { findChannelFromDbByName } = require("../../../src/db/services/channelService");
+const { findChannelFromDbByName, saveChannelTopicToDb } = require("../../../src/db/services/channelService");
 const {
   getCourseNameFromCategory,
   handleCooldown,
@@ -55,7 +55,7 @@ describe("slash edit_topic command", () => {
     const response = "Channel topic has been changed";
     await execute(defaultTeacherInteraction, client, models);
     expect(confirmChoice).toHaveBeenCalledTimes(1);
-    expect(getCourseNameFromCategory).toHaveBeenCalledTimes(1);
+    expect(getCourseNameFromCategory).toHaveBeenCalledTimes(2);
     expect(getCourseNameFromCategory).toHaveBeenCalledWith(channel.parent, client.guild);
     expect(saveChannelTopicToDb).toHaveBeenCalledTimes(1);
     expect(saveChannelTopicToDb).toHaveBeenCalledWith(getCourseNameFromCategory(general.name), newTopic, models.Channel);
