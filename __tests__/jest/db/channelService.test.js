@@ -47,13 +47,9 @@ afterEach(() => {
 describe("channelService", () => {
 
   test("find channel from db by name", async () => {
-    await findChannelFromDbByName("discotg_general", channelModelMock);
+    const response = await findChannelFromDbByName("discotg_general", channelModelMock);
     expect(channelModelMock.findOne).toHaveBeenCalledTimes(1);
-    expect(channelModelMock.findOne).toHaveBeenCalledWith({
-      where: {
-        name: "discotg_general",
-      },
-    });
+    expect(response).toBe(channelModelInstanceMock);
   });
 
   test("create a channel to database", async () => {
@@ -102,10 +98,6 @@ describe("channelService", () => {
     await removeChannelFromDb("discotg_general", channelModelMock);
     expect(channelModelMock.findOne).toHaveBeenCalledTimes(1);
     expect(channelModelMock.destroy).toHaveBeenCalledTimes(1);
-    expect(channelModelMock.destroy).toHaveBeenCalledWith({
-      where:
-        { name: "discotg_general" },
-    });
   });
 
   test("remove a channel from database won't do anything if channel doesn't exist", async () => {
@@ -142,5 +134,12 @@ describe("channelService", () => {
     });
     expect(channelModelInstanceMock.save).toHaveBeenCalledTimes(1);
     expect(channelModelInstanceMock.name).toBe("tgdisco_general");
+  });
+
+  test("save channel topic to database", async () => {
+    await saveChannelTopicToDb("discotg_general", "topic of the chat", channelModelMock);
+    expect(channelModelMock.findOne).toHaveBeenCalledTimes(1);
+    expect(channelModelInstanceMock.save).toHaveBeenCalledTimes(1);
+    expect(channelModelInstanceMock.topic).toBe("topic of the chat");
   });
 });

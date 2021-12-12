@@ -86,7 +86,9 @@ Note that the channel name you give is the end part of the name. For example, in
 
 **Note also that if the course is bridged to telegram, messages from every channel will be bridged to telegram but messages from telegram are bridged only to general. If you want to disable bridge on a non-default text channel, use the command `/disable_bridge` on that channel.**
 
-To remove added text channel use `/delete_channel` command followed by the name of the text channel to be removed e.g., `/delete_channel feedback` removes _wepa_feedback_. This command must also be used inside the course you want the channel to be removed. Note that announcements or general channels can not be removed.
+To remove added text channel use `/delete_channel` command followed by the name of the text channel to be removed e.g., `/delete_channel feedback` removes _wepa_feedback_ when run inside _wepa_ course. This command must also be used inside the course you want the channel to be removed. Note that announcements or general channels can not be removed.
+
+You can also rename non-default text channels that were created with `/create_channel`. To rename a channel, use `/rename_channel` inside the channel you want to rename. Give the command the new name as a parameter, e.g. if you want to rename _wepa_feedback_ channel to _wepa_critique_, type `/rename_channel critique` inside _wepa_feedback_ channel.
 
 ## How to make course hidden
 Once the course is created, it can be made hidden. This means joining the course channel is only possible via link. To make a secret course use the `/hide_course` command followed by the course name, e.g. `/hide_course wepa`. The secret courses can be identified by the ghost emoji. 
@@ -104,7 +106,7 @@ Students can use the `/instructors` command on a course and see all the instruct
 ## How to remove instructors from a course
 To remove instructor role from users, use `/remove_instructors` command on a course channel. You can remove the course instructor role from multiple people at once; e.g. `/remove_instructors @user1 @user2`.
 
-## How to edit course name information
+## How to edit course information
 
 The `/edit_course` command allows you to edit the information for the course you are in. You can change the _course code_, _full name_ and _nickname_. If you change the value users see on the Discord´s left column, this value is either the course code or nickname depending on which values the course is based on, you have 15 minutes cooldown until you can use the command again.
 
@@ -139,6 +141,7 @@ Command | Explanation | Arguments
 [/hide_course](./commands/faculty/hide_course.md)| Make given course private, e.g., /hide_course weba. | :heavy_check_mark:
 [/lock_chat](./commands/faculty/lock_chat.md) | Lock the chat (meaning only instructors and faculty can post messages) of a given course | :heavy_check_mark:
 [/remove_instructors](./commands/faculty/remove_instructors.md) | Remove instructor role from (multiple) users, e.g., /remove_instructors @user1 @user2. | :heavy_check_mark:
+[/rename_channel](./commands/faculty/rename_channel.md) | Rename the non-default course text channel the command is used in, e.g., /rename_channel feedback. | :heavy_check_mark:
 [/status](./commands/faculty/status.md) | Used in course channel returns general info about the course | :heavy_check_mark:
 [/unhide_course](./commands/faculty/unhide_course.md) | Make given course public, e.g., /unhide_course weba. | :heavy_check_mark:
 [/unlock_chat](./commands/faculty/unlock_chat.md) | Unlock the chat of a given course | :heavy_check_mark:

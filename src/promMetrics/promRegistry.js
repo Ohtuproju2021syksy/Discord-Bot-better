@@ -1,6 +1,5 @@
 const promClient = require("prom-client");
-const bridgedMessagesCounter = require("./bridgedMessagesCounter");
-const joinedUsersCounter = require("./joinedUsersCounter");
+const { joinedUsersCounter, bridgedMessagesCounter } = require("./promCounters");
 
 const register = new promClient.Registry();
 register.registerMetric(joinedUsersCounter);

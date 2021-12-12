@@ -57,9 +57,8 @@ describe("slash edit_topic command", () => {
     expect(confirmChoice).toHaveBeenCalledTimes(1);
     expect(getCourseNameFromCategory).toHaveBeenCalledTimes(1);
     expect(getCourseNameFromCategory).toHaveBeenCalledWith(channel.parent, client.guild);
-    expect(findChannelFromDbByName).toHaveBeenCalledTimes(1);
-    expect(findChannelFromDbByName).toHaveBeenCalledWith(general.name, models.Channel);
-    expect(mockSaveMethod).toHaveBeenCalledTimes(1);
+    expect(saveChannelTopicToDb).toHaveBeenCalledTimes(1);
+    expect(saveChannelTopicToDb).toHaveBeenCalledWith(getCourseNameFromCategory(general.name), newTopic, models.Channel);
     expect(handleCooldown).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultTeacherInteraction, initialResponse);

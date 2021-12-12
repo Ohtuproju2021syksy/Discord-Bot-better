@@ -32,6 +32,7 @@ Command | Description | Example
 `/enable_bridge` | Enable bridge in a Discord text channel. Must be used inside a course and in a non-default text channel. | `/enable_bridge`
 `/hide_course` | Make the given course private, disabling joining with `/join` | `/hide_course ohpe`
 `/lock_chat` | Lock the given course, disabling messaging by regular users | `/lock_chat ohpe`
+`/rename_channel` | Rename a Discord text channel. Must be used inside a course and in a non-default text channel. | `/rename_channel questions`
 `/status` | Get full status of course. Must be used inside a course. | `/status`
 `/unhide_course` | Make the given course public, enabling joining with `/join`. | `/unhide_course ohpe`
 `/unlock_chat` | Unlock the given course, enabling messaging by regular users. | `/unlock_chat ohpe`
