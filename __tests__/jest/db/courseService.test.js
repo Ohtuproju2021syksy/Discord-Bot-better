@@ -132,7 +132,7 @@ describe("courseService", () => {
     };
     expect(courseModelMock.findAll).toHaveBeenCalledTimes(1);
     expect(courseModelMock.findAll).toHaveBeenCalledWith({
-      attributes: ["id", "code", "fullName", "name"],
+      attributes: ["id", "code", "fullName", "name", "private", "locked", "categoryId"],
       order: ["fullName"],
       where: filter[false],
       raw: true,
@@ -148,7 +148,7 @@ describe("courseService", () => {
     };
     expect(courseModelMock.findAll).toHaveBeenCalledTimes(1);
     expect(courseModelMock.findAll).toHaveBeenCalledWith({
-      attributes: ["id", "code", "fullName", "name"],
+      attributes: ["id", "code", "fullName", "name", "private", "locked", "categoryId"],
       order: ["fullName"],
       where: filter[true],
       raw: true,

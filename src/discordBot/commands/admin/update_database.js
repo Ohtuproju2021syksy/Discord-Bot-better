@@ -1,7 +1,8 @@
 const { createCourseMemberToDatabase } = require("../../../db/services/courseMemberService");
+const { saveCourseIdWithName } = require("../../../db/services/courseService");
 const { getCourseNameFromCategory, isCourseCategory } = require("../../services/service");
 const { findCourseFromDb } = require("../../../db/services/courseService");
-const { createChannelToDatabase, findChannelFromDbByName } = require("../../../db/services/channelService");
+const { createChannelToDatabase, saveChannelIdWithName, findChannelFromDbByName } = require("../../../db/services/channelService");
 const { createUserToDatabase } = require("../../../db/services/userService");
 const { facultyRole } = require("../../../../config.json");
 
@@ -9,6 +10,8 @@ const execute = async (message, args, models) => {
   if (message.member.permissions.has("ADMINISTRATOR")) {
     const guild = message.client.guild;
     await saveChannelsToDb(models, guild);
+    await saveChannelIdToDb(models, guild);
+    await saveCategoryIdtoDb(models, guild);
     await saveUsersToDb(models, guild);
     await saveCourseMembersToDb(models, guild);
   }
@@ -53,6 +56,43 @@ const saveChannelsToDb = async (models, guild) => {
         }, models.Channel);
       }
     }
+  }
+};
+
+const saveChannelIdToDb = async (models, guild) => {
+  const channelCache = guild.channels.cache;
+  const categoryChannels = [];
+
+  await Promise.all(channelCache.map(async (c) => {
+    if (await isCourseCategory(c, models.Course)) {
+      categoryChannels.push(c.id);
+    }
+  }));
+
+  const courseChannels = channelCache.filter(c => categoryChannels.includes(c.parentId));
+  const channelsAsArray = Array.from(courseChannels.values());
+  for (const channel in channelsAsArray) {
+    const currentChannel = channelsAsArray[channel];
+    const channelName = currentChannel.name;
+    const channelId = currentChannel.id;
+    await saveChannelIdWithName(channelId, channelName, models.Channel);
+  }
+};
+
+const saveCategoryIdtoDb = async (models, guild) => {
+  const channelCache = guild.channels.cache;
+  const categoryChannels = [];
+
+  await Promise.all(channelCache.map(async (c) => {
+    if (await isCourseCategory(c, models.Course)) {
+      categoryChannels.push(c);
+    }
+  }));
+  for (const category in categoryChannels) {
+    const currentCategory = categoryChannels[category];
+    const categoryName = getCourseNameFromCategory(currentCategory);
+    const categoryId = currentCategory.id;
+    await saveCourseIdWithName(categoryId, categoryName, models.Course);
   }
 };
 

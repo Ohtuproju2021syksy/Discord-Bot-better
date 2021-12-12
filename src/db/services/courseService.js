@@ -76,9 +76,16 @@ const findCoursesFromDb = async (order, Course, state) => {
     undefined: {},
   };
   return await Course.findAll({
-    attributes: ["id", "code", "fullName", "name"],
+    attributes: ["id", "code", "fullName", "name", "private", "locked", "categoryId"],
     order: [order],
     where: filter[state],
+    raw: true,
+  });
+};
+
+const getAllCourses = async (Course) => {
+  return await Course.findAll({
+    attributes: ["id", "code", "fullName", "name", "private", "locked", "categoryId"],
     raw: true,
   });
 };
@@ -152,6 +159,19 @@ const findAllCourseNames = async (Course) => {
   return courseNames;
 };
 
+const getCourseByDiscordId = async (id, Course) => {
+  return await Course.findOne({
+    where:
+      { categoryId: id },
+  });
+};
+
+const saveCourseIdWithName = async (id, courseName, Course) => {
+  await Course.update(
+    { categoryId: id },
+    { where: { name: courseName } });
+};
+
 
 module.exports = {
   setCourseToPrivate,
@@ -166,6 +186,9 @@ module.exports = {
   findCourseNickNameFromDbWithCourseCode,
   findAllCourseNames,
   findCourseFromDbById,
+  getCourseByDiscordId,
+  saveCourseIdWithName,
+  getAllCourses,
   findLockedCoursesFromDb,
   findUnlockedCoursesFromDb,
   findPrivateCoursesFromDb,
