@@ -13,6 +13,7 @@ const {
   updateGuide,
   setCoursePositionABC } = require("../../services/service");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
+const { logError } = require("../../services/logger");
 
 const execute = async (message, args, models) => {
   if (message.member.permissions.has("ADMINISTRATOR")) {
@@ -153,7 +154,12 @@ const restorePermissions = async (guild, models) => {
       discordCategory.permissionOverwrites.create(guild.roles.cache.find(r => r.name === "admin"), { SEND_MESSAGES: true });
     }
     else {
-      discordCategory.permissionOverwrites.create(guild.roles.cache.find(r => r.name.toLowerCase() === `${currentCourse.name}`), { VIEW_CHANNEL: true, SEND_MESSAGES: true });
+      try {
+        discordCategory.permissionOverwrites.create(guild.roles.cache.find(r => r.name.toLowerCase() === `${currentCourse.name}`), { VIEW_CHANNEL: true, SEND_MESSAGES: true });
+      }
+      catch (error) {
+        logError(currentCourse + " " + guild.roles.cache.find(r => r.name.toLowerCase() === `${currentCourse.name}`));
+      }
     }
   }
 };
