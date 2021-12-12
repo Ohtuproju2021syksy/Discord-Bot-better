@@ -8,7 +8,7 @@
     "dev": "cross-env NODE_ENV=development nodemon src/index.js",
     "jest": "cross-env NODE_ENV=test jest --coverage --verbose --runInBand --detectOpenHandles",
     "test": "cross-env NODE_ENV=test jest --coverage --runInBand",
-    "build-front-linux": "rm -rf src/server/build/ && cd src/frontend/ && npm run build --prod && cp -r build ../server",
+    "build-front-linux": "rm -rf src/server/build/ && cd ../frontend && npm run build --prod && cp -r build ../backend/src/server",
     "build-front-win": "rd /s /q src\\server\\build\\ && cd src\\frontend\\ && npm run build --prod && xcopy /E /H /C build\\ ..\\server\\build\\",
     "lint": "eslint ."
   },
