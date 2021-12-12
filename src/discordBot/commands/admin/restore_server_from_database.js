@@ -13,26 +13,27 @@ const {
   updateGuide,
   setCoursePositionABC } = require("../../services/service");
 const { courseAdminRole, facultyRole } = require("../../../../config.json");
-const { logError } = require("../../services/logger");
 
 const execute = async (message, args, models) => {
-  const guild = message.client.guild;
-  const confirm = await confirmChoiceNoInteraction(message, "Restore EVERYTHING from database?", guild);
-  if (!confirm) {
-    return;
-  }
-  const confirm2 = await confirmChoiceNoInteraction(message, "Are you ABSOLUTELY sure?", guild);
-  if (!confirm2) {
-    return;
-  }
-  await restoreCategories(guild, models);
-  await restoreChannels(guild, models);
-  await restorePermissions(guild, models);
-  await restoreUsers(guild, models);
-  await restoreCourseMembers(guild, models);
-  await deleteExtraChannels(guild, models);
+  if (message.member.permissions.has("ADMINISTRATOR")) {
+    const guild = message.client.guild;
+    const confirm = await confirmChoiceNoInteraction(message, "Restore EVERYTHING from database?", guild);
+    if (!confirm) {
+      return;
+    }
+    const confirm2 = await confirmChoiceNoInteraction(message, "Are you ABSOLUTELY sure?", guild);
+    if (!confirm2) {
+      return;
+    }
+    await restoreCategories(guild, models);
+    await restoreChannels(guild, models);
+    await restorePermissions(guild, models);
+    await restoreUsers(guild, models);
+    await restoreCourseMembers(guild, models);
+    await deleteExtraChannels(guild, models);
 
-  await updateGuide(guild, models);
+    await updateGuide(guild, models);
+  }
 };
 
 const restoreCategories = async (guild, models) => {
@@ -152,12 +153,7 @@ const restorePermissions = async (guild, models) => {
       discordCategory.permissionOverwrites.create(guild.roles.cache.find(r => r.name === "admin"), { SEND_MESSAGES: true });
     }
     else {
-      try {
-        discordCategory.permissionOverwrites.create(guild.roles.cache.find(r => r.name.toLowerCase() === `${currentCourse.name}`), { VIEW_CHANNEL: true, SEND_MESSAGES: true });
-      }
-      catch (error) {
-        logError(currentCourse + " " + guild.roles.cache.find(r => r.name.toLowerCase() === `${currentCourse.name}`));
-      }
+      discordCategory.permissionOverwrites.create(guild.roles.cache.find(r => r.name.toLowerCase() === `${currentCourse.name}`), { VIEW_CHANNEL: true, SEND_MESSAGES: true });
     }
   }
 };
