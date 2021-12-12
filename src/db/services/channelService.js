@@ -107,14 +107,6 @@ const saveChannelIdWithName = async (id, channelName, Channel) => {
     { where: { name: channelName } });
 };
 
-
-const getAllChannels = async (Channel) => {
-  return await Channel.findAll({
-    attributes: ["id", "courseId", "name", "topic", "defaultChannel", "voiceChannel", "discordId"],
-    raw: true,
-  });
-};
-
 module.exports = {
   findChannelFromDbByName,
   findChannelFromDbByDiscordId,
