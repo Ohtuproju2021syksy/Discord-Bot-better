@@ -8,7 +8,7 @@ const {
 const { editErrorEphemeral, sendEphemeral, editEphemeral } = require("../../services/message");
 const { confirmChoice } = require("../../services/confirm");
 const { facultyRole } = require("../../../../config.json");
-const { saveChannelTopicToDb } = require("../../../db/services/channelService");
+const { findChannelFromDbByName } = require("../../../db/services/channelService");
 
 const execute = async (interaction, client, models) => {
   await sendEphemeral(interaction, "Editing topic...");

@@ -1,7 +1,7 @@
 const { execute } = require("../../../src/discordBot/commands/faculty/edit_topic");
 const { sendEphemeral, editErrorEphemeral, editEphemeral } = require("../../../src/discordBot/services/message");
 const { confirmChoice } = require("../../../src/discordBot/services/confirm");
-const { saveChannelTopicToDb } = require("../../../src/db/services/channelService");
+const { findChannelFromDbByName } = require("../../../src/db/services/channelService");
 const {
   getCourseNameFromCategory,
   handleCooldown,
@@ -22,6 +22,8 @@ const initialResponse = "Editing topic...";
 
 msToMinutesAndSeconds.mockImplementation(() => time);
 confirmChoice.mockImplementation(() => true);
+const mockSaveMethod = jest.fn();
+findChannelFromDbByName.mockImplementation(() => { return { topic: "topic", save: mockSaveMethod }; });
 
 const { defaultTeacherInteraction } = require("../../mocks/mockInteraction");
 const newTopic = "New topic!";
@@ -53,7 +55,7 @@ describe("slash edit_topic command", () => {
     const response = "Channel topic has been changed";
     await execute(defaultTeacherInteraction, client, models);
     expect(confirmChoice).toHaveBeenCalledTimes(1);
-    expect(getCourseNameFromCategory).toHaveBeenCalledTimes(2);
+    expect(getCourseNameFromCategory).toHaveBeenCalledTimes(1);
     expect(getCourseNameFromCategory).toHaveBeenCalledWith(channel.parent, client.guild);
     expect(saveChannelTopicToDb).toHaveBeenCalledTimes(1);
     expect(saveChannelTopicToDb).toHaveBeenCalledWith(getCourseNameFromCategory(general.name), newTopic, models.Channel);

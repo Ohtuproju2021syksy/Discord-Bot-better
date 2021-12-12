@@ -106,7 +106,6 @@ module.exports = {
   findChannelsByCourse,
   countChannelsByCourse,
   editChannelNames,
-  saveChannelTopicToDb,
   createDefaultChannelsToDatabase,
   editChannelName,
   saveChannelIdWithName,
