@@ -142,5 +142,4 @@ describe("channelService", () => {
     expect(channelModelInstanceMock.save).toHaveBeenCalledTimes(1);
     expect(channelModelInstanceMock.topic).toBe("topic of the chat");
   });
-
 });

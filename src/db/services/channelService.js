@@ -92,6 +92,7 @@ const editChannelName = async (discordId, newName, Channel) => {
   }
 };
 
+
 const getChannelByDiscordId = async (id, Channel) => {
   return await Channel.findOne({
     where:
@@ -99,10 +100,19 @@ const getChannelByDiscordId = async (id, Channel) => {
   });
 };
 
+
 const saveChannelIdWithName = async (id, channelName, Channel) => {
   await Channel.update(
     { discordId: id },
     { where: { name: channelName } });
+};
+
+
+const getAllChannels = async (Channel) => {
+  return await Channel.findAll({
+    attributes: ["id", "courseId", "name", "topic", "defaultChannel", "voiceChannel", "discordId"],
+    raw: true,
+  });
 };
 
 module.exports = {
@@ -113,10 +123,10 @@ module.exports = {
   findChannelsByCourse,
   countChannelsByCourse,
   editChannelNames,
-  saveChannelTopicToDb,
   createDefaultChannelsToDatabase,
   getChannelByDiscordId,
   saveChannelIdWithName,
   getAllChannels,
   editChannelName,
+  saveChannelTopicToDb,
 };

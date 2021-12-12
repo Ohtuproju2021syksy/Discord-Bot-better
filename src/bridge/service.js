@@ -7,7 +7,7 @@ const keywords = ["crypto", "krypto", "btc", "doge", "btc", "eth", "musk", "mone
 const cyrillicPattern = /^\p{Script=Cyrillic}+$/u;
 
 const { findCourseFromDb } = require("../db/services/courseService");
-const bridgedMessagesCounter = require("../promMetrics/bridgedMessagesCounter");
+const { bridgedMessagesCounter } = require("../promMetrics/promCounters");
 
 const validDiscordChannel = async (courseName) => {
   const guild = await discordClient.guilds.fetch(process.env.GUILD_ID);
