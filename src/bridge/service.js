@@ -148,7 +148,9 @@ const handleBridgeMessage = async (message, courseName, Course) => {
   if (message.author.bot) return;
   const sender = message.member.displayName;
   let channel = ":";
-
+  if (!message.channel.name.includes(`${group.name}_`)) {
+    return;
+  }
   if (!message.channel.name.includes("general")) {
     channel = escapeChars(" on " + (message.channel.name.split(courseName.toLowerCase().replace(" ", "-"))[1]).substring(1) + " channel:\n");
   }
@@ -168,6 +170,13 @@ const handleBridgeMessage = async (message, courseName, Course) => {
     let userName = message.guild.members.cache.get(userID);
     userName ? userName = userName.user.username : userName = "Jon Doe";
     msg = msg.replace("<@!" + userID + ">", userName);
+  }
+
+  while (msg.match(/(?<=<@).*?(?=>)/)) {
+    const userID = msg.match(/(?<=<@).*?(?=>)/)[0];
+    let userName = message.guild.members.cache.get(userID);
+    userName ? userName = userName.user.username : userName = "Jon Doe";
+    msg = msg.replace("<@" + userID + ">", userName);
   }
 
   while (msg.match(/(?<=<@&).*?(?=>)/)) {

@@ -40,9 +40,17 @@ const saveFacultyRoleToDb = async (discordId, User) => {
   }
 };
 
+const getAllUsers = async (User) => {
+  return await User.findAll({
+    attributes: ["name", "admin", "faculty", "discordId"],
+    raw: true,
+  });
+};
+
 module.exports = {
   findUserByDiscordId,
   createUserToDatabase,
   removeUserFromDb,
   saveFacultyRoleToDb,
-  findUserByDbId };
+  findUserByDbId,
+  getAllUsers };

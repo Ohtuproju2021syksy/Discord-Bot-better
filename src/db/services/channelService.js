@@ -49,6 +49,13 @@ const findChannelsByCourse = async (id, Channel) => {
   });
 };
 
+const getAllChannels = async (Channel) => {
+  return await Channel.findAll({
+    attributes: ["id", "courseId", "name", "topic", "defaultChannel", "voiceChannel", "discordId"],
+    raw: true,
+  });
+};
+
 const countChannelsByCourse = async (id, Channel) => {
   return await Channel.count({
     where: {
@@ -85,11 +92,21 @@ const editChannelName = async (discordId, newName, Channel) => {
   }
 };
 
+
+const getChannelByDiscordId = async (id, Channel) => {
+  return await Channel.findOne({
+    where:
+      { discordId: id },
+  });
+};
+
+
 const saveChannelIdWithName = async (id, channelName, Channel) => {
   await Channel.update(
     { discordId: id },
     { where: { name: channelName } });
 };
+
 
 const getAllChannels = async (Channel) => {
   return await Channel.findAll({
@@ -107,8 +124,9 @@ module.exports = {
   countChannelsByCourse,
   editChannelNames,
   createDefaultChannelsToDatabase,
-  editChannelName,
+  getChannelByDiscordId,
   saveChannelIdWithName,
   getAllChannels,
+  editChannelName,
   saveChannelTopicToDb,
 };
