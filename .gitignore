@@ -109,3 +109,5 @@ dist
 *.swp
 
 /src/promMetrics/graph/
+
+build/
