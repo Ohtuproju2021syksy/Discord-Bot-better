@@ -22,15 +22,9 @@ const execute = async (message, args, models) => {
       statusMessage += "\n";
     }
 
-    if (statusMessage.length >= 2000 && statusMessage < 4000) {
-      message.reply("Courses:\n" + statusMessage.substring(0, 1987));
-      message.reply(statusMessage.substring(1988, statusMessage.length - 1));
-    }
-    else if (statusMessage.length < 2000) {
-      message.reply("Courses:\n" + statusMessage);
-    }
-    else {
-      message.reply("Too long message");
+    for (let i = 0; i < statusMessage.length;) {
+      message.reply(statusMessage.substring(i, i + 1000));
+      i += 1000;
     }
 
 
@@ -39,17 +33,6 @@ const execute = async (message, args, models) => {
     for (const channel in allChannels) {
       const currentChannel = allChannels[channel];
       statusMessage += currentChannel.name + " " + currentChannel.discordId + "\n";
-    }
-
-    if (statusMessage.length >= 2000 && statusMessage < 4000) {
-      message.reply("Courses:\n" + statusMessage.substring(0, 1987));
-      message.reply(statusMessage.substring(1988, statusMessage.length - 1));
-    }
-    else if (statusMessage.length < 2000) {
-      message.reply("Courses:\n" + statusMessage);
-    }
-    else {
-      message.reply("Too long message");
     }
 
   }
