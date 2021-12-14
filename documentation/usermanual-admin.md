@@ -70,7 +70,7 @@ To update server and course invite links, use `!update_invitelinks` inside the _
 
 ### Listing all courses and channels that should exist ###
 
-To see what courses and channels exist in the database, use `!list_courses` inside the _#commands_ text channel.
+To see what courses and channels exist in the database, use `!list_courses` inside the _#commands_ text channel. This will also list the saved DiscordID numbers so you can see if database includes them for every category and channel.
 
 ### Check server status ###
 
