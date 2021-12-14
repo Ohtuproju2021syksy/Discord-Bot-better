@@ -107,6 +107,18 @@ const saveChannelIdWithName = async (id, channelName, Channel) => {
     { where: { name: channelName } });
 };
 
+const uncapitalize = async (courseId, Channel) => {
+  const channels = await findChannelsByCourse(courseId, Channel);
+  channels.map(async (channel) => {
+    console.log(channel.name);
+    const uncapName = channel.name.toLowerCase();
+    channel.name = uncapName;
+    await channel.save();
+  });
+  await Promise.all(channels);
+};
+
+
 module.exports = {
   findChannelFromDbByName,
   findChannelFromDbByDiscordId,
@@ -121,4 +133,5 @@ module.exports = {
   getAllChannels,
   editChannelName,
   saveChannelTopicToDb,
+  uncapitalize,
 };
