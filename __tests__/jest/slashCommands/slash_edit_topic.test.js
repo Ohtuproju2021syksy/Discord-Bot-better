@@ -1,7 +1,7 @@
 const { execute } = require("../../../src/discordBot/commands/faculty/edit_topic");
 const { sendEphemeral, editErrorEphemeral, editEphemeral } = require("../../../src/discordBot/services/message");
 const { confirmChoice } = require("../../../src/discordBot/services/confirm");
-const { saveChannelTopicToDb } = require("../../../src/db/services/channelService");
+const { findChannelFromDbByName, saveChannelTopicToDb } = require("../../../src/db/services/channelService");
 const {
   getCourseNameFromCategory,
   handleCooldown,
@@ -22,6 +22,8 @@ const initialResponse = "Editing topic...";
 
 msToMinutesAndSeconds.mockImplementation(() => time);
 confirmChoice.mockImplementation(() => true);
+const mockSaveMethod = jest.fn();
+findChannelFromDbByName.mockImplementation(() => { return { topic: "topic", save: mockSaveMethod }; });
 
 const { defaultTeacherInteraction } = require("../../mocks/mockInteraction");
 const newTopic = "New topic!";

@@ -51,6 +51,13 @@ const removeCourseMemberFromDb = async (userId, courseId, CourseMember) => {
   }
 };
 
+const getAllMembers = async (CourseMember) => {
+  return await CourseMember.findAll({
+    attributes: ["instructor", "userId", "courseId"],
+    raw: true,
+  });
+};
+
 module.exports = {
   findCourseMember,
   findAllCourseMembers,
@@ -58,4 +65,5 @@ module.exports = {
   removeCourseMemberFromDb,
   findCourseMemberCount,
   findAllCourseMembersByUser,
+  getAllMembers,
 };
