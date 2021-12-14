@@ -22,7 +22,8 @@
       "src/discordBot/commands/faculty/create_poll.js",
       "src/discordBot/commands/admin/update_database.js",
       "src/discordBot/commands/admin/restore_server_from_database.js",
-      "src/discordBot/commands/admin/server_status.js"
+      "src/discordBot/commands/admin/server_status.js",
+      "src/discordBot/commands/admin/list_courses.js"
     ],
     "testRegex": "./__tests__/jest"
   },
