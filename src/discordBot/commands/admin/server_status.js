@@ -75,7 +75,7 @@ const execute = async (message, args, models) => {
               statusMessage += "Channel: " + currentChannel.name + " Course members can speak in locked channel\n";
             }
           }
-          else if (!courseRole.permissionsIn(channelFound).has("SEND_MESSAGES")) {
+          else if (!courseRole.permissionsIn(channelFound).has("SEND_MESSAGES") && !currentChannel.name.includes("announcement")) {
             statusMessage += "Channel: " + currentChannel.name + " Course members can't talk in unlocked channel\n";
           }
         }
