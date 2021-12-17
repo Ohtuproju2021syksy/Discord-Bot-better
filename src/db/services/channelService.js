@@ -53,7 +53,7 @@ const countChannelsByCourse = async (id, Channel) => {
 
 const findChannelsFromDb = async (Channel) => {
   return await Channel.findAll({
-    attributes: ["courseId", "name", "topic", "bridged", "defaultChannel", "voiceChannel"],
+    attributes: ["id", "courseId", "name", "topic", "bridged", "defaultChannel", "voiceChannel"],
     order: ["courseId"],
     raw: true,
   });
