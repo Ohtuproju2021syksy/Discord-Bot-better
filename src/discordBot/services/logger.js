@@ -5,7 +5,7 @@ let logger;
 
 if (process.env.NODE_ENV !== "test") {
   const winstonPapertrail = new PapertrailConnection({
-    host: "logs2.papertrailapp.com",
+    host: process.env.PAPERTRAIL_URL,
     port: 10737,
   });
 
