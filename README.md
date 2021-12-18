@@ -42,6 +42,12 @@ POSTGRES_USERNAME=your-postgres-username (postgres if not changed)
 POSTGRES_PASSWORD=your-postgres-password
 DB_HOST= (only if you are not using PostgreSQL locally)
 GRAFANA_TOKEN=your-grafana-authorization-token
+GRAFANA_URL=your-server-url/grafana
+GRAFANA_PANEL_ID=your-grafana-panel-id
+GRAFANA_DASHBOARD=your-grafana-dashboard-name
+GRAFANA_ORG_ID=your-grafana-org-id
+PAPERTRAIL_URL=papertrailapp-url
+WORKSHOPS_API=pajat-api-url
 
 # Bridge
 TELEGRAM_BOT_TOKEN=telegram-bridge-bot-token
