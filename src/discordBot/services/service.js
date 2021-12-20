@@ -160,9 +160,7 @@ const findAndUpdateInstructorRole = async (name, guild, adminRole) => {
 
 const downloadImage = async (course) => {
   const panel = process.env.GRAFANA_PANEL_ID;
-  const dashboard = process.env.GRAFANA_DASHBOARD;
-  const orgId = process.env.GRAFANA_ORG_ID;
-  const url = `${process.env.GRAFANA_URL}/render/d-solo/WpYTNiOnz/${dashboard}?orgId=${orgId}&from=now-30d&to=now&var-course=${course}&panelId=${panel}&width=1000&height=500&tz=Europe%2FHelsinki`;
+  const url = `${process.env.GRAFANA_URL}&var-course=${course}&panelId=${panel}&width=1000&height=500&tz=Europe%2FHelsinki`;
   const directory = path.resolve(__dirname, "../../promMetrics/graph/");
 
   if (!fs.existsSync(directory)) {
