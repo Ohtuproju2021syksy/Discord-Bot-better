@@ -1,4 +1,4 @@
-## Authentication
+# Authentication
 
 *(Note. make sure you have "API_SECRET" set in your .env file as it will act as the password for logging in)*
 
@@ -6,10 +6,10 @@ Authentication is done using a simple JSON web token setup. Accessing most of th
 Logging in requires a POST request to "backend_url"/login with a password that matches API_SECRET. (Note. the token given after a successful login will only last for an hour).
 
 
-## Resources
+# Resources
 
 
-### Courses
+## Courses
 
 
 * **GET** `backend_url/api/courses`
@@ -44,7 +44,7 @@ Removes course with given id and name. Note! request.body must contain the `name
 
 
 
-### Channels
+## Channels
 
 
 * **GET** `backend_url/api/channels`
