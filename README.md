@@ -42,6 +42,7 @@ POSTGRES_USERNAME=your-postgres-username (postgres if not changed)
 POSTGRES_PASSWORD=your-postgres-password
 DB_HOST= (only if you are not using PostgreSQL locally)
 GRAFANA_TOKEN=your-grafana-authorization-token
+API_SECRET=your-courses-api-password
 
 # Bridge
 TELEGRAM_BOT_TOKEN=telegram-bridge-bot-token

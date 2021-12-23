@@ -69,8 +69,9 @@ router.put("/:id", async (req, res) => {
   }
   try {
     const channel = await findChannelFromDbById(req.params.id, models.Channel);
+    const courseName = channel.name.split("_")[0];
     const parsedName = req.body.name ? req.body.name.replace(" ", "-") : channel.name;
-    channel.name = parsedName;
+    channel.name = `${courseName}_${parsedName}`;
     channel.topic = req.body.topic ? req.body.topic : channel.topic;
     channel.bridged = req.body.bridged ? req.body.bridged : channel.bridged;
     await channel.save();
