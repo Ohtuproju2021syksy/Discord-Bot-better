@@ -57,7 +57,7 @@ const sendMessageToDiscord = async (ctx, message, channel) => {
         return;
       }
       await webhook.send({
-        content: message.content.text.replace("@", ""),
+        content: message.content.text.replace("@", "(at)"),
         username: message.user.username,
         avatarURL: message.user.avatarUrl,
       });
