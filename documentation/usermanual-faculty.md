@@ -120,9 +120,15 @@ The `/create_poll` command allows you to create a poll that is placed in the sam
 
 ## Disabling the bridge on a text channel
 
-Users with faculty rights can disable the bridge between a certain course channel and Telegram. This can be used e.g. on off-topic course channels where there's a lot of discussion that could flood the Telegram chat with messages not directly related to the course. Note that the bridge can be disabled only on non-default channels, that is channels which were created individually with `/create_channel` after the course was created. You can check in which channels the bridge is disabled with the command `/status`. 
+Users with faculty rights can disable the bridge between a certain course channel and Telegram. This can be used e.g. on off-topic course channels where there's a lot of discussion that could flood the Telegram chat with messages not directly related to the course. Note that the bridge can be disabled only on non-default channels, that is channels which were created individually with `/create_channel` after the course was created. To disable the bridge on a channel, write the command `/disable_bridge` on that channel. You can check in which channels the bridge is disabled with the command `/status`. 
 
 To enable the bridge on a channel, write the command `/enable_bridge` on that channel.
+
+## Hiding a text channel from regular users
+
+Users with faculty rights can hide a text channel from regular users inside a course. This can be used to e.g. make a private chat for course instructors. Note that the bridge can be disabled only on non-default channels, that is channels which were created individually with `/create_channel` after the course was created. To hide a text channel, write the command `/hide_channel` on that channel. Note that the command also disables the bridge on that channel, so that instructor specific conversations won't accidentally leak to Telegram.
+
+To reveal the channel to regular users, write the command `/unhide_channel` on that channel. Note that the command also enables the bridge on that channel.
 
 #### Faculty specific commands ####
 
@@ -138,11 +144,13 @@ Command | Explanation | Arguments
 [/edit_course](./commands/faculty/edit_course.md) | Edit course information, options; coursecode, full name, nickname | :heavy_check_mark:
 [/edit_topic](./commands/faculty/edit_topic.md) | Edit topic, must be used in a course channel, e.g., /edit_topic A new topic. | :heavy_check_mark:
 [/enable_bridge](./commands/faculty/enable_bridge.md) | Enable the bridge between Telegram and the (non-default) course channel it is used in. | :x:
+[/hide_channel](./commands/faculty/hide_channel.md)| Make the channel hidden from regular users, e.g., /hide_channel. Also disables the bridge in the channel. | :x:
 [/hide_course](./commands/faculty/hide_course.md)| Make given course private, e.g., /hide_course weba. | :heavy_check_mark:
 [/lock_chat](./commands/faculty/lock_chat.md) | Lock the chat (meaning only instructors and faculty can post messages) of a given course | :heavy_check_mark:
 [/remove_instructors](./commands/faculty/remove_instructors.md) | Remove instructor role from (multiple) users, e.g., /remove_instructors @user1 @user2. | :heavy_check_mark:
 [/rename_channel](./commands/faculty/rename_channel.md) | Rename the non-default course text channel the command is used in, e.g., /rename_channel feedback. | :heavy_check_mark:
 [/status](./commands/faculty/status.md) | Used in course channel returns general info about the course | :heavy_check_mark:
+[/unhide_channel](./commands/faculty/unhide_channel.md)| Make the channel visible to regular users, e.g., /unhide_channel. Also enables the bridge in the channel. | :x:
 [/unhide_course](./commands/faculty/unhide_course.md) | Make given course public, e.g., /unhide_course weba. | :heavy_check_mark:
 [/unlock_chat](./commands/faculty/unlock_chat.md) | Unlock the chat of a given course | :heavy_check_mark:
 

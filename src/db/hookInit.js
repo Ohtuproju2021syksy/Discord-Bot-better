@@ -83,6 +83,23 @@ const initChannelHooks = (guild, models) => {
       const channelObject = guild.channels.cache.find(c => c.name === channel.name);
       await channelObject.setTopic(channel.topic);
     }
+
+    if (channel._changed.has("hidden")) {
+      const course = await findCourseFromDbById(channel.courseId, courseModel);
+      const student = await findOrCreateRoleWithName(course.name, guild);
+      const channelObject = guild.channels.cache
+        .find(c => c.name === channel.dataValues.name);
+      if (channel.hidden) {
+        await channelObject.permissionOverwrites.create(student, {
+          VIEW_CHANNEL: false,
+        });
+      }
+      else {
+        await channelObject.permissionOverwrites.create(student, {
+          VIEW_CHANNEL: true,
+        });
+      }
+    }
   });
 };
 

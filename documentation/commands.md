@@ -30,10 +30,12 @@ Command | Description | Example
 `/edit_course` | Edit course information, e.g. course code, fullname, or nickname. Must be used inside a course. | `/edit_course nickname ohpe`
 `/edit_topic` | Edit channel topic, replacing an already existing topic. | `/edit_topic perusteet`
 `/enable_bridge` | Enable bridge in a Discord text channel. Must be used inside a course and in a non-default text channel. | `/enable_bridge`
+`/hide_channel` | Make the channel hidden from regular users. Also disables the bridge in the channel. Must be used inside a course and in a non-default text channel. | `/hide_channel`
 `/hide_course` | Make the given course private, disabling joining with `/join` | `/hide_course ohpe`
 `/lock_chat` | Lock the given course, disabling messaging by regular users | `/lock_chat ohpe`
 `/rename_channel` | Rename a Discord text channel. Must be used inside a course and in a non-default text channel. | `/rename_channel questions`
 `/status` | Get full status of course. Must be used inside a course. | `/status`
+`/unhide_channel` | Make the channel visible to regular users. Also enables the bridge in the channel. Must be used inside a course and in a non-default text channel. | `/unhide_channel`
 `/unhide_course` | Make the given course public, enabling joining with `/join`. | `/unhide_course ohpe`
 `/unlock_chat` | Unlock the given course, enabling messaging by regular users. | `/unlock_chat ohpe`
 

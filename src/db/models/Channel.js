@@ -35,6 +35,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
       unique: true,
     },
+    hidden: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+      unique: false,
+    },
   }, {
     timestamps: false,
     freezeTableName: true,
