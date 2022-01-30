@@ -42,7 +42,11 @@ const execute = async (interaction, client, models) => {
   }
 
   await removeChannelFromDb(deleteChannelName, channelModel);
-  return await editEphemeral(interaction, `${deleteName} deleted!`);
+
+  if (channel.name != deleteChannelName) {
+    return await editEphemeral(interaction, `${deleteName} deleted!`);
+  }
+
 };
 
 module.exports = {

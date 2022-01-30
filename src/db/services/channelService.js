@@ -107,6 +107,16 @@ const saveChannelIdWithName = async (id, channelName, Channel) => {
     { where: { name: channelName } });
 };
 
+const editChannelHiddenStatus = async (discordId, hiddenStatus, Channel) => {
+  const channel = await findChannelFromDbByDiscordId(discordId, Channel);
+
+  if (channel) {
+    channel.hidden = hiddenStatus;
+    channel.bridged = !hiddenStatus;
+    await channel.save();
+  }
+};
+
 module.exports = {
   findChannelFromDbByName,
   findChannelFromDbByDiscordId,
@@ -121,4 +131,5 @@ module.exports = {
   getAllChannels,
   editChannelName,
   saveChannelTopicToDb,
+  editChannelHiddenStatus,
 };

@@ -83,6 +83,25 @@ const initChannelHooks = (guild, models) => {
       const channelObject = guild.channels.cache.find(c => c.name === channel.name);
       await channelObject.setTopic(channel.topic);
     }
+
+    if (channel._changed.has("hidden")) {
+      const course = await findCourseFromDbById(channel.courseId, courseModel);
+      const student = await findOrCreateRoleWithName(course.name, guild);
+      const channelObject = guild.channels.cache
+        .find(c => c.name === channel.dataValues.name);
+      if (channel.hidden) {
+        await channelObject.permissionOverwrites.create(student, {
+          VIEW_CHANNEL: false,
+          SEND_MESSAGES: false,
+        });
+      }
+      else {
+        await channelObject.permissionOverwrites.create(student, {
+          VIEW_CHANNEL: true,
+          SEND_MESSAGES: true,
+        });
+      }
+    }
   });
 };
 
@@ -195,9 +214,9 @@ const initUserHooks = (guild, models) => {
 
 const initCourseMemberHooks = (guild, models) => {
   models.CourseMember.addHook("afterCreate", async (courseMember) => {
-    const user = await findUserByDbId(courseMember.userId, models.User);
-    const course = await findCourseFromDbById(courseMember.courseId, models.Course);
-    const member = guild.members.cache.get(user.discordId);
+    const user = await findUserByDbId(courseMember.dataValues.userId, models.User);
+    const course = await findCourseFromDbById(courseMember.dataValues.courseId, models.Course);
+    const member = guild.members.cache.get(user.dataValues.discordId);
     const courseRole = guild.roles.cache.find(r => r.name === course.name);
     await member.roles.add(courseRole);
     await updateGuide(guild, models);

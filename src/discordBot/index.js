@@ -11,6 +11,7 @@ const intents = [
   Intents.FLAGS.GUILD_INVITES,
   Intents.FLAGS.GUILD_MESSAGES,
   Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+  Intents.FLAGS.GUILD_VOICE_STATES,
 ];
 const client = new Client({ intents: intents });
 

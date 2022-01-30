@@ -106,6 +106,26 @@ const restoreChannels = async (guild, models) => {
             ], topic: currentChannel.topic },
           };
         }
+        else if (currentChannel.hidden) {
+          channelObject = {
+            name: currentChannel.name,
+            parent: parentChannel,
+            options: { type: "GUILD_TEXT", parent: parentChannel, permissionOverwrites: [
+              {
+                id: guild.id,
+                deny: ["VIEW_CHANNEL"],
+              },
+              {
+                id: student,
+                deny: ["SEND_MESSAGES", "VIEW_CHANNEL"],
+              },
+              {
+                id: admin,
+                allow: ["VIEW_CHANNEL", "SEND_MESSAGES"],
+              },
+            ], topic: currentChannel.topic },
+          };
+        }
         else {
           channelObject = {
             name: currentChannel.name,
