@@ -78,6 +78,17 @@ const execute = async (message, args, models) => {
           else if (!courseRole.permissionsIn(channelFound).has("SEND_MESSAGES") && !currentChannel.name.includes("announcement")) {
             statusMessage += "Channel: " + currentChannel.name + " Course members can't talk in unlocked channel\n";
           }
+          if (currentChannel.hidden) {
+            if (courseRole.permissionsIn(channelFound).has("SEND_MESSAGES") && courseRole.permissionsIn(channelFound).has("VIEW_CHANNEL")) {
+              statusMessage += "Channel: " + currentChannel.name + " Regular course members can see and talk in hidden channel\n";
+            }
+            else if (courseRole.permissionsIn(channelFound).has("SEND_MESSAGES")) {
+              statusMessage += "Channel: " + currentChannel.name + " Regular course members can talk in hidden channel\n";
+            }
+            else if (courseRole.permissionsIn(channelFound).has("VIEW_CHANNEL")) {
+              statusMessage += "Channel: " + currentChannel.name + " Regular course members can see a hidden channel\n";
+            }
+          }
         }
       }
       if (statusMessage === "") {
