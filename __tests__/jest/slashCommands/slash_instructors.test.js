@@ -11,6 +11,18 @@ const {
 const roleString = "test";
 const initialResponse = "Fetching instructors...";
 
+const Course = {
+  create: jest.fn(),
+  findOne: jest
+    .fn(() => true)
+    .mockImplementationOnce(() => false),
+  destroy: jest.fn(),
+};
+
+const models = {
+  Course,
+};
+
 afterEach(() => {
   jest.clearAllMocks();
 });
@@ -19,7 +31,7 @@ describe("slash instructors command", () => {
   test("instructors command used outside course channels", async () => {
     const client = studentInteractionWithoutOptions.client;
     const response = "Use the command in a course channel.";
-    await execute(studentInteractionWithoutOptions, client);
+    await execute(studentInteractionWithoutOptions, client, models);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(studentInteractionWithoutOptions, initialResponse);
     expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
@@ -32,7 +44,7 @@ describe("slash instructors command", () => {
     client.guild.roles.create({ id: 5, name: `${roleString} ${courseAdminRole}`, members: [{ displayName: "teacher", user: { id: 1 } }] });
     client.guild.roles.create({ id: 1, name: "faculty", members: [{ displayName: "teacher", user: { id: 1 } }] });
     const response = `No instructors for ${roleString}`;
-    await execute(studentInteractionWithoutOptions, client);
+    await execute(studentInteractionWithoutOptions, client, models);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(studentInteractionWithoutOptions, initialResponse);
     expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
@@ -44,7 +56,7 @@ describe("slash instructors command", () => {
     client.guild.roles.create({ id: 5, name: `${roleString} ${courseAdminRole}`, members: [{ displayName: "teacher", user: { id: 1 } }] });
     client.guild.roles.create({ id: 1, name: "faculty", members: [{ displayName: "teacher", user: { id: 1 } }] });
     const response = `No instructors for ${roleString}`;
-    await execute(defaultStudentInteraction, client);
+    await execute(defaultStudentInteraction, client, models);
     expect(sendEphemeral).toHaveBeenCalledTimes(1);
     expect(sendEphemeral).toHaveBeenCalledWith(defaultStudentInteraction, initialResponse);
     expect(editErrorEphemeral).toHaveBeenCalledTimes(1);
