@@ -134,6 +134,12 @@ Command | Explanation | Arguments
 [/unhide_course](./commands/faculty/unhide_course.md) | Make given course public, e.g., /unhide_course weba. | :heavy_check_mark:
 [/unlock_chat](./commands/faculty/unlock_chat.md) | Unlock the chat of a given course | :heavy_check_mark:
 
+#### Instructor specific commands ####
+
+Command | Explanation | Arguments
+--------|-------------|----------:
+[/instructor_disconnect](./commands/instructor/instructor_disconnect.md) | Disconnect another user from a voice chat, e.g., /instructor_disconnect @user1. | :heavy_check_mark:
+
 #### General commands ####
 
 Command | Explanation | Arguments

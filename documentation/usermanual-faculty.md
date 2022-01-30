@@ -38,10 +38,6 @@ To be able to use all the faculty commands, you need to authenticate yourself. U
 
 You can create new course with command `/create_course`. Give the command and after that give the _course code_, course´s _full name_ and course´s _nickname_. Nickname is optional and if not given then the coursecode will be also course´s nickname. **Note** that nickname is the value that is used as course´s name that users see on the Discord´s left column. So, we prefer that you give your course a short nickname because it is more readable on Discord for the users. **Note** also that nickname is a unique value.
 
-#### Multilingual course name
-
-If your course has multilingual course name, enter all the information in the _full name_ field.
-
 #### Open university course
 
 If your course is an open university course, use the abbreviation **MOOC** in the _full name_ field next to your course name.
@@ -130,6 +126,10 @@ Users with faculty rights can hide a text channel from regular users inside a co
 
 To reveal the channel to regular users, write the command `/unhide_channel` on that channel. Note that the command also enables the bridge on that channel.
 
+### Disconnecting users from voice chat
+
+You can disconnect another user from any voice chat with the command `/instructor_disconnect`. Simply type `/instructor_disconnect @user1` in any chat.
+
 #### Faculty specific commands ####
 
 Command | Explanation | Arguments
@@ -138,7 +138,7 @@ Command | Explanation | Arguments
 [/create_channel](./commands/faculty/create_channel.md) | Create new text channel inside a course, e.g., /create_channel feedback. | :heavy_check_mark:
 [/create_course](./commands/faculty/create_course.md) | Create a new course | :heavy_check_mark:
 [/create_poll](./commands/faculty/create_poll.md) | Create a new poll | :heavy_check_mark:
-[/delete_bridge](./commands/faculty/delete_bridge.md) | Delete the bridge from specified Course, e.g., /delete_bridge ohpe | :heavy_check_mark:
+[/delete_bridge](./commands/faculty/delete_bridge.md) | Delete the bridge from specified course, e.g., /delete_bridge ohpe | :heavy_check_mark:
 [/delete_channel](./commands/faculty/delete_channel.md) | Remove given text channel inside a course, e.g., /delete_channel feedback. | :heavy_check_mark:
 [/disable_bridge](./commands/faculty/disable_bridge.md) | Disable the bridge between Telegram and the (non-default) course channel it is used in. | :x:
 [/edit_course](./commands/faculty/edit_course.md) | Edit course information, options; coursecode, full name, nickname | :heavy_check_mark:
@@ -153,6 +153,12 @@ Command | Explanation | Arguments
 [/unhide_channel](./commands/faculty/unhide_channel.md)| Make the channel visible to regular users, e.g., /unhide_channel. Also enables the bridge in the channel. | :x:
 [/unhide_course](./commands/faculty/unhide_course.md) | Make given course public, e.g., /unhide_course weba. | :heavy_check_mark:
 [/unlock_chat](./commands/faculty/unlock_chat.md) | Unlock the chat of a given course | :heavy_check_mark:
+
+#### Instructor specific commands ####
+
+Command | Explanation | Arguments
+--------|-------------|----------:
+[/instructor_disconnect](./commands/instructor/instructor_disconnect.md) | Disconnect another user from a voice chat, e.g., /instructor_disconnect @user1. | :heavy_check_mark:
 
 #### General commands ####
 
