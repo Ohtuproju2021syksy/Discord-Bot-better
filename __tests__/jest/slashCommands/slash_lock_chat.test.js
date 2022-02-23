@@ -6,7 +6,7 @@ const {
   checkCourseCooldown } = require("../../../src/discordBot/services/service");
 const { setCourseToLocked, findCourseFromDb } = require("../../../src/db/services/courseService");
 
-jest.mock("../../../src/bridge/service");
+jest.mock("../../../src/telegramBot/bridge/service");
 jest.mock("../../../src/discordBot/services/message");
 jest.mock("../../../src/discordBot/services/confirm");
 jest.mock("../../../src/discordBot/services/service");

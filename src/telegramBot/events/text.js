@@ -2,9 +2,9 @@ const {
   createDiscordUser,
   validDiscordChannel,
   sendMessageToDiscord,
-  sendMessageToTelegram } = require("../../bridge/service");
+  sendMessageToTelegram } = require("../bridge/service");
 const { findCourseFromDb } = require("../../db/services/courseService");
-const { lockTelegramCourse } = require("../../bridge/service");
+const { lockTelegramCourse } = require("../bridge/service");
 const { logError } = require("../../discordBot/services/logger");
 
 

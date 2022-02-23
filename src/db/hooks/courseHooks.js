@@ -13,7 +13,7 @@ const {
   setEmojisUnhide,
   setCoursePositionABC,
   updateGuide } = require("../../discordBot/services/service");
-const { lockTelegramCourse, unlockTelegramCourse } = require("../../bridge/service");
+const { lockTelegramCourse, unlockTelegramCourse } = require("../../telegramBot/bridge/service");
 const { courseAdminRole } = require("../../../config.json");
 const { Op } = require("sequelize");
 const { editChannelNames, createDefaultChannelsToDatabase } = require("../../db/services/channelService");
