@@ -1,7 +1,7 @@
 const { initService, handleBridgeMessage } = require("./service");
-const { getCourseNameFromCategory } = require("../discordBot/services/service");
-const { findChannelFromDbByName } = require("../db/services/channelService");
-const models = require("../db/dbInit");
+const { getCourseNameFromCategory } = require("../../discordBot/services/service");
+const { findChannelFromDbByName } = require("../../db/services/channelService");
+const models = require("../../db/dbInit");
 
 const startBridge = async (discordClient, telegramClient) => {
   initService(discordClient, telegramClient);

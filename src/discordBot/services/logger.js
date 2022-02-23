@@ -29,7 +29,7 @@ if (process.env.NODE_ENV !== "test") {
       errorStackTracerFormat(),
       format.simple(),
     ),
-    transports: [ paperTrailTransport ],
+    transports: [paperTrailTransport],
   });
 
   if (process.env.NODE_ENV === "development") {
@@ -58,6 +58,12 @@ const logError = (error) => {
   }
 };
 
+const logInfo = (message) => {
+  if (logger) {
+    logger.info(message);
+  }
+};
+
 const logInteractionError = (error, client, interaction) => {
   if (logger) {
     const member = client.guild.members.cache.get(interaction.member.user.id);
@@ -77,5 +83,5 @@ const logNoInteractionError = async (telegramId, member, channel, client, error)
 };
 
 module.exports = {
-  logError, logInteractionError, logNoInteractionError,
+  logError, logInteractionError, logNoInteractionError, logInfo,
 };

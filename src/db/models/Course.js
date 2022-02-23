@@ -23,11 +23,13 @@ module.exports = (sequelize, DataTypes) => {
     private: {
       type: DataTypes.BOOLEAN,
       allowNull: true,
+      defaultValue: false,
       unique: false,
     },
     locked: {
       type: DataTypes.BOOLEAN,
       allowNull: true,
+      defaultValue: false,
       unique: false,
     },
     categoryId: {

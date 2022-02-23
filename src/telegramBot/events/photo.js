@@ -1,4 +1,4 @@
-const { createDiscordUser, validDiscordChannel, sendMessageToDiscord } = require("../../bridge/service");
+const { createDiscordUser, validDiscordChannel, sendMessageToDiscord } = require("../bridge/service");
 const { logError } = require("../../discordBot/services/logger");
 
 const execute = async (ctx, message, telegramClient, Course) => {

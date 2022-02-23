@@ -1,13 +1,13 @@
-const { sendErrorReportNoInteraction } = require("../discordBot/services/message");
-const { logError, logNoInteractionError } = require("../discordBot/services/logger");
+const { sendErrorReportNoInteraction } = require("../../discordBot/services/message");
+const { logError, logNoInteractionError } = require("../../discordBot/services/logger");
 let discordClient;
 let telegramClient;
 const keywords = ["crypto", "krypto", "btc", "doge", "btc", "eth", "musk", "money", "$", "usd", "bitcoin", "muskx.co", "coin", "elonmusk", "prize", "еlonmusk", "btc", "cash", "million",
   "interest", "investment", "join"];
 const cyrillicPattern = /^\p{Script=Cyrillic}+$/u;
 
-const { findCourseFromDb } = require("../db/services/courseService");
-const { bridgedMessagesCounter } = require("../promMetrics/promCounters");
+const { findCourseFromDb } = require("../../db/services/courseService");
+const { bridgedMessagesCounter } = require("../../promMetrics/promCounters");
 
 const validDiscordChannel = async (courseName) => {
   const guild = await discordClient.guilds.fetch(process.env.GUILD_ID);

@@ -106,7 +106,9 @@ const findUnlockedCoursesFromDb = async (order, Course) => {
     attributes: ["id", "code", "fullName", "name"],
     order: [order],
     where: {
-      locked: false,
+      locked: {
+        [Sequelize.Op.or]: [false, null],
+      },
     },
     raw: true,
   });
