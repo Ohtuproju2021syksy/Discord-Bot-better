@@ -3,14 +3,14 @@ const {
   validDiscordChannel,
   sendMessageToDiscord,
   sendMessageToTelegram } = require("../bridge/service");
-const { findCourseFromDb } = require("../../db/services/courseService");
+const { findCourseFromDb, getCourseByTelegramId } = require("../../db/services/courseService");
 const { lockTelegramCourse } = require("../bridge/service");
 const { logError } = require("../../discordBot/services/logger");
 
 
 const execute = async (ctx, message, telegramClient, Course) => {
   const id = ctx.message.chat.id;
-  const group = await Course.findOne({ where: { telegramId: String(id) } });
+  const group = await getCourseByTelegramId(String(id), Course);
 
   if (ctx.message.text.startsWith("/bridge")) {
     const discordCourseName = ctx.message.text.slice(7).toLowerCase().trim();
@@ -44,7 +44,7 @@ const execute = async (ctx, message, telegramClient, Course) => {
     await sendMessageToDiscord(ctx, msg, channel);
     await sendMessageToTelegram(id, `Bridge created: Discord course ${discordCourseName} <--> Telegram course ${telegramCourseName}`);
     if (databaseValue.locked) {
-      lockTelegramCourse(Course, discordCourseName);
+      await lockTelegramCourse(Course, discordCourseName);
     }
   }
 
