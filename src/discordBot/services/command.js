@@ -8,6 +8,7 @@ const guildId = process.env.GUILD_ID;
 const token = process.env.DISCORD_BOT_TOKEN;
 const { findPrivateCoursesFromDb, findPublicCoursesFromDb, findLockedCoursesFromDb, findUnlockedCoursesFromDb, findCoursesFromDb } = require("../../db/services/courseService");
 const { logError } = require("./logger");
+// const axios = require("axios");
 
 const parseCourseData = (courseData) => {
   const choices = courseData
@@ -69,44 +70,73 @@ const updateDynamicChoices = async (client, commandNames, Course) => {
 };
 
 const setCommandPermissions = async (client) => {
-  const loadedCommands = await client.guilds.cache.get(guildId)?.commands.fetch();
-  const createCommandsWithPermission = loadedCommands.filter((command) => !command.defaultPermission && client.slashCommands.has(command.name));
-  const fullPermissions = createCommandsWithPermission.map((command) => {
-    const commandObj = client.slashCommands.get(command.name);
-    const perms = [];
-    commandObj.roles
-      .forEach((commandRole) => {
-        client.guild.roles.cache
-          .filter((role) => role.name.includes(commandRole))
-          .map((r) => perms.push({ id: r.id, type: "ROLE", permission: true }));
+  const rest = new REST({ version: "9" }).setToken(token);
+
+  (async () => {
+    try {
+      const loadedCommands = await rest.get(
+        Routes.applicationGuildCommands(clientId, guildId),
+      );
+      const createCommandsWithPermission = loadedCommands.filter((command) => !command.default_permission && client.slashCommands.has(command.name));
+      const fullPermissions = createCommandsWithPermission.map((command) => {
+        const commandObj = client.slashCommands.get(command.name);
+        const perms = [];
+        commandObj.roles
+          .forEach((commandRole) => {
+            client.guild.roles.cache
+              .filter((role) => role.name.includes(commandRole))
+              .map((r) => perms.push({ id: r.id, type: "ROLE", permission: true }));
+          });
+        return {
+          id: command.id,
+          permissions: perms,
+        };
       });
-    return {
-      id: command.id,
-      permissions: perms,
-    };
-  });
 
-  for (let fIndex = 0, fullLength = fullPermissions.length; fIndex < fullLength; fIndex++) {
+      for (let fIndex = 0, fullLength = fullPermissions.length; fIndex < fullLength; fIndex++) {
 
-    if (fullPermissions[fIndex].permissions.length > 10) {
+        if (fullPermissions[fIndex].permissions.length > 10) {
 
-      for (let pIndex = 0, permissionLength = fullPermissions[fIndex].permissions.length; pIndex <= permissionLength; pIndex += 10) {
-        const slicedList = fullPermissions[fIndex].permissions.slice(pIndex, pIndex + 10);
-        fullPermissions.push(
-          {
-            id: fullPermissions[fIndex].id,
-            permissions: slicedList,
-          },
-        );
+          for (let pIndex = 0, permissionLength = fullPermissions[fIndex].permissions.length; pIndex <= permissionLength; pIndex += 10) {
+            const slicedList = fullPermissions[fIndex].permissions.slice(pIndex, pIndex + 10);
+            fullPermissions.push(
+              {
+                id: fullPermissions[fIndex].id,
+                permissions: slicedList,
+              },
+            );
+          }
+          fullPermissions.splice(fIndex, 1);
+          fIndex--;
+          fullLength--;
+        }
       }
-      fullPermissions.splice(fIndex, 1);
-      fIndex--;
-      fullLength--;
     }
-  }
+    catch (error) {
+      logError(error);
+      console.error(error);
+    }
+  })();
 
-  await client.guilds.cache.get(guildId)?.commands.permissions.set({ fullPermissions });
-  console.log("Successfully loaded all command permissions.");
+  /*   const url = `https://discord.com/api/v8/applications/${process.env.BOT_ID}/guilds/${process.env.GUILD_ID}/commands`;
+  const header = {
+    "Content-Type": "application/json",
+    "Authorization": `Bot ${process.env.BOT_TOKEN}`,
+  };
+  await axios.post(url, fullPermissions, { headers: header }).then(res => {
+    console.log(`statusCode: ${res.status}`);
+    console.log(res);
+  }).catch(error => {
+    console.error(error);
+  }); */
+
+
+/*   const guild = await client.guilds.cache.get(guildId);
+  const commands = await guild.commands;
+  const permission = await commands.permissions;
+  console.log(permission);
+  await permission.set({ fullPermissions });
+  console.log("Successfully loaded all command permissions."); */
 };
 
 const deployCommands = async (commands) => {

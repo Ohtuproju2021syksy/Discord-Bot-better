@@ -1,17 +1,16 @@
 const { createLogger, format, transports } = require("winston");
-const { PapertrailConnection, PapertrailTransport } = require("winston-papertrail");
+// const { PapertrailConnection, PapertrailTransport } = require("winston-papertrail");
 
 let logger;
 
 if (process.env.NODE_ENV !== "test") {
-  const winstonPapertrail = new PapertrailConnection({
+/*   const winstonPapertrail = new PapertrailConnection({
     host: process.env.PAPERTRAIL_URL,
     port: 10737,
   });
 
-
   const paperTrailTransport = new PapertrailTransport(winstonPapertrail);
-
+ */
 
   const errorStackTracerFormat = format(info => {
     if (info.stack) {
@@ -29,14 +28,12 @@ if (process.env.NODE_ENV !== "test") {
       errorStackTracerFormat(),
       format.simple(),
     ),
-    transports: [paperTrailTransport],
   });
-
-  if (process.env.NODE_ENV === "development") {
-    logger.add(new transports.Console({
-      format: format.simple(),
-    }));
-    logger.remove(paperTrailTransport);
+  logger.add(new transports.Console({
+    format: format.simple(),
+  }));
+/*   else if (process.env.NODE_ENV === "production") {
+    logger.add(paperTrailTransport);
   }
 
   logger.rejections.handle(
@@ -49,7 +46,7 @@ if (process.env.NODE_ENV !== "test") {
 
   winstonPapertrail.on("connect", function() {
     logger.info("Logger connected to Papertrail");
-  });
+  }); */
 }
 
 const logError = (error) => {
