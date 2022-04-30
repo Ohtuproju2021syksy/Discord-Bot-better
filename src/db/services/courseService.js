@@ -176,6 +176,13 @@ const saveCourseIdWithName = async (id, courseName, Course) => {
     { where: { name: courseName } });
 };
 
+const getCourseByTelegramId = async (id, Course) => {
+  return await Course.findOne({
+    where:
+    { telegramId : id },
+  });
+};
+
 module.exports = {
   setCourseToPrivate,
   setCourseToPublic,
@@ -196,4 +203,5 @@ module.exports = {
   findUnlockedCoursesFromDb,
   findPrivateCoursesFromDb,
   findPublicCoursesFromDb,
+  getCourseByTelegramId,
 };
